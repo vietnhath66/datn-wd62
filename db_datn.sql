@@ -1,0 +1,311 @@
+CREATE TABLE `products` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`category_id` BIGINT UNSIGNED NOT NULL,
+	`brand_id` BIGINT UNSIGNED NOT NULL,
+	`name` VARCHAR(255) NOT NULL,
+	`image` VARCHAR(255) NOT NULL,
+	`description` TEXT(65535) NOT NULL,
+	`content` TEXT(65535) NOT NULL,
+	`is_active` TINYINT NOT NULL,
+	`is_sale` TINYINT NOT NULL,
+	`is_new` TINYINT NOT NULL,
+	`is_show_home` TINYINT NOT NULL,
+	`is_trending` TINYINT NOT NULL,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`deleted_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `brands` (
+	`id` BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
+	`name` VARCHAR(255) NOT NULL,
+	`image` VARCHAR(255) NOT NULL,
+	`deleted_at` TIMESTAMP,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `product_colors` (
+	`id` BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
+	`name` VARCHAR(255) NOT NULL,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `product_sizes` (
+	`id` BIGINT NOT NULL UNIQUE,
+	`name` VARCHAR(255) NOT NULL,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `address` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`user_id` BIGINT UNSIGNED NOT NULL,
+	`province` VARCHAR(255) NOT NULL,
+	`district` VARCHAR(255) NOT NULL,
+	`neighborhood` VARCHAR(255) NOT NULL,
+	`apartment` VARCHAR(255) NOT NULL,
+	`is_default` TINYINT NOT NULL,
+	`updated_at` TIMESTAMP,
+	`created_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `carts` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`user_id` BIGINT UNSIGNED NOT NULL,
+	`total` DOUBLE NOT NULL,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `cart_items` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`cart_id` BIGINT UNSIGNED NOT NULL,
+	`product_variant_id` BIGINT UNSIGNED NOT NULL,
+	`product_id` BIGINT UNSIGNED NOT NULL,
+	`size_id` BIGINT NOT NULL,
+	`color_id` BIGINT NOT NULL,
+	`quantity` DOUBLE NOT NULL,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `categories` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`name` VARCHAR(255) NOT NULL,
+	`image` VARCHAR(255) NOT NULL,
+	`parent_id` VARCHAR(255),
+	`updated_at` TIMESTAMP,
+	`deleted_at` TIMESTAMP,
+	`created_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `change_email` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`processed_by` BIGINT UNSIGNED NOT NULL,
+	`change_email` VARCHAR(255) NOT NULL,
+	`reason` TEXT(65535) NOT NULL,
+	`updated_at` TIMESTAMP,
+	`created_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `coupons` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`code` VARCHAR(255) NOT NULL,
+	`discount_type` VARCHAR(255) NOT NULL,
+	`discount_value` DOUBLE NOT NULL,
+	`number` INTEGER NOT NULL,
+	`minimum_order_amount` DOUBLE NOT NULL,
+	`start_date` DATE NOT NULL,
+	`end_date` DATE NOT NULL,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `coupon_user` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`user_id` BIGINT UNSIGNED NOT NULL,
+	`coupon_id` BIGINT UNSIGNED NOT NULL,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `users` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`name` VARCHAR(255) NOT NULL,
+	`email` VARCHAR(255) NOT NULL,
+	`role_id` BIGINT UNSIGNED NOT NULL,
+	`password` VARCHAR(255) NOT NULL,
+	`phone` VARCHAR(255) NOT NULL,
+	`avt` VARCHAR(255),
+	`status` VARCHAR(255),
+	`email_verified_at` TIMESTAMP,
+	`remember_token` VARCHAR(255),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `wishlists` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`user_id` BIGINT UNSIGNED NOT NULL,
+	`product_id` BIGINT UNSIGNED NOT NULL,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `roles` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`name` VARCHAR(255) NOT NULL,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `reviews` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`user_id` BIGINT UNSIGNED,
+	`product_variant_id` BIGINT UNSIGNED,
+	`rating` DOUBLE,
+	`comment` TEXT(65535),
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `orders` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`user_id` BIGINT UNSIGNED NOT NULL,
+	`email` VARCHAR(255) NOT NULL,
+	`total` DOUBLE NOT NULL,
+	`status` VARCHAR(255) NOT NULL,
+	`barcode` VARCHAR(255) NOT NULL,
+	`province` VARCHAR(255),
+	`district` VARCHAR(255),
+	`ward` VARCHAR(255),
+	`address_detail` VARCHAR(255),
+	`phone` VARCHAR(255),
+	`coupon` VARCHAR(255),
+	`payment_status` TINYINT,
+	`total_discount` VARCHAR(255),
+	`confirmation_deadline` TIMESTAMP,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `product_variants` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`product_id` BIGINT UNSIGNED NOT NULL,
+	`product_size_id` BIGINT UNSIGNED NOT NULL,
+	`product_color_id` BIGINT UNSIGNED NOT NULL,
+	`price_sale` DOUBLE NOT NULL,
+	`price` DOUBLE NOT NULL,
+	`quantity` INTEGER NOT NULL,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	`deleted_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `product_tag` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`product_id` BIGINT UNSIGNED NOT NULL,
+	`tag_id` BIGINT UNSIGNED NOT NULL,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `order_items` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`order_id` BIGINT UNSIGNED NOT NULL,
+	`product_id` BIGINT UNSIGNED NOT NULL,
+	`product_variant_id` BIGINT UNSIGNED NOT NULL,
+	`size_id` BIGINT NOT NULL,
+	`color_id` BIGINT NOT NULL,
+	`quantity` INTEGER NOT NULL,
+	`price` DOUBLE NOT NULL,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+CREATE TABLE `tags` (
+	`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+	`name` VARCHAR(255) NOT NULL,
+	`created_at` TIMESTAMP,
+	`updated_at` TIMESTAMP,
+	PRIMARY KEY(`id`)
+);
+
+
+ALTER TABLE `users`
+ADD FOREIGN KEY(`role_id`) REFERENCES `roles`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `carts`
+ADD FOREIGN KEY(`user_id`) REFERENCES `users`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `coupon_user`
+ADD FOREIGN KEY(`user_id`) REFERENCES `users`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `product_tag`
+ADD FOREIGN KEY(`product_id`) REFERENCES `products`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `product_tag`
+ADD FOREIGN KEY(`tag_id`) REFERENCES `tags`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `order_items`
+ADD FOREIGN KEY(`product_id`) REFERENCES `products`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `order_items`
+ADD FOREIGN KEY(`product_variant_id`) REFERENCES `product_variants`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `coupon_user`
+ADD FOREIGN KEY(`coupon_id`) REFERENCES `coupons`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `coupon_user`
+ADD FOREIGN KEY(`user_id`) REFERENCES `users`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `reviews`
+ADD FOREIGN KEY(`user_id`) REFERENCES `users`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `wishlists`
+ADD FOREIGN KEY(`user_id`) REFERENCES `users`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `wishlists`
+ADD FOREIGN KEY(`product_id`) REFERENCES `products`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `orders`
+ADD FOREIGN KEY(`user_id`) REFERENCES `users`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `address`
+ADD FOREIGN KEY(`user_id`) REFERENCES `users`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `cart_items`
+ADD FOREIGN KEY(`cart_id`) REFERENCES `carts`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `cart_items`
+ADD FOREIGN KEY(`product_id`) REFERENCES `products`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `cart_items`
+ADD FOREIGN KEY(`product_variant_id`) REFERENCES `product_variants`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `cart_items`
+ADD FOREIGN KEY(`size_id`) REFERENCES `product_sizes`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE `cart_items`
+ADD FOREIGN KEY(`color_id`) REFERENCES `product_colors`(`id`)
+ON UPDATE NO ACTION ON DELETE NO ACTION;
