@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    function viewClient()
+    public function viewClient()
     {
-        return view('client')
+        return view('client.home');
     }
 }

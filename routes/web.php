@@ -7,5 +7,5 @@ use App\Http\Controllers\Client\HomeController;
 // Client
 Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
 
-    // Route::get('/', [HomeController::class, 'viewClient'])->name('viewClient');
+    Route::get('home', [HomeController::class, 'viewClient'])->name('viewClient');
 });
