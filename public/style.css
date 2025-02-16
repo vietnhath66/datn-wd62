@@ -1,0 +1,17 @@
+a,
+h3,
+p,
+h4,
+option,
+button,
+span {
+    font-family: "Kanit", serif !important;
+    font-weight: 500 !important;
+    font-style: normal !important;
+}
+
+.kanit-thin {
+    font-family: "Kanit", serif;
+    font-weight: 500;
+    font-style: normal;
+}

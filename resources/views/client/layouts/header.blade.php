@@ -5,17 +5,17 @@
         <div class="top-bar">
             <div class="content-topbar flex-sb-m h-full container">
                 <div class="left-top-bar">
-                    Free shipping for standard order over $100
+                    Miễn phí vận chuyển cho tổng hoá đơn 1.000.000 VND
                 </div>
 
                 <div class="right-top-bar flex-w h-full">
                     <a href="#" class="flex-c-m trans-04 p-lr-25"> Help & FAQs </a>
 
-                    <a href="#" class="flex-c-m trans-04 p-lr-25"> My Account </a>
+                    <a href="#" class="flex-c-m trans-04 p-lr-25"> Tài khoản </a>
 
-                    <a href="#" class="flex-c-m trans-04 p-lr-25"> EN </a>
+                    {{-- <a href="#" class="flex-c-m trans-04 p-lr-25"> EN </a> --}}
 
-                    <a href="#" class="flex-c-m trans-04 p-lr-25"> USD </a>
+                    {{-- <a href="#" class="flex-c-m trans-04 p-lr-25"> USD </a> --}}
                 </div>
             </div>
         </div>
@@ -30,33 +30,24 @@
                 <!-- Menu desktop -->
                 <div class="menu-desktop">
                     <ul class="main-menu">
-                        <li class="active-menu">
-                            <a href="index.html">Home</a>
-                            <ul class="sub-menu">
-                                <li><a href="index.html">Homepage 1</a></li>
-                                <li><a href="home-02.html">Homepage 2</a></li>
-                                <li><a href="home-03.html">Homepage 3</a></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a href="product.html">Shop</a>
+                        <li class="">
+                            <a href="{{ route('client.viewHome') }}">Trang chủ</a>
                         </li>
 
                         <li class="label1" data-label1="hot">
-                            <a href="shoping-cart.html">Features</a>
+                            <a href="product.html">Sản phẩm</a>
                         </li>
 
                         <li>
-                            <a href="blog.html">Blog</a>
+                            <a href="shoping-cart.html">Chính sách</a>
                         </li>
 
                         <li>
-                            <a href="about.html">About</a>
+                            <a href="shoping-cart.html">Giới thiệu</a>
                         </li>
 
                         <li>
-                            <a href="contact.html">Contact</a>
+                            <a href="contact.html">Liên hệ</a>
                         </li>
                     </ul>
                 </div>
@@ -119,7 +110,7 @@
         <ul class="topbar-mobile">
             <li>
                 <div class="left-top-bar">
-                    Free shipping for standard order over $100
+                    Miễn phí vận chuyển cho tổng hoá đơn 1.000.000 VND
                 </div>
             </li>
 
@@ -127,46 +118,37 @@
                 <div class="right-top-bar flex-w h-full">
                     <a href="#" class="flex-c-m p-lr-10 trans-04"> Help & FAQs </a>
 
-                    <a href="#" class="flex-c-m p-lr-10 trans-04"> My Account </a>
+                    <a href="#" class="flex-c-m p-lr-10 trans-04"> Tài khoản </a>
 
-                    <a href="#" class="flex-c-m p-lr-10 trans-04"> EN </a>
+                    {{-- <a href="#" class="flex-c-m p-lr-10 trans-04"> EN </a> --}}
 
-                    <a href="#" class="flex-c-m p-lr-10 trans-04"> USD </a>
+                    {{-- <a href="#" class="flex-c-m p-lr-10 trans-04"> USD </a> --}}
                 </div>
             </li>
         </ul>
 
         <ul class="main-menu-m">
             <li>
-                <a href="index.html">Home</a>
-                <ul class="sub-menu-m">
-                    <li><a href="index.html">Homepage 1</a></li>
-                    <li><a href="home-02.html">Homepage 2</a></li>
-                    <li><a href="home-03.html">Homepage 3</a></li>
-                </ul>
+                <a href="index.html">Trang chủ</a>
                 <span class="arrow-main-menu-m">
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                 </span>
             </li>
 
             <li>
-                <a href="product.html">Shop</a>
+                <a href="product.html" class="label1 rs1" data-label1="hot">Sản phẩm</a>
             </li>
 
             <li>
-                <a href="shoping-cart.html" class="label1 rs1" data-label1="hot">Features</a>
+                <a href="shoping-cart.html">Chính sách</a>
             </li>
 
             <li>
-                <a href="blog.html">Blog</a>
+                <a href="shoping-cart.html">Giới thiệu</a>
             </li>
 
             <li>
-                <a href="about.html">About</a>
-            </li>
-
-            <li>
-                <a href="contact.html">Contact</a>
+                <a href="contact.html">Liên hệ</a>
             </li>
         </ul>
     </div>
@@ -182,7 +164,7 @@
                 <button class="flex-c-m trans-04">
                     <i class="zmdi zmdi-search"></i>
                 </button>
-                <input class="plh3" type="text" name="search" placeholder="Search..." />
+                <input class="plh3 kanit-thin" type="text" name="search" placeholder="Tìm kiếm..." />
             </form>
         </div>
     </div>

@@ -1,6 +1,6 @@
 @extends('client.layouts.master')
 
-@section('title', 'Trang Chủ')
+@section('title', 'Home')
 
 @section('content')
     @include('client.layouts.slide')

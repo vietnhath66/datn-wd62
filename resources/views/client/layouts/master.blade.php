@@ -38,6 +38,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('client/css/util.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('client/css/main.css') }}" />
     <!--===============================================================================================-->
+    <link rel="stylesheet" href="{{ asset('style.css') }}">
     @stack('style')
 </head>
 
