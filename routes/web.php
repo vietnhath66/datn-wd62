@@ -11,7 +11,7 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     Route::get('home', [HomeController::class, 'viewHome'])->name('viewHome');
 });
 
-
+// Admin
 Route::prefix('admin')
     ->as('admin.')
     ->middleware(['admin', 'locale', 'backend_default_locale'])
@@ -24,7 +24,3 @@ Route::get('admin/login', [AuthController::class, 'index'])->name('auth.admin')-
 Route::post('login', [AuthController::class, 'login'])->name('auth.login');
 Route::get('admin/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
-
-Route::get('/', function () {
-    return view('welcome');
-});
