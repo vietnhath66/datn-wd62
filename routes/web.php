@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Client\AboutController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Backend\DashboardController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Backend\AuthController;
 Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
 
     Route::get('home', [HomeController::class, 'viewHome'])->name('viewHome');
+    Route::get('about', [AboutController::class, 'viewAbout'])->name('viewAbout');
 });
 
 // Admin
