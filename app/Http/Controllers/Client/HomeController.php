@@ -9,6 +9,6 @@ class HomeController extends Controller
 {
     public function viewHome()
     {
-        return view('client.home');
+        return view('client.home.home');
     }
 }
