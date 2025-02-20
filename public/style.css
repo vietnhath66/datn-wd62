@@ -11,7 +11,7 @@ span {
 }
 
 .kanit-thin {
-    font-family: "Kanit", serif;
-    font-weight: 500;
-    font-style: normal;
+    font-family: "Kanit", serif !important;
+    font-weight: 500 !important;
+    font-style: normal !important;
 }
