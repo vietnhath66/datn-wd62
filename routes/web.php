@@ -21,6 +21,13 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
     Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
 
+    Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
+    Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
+    Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
+    Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
+    Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
+
+
 });
 
 // Admin
