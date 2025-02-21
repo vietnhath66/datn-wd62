@@ -15,6 +15,12 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     Route::get('about', [AboutController::class, 'viewAbout'])->name('viewAbout');
 
     Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
+
+    Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
+    Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
+    Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
+    Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
+
 });
 
 // Admin
