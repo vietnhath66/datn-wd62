@@ -39,11 +39,11 @@
                         </li>
 
                         <li>
-                            <a href="{{route('client.viewAbout')}}">Chính sách</a>
+                            <a href="{{ route('client.viewPolicy') }}">Chính sách</a>
                         </li>
 
                         <li>
-                            <a href="{{route('client.viewAbout')}}">Giới thiệu</a>
+                            <a href="{{ route('client.viewAbout') }}">Giới thiệu</a>
                         </li>
 
                         <li>
@@ -140,11 +140,11 @@
             </li>
 
             <li>
-                <a href="{{route('client.viewAbout')}}">Chính sách</a>
+                <a href="{{ route('client.viewAbout') }}">Chính sách</a>
             </li>
 
             <li>
-                <a href="{{route('client.viewAbout')}}">Giới thiệu</a>
+                <a href="{{ route('client.viewAbout') }}">Giới thiệu</a>
             </li>
 
             <li>
