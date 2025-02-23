@@ -11,6 +11,11 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
 });
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\AuthController;
+use App\Http\Controllers\Backend\BrandController;
+use App\Http\Controllers\Backend\ProductCatalogueController;
+use App\Http\Controllers\Backend\RoleController;
+use App\Http\Controllers\Backend\UserController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,6 +33,55 @@ Route::prefix('admin')
     ->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+
+        Route::prefix('brands')
+            ->as('brands.')
+            ->group(function () {
+                Route::get('index',                                          [BrandController::class, 'index'])->name('index');
+                Route::get('create',                                         [BrandController::class, 'create'])->name('create');
+                Route::post('store',                                         [BrandController::class, 'store'])->name('store');
+                Route::get('edit/{brand}',                                   [BrandController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
+                Route::put('udpate/{brand}',                                 [BrandController::class, 'udpate'])->where(['id' => '[0-9]+'])->name('udpate');
+                Route::get('delete/{brand}',                                 [BrandController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
+                Route::delete('destroy/{brand}',                             [BrandController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
+            });
+
+            Route::prefix('product_catalogue')
+            ->as('product_catalogue.')
+            ->group(function () {
+                Route::get('index',                                           [ProductCatalogueController::class, 'index'])->name('index');
+                Route::get('create',                                          [ProductCatalogueController::class, 'create'])->name('create');
+                Route::post('store',                                          [ProductCatalogueController::class, 'store'])->name('store');
+                Route::get('edit/{product_catalogue}',                        [ProductCatalogueController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
+                Route::put('update/{product_catalogue}',                      [ProductCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
+                Route::get('delete/{product_catalogue}',                      [ProductCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
+                Route::delete('destroy/{product_catalogue}',                  [ProductCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
+            });
+
+            Route::prefix('roles')
+            ->as('roles.')
+            ->group(function () {
+                Route::get('index',                                           [RoleController::class, 'index'])->name('index');
+                Route::get('create',                                          [RoleController::class, 'create'])->name('create');
+                Route::post('store',                                          [RoleController::class, 'store'])->name('store');
+                Route::get('edit/{roles}',                                    [RoleController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
+                Route::put('udpate/{roles}',                                  [RoleController::class, 'udpate'])->where(['id' => '[0-9]+'])->name('udpate');
+                Route::get('delete/{roles}',                                  [RoleController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
+                Route::delete('destroy/{roles}',                              [RoleController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
+            });
+
+            Route::prefix('users')
+            ->as('users.')
+            ->group(function () {
+                Route::get('index',                                           [UserController::class, 'index'])->name('index');
+                Route::get('create',                                          [UserController::class, 'create'])->name('create');
+                Route::post('store',                                          [UserController::class, 'store'])->name('store');
+                Route::get('edit/{users}',                                    [UserController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
+                Route::put('udpate/{users}',                                  [UserController::class, 'udpate'])->where(['id' => '[0-9]+'])->name('udpate');
+                Route::get('delete/{users}',                                  [UserController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
+                Route::delete('destroy/{users}',                              [UserController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
+            });
     });
 
 Route::get('admin/login',       [AuthController::class, 'index'])->name('auth.admin')->middleware('login');
