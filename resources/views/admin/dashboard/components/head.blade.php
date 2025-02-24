@@ -4,13 +4,13 @@
 <meta content="Minimal Admin & Dashboard Template" name="description" />
 <meta content="SttarCode Kh" name="author" />
 <!-- App favicon -->
-<link rel="shortcut icon" href="../theme/admin/html/assets/images/favicon.ico" />
+<link rel="shortcut icon" href="{{ asset('admin/images/favicon.ico') }}" />
 <!-- Layout config Js -->
-<script src="../theme/admin/html/assets/js/layout.js"></script>
+<script src="{{ asset('admin/js/layout.js') }}"></script>
 <!-- Icons CSS -->
 
 <!-- StarCode CSS -->
 
-<link rel="stylesheet" href="../theme/admin/html/assets/css/starcode2.css" />
+<link rel="stylesheet" href="{{ asset('admin/css/starcode2.css') }}" />
 
 {{-- C:\laragon\www\admindatn\resources\css\admin\starcode2.css --}}
