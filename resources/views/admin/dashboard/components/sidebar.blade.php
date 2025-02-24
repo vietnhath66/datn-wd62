@@ -6,19 +6,19 @@
             <a href="index.html"
                 class="group-data-[sidebar=dark]:hidden group-data-[sidebar=brand]:hidden group-data-[sidebar=modern]:hidden">
                 <span class="hidden group-data-[sidebar-size=sm]:block">
-                    <img src="../theme/admin/html/assets/images/logo.png" alt="" class="h-6 mx-auto" />
+                    <img src="images/logo.png" alt="" class="h-6 mx-auto" />
                 </span>
                 <span class="group-data-[sidebar-size=sm]:hidden">
-                    <img src="../theme/admin/html/assets/images/logo-dark.png" alt="" class="h-6 mx-auto" />
+                    <img src="images/logo-dark.png" alt="" class="h-6 mx-auto" />
                 </span>
             </a>
             <a href="index.html"
                 class="hidden group-data-[sidebar=dark]:block group-data-[sidebar=brand]:block group-data-[sidebar=modern]:block">
                 <span class="hidden group-data-[sidebar-size=sm]:block">
-                    <img src="../theme/admin/html/assets/images/logo.png" alt="" class="h-6 mx-auto" />
+                    <img src="images/logo.png" alt="" class="h-6 mx-auto" />
                 </span>
                 <span class="group-data-[sidebar-size=sm]:hidden">
-                    <img src="../theme/admin/html/assets/images/logo-light.png" alt="" class="h-6 mx-auto" />
+                    <img src="images/logo-light.png" alt="" class="h-6 mx-auto" />
                 </span>
             </a>
             <button type="button" class="hidden p-0 float-end" id="vertical-hover">
@@ -185,23 +185,19 @@
                         class="items-center justify-center hidden px-5 text-center h-header group-data-[layout=horizontal]:md:flex group-data-[layout=horizontal]:ltr::pl-0 group-data-[layout=horizontal]:rtl:pr-0">
                         <a href="index.html">
                             <span class="hidden">
-                                <img src="../theme/admin/html/assets/images/logo.png" alt=""
-                                    class="h-6 mx-auto" />
+                                <img src="images/logo.png" alt="" class="h-6 mx-auto" />
                             </span>
                             <span class="group-data-[topbar=dark]:hidden group-data-[topbar=brand]:hidden">
-                                <img src="../theme/admin/html/assets/images/logo-dark.png" alt=""
-                                    class="h-6 mx-auto" />
+                                <img src="images/logo-dark.png" alt="" class="h-6 mx-auto" />
                             </span>
                         </a>
                         <a href="index.html"
                             class="hidden group-data-[topbar=dark]:block group-data-[topbar=brand]:block">
                             <span class="group-data-[topbar=dark]:hidden group-data-[topbar=brand]:hidden">
-                                <img src="../theme/admin/html/assets/images/logo.png" alt=""
-                                    class="h-6 mx-auto" />
+                                <img src="images/logo.png" alt="" class="h-6 mx-auto" />
                             </span>
                             <span class="group-data-[topbar=dark]:block group-data-[topbar=brand]:block">
-                                <img src="../theme/admin/html/assets/images/logo-light.png" alt=""
-                                    class="h-6 mx-auto" />
+                                <img src="images/logo-light.png" alt="" class="h-6 mx-auto" />
                             </span>
                         </a>
                     </div>
@@ -227,15 +223,14 @@
                             <button type="button"
                                 class="inline-flex justify-center items-center p-0 text-topbar-item transition-all w-[37.5px] h-[37.5px] duration-200 ease-linear bg-topbar rounded-md dropdown-toggle btn hover:bg-topbar-item-bg-hover hover:text-topbar-item-hover group-data-[topbar=dark]:bg-topbar-dark group-data-[topbar=dark]:hover:bg-topbar-item-bg-hover-dark group-data-[topbar=dark]:hover:text-topbar-item-hover-dark group-data-[topbar=brand]:bg-topbar-brand group-data-[topbar=brand]:hover:bg-topbar-item-bg-hover-brand group-data-[topbar=brand]:hover:text-topbar-item-hover-brand group-data-[topbar=dark]:dark:bg-zink-700 group-data-[topbar=dark]:dark:hover:bg-zink-600 group-data-[topbar=dark]:dark:text-zink-500 group-data-[topbar=dark]:dark:hover:text-zink-50"
                                 id="flagsDropdown" data-bs-toggle="dropdown">
-                                <img src="../theme/admin/html/assets/images/us.svg" alt=""
-                                    id="header-lang-img" class="h-5 rounded-sm" />
+                                <img src="images/us.svg" alt="" id="header-lang-img"
+                                    class="h-5 rounded-sm" />
                             </button>
                             <div class="absolute z-50 hidden p-4 ltr:text-left rtl:text-right bg-white rounded-md shadow-md !top-4 dropdown-menu min-w-[10rem] flex flex-col gap-4 dark:bg-zink-600"
                                 aria-labelledby="flagsDropdown">
                                 <a href="#!" class="flex items-center gap-3 group/items language" data-lang="en"
                                     title="English">
-                                    <img src="../theme/admin/html/assets/images/us.svg" alt=""
-                                        class="object-cover h-4 rounded-full" />
+                                    <img src="images/us.svg" alt="" class="object-cover h-4 rounded-full" />
                                     <h6
                                         class="transition-all duration-200 ease-linear font-15medium text- text-slate-600 dark:text-zink-200 group-hover/items:text-custom-500">
                                         English
@@ -243,8 +238,7 @@
                                 </a>
                                 <a href="#!" class="flex items-center gap-3 group/items language" data-lang="sp"
                                     title="Spanish">
-                                    <img src="../theme/admin/html/assets/images/es.svg" alt=""
-                                        class="object-cover h-4 rounded-full" />
+                                    <img src="images/es.svg" alt="" class="object-cover h-4 rounded-full" />
                                     <h6
                                         class="transition-all duration-200 ease-linear font-15medium text- text-slate-600 dark:text-zink-200 group-hover/items:text-custom-500">
                                         Spanish
@@ -252,8 +246,7 @@
                                 </a>
                                 <a href="#!" class="flex items-center gap-3 group/items language" data-lang="gr"
                                     title="German">
-                                    <img src="../theme/admin/html/assets/images/de.svg" alt=""
-                                        class="object-cover h-4 rounded-full" />
+                                    <img src="images/de.svg" alt="" class="object-cover h-4 rounded-full" />
                                     <h6
                                         class="transition-all duration-200 ease-linear font-15medium text- text-slate-600 dark:text-zink-200 group-hover/items:text-custom-500">
                                         German
@@ -261,8 +254,7 @@
                                 </a>
                                 <a href="#!" class="flex items-center gap-3 group/items language" data-lang="fr"
                                     title="French">
-                                    <img src="../theme/admin/html/assets/images/fr.svg" alt=""
-                                        class="object-cover h-4 rounded-full" />
+                                    <img src="images/fr.svg" alt="" class="object-cover h-4 rounded-full" />
                                     <h6
                                         class="transition-all duration-200 ease-linear font-15medium text- text-slate-600 dark:text-zink-200 group-hover/items:text-custom-500">
                                         French
@@ -270,8 +262,7 @@
                                 </a>
                                 <a href="#!" class="flex items-center gap-3 group/items language" data-lang="jp"
                                     title="Japanese">
-                                    <img src="../theme/admin/html/assets/images/jp.svg" alt=""
-                                        class="object-cover h-4 rounded-full" />
+                                    <img src="images/jp.svg" alt="" class="object-cover h-4 rounded-full" />
                                     <h6
                                         class="transition-all duration-200 ease-linear font-15medium text- text-slate-600 dark:text-zink-200 group-hover/items:text-custom-500">
                                         Japanese
@@ -279,7 +270,7 @@
                                 </a>
                                 <a href="#!" class="flex items-center gap-3 group/items language" data-lang="ch"
                                     title="Chinese">
-                                    <img src="../theme/admin/html/assets/images/china.svg" alt=""
+                                    <img src="images/china.svg" alt=""
                                         class="object-cover h-4 rounded-full" />
                                     <h6
                                         class="transition-all duration-200 ease-linear font-15medium text- text-slate-600 dark:text-zink-200 group-hover/items:text-custom-500">
@@ -288,8 +279,7 @@
                                 </a>
                                 <a href="#!" class="flex items-center gap-3 group/items language" data-lang="it"
                                     title="Italian">
-                                    <img src="../theme/admin/html/assets/images/it2.svg" alt=""
-                                        class="object-cover h-4 rounded-full" />
+                                    <img src="images/it2.svg" alt="" class="object-cover h-4 rounded-full" />
                                     <h6
                                         class="transition-all duration-200 ease-linear font-15medium text- text-slate-600 dark:text-zink-200 group-hover/items:text-custom-500">
                                         Italian
@@ -297,8 +287,7 @@
                                 </a>
                                 <a href="#!" class="flex items-center gap-3 group/items language" data-lang="ru"
                                     title="Russian">
-                                    <img src="../theme/admin/html/assets/images/ru2.svg" alt=""
-                                        class="object-cover h-4 rounded-full" />
+                                    <img src="images/ru2.svg" alt="" class="object-cover h-4 rounded-full" />
                                     <h6
                                         class="transition-all duration-200 ease-linear font-15medium text- text-slate-600 dark:text-zink-200 group-hover/items:text-custom-500">
                                         Russian
@@ -306,8 +295,7 @@
                                 </a>
                                 <a href="#!" class="flex items-center gap-3 group/items language" data-lang="ar"
                                     title="Arabic">
-                                    <img src="../theme/admin/html/assets/images/ae2.svg" alt=""
-                                        class="object-cover h-4 rounded-full" />
+                                    <img src="images/ae2.svg" alt="" class="object-cover h-4 rounded-full" />
                                     <h6
                                         class="transition-all duration-200 ease-linear font-15medium text- text-slate-600 dark:text-zink-200 group-hover/items:text-custom-500">
                                         Arabic
@@ -381,8 +369,7 @@
                                         <a href="#!"
                                             class="flex gap-3 p-4 product-item hover:bg-slate-50 dark:hover:bg-zink-500 follower">
                                             <div class="w-10 h-10 rounded-md shrink-0 bg-slate-100">
-                                                <img src="../theme/admin/html/assets/images/avatar-3.png"
-                                                    alt="" class="rounded-md" />
+                                                <img src="images/avatar-3.png" alt="" class="rounded-md" />
                                             </div>
                                             <div class="grow">
                                                 <h6 class="mb-1 font-medium">
@@ -402,8 +389,7 @@
                                         <a href="#!"
                                             class="flex gap-3 p-4 product-item hover:bg-slate-50 dark:hover:bg-zink-500 mention">
                                             <div class="w-10 h-10 bg-yellow-100 rounded-md shrink-0">
-                                                <img src="../theme/admin/html/assets/images/avatar-5.png"
-                                                    alt="" class="rounded-md" />
+                                                <img src="images/avatar-5.png" alt="" class="rounded-md" />
                                             </div>
                                             <div class="grow">
                                                 <h6 class="mb-1 font-medium">
@@ -452,8 +438,8 @@
                                             class="flex gap-3 p-4 product-item hover:bg-slate-50 dark:hover:bg-zink-500 mention">
                                             <div class="relative shrink-0">
                                                 <div class="w-10 h-10 bg-pink-100 rounded-md">
-                                                    <img src="../theme/admin/html/assets/images/avatar-7.png"
-                                                        alt="" class="rounded-md" />
+                                                    <img src="images/avatar-7.png" alt=""
+                                                        class="rounded-md" />
                                                 </div>
                                                 <div class="absolute text-orange-500 -bottom-0.5 -right-0.5 text-16">
                                                     <i class="ri-heart-fill"></i>
@@ -505,7 +491,7 @@
                                 class="inline-block p-0 transition-all duration-200 ease-linear bg-topbar rounded-full text-topbar-item dropdown-toggle btn hover:bg-topbar-item-bg-hover hover:text-topbar-item-hover group-data-[topbar=dark]:text-topbar-item-dark group-data-[topbar=dark]:bg-topbar-dark group-data-[topbar=dark]:hover:bg-topbar-item-bg-hover-dark group-data-[topbar=dark]:hover:text-topbar-item-hover-dark group-data-[topbar=brand]:bg-topbar-brand group-data-[topbar=brand]:hover:bg-topbar-item-bg-hover-brand group-data-[topbar=brand]:hover:text-topbar-item-hover-brand group-data-[topbar=dark]:dark:bg-zink-700 group-data-[topbar=dark]:dark:hover:bg-zink-600 group-data-[topbar=brand]:text-topbar-item-brand group-data-[topbar=dark]:dark:hover:text-zink-50 group-data-[topbar=dark]:dark:text-zink-200"
                                 id="dropdownMenuButton" data-bs-toggle="dropdown">
                                 <div class="bg-pink-100 rounded-full">
-                                    <img src="../theme/admin/html/assets/images/profile.png" alt=""
+                                    <img src="images/profile.png" alt=""
                                         class="w-[37.5px] h-[37.5px] rounded-full" />
                                 </div>
                             </button>
@@ -517,8 +503,7 @@
                                 <a href="#!" class="flex gap-3 mb-3">
                                     <div class="relative inline-block shrink-0">
                                         <div class="rounded bg-slate-100 dark:bg-zink-500">
-                                            <img src="../theme/admin/html/assets/images/profile.png" alt=""
-                                                class="w-12 h-12 rounded" />
+                                            <img src="images/profile.png" alt="" class="w-12 h-12 rounded" />
                                         </div>
                                         <span
                                             class="-top-1 ltr:-right-1 rtl:-left-1 absolute w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full dark:border-zink-600"></span>
@@ -601,7 +586,7 @@
                     <div class="flex gap-2 product">
                         <div
                             class="flex items-center justify-center w-12 h-12 rounded-md bg-slate-100 shrink-0 dark:bg-zink-500">
-                            <img src="../theme/admin/html/assets/images/img-012.png" alt="" class="h-8" />
+                            <img src="images/img-012.png" alt="" class="h-8" />
                         </div>
                         <div class="overflow-hidden grow">
                             <div class="ltr:float-right rtl:float-left">
@@ -642,7 +627,7 @@
                     <div class="flex gap-2 product">
                         <div
                             class="flex items-center justify-center w-12 h-12 rounded-md bg-slate-100 shrink-0 dark:bg-zink-500">
-                            <img src="../theme/admin/html/assets/images/img-03.png" alt="" class="h-8" />
+                            <img src="images/img-03.png" alt="" class="h-8" />
                         </div>
                         <div class="overflow-hidden grow">
                             <div class="ltr:float-right rtl:float-left">
@@ -685,7 +670,7 @@
                     <div class="flex gap-2 product">
                         <div
                             class="flex items-center justify-center w-12 h-12 rounded-md bg-slate-100 shrink-0 dark:bg-zink-500">
-                            <img src="../theme/admin/html/assets/images/img-09.png" alt="" class="h-8" />
+                            <img src="images/img-09.png" alt="" class="h-8" />
                         </div>
                         <div class="overflow-hidden grow">
                             <div class="ltr:float-right rtl:float-left">
@@ -1067,7 +1052,7 @@
                                 </div>
                                 <div
                                     class="hidden col-span-12 2xl:col-span-3 lg:col-span-2 lg:col-start-11 2xl:col-start-10 lg:block">
-                                    <img src="../theme/admin/html/assets/images/dashboard.png" alt=""
+                                    <img src="images/dashboard.png" alt=""
                                         class="h-40 ltr:2xl:ml-auto rtl:2xl:mr-auto" />
                                 </div>
                             </div>
@@ -1965,7 +1950,7 @@
                             <ul class="divide-y divide-slate-200 dark:divide-zink-500">
                                 <li class="flex items-center gap-3 py-2 first:pt-0 last:pb-0">
                                     <div class="w-8 h-8 rounded-full shrink-0 bg-slate-100 dark:bg-zink-600">
-                                        <img src="../theme/admin/html/assets/images/avatar-2.png" alt=""
+                                        <img src="images/avatar-2.png" alt=""
                                             class="w-8 h-8 rounded-full" />
                                     </div>
                                     <div class="grow">
@@ -1980,7 +1965,7 @@
                                 </li>
                                 <li class="flex items-center gap-3 py-2 first:pt-0 last:pb-0">
                                     <div class="w-8 h-8 rounded-full shrink-0 bg-slate-100 dark:bg-zink-600">
-                                        <img src="../theme/admin/html/assets/images/avatar-3.png" alt=""
+                                        <img src="images/avatar-3.png" alt=""
                                             class="w-8 h-8 rounded-full" />
                                     </div>
                                     <div class="grow">
@@ -1995,7 +1980,7 @@
                                 </li>
                                 <li class="flex items-center gap-3 py-2 first:pt-0 last:pb-0">
                                     <div class="w-8 h-8 rounded-full shrink-0 bg-slate-100 dark:bg-zink-600">
-                                        <img src="../theme/admin/html/assets/images/avatar-4.png" alt=""
+                                        <img src="images/avatar-4.png" alt=""
                                             class="w-8 h-8 rounded-full" />
                                     </div>
                                     <div class="grow">
@@ -2010,7 +1995,7 @@
                                 </li>
                                 <li class="flex items-center gap-3 py-2 first:pt-0 last:pb-0">
                                     <div class="w-8 h-8 rounded-full shrink-0 bg-slate-100 dark:bg-zink-600">
-                                        <img src="../theme/admin/html/assets/images/avatar-5.png" alt=""
+                                        <img src="images/avatar-5.png" alt=""
                                             class="w-8 h-8 rounded-full" />
                                     </div>
                                     <div class="grow">
@@ -2123,8 +2108,7 @@
                                 <li class="flex items-center gap-3">
                                     <div
                                         class="flex items-center justify-center w-10 h-10 rounded-md bg-slate-100 dark:bg-zink-600">
-                                        <img src="../theme/admin/html/assets/images/img-02.png" alt=""
-                                            class="h-6" />
+                                        <img src="images/img-02.png" alt="" class="h-6" />
                                     </div>
                                     <div class="overflow-hidden grow">
                                         <h6 class="truncate">Mesh Ergonomic Black Chair</h6>
@@ -2145,8 +2129,7 @@
                                 <li class="flex items-center gap-3">
                                     <div
                                         class="flex items-center justify-center w-10 h-10 rounded-md bg-slate-100 dark:bg-zink-600">
-                                        <img src="../theme/admin/html/assets/images/img-03.png" alt=""
-                                            class="h-6" />
+                                        <img src="images/img-03.png" alt="" class="h-6" />
                                     </div>
                                     <div class="overflow-hidden grow">
                                         <h6 class="truncate">Fastcolors Typography Men</h6>
@@ -2167,8 +2150,7 @@
                                 <li class="flex items-center gap-3">
                                     <div
                                         class="flex items-center justify-center w-10 h-10 rounded-md bg-slate-100 dark:bg-zink-600">
-                                        <img src="../theme/admin/html/assets/images/img-04.png" alt=""
-                                            class="h-6" />
+                                        <img src="images/img-04.png" alt="" class="h-6" />
                                     </div>
                                     <div class="overflow-hidden grow">
                                         <h6 class="truncate">Mesh Ergonomic Green Chair</h6>
@@ -2189,8 +2171,7 @@
                                 <li class="flex items-center gap-3">
                                     <div
                                         class="flex items-center justify-center w-10 h-10 rounded-md bg-slate-100 dark:bg-zink-600">
-                                        <img src="../theme/admin/html/assets/images/img-05.png" alt=""
-                                            class="h-6" />
+                                        <img src="images/img-05.png" alt="" class="h-6" />
                                     </div>
                                     <div class="overflow-hidden grow">
                                         <h6 class="truncate">
@@ -2213,8 +2194,7 @@
                                 <li class="flex items-center gap-3">
                                     <div
                                         class="flex items-center justify-center w-10 h-10 rounded-md bg-slate-100 dark:bg-zink-600">
-                                        <img src="../theme/admin/html/assets/images/img-06.png" alt=""
-                                            class="h-6" />
+                                        <img src="images/img-06.png" alt="" class="h-6" />
                                     </div>
                                     <div class="overflow-hidden grow">
                                         <h6 class="truncate">Bovet Fleurier AIFSQ029</h6>
@@ -2235,8 +2215,7 @@
                                 <li class="flex items-center gap-3">
                                     <div
                                         class="flex items-center justify-center w-10 h-10 rounded-md bg-slate-100 dark:bg-zink-600">
-                                        <img src="../theme/admin/html/assets/images/img-03.png" alt=""
-                                            class="h-6" />
+                                        <img src="images/img-03.png" alt="" class="h-6" />
                                     </div>
                                     <div class="overflow-hidden grow">
                                         <h6 class="truncate">Fastcolors Typography Men</h6>
