@@ -21,7 +21,7 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
 // Admin
 Route::prefix('admin')
     ->as('admin.')
-    ->middleware(['admin', 'locale', 'backend_default_locale'])
+    // ->middleware(['admin', 'locale', 'backend_default_locale'])
     ->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
