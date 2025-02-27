@@ -1,6 +1,6 @@
 @extends('client.master')
 
-@section('title', 'Liên hệ')
+@section('title', 'Liên Hệ')
 
 @section('content')
     @include('client.contact.titlePageContact')
