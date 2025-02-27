@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\Client\AboutController;
-use App\Http\Controllers\Client\PolicyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\HomeController;
-use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\AuthController;
+use App\Http\Controllers\Client\AboutController;
+use App\Http\Controllers\Client\PolicyController;
+use App\Http\Controllers\Client\ContactController;
+use App\Http\Controllers\Backend\DashboardController;
 
 // Client
 Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
@@ -15,6 +16,10 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     Route::get('about', [AboutController::class, 'viewAbout'])->name('viewAbout');
 
     Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
+
+    Route::get('contact', [ContactController::class, 'viewContact'])->name('viewContact');
+
+
 });
 
 // Admin
