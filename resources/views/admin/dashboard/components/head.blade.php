@@ -9,12 +9,28 @@
 <!-- Layout config Js -->
 <script src="{{ asset('admin/js/layout.js') }}"></script>
 <script src="{{ asset('admin/js/select2/select2.full.min.js') }}"></script>
-<script src="{{ asset('admin/js/setup.js') }}"></script>
+{{-- <script src="{{ asset('admin/js/setup.js') }}"></script> --}}
 
 <!-- Icons CSS -->
 
 <!-- StarCode CSS -->
 <link rel="stylesheet" href="{{ asset('admin/css/starcode2.css') }}" />
+
+<link href="../backend/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+{{-- <link href="../backend/css/animate.css" rel="stylesheet"> --}}
+{{-- <link href="../backend/css/style.css" rel="stylesheet"> --}}
+{{-- <link href="../backend/css/customize.css" rel="stylesheet"> --}}
+<link href="../backend/css/customize.css" rel="stylesheet">
+<link rel="icon" href="../backend/img/logo.jpg" type="image/x-icon" />
+<link href="../backend/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+@if (isset($config['css']))
+    @foreach ($config['css'] as $css => $value)
+        <link href="{{ $value }}" rel="stylesheet">
+    @endforeach
+@endif
+
+<script src="../backend/js/jquery-3.1.1.min.js"></script>
 
 <script>
     var BASE_URL = '{{ env('APP_URL') }}';

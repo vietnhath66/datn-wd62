@@ -2,27 +2,41 @@
 
 namespace App\Providers;
 
+use App\Repositories\AttributeCatalogueReponsitory;
+use App\Repositories\AttributeReponsitory;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\Interfaces\BrandRepositoryInterface;
 use App\Repositories\BrandRepository;
 use App\Repositories\DistrictRepository;
+use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface;
+use App\Repositories\Interfaces\AttributeReponsitoryInterface;
 use App\Repositories\Interfaces\DistrictRepositoryInterface;
 use App\Repositories\Interfaces\ProductCatalogueRepositoryInterface;
+use App\Repositories\Interfaces\ProductRepositoryInterface;
+use App\Repositories\Interfaces\ProductVariantAttributeReponsitoryInterface;
 use App\Repositories\Interfaces\ProvinceReponsitoryInterface;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\WardRepositoryInterface;
 use App\Repositories\ProductCatalogueRepository;
+use App\Repositories\ProductRepository;
+use App\Repositories\ProductVariantAttributeRepository;
 use App\Repositories\ProvinceReponsitory;
 use App\Repositories\RoleReponsitory;
 use App\Repositories\UserRepository;
 use App\Repositories\WardRepository;
+use App\Services\AttributeCatalogueService;
+use App\Services\AttributeService;
 use App\Services\Interfaces\BrandServiceInterface;
 use App\Services\BrandService;
+use App\Services\Interfaces\AttributeCatalogueServiceInterface;
+use App\Services\Interfaces\AttributeServiceInterface;
 use App\Services\Interfaces\ProductCatalogueServiceInterface;
+use App\Services\Interfaces\ProductServiceInterface;
 use App\Services\Interfaces\RoleServiceInterface;
 use App\Services\Interfaces\UserServiceInterface;
 use App\Services\ProductCatalogueService;
+use App\Services\ProductService;
 use App\Services\RoleService;
 use App\Services\UserService;
 
@@ -53,6 +67,14 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(DistrictRepositoryInterface::class, DistrictRepository::class);
         $this->app->bind(ProvinceReponsitoryInterface::class, ProvinceReponsitory::class);
         $this->app->bind(WardRepositoryInterface::class, WardRepository::class);
+        $this->app->bind(AttributeReponsitoryInterface::class, AttributeReponsitory::class);
+        $this->app->bind(AttributeCatalogueReponsitoryInterface::class, AttributeCatalogueReponsitory::class);
+        $this->app->bind(AttributeServiceInterface::class, AttributeService::class);
+        $this->app->bind(AttributeCatalogueServiceInterface::class, AttributeCatalogueService::class);
+        $this->app->bind(ProductServiceInterface::class, ProductService::class);
+        $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
+        $this->app->bind(ProductVariantAttributeReponsitoryInterface::class, ProductVariantAttributeRepository::class);
+
     }
 
     /**
