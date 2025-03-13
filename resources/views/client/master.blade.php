@@ -50,7 +50,7 @@
     @include('client.layouts.header')
 
     <!-- Cart -->
-    @include('client.layouts.cart')
+    @include('client.layouts.cart-temporary')
 
     <main>
         @yield('content')

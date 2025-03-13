@@ -16,6 +16,9 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
 
     Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
 
+    //Cart
+    Route::get('cart', [])
+
 });
 
 // Admin
