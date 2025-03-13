@@ -6,6 +6,7 @@ use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Client\AboutController;
 use App\Http\Controllers\Client\PolicyController;
 use App\Http\Controllers\Client\ContactController;
+use App\Http\Controllers\Client\ProductsController;
 use App\Http\Controllers\Backend\DashboardController;
 
 // Client
@@ -19,7 +20,9 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
 
     Route::get('contact', [ContactController::class, 'viewContact'])->name('viewContact');
 
-
+    //Product
+    // Route::get('products', [ProductsController::class, 'viewProductss'])->name('viewProductss');
+    Route::get('products', [ProductsController::class, 'index'])->name('index');
 });
 
 // Admin
