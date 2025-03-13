@@ -1,3 +1,4 @@
+<!-- Product -->
 <div class="bg0 m-t-23 p-b-140">
 		<div class="container">
 			<div class="flex-w flex-sb-m p-b-52">
@@ -241,11 +242,10 @@
 					</div>
 				</div>
 			</div>
-            
-            <!-- content -->
+
 			<div class="row isotope-grid">
             @foreach($products as $product)
-				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+            <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
 					<!-- Block2 -->
 					<div class="block2">
 						<div class="block2-pic hov-img0">
@@ -276,8 +276,9 @@
 						</div>
 					</div>
 				</div>
-			</div>
             @endforeach
+                
+			</div>
 
 			<!-- Load more -->
 			<div class="flex-c-m flex-w w-full p-t-45">
@@ -285,6 +286,5 @@
 					Load More
 				</a>
 			</div>
-            
 		</div>
 	</div>
