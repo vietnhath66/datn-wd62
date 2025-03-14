@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Client\AboutController;
+use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\PolicyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\HomeController;
@@ -17,7 +18,7 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
 
     //Cart
-    Route::get('cart', [])
+    Route::get('cart', [CartController::class, 'viewCart'])->name('viewCart');
 
 });
 
