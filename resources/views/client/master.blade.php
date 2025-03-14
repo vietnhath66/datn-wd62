@@ -40,6 +40,26 @@
     <!--===============================================================================================-->
     <link rel="stylesheet" href="{{ asset('style.css') }}">
     @stack('style')
+    <style>
+        .column-0 {
+            width: 20px;
+            text-align: center;
+        }
+
+        .column-0 input {
+            cursor: pointer;
+        }
+
+        .size-208 {
+            flex: 1;
+            text-align: left;
+        }
+
+        .size-209 {
+            flex: 1;
+            text-align: right;
+        }
+    </style>
 </head>
 
 <body class="animsition">

@@ -18,7 +18,9 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
 
     //Cart
-    Route::get('cart', [CartController::class, 'viewCart'])->name('viewCart');
+    Route::group(['prefix' => 'carts', 'as' => 'carts.'], function () {
+        Route::get('cart', [CartController::class, 'viewCart'])->name('viewCart');
+    });
 
 });
 
