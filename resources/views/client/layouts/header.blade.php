@@ -11,7 +11,9 @@
                 <div class="right-top-bar flex-w h-full">
                     <a href="#" class="flex-c-m trans-04 p-lr-25"> Help & FAQs </a>
 
-                    <a href="#" class="flex-c-m trans-04 p-lr-25"> Tài khoản </a>
+                    <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25"> Log in </a>
+
+                    <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25"> Register </a>
 
                     {{-- <a href="#" class="flex-c-m trans-04 p-lr-25"> EN </a> --}}
 
@@ -23,7 +25,7 @@
         <div class="wrap-menu-desktop">
             <nav class="limiter-menu-desktop container">
                 <!-- Logo desktop -->
-                <a href="#" class="logo">
+                <a href="{{ route('client.viewHome') }}" class="logo">
                     <img src="images/icons/logo-03.png" alt="IMG-LOGO" />
                 </a>
 
@@ -39,7 +41,7 @@
                         </li>
 
                         <li>
-                            <a href="{{ route('client.viewPolicy') }}">Chính sách</a>
+                            <a href="{{ route('client.viewAbout') }}">Chính sách</a>
                         </li>
 
                         <li>
@@ -77,7 +79,7 @@
     <div class="wrap-header-mobile">
         <!-- Logo moblie -->
         <div class="logo-mobile">
-            <a href="index.html"><img src="images/icons/logo-01.png" alt="IMG-LOGO" /></a>
+            <a href="{{ route('client.viewHome') }}"><img src="images/icons/logo-01.png" alt="IMG-LOGO" /></a>
         </div>
 
         <!-- Icon header -->
@@ -160,7 +162,7 @@
                 <img src="images/icons/icon-close2.png" alt="CLOSE" />
             </button>
 
-            <form class="wrap-search-header flex-w p-l-15">
+            <form class="wrap-search-header flex-w p-l-15"  action="{{ route('client.viewSearch') }}" method="GET">
                 <button class="flex-c-m trans-04">
                     <i class="zmdi zmdi-search"></i>
                 </button>
