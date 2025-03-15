@@ -19,7 +19,7 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
 
     //Cart
     Route::group(['prefix' => 'carts', 'as' => 'carts.'], function () {
-        Route::get('cart', [CartController::class, 'viewCart'])->name('viewCart');
+        Route::get('/', [CartController::class, 'viewCart'])->name('viewCart');
     });
 
 });
