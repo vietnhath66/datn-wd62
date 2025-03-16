@@ -14,10 +14,25 @@ class OrderDetail extends Model
     protected $fillable = [
         'order_id',
         'product_id',
-        'color',
-        'size',
+        'product_variant_id',
         'quantity',
-        'price',
-        'total'
+        'price'
     ];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
+
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+
+    public function productVariant()
+    {
+        return $this->belongsTo(ProductVariant::class);
+    }
 }

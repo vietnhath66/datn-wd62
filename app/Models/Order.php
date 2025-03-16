@@ -13,7 +13,18 @@ class Order extends Model
 
     protected $fillable = [
         'user_id',
-        'total_price',
+        'total',
         'status'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+
+    public function items()
+    {
+        return $this->hasMany(OrderDetail::class);
+    }
 }

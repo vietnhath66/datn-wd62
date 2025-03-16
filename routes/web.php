@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\AttributeCatalogueController;
 use App\Http\Controllers\Backend\AttributeController;
+use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\Client\PolicyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\HomeController;
@@ -27,17 +28,34 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
 
     Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
 
+
     //Cart
-    Route::group(['prefix' => 'carts', 'as' => 'carts.'], function () {
+    Route::group(['prefix' => 'cart', 'as' => 'cart.'], function () {
+
         Route::get('/', [CartController::class, 'viewCart'])->name('viewCart');
+
+
+
     });
+
+
+    //Order
+    Route::group(['prefix' => 'order', 'as' => 'order.'], function () {
+
+        Route::get('/', [OrderController::class, 'viewOrder'])->name('viewOrder');
+
+
+
+    });
+
+
 });
 
 
 // Admin
 Route::prefix('admin')
     ->as('admin.')
-    // ->middleware(['admin', 'locale', 'backend_default_locale'])
+    ->middleware(['admin', 'locale', 'backend_default_locale'])
     ->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');

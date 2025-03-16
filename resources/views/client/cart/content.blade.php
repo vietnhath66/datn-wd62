@@ -17,35 +17,49 @@
                                 <th class="column-7 kanit-thin">Tổng</th>
                             </tr>
 
-                            <tr class="table_row">
-                                <td class="column-0">
-                                    <input type="checkbox" class="product-checkbox">
-                                </td>
-                                <td class="column-1">
-                                    <div class="how-itemcart1">
-                                        <img src="images/item-cart-04.jpg" alt="IMG">
-                                    </div>
-                                </td>
-                                <td class="column-2">Fresh Strawberries</td>
-                                <td class="column-3">$ 36.00</td>
-                                <td class="column-4">Đen</td>
-                                <td class="column-5">S</td>
-                                <td class="column-6" style="padding-right: 160px">
-                                    <div class="wrap-num-product flex-w m-l-auto m-r-0">
-                                        <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-                                            <i class="fs-16 zmdi zmdi-minus"></i>
-                                        </div>
+                            @if ($cart && $cart->items->count() > 0)
+                                @foreach ($cart->items as $item)
+                                    <tr class="table_row">
+                                        <td class="column-0">
+                                            <input type="checkbox" class="product-checkbox">
+                                        </td>
+                                        <td class="column-1">
+                                            <div class="how-itemcart1">
+                                                <img src="images/item-cart-04.jpg" alt="IMG">
+                                            </div>
+                                        </td>
+                                        <td class="column-2">{{ $item->productVariant->product->name }}</td>
+                                        <td class="column-3">{{ number_format($item->price) }} VND</td>
+                                        <td class="column-4">{{ $item->productVariant->color }}</td>
+                                        <td class="column-5">{{ $item->productVariant->size }}</td>
+                                        <td class="column-6" style="padding-right: 160px">
+                                            <div class="wrap-num-product flex-w m-l-auto m-r-0">
+                                                <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                                                    <i class="fs-16 zmdi zmdi-minus"></i>
+                                                </div>
 
-                                        <input class="mtext-104 cl3 txt-center num-product" type="number"
-                                            name="num-product1" value="1">
+                                                <input class="mtext-104 cl3 txt-center num-product" type="number"
+                                                    name="num-product1" value="{{ $item->quantity }}">
 
-                                        <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-                                            <i class="fs-16 zmdi zmdi-plus"></i>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="column-7" style="padding-right: 20px">$ 36.00</td>
-                            </tr>
+                                                <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                                                    <i class="fs-16 zmdi zmdi-plus"></i>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="column-7" style="padding-right: 20px">$ 36.00</td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="7" class="text-center kanit-thin">Giỏ hàng trống</td>
+                                    <td colspan="9" class="kanit-thin">
+                                        <a href="" class="btn btn-success">Tiếp tục mua hàng</a>
+                                    </td>
+                                </tr>
+                            @endif
+
+
+
                         </table>
                     </div>
 
@@ -102,10 +116,10 @@
                         </div>
                     </div>
 
-                    <button style="margin-top: 100px;"
+                    <a href="{{ route('client.order.viewOrder') }}" style="margin-top: 100px; color: white;"
                         class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
                         Đặt hàng
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
