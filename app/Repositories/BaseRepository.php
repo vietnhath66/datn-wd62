@@ -174,7 +174,7 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function findByWhereHas(array $condition = [], string $relation = '', string $alias = '', $flag = false)
     {
-        return $this->model->with('languages')->WhereHas($relation, function ($query) use ($condition, $alias) {
+        return $this->model->WhereHas($relation, function ($query) use ($condition, $alias) {
             foreach ($condition as $key => $val) {
                 $query->where($alias . '.' . $key, $val);
             }
@@ -183,15 +183,7 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function findWidgetItem(array $condition = [], string $alias = '', int $languageId = 3)
     {
-        return $this->model->with([
-            'languages' => function ($query) use ($languageId) {
-                $query->where('language_id', '=', $languageId);
-            }
-        ])->WhereHas('languages', function ($query) use ($condition, $alias) {
-            foreach ($condition as $key => $val) {
-                $query->where($alias . '.' . $val[0], $val[1], $val[2]);
-            }
-        })->get();
+        return $this->model->get();
     }
 
 

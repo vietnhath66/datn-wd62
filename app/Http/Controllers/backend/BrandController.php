@@ -133,20 +133,29 @@ class BrandController extends Controller
         ));
     }
 
-    public function udpate($id, UpdateBrandRequest $request)
+    public function update($id, UpdateBrandRequest $request)
     {
-        // dd($request);
+        // Kiểm tra ID có hợp lệ không
+        $brand = $this->BrandRepository->getBrandById($id);
+        
+        if (!$brand) {
+            return redirect()->route('admin.brands.index')->with('error', 'Thương hiệu không tồn tại.');
+        }
+    
+        // Thử cập nhật thương hiệu
         if ($this->BrandService->update($id, $request)) {
             return redirect()->route('admin.brands.index')->with('success', 'Cập nhật bản ghi thành công');
         }
+    
         return redirect()->route('admin.brands.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
+    
 
     public function delete($id)
     {
         $this->authorize('modules', 'admin.brands.destroy');
         $config['seo'] = __('messages.productCatalogue');
-        $productCatalogue = $this->BrandRepository->getProductCatalogueById($id, $this->language);
+        $productCatalogue = $this->BrandRepository->getProductCatalogueById($id);
         $template = 'admin.product.catalogue.delete';
         return view('admin.dashboard.layout', compact(
             'template',
@@ -157,7 +166,7 @@ class BrandController extends Controller
 
     public function destroy(DeleteProductCatalogueRequest $request, $id)
     {
-        if ($this->BrandService->destroy($id, $this->language)) {
+        if ($this->BrandService->destroy($id)) {
             return redirect()->route('admin.brands.index')->with('success', 'Xóa bản ghi thành công');
         }
         return redirect()->route('admin.brands.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Services\Interfaces\ProductServiceInterface  as ProductService;
-// use App\Repositories\Interfaces\ProductRepositoryInterface  as ProductReponsitory;
+use App\Repositories\Interfaces\ProductRepositoryInterface  as ProductReponsitory;
 use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface  as AttributeCatalogueRepository;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
@@ -14,29 +14,30 @@ use App\Classes\Nestedsetbie;
 use App\Models\AttributeCatalogue;
 use App\Models\AttributeCatalogueLanguage;
 use App\Models\Brand;
-use App\Models\Language;
+use APP\Models\ProductCatalogue;
+
 
 class ProductController extends Controller
 {
     protected $productService;
     protected $productReponsitory;
-    protected $languageReponsitory;
+    // protected $languageReponsitory;
     protected $nestedset;
     protected $attributeCatalogue;
 
     public function __construct(
         ProductService $productService,
-        // ProductReponsitory $productReponsitory,
+        ProductReponsitory $productReponsitory,
         AttributeCatalogueRepository $attributeCatalogue,
     ){
         $this->middleware(function($request, $next){
-            $locale = app()->getLocale(); // vn en cn
+            // $locale = app()->getLocale(); // vn en cn
             $this->initialize();
             return $next($request);
         });
 
         $this->productService = $productService;
-        // $this->productReponsitory = $productReponsitory;
+        $this->productReponsitory = $productReponsitory;
         $this->attributeCatalogue = $attributeCatalogue;
         $this->initialize();
         
@@ -50,8 +51,10 @@ class ProductController extends Controller
     } 
 
     public function index(Request $request){
-        $this->authorize('modules', 'admin.product.index');
-        $products = $this->productService->paginate($request, $this->language);
+        // $this->authorize('modules', 'admin.product.index');
+        $products = $this->productService->paginate($request);
+        $brands = Brand::all();
+        $productCatalogues = ProductCatalogue::all();
         $config = [
             'js' => [
                 'admin/js/plugins/switchery/switchery.js',
@@ -63,23 +66,40 @@ class ProductController extends Controller
             ],
             'model' => 'Product'
         ];
-        $config['seo'] = __('messages.product');
-        $template = 'admin.product.product.index';
+        $config['seo'] =  [
+            'index' => [
+                'title' => 'Quản lý sản phẩm',
+                'table' => 'Danh sách sản phẩm'
+            ],
+            'create' => [
+                'title' => 'Thêm mới sản phẩm'
+            ],
+            'edit' => [
+                'title' => 'Cập nhật sản phẩm'
+            ],
+            'delete' => [
+                'title' => 'Xóa sản phẩm'
+            ],
+        ];
+        $template = 'admin.products.product.index';
         $dropdown  = $this->nestedset->Dropdown();
         return view('admin.dashboard.layout', compact(
             'template',
             'config',
             'dropdown',
-            'products'
+            'products',
+            'productCatalogues',
+            'brands'
         ));
     }
 
     public function create(){
         // $this->authorize('modules', 'admin.product.create');
-        // $attributeCatalogue = $this->attributeCatalogue->getAll($this->language);
+        // $attributeCatalogue = $this->attributeCatalogue->getAll;
         $attributeCatalogue = AttributeCatalogue::get();
         // dd($attributeCatalogue[0]['attribute_catalogue_language']);
         $brands = Brand::get();
+        $productCatalogues = ProductCatalogue::get();
 
         $config = $this->configData();
         $config['seo'] =  [
@@ -105,7 +125,9 @@ class ProductController extends Controller
             'dropdown',
             'attributeCatalogue',
             'config',
+            'productCatalogues',
             'brands'
+
         ));
     }
 
@@ -122,14 +144,14 @@ class ProductController extends Controller
         // dd($id);
         $this->authorize('modules', 'admin.product.update');
         $attributeCatalogue = AttributeCatalogue::with('attribute_catalogue_language')->get();
-        $product = $this->productReponsitory->getProductById($id, $this->language);
+        $product = $this->productReponsitory->getProductById($id);
 
         $config = $this->configData();
         $config['seo'] = __('messages.product');
         $config['method'] = 'edit';
         $dropdown  = $this->nestedset->Dropdown();
         // $album = json_decode($product->album);
-        $template = 'admin.product.product.store';
+        $template = 'admin.products.product.store';
         return view('admin.dashboard.layout', compact(
             'template',
             'config',
@@ -141,7 +163,7 @@ class ProductController extends Controller
     }
 
     public function update($id, UpdateProductRequest $request){
-        if($this->productService->update($id, $request, $this->language)){
+        if($this->productService->update($id, $request)){
             return redirect()->route('admin.product.index')->with('success','Cập nhật bản ghi thành công');
         }
         return redirect()->route('admin.product.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
@@ -150,8 +172,8 @@ class ProductController extends Controller
     public function delete($id){
         $this->authorize('modules', 'admin.product.destroy');
         $config['seo'] = __('messages.product');
-        $product = $this->productReponsitory->getProductById($id, $this->language);
-        $template = 'admin.product.product.delete';
+        $product = $this->productReponsitory->getProductById($id);
+        $template = 'admin.products.product.delete';
         return view('admin.dashboard.layout', compact(
             'template',
             'product',
@@ -160,7 +182,7 @@ class ProductController extends Controller
     }
 
     public function destroy($id){
-        if($this->productService->destroy($id, $this->language)){
+        if($this->productService->destroy($id)){
             return redirect()->route('admin.product.index')->with('success','Xóa bản ghi thành công');
         }
         return redirect()->route('admin.product.index')->with('error','Xóa bản ghi không thành công. Hãy thử lại');

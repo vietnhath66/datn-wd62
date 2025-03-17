@@ -75,7 +75,7 @@
                             </div>
                         </div><!--end col-->
                         <div class="lg:col-span-2 ltr:lg:text-right rtl:lg:text-left xl:col-span-2 xl:col-start-11">
-                            <a href="{{ route('admin.product_catalogue.create') }}" type="button"
+                            <a href="{{ route('admin.product.create') }}" type="button"
                                 class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20"><i
                                     data-lucide="plus" class="inline-block size-4"></i> <span class="align-middle">Thêm
                                     mới</span></a>
@@ -88,9 +88,19 @@
                             <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
                                 <tr>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_code"
-                                        data-sort="product_code">Mã loại sản phẩm</th>
+                                        data-sort="product_code">Mã sản phẩm</th>
+                                        <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_code"
+                                        data-sort="product_code">Tên danh mục</th>
+                                        <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_code"
+                                        data-sort="product_code">Tên thương hiệu</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
-                                        data-sort="product_name">Tên loại sản phẩm</th>
+                                        data-sort="product_name">Tên sản phẩm</th>
+                                        <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_code"
+                                        data-sort="product_code">Giá</th>
+                                        <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_code"
+                                        data-sort="product_code">Mô tả</th>
+                                        <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_code"
+                                        data-sort="product_code">Ghi chú</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
                                         data-sort="status">Trạng thái</th>
                                     <th
@@ -99,23 +109,39 @@
                                 </tr>
                             </thead>
                             <tbody class="list">
-                                @if (isset($productCatalogues) && is_object($productCatalogues))
-                                    @foreach ($productCatalogues as $productCatalogue)
+                                @if (isset($products) && is_object($products))
+                                    @foreach ($products as $product)
                                     
                                         <tr>
                                             <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
-                                                {{ str_repeat('|----', (($productCatalogue->level > 0)?($productCatalogue->level - 1):0))}}
+                                                {{ str_repeat('|----', (($product->level > 0)?($product->level - 1):0))}}
                                                 <a href="#!"
-                                                    class="transition-all duration-150 ease-linear product_code text-custom-500 hover:text-custom-600">{{ $productCatalogue->id }}</a>
+                                                    class="transition-all duration-150 ease-linear product_code text-custom-500 hover:text-custom-600">{{ $product->id }}</a>
+                                            </td>
+                                            <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+                                                {{ $product->product_catalogue->name ?? 'Chưa có danh mục' }}
+
+                                            </td>
+                                            <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+                                                {{ $product->brand->name ?? 'Chưa có thương hiệu' }}
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">
                                                 <a href="apps-ecommerce-product-overview.html"
                                                     class="flex items-center gap-2">
-                                                    <img src="{{ \Storage::url($productCatalogue->image) }}" alt="Product images"
+                                                    <img src="{{ \Storage::url($product->image) }}" alt="Product images"
                                                         class="h-6">
-                                                    <h6 class="product_name">{{ $productCatalogue->name }}</h6>
+                                                    <h6 class="product_name">{{ $product->name }}</h6>
                                                 </a>
+                                            </td>
+                                            <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+                                                {{ number_format($product->price, 0, ',', '.') }} đ
+                                            </td>
+                                            <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+                                                {{ $product->description ?? 'Không có mô tả' }}
+                                            </td>
+                                            <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+                                                {{ $product->content ?? 'Không có ghi chú' }}
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
@@ -140,7 +166,7 @@
                                                         </li>
                                                         <li>
                                                             <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-productCatalogue hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
-                                                                href="{{ route('admin.product_catalogue.edit', $productCatalogue->id) }}"><i
+                                                                href="{{ route('admin.product.edit', $product->id) }}"><i
                                                                     data-lucide="file-edit"
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
                                                                 <span class="align-middle">Edit</span></a>
@@ -148,7 +174,7 @@
                                                         <li>
                                                             <a data-modal-target="deleteModal"
                                                                 class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-productCatalogue hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
-                                                                href="{{ route('admin.product_catalogue.delete', $productCatalogue->id) }}"><i data-lucide="trash-2"
+                                                                href="{{ route('admin.product.delete', $product->id) }}"><i data-lucide="trash-2"
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
                                                                 <span class="align-middle">Delete</span></a>
                                                         </li>

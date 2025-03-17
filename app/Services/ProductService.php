@@ -71,10 +71,11 @@ class ProductService extends BaseService implements ProductServiceInterface
         }
 
 
+
         $perPage = $request->integer('perpage');
         $perPage = 5;
         $condition = [
-            'keyword' => addslashes($request->input('keyword')),
+            // 'keyword' => addslashes($request->input('keyword')),
             'publish' => $request->integer('publish'),
             'where' => [],
         ];
@@ -83,13 +84,12 @@ class ProductService extends BaseService implements ProductServiceInterface
             'groupBy' => $this->paginateSelect()
         ];
         $orderBy = ['products.id', 'DESC'];
-        $relations = ['product_catalogues', 'languages'];
+        $relations = ['product_catalogues'];
         $rawQuery = $this->whereRaw($request, $modelCatalogue);
         $joins = [
-            ['product_language as tb2', 'tb2.product_id', '=', 'products.id'],
-            ['product_catalogues as tb3', 'products.product_catalogue_id', '=', 'tb3.id'],
+            // ['product_language as tb2', 'tb2.product_id', '=', 'products.id'],
+            ['product_catalogues as tb2', 'products.product_catalogue_id', '=', 'tb2.id'],
         ];
-
         $products = $this->productReponsitory->pagination(
             $this->paginateSelect(),
             $condition,
@@ -254,8 +254,13 @@ class ProductService extends BaseService implements ProductServiceInterface
         // $language = Language::where('canonical', $locale)->first();
         // dd($this->currenLanguage());
 
-        $product->languages()->detach([$this->currenLanguage(), $product->id]);
-        return $this->productReponsitory->createPivot($product, $payload, 'languages');
+        // $product->languages()->detach([$this->currenLanguage(), $product->id]);
+        // Kiểm tra nếu phương thức languages() không tồn tại thì bỏ qua
+        // if (method_exists($product, 'languages')) {
+        //     $product->languages()->detach([$this->currenLanguage(), $product->id]);
+        // }   
+        return true; // Bỏ xử lý liên quan đến languages
+
     }
 
     private function updateCatalogueForProduct($product, $request)
@@ -608,10 +613,8 @@ class ProductService extends BaseService implements ProductServiceInterface
             'products.id',
             'products.publish',
             'products.image',
-            'products.order',
             'products.price',
-            'tb2.name',
-            'tb2.canonical',
+            'products.name',
         ];
     }
 

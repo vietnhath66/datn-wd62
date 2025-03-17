@@ -3,7 +3,7 @@
 ])
 @include('admin.dashboard.components.formError')
 @php
-    $url = $config['method'] == 'create' ? route('admin.brands.store') : route('admin.brands.udpate', $brand);
+    $url = $config['method'] == 'create' ? route('admin.brands.store') : route('admin.brands.update', $brand);
 @endphp
 
 
@@ -49,7 +49,7 @@
                                         </p>
                                     </div>
                                     <!--end col-->
-                                    <div class="xl:col-span-6">
+                                    {{-- <div class="xl:col-span-6">
                                         <label for="productCodeInput"
                                             class="inline-block mb-2 text-base font-medium">Product Code</label>
                                         <input type="text" id="productCodeInput"
@@ -59,7 +59,7 @@
                                         <p class="mt-1 text-sm text-slate-400 dark:text-zink-200">
                                             Code will be generated automatically
                                         </p>
-                                    </div>
+                                    </div> --}}
                                     <div class="lg:col-span-2 xl:col-span-12">
                                         <label for="genderSelect" class="inline-block mb-2 text-base font-medium">Ảnh
                                             thương hiệu</label>

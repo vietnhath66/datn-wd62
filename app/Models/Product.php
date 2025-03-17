@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Validation\Rule;
 use App\Traits\QueryScopes;
 
+
 class Product extends Model
 {
     use HasFactory, SoftDeletes, QueryScopes;
@@ -32,7 +33,14 @@ class Product extends Model
     public function product_catalogues(){
         return $this->belongsToMany(ProductCatalogue::class, 'product_catalogue_product' , 'product_id', 'product_catalogue_id');
     }
-
+    public function product_catalogue(){
+        return $this->belongsTo(ProductCatalogue::class, 'product_catalogue_id');
+    }
+    
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class, 'brand_id');
+    }
     public function product_variants(){
         return $this->hasMany(ProductVariant::class, 'product_id', 'id');
     }

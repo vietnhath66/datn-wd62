@@ -32,7 +32,7 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
 Route::prefix('admin')
     ->as('admin.')
     ->middleware(['admin', 'locale', 'backend_default_locale'])
-    ->group(function () {
+    ->group(callback: function () {
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
@@ -44,7 +44,7 @@ Route::prefix('admin')
                 Route::get('create',                                         [BrandController::class, 'create'])->name('create');
                 Route::post('store',                                         [BrandController::class, 'store'])->name('store');
                 Route::get('edit/{brand}',                                   [BrandController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
-                Route::put('udpate/{brand}',                                 [BrandController::class, 'udpate'])->where(['id' => '[0-9]+'])->name('udpate');
+                Route::put('update/{brand}',                                 [BrandController::class, 'update'])->where(['id' => '[0-9]+'])->name('udpate');
                 Route::get('delete/{brand}',                                 [BrandController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
                 Route::delete('destroy/{brand}',                             [BrandController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
             });
@@ -68,7 +68,7 @@ Route::prefix('admin')
                 Route::get('create',                                    [ProductController::class, 'create'])->name('create');
                 Route::post('store',                                    [ProductController::class, 'store'])->name('store');
                 Route::get('edit/{product}',                            [ProductController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
-                Route::put('udpate/{product}',                          [ProductController::class, 'update'])->where(['id' => '[0-9]+'])->name('udpate');
+                Route::put('update/{product}',                          [ProductController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
                 Route::get('delete/{product}',                          [ProductController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
                 Route::delete('destroy/{product}',                      [ProductController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
             });

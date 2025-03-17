@@ -23,12 +23,13 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
 
 
-    public function getProductById(int $id = 0, $language_id = 0)
+    public function getProductById(int $id = 0)
     {
         return $this->model->select(
             [
                 'products.id',
                 'products.product_catalogue_id',
+                'products.brand_id', // Thêm brand_id để đảm bảo có dữ liệu join
                 'products.image',
                 'products.icon',
                 'products.album',
@@ -40,29 +41,22 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'products.attributeCatalogue',
                 'products.attribute',
                 'products.variant',
-                'tb2.name',
-                'tb2.description',
-                'tb2.content',
-                'tb2.meta_title',
-                'tb2.meta_keyword',
-                'tb2.meta_description',
-                'tb2.canonical',
+                'products.name',
+                'products.description',
+                'products.content',
+                'products.meta_title',
+                'products.meta_keyword',
+                'products.meta_description',
+                'products.canonical',
             ]
         )
-            ->join('product_language as tb2', 'tb2.product_id', '=', 'products.id')
             ->with([
                 'product_catalogues',
-                'product_variants' => function ($query) use ($language_id) {
-                    $query->with(['attributes' => function ($query) use ($language_id) {
-                        $query->with(['attribute_language' => function ($query) use ($language_id) {
-                            $query->where('language_id', '=', $language_id);
-                        }]);
-                    }]);
-                },
+                'brand',
+                'product_variants',
                 'galleries',
                 'reviews'
             ])
-            ->where('tb2.language_id', '=', $language_id)
             ->find($id);
     }
 
@@ -79,12 +73,11 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'tb2.canonical',
             ]
         )
-            ->join('product_language as tb2', 'tb2.product_id', '=', 'products.id')
             ->with([
                 'product_catalogues',
+                'brand',
                 'reviews'
             ])
-            ->where('tb2.language_id', '=', $language_id)
             ->where('products.product_catalogue_id', '=', $productCatalogueId)
             ->get();
     }
@@ -103,7 +96,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             DB::raw("COALESCE(tb3.sku, products.code) as sku"),
             DB::raw("COALESCE(tb3.price, products.price) as price")
         ]);
-        $query->join('product_language as tb2', 'products.id', '=', 'tb2.product_id');
         $query->leftJoin('product_variants as tb3', 'products.id', '=', 'tb3.product_id');
         $query->leftJoin('product_variant_language as tb4', 'tb3.id', '=', 'tb4.product_variant_id');
 
@@ -167,7 +159,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         // if (isset($param['whereRaw']) && count($param['whereRaw'])) {
         //     $query->whereRaw($param['whereRaw'][0][0],$param['whereRaw'][0][1]);
         // }
-        $query->with(['reviews', 'languages', 'product_catalogues']);
+        $query->with(['reviews', 'brand','product_catalogues']);
         return $query->paginate($perpage);
     }
 

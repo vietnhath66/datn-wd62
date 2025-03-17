@@ -61,17 +61,17 @@ class ProductCatalogueController extends Controller
 
         $config['seo'] =  [
             'index' => [
-                'title' => 'Quản lý loại sản phẩm',
-                'table' => 'Danh sách loại sản phẩm'
+                'title' => 'Quản lý danh mục',
+                'table' => 'Danh sách danh mục'
             ],
             'create' => [
-                'title' => 'Thêm mới loại sản phẩm'
+                'title' => 'Thêm mới danh mục'
             ],
             'edit' => [
-                'title' => 'Cập nhật loại sản phẩm'
+                'title' => 'Cập nhật danh mục'
             ],
             'delete' => [
-                'title' => 'Xóa loại sản phẩm'
+                'title' => 'Xóa danh mục'
             ],
         ];
         // dd($config);
@@ -88,17 +88,17 @@ class ProductCatalogueController extends Controller
         $config = $this->configData();
         $config['seo'] = $config['seo'] =  [
             'index' => [
-                'title' => 'Quản lý loại sản phẩm',
-                'table' => 'Danh sách loại sản phẩm'
+                'title' => 'Quản lý danh mục',
+                'table' => 'Danh sách danh mục'
             ],
             'create' => [
-                'title' => 'Thêm mới loại sản phẩm'
+                'title' => 'Thêm mới danh mục'
             ],
             'edit' => [
-                'title' => 'Cập nhật loại sản phẩm'
+                'title' => 'Cập nhật danh mục'
             ],
             'delete' => [
-                'title' => 'Xóa loại sản phẩm'
+                'title' => 'Xóa danh mục'
             ],
         ];
         $config['method'] = 'create';
@@ -127,17 +127,17 @@ class ProductCatalogueController extends Controller
         $config = $this->configData();
         $config['seo'] =  [
             'index' => [
-                'title' => 'Quản lý loại sản phẩm',
-                'table' => 'Danh sách loại sản phẩm'
+                'title' => 'Quản lý danh mục',
+                'table' => 'Danh sách danh mục'
             ],
             'create' => [
-                'title' => 'Thêm mới loại sản phẩm'
+                'title' => 'Thêm mới danh mục'
             ],
             'edit' => [
-                'title' => 'Cập nhật loại sản phẩm'
+                'title' => 'Cập nhật danh mục'
             ],
             'delete' => [
-                'title' => 'Xóa loại sản phẩm'
+                'title' => 'Xóa danh mục'
             ],
         ];
         $config['method'] = 'edit';
@@ -162,17 +162,17 @@ class ProductCatalogueController extends Controller
         // $this->authorize('modules', 'admin.product_catalogue.destroy');
         $config['seo'] =  [
             'index' => [
-                'title' => 'Quản lý loại sản phẩm',
-                'table' => 'Danh sách loại sản phẩm'
+                'title' => 'Quản lý danh mục',
+                'table' => 'Danh sách danh mục'
             ],
             'create' => [
-                'title' => 'Thêm mới loại sản phẩm'
+                'title' => 'Thêm mới danh mục'
             ],
             'edit' => [
-                'title' => 'Cập nhật loại sản phẩm'
+                'title' => 'Cập nhật danh mục'
             ],
             'delete' => [
-                'title' => 'Xóa loại sản phẩm'
+                'title' => 'Xóa danh mục'
             ],
         ];
         $productCatalogue = $this->productCatalogueReponsitory->getProductCatalogueById($id);

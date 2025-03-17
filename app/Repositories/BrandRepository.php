@@ -55,8 +55,31 @@ class BrandRepository extends BaseRepository implements BrandRepositoryInterface
         return $query->paginate($perPage)->withQueryString()->withPath(env('APP_URL').$extend['path']);
     }
 
-    public function getBrandById(int $id = 0){
-        return $this->model->find($id);
+    public function destroy($model)
+    {
+        if (!$model instanceof Model) {
+            $model = $this->model->find($model); // Nếu truyền ID, tìm Model
+        }
+    
+        if (!$model) {
+            return false; // Nếu không tìm thấy, trả về false
+        }
+    
+        return $model->delete();
     }
+    
+    
+
+    public function getBrandById(int $id = 0)
+    {
+        $brand = $this->model->find($id);
+    
+        if (!$brand) {
+            throw new \Exception("Không tìm thấy thương hiệu với ID: $id");
+        }
+    
+        return $brand;
+    }
+    
 
 }

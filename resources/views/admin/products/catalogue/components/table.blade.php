@@ -88,9 +88,9 @@
                             <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
                                 <tr>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_code"
-                                        data-sort="product_code">Mã loại sản phẩm</th>
+                                        data-sort="product_code">Mã danh mục</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
-                                        data-sort="product_name">Tên loại sản phẩm</th>
+                                        data-sort="product_name">Tên danh mục</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
                                         data-sort="status">Trạng thái</th>
                                     <th

@@ -65,29 +65,42 @@ class BrandService implements BrandServiceInterface
     {
         DB::beginTransaction();
         try {
+            // Kiểm tra xem Brand có tồn tại không
+            $brand = $this->BrandRepository->getBrandById($id);
+            if (!$brand) {
+                throw new \Exception("Không tìm thấy thương hiệu với ID: $id");
+            }
+    
+            // Lấy dữ liệu cần cập nhật
             $payload = $request->only($this->payload());
-            $brand = $this->BrandRepository->findById($id);
-
+    
+            // Kiểm tra và xử lý ảnh
             if ($request->hasFile('image')) {
-                $payload['image'] = Storage::put(self::PATH_UPLOAD, $request->file('image'));
+                $newImage = Storage::put(self::PATH_UPLOAD, $request->file('image'));
+                if ($newImage) {
+                    $payload['image'] = $newImage;
+                    // Xóa ảnh cũ nếu có
+                    if ($brand->image && Storage::exists($brand->image)) {
+                        Storage::delete($brand->image);
+                    }
+                }
             }
-
-            $currentImage = $brand->image;
-
-            if ($request->hasFile('image') && $currentImage && Storage::exists($currentImage)) {
-                Storage::delete($currentImage);
+    
+            // Cập nhật thương hiệu
+            $updateBrand = $this->BrandRepository->update($id, $payload);
+            if (!$updateBrand) {
+                throw new \Exception("Cập nhật thương hiệu thất bại");
             }
-
-            $updateBrand = $this->BrandRepository->update($brand, $payload);
+    
             DB::commit();
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            echo $e->getMessage();
-            die();
+            \Log::error("Lỗi cập nhật thương hiệu: " . $e->getMessage()); // Ghi log thay vì die()
             return false;
         }
     }
+    
 
     public function destroy($brand)
     {
