@@ -4,5 +4,5 @@
 
 @section('content')
     @include('client.productss.contentProductss')
-    @include('client.products.modal')
+    @include('client.productss.modal')
 @endsection
