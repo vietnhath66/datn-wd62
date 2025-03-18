@@ -10,9 +10,15 @@
     <meta content="Minimal Admin & Dashboard Template" name="description">
     <meta content="StarCode Kh" name="author">
     <!-- App favicon -->
+
     <link rel="shortcut icon" href="admin/images/favicon.ico">
     <!-- Layout config Js -->
     <script src="admin/js/layout.js"></script>
+
+    <link rel="shortcut icon" href="{{ asset('admin/images/favicon.ico') }}">
+    <!-- Layout config Js -->
+    <script src="{{ asset('admin/js/layout.js') }}"></script>
+
     <!-- Icons CSS -->
 
     <!-- StarCode CSS -->

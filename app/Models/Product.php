@@ -10,7 +10,9 @@ use App\Traits\QueryScopes;
 
 class Product extends Model
 {
-    use HasFactory, SoftDeletes;
+
+    use HasFactory, SoftDeletes, QueryScopes;
+
 
     protected $fillable = [
         'name',
@@ -29,14 +31,16 @@ class Product extends Model
 
     protected $table = 'products';
 
-    public function product_catalogues(){
-        return $this->belongsToMany(ProductCatalogue::class, 'product_catalogue_product' , 'product_id', 'product_catalogue_id');
+    public function product_catalogues()
+    {
+        return $this->belongsToMany(ProductCatalogue::class, 'product_catalogue_product', 'product_id', 'product_catalogue_id');
     }
 
-    public function product_variants(){
+    public function product_variants()
+    {
         return $this->hasMany(ProductVariant::class, 'product_id', 'id');
     }
-    
+
     protected $casts = [
         'attribute' => 'json',
     ];
