@@ -1,4 +1,5 @@
-<header>
+
+<header class="header-v4">
     <!-- Header desktop -->
     <div class="container-menu-desktop">
         <!-- Topbar -->
@@ -35,7 +36,7 @@
                         </li>
 
                         <li class="label1" data-label1="hot">
-                            <a href="product.html">Sản phẩm</a>
+                        <a href="{{ route('client.index') }}">Sản phẩm</a>
                         </li>
 
                         <li>
