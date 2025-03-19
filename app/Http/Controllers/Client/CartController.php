@@ -14,12 +14,11 @@ class CartController extends Controller
 {
     public function viewCart()
     {
-        $userId = 2; 
-        $fixProductId = 20; 
-        $fixVariantId = 9; 
+        $userId = 2;
+        $fixProductId = 20;
+        $fixVariantId = 9;
 
-      
-        $cart = Cart::where('user_id', $userId)->with('items.productVariant.product')->first();
+        $cart = Cart::where('user_id', $userId)->with('items.productVariant.products')->first();
 
         if (!$cart) {
             $cart = Cart::create([
@@ -45,7 +44,7 @@ class CartController extends Controller
                     'product_id' => $productVariant->product_id,
                     'product_variant_id' => $productVariant->id,
                     'quantity' => 1,
-                    'price' => optional($productVariant->product)->price ?? 0
+                    'price' => optional($productVariant->product)->price
                 ]);
             } else {
                 // Nếu sản phẩm đã có trong giỏ, tăng số lượng lên
@@ -57,8 +56,6 @@ class CartController extends Controller
             'cart' => $cart
         ]);
     }
-
-
 
 
 }
