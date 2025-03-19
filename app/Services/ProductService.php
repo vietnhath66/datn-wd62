@@ -49,7 +49,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         // PromotionReponsitory $PromotionReponsitory,
         AttributeReponsitory $AttributeReponsitory,
         AttributeCatalogueReponsitory $AttributeCatalogueReponsitory,
-        ProductCatalogueService $ProductCatalogueService,
+        ProductCatalogueService $ProductCatalogueService
     ) {
         $this->productReponsitory = $productReponsitory;
         // $this->productVariantLanguageReponsitory = $productVariantLanguageReponsitory;
@@ -85,6 +85,8 @@ class ProductService extends BaseService implements ProductServiceInterface
         ];
         $orderBy = ['products.id', 'DESC'];
         $relations = ['product_catalogues'];
+        // $relations = ['product_catalogues', 'brand'];
+
         $rawQuery = $this->whereRaw($request, $modelCatalogue);
         $joins = [
             // ['product_language as tb2', 'tb2.product_id', '=', 'products.id'],
@@ -610,11 +612,16 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function paginateSelect()
     {
         return [
-            'products.id',
+            'products.description',
+            'products.content',
+            'products.product_catalogue_id',
+            'products.brand_id',
             'products.publish',
             'products.image',
             'products.price',
             'products.name',
+            'products.id',
+
         ];
     }
 

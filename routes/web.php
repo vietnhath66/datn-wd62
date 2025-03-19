@@ -44,7 +44,7 @@ Route::prefix('admin')
                 Route::get('create',                                         [BrandController::class, 'create'])->name('create');
                 Route::post('store',                                         [BrandController::class, 'store'])->name('store');
                 Route::get('edit/{brand}',                                   [BrandController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
-                Route::put('update/{brand}',                                 [BrandController::class, 'update'])->where(['id' => '[0-9]+'])->name('udpate');
+                Route::put('update/{brand}',                                 [BrandController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
                 Route::get('delete/{brand}',                                 [BrandController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
                 Route::delete('destroy/{brand}',                             [BrandController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
             });

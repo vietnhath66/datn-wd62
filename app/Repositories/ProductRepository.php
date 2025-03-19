@@ -51,8 +51,8 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             ]
         )
             ->with([
-                'product_catalogues',
-                'brand',
+                'product_catalogues:id,name',
+                'brand:id,name',
                 'product_variants',
                 'galleries',
                 'reviews'
@@ -120,6 +120,10 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'products.price',
             'products.image',
             'products.product_catalogue_id',
+            'products.brand_id',
+            'products.name',
+            'products.description',
+            'products.content'
         ]);
 
         if (isset($param['select']) && count($param['select'])) {
@@ -159,7 +163,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         // if (isset($param['whereRaw']) && count($param['whereRaw'])) {
         //     $query->whereRaw($param['whereRaw'][0][0],$param['whereRaw'][0][1]);
         // }
-        $query->with(['reviews', 'brand','product_catalogues']);
+        $query->with(['reviews','product_catalogues:id,name', 'brand:id,name']);
         return $query->paginate($perpage);
     }
 

@@ -14,7 +14,7 @@ use App\Classes\Nestedsetbie;
 use App\Models\AttributeCatalogue;
 use App\Models\AttributeCatalogueLanguage;
 use App\Models\Brand;
-use APP\Models\ProductCatalogue;
+use App\Models\ProductCatalogue;
 
 
 class ProductController extends Controller
@@ -53,6 +53,7 @@ class ProductController extends Controller
     public function index(Request $request){
         // $this->authorize('modules', 'admin.product.index');
         $products = $this->productService->paginate($request);
+        // dd($products);
         $brands = Brand::all();
         $productCatalogues = ProductCatalogue::all();
         $config = [
