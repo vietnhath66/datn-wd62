@@ -14,11 +14,11 @@ class CartController extends Controller
 {
     public function viewCart()
     {
-        $userId = 2; // Cố định User ID = 2
-        $fixProductId = 20; // Cố định Product ID = 20
-        $fixVariantId = 9; // Cố định Variant ID = 9L
+        $userId = 2; 
+        $fixProductId = 20; 
+        $fixVariantId = 9; 
 
-        // Lấy giỏ hàng của user
+      
         $cart = Cart::where('user_id', $userId)->with('items.productVariant.product')->first();
 
         if (!$cart) {
