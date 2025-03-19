@@ -40,7 +40,7 @@
 
                 @if ($variantCatalogue && count($variantCatalogue))
                     @foreach ($variantCatalogue as $keyAttr => $valAttr)
-                    {{-- @dd($valAttr) --}}
+                        {{-- @dd($valAttr) --}}
                         <div class="row mb20 variant-item">
                             <div class="col-lg-3">
                                 <div class="attribute-catalogue">
@@ -100,16 +100,8 @@
 </div>
 
 <script>
-    var attributeCatalogue = @json(
-        $attributeCatalogue->map(function ($item) {
-                $name = $item->attribute_catalogue_language->first()->name;
-                return [
-                    'id' => $item->id,
-                    'name' => $name,
-                ];
-            })->values());
-
-    var attribute ='{{ base64_encode(json_encode(old('attribute', isset($product->attribute) ? $product->attribute : []))) }}';
-    var variant ='{{ base64_encode(json_encode(old('variant', isset($product->variant) ? json_decode($product->variant, true) : []))) }}';
-
+    var attribute =
+        '{{ base64_encode(json_encode(old('attribute', isset($product->attribute) ? $product->attribute : []))) }}';
+    var variant =
+        '{{ base64_encode(json_encode(old('variant', isset($product->variant) ? json_decode($product->variant, true) : []))) }}';
 </script>

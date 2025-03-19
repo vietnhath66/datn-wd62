@@ -146,8 +146,9 @@
                                             </div>
                                         </div>
                                         @if (isset($product->image))
-                                            <img src="{{ \Storage::url($product->image) }}" alt=""
+                                            <img src="{{ Storage::url($product->image) }}" alt=""
                                                 width="50">
+                        
                                         @endif
                                         {{-- <ul class="flex flex-wrap mb-0 gap-x-5" id="dropzone-preview2">
                                             <li class="mt-5" id="dropzone-preview-list2">
