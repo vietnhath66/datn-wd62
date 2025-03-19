@@ -10,7 +10,7 @@
                 </div>
                 <div class="ibox-content">
                    {{-- @include('admin.product.catalogue.components.filter') --}}
-                   @include('admin.products.product.components.table', ['table' => $config['seo']['index']['table']])
+                   @include('admin.counpons.components.table', ['table' => $config['seo']['index']['table']])ư
                 </div>
             </div>
         </div>

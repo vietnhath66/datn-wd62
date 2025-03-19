@@ -13,22 +13,6 @@
         }
     }
 
-    HT.uploadAlbum = () => {
-        $(document).on('click', '.upload-picture', function(e){
-            HT.browseServerAlbum();
-            e.preventDefault();
-        })
-    }
-
-    HT.multipleUploadImageCkeditor = () => {
-        $(document).on('click', '.multipleUploadImageCkeditor', function(e){
-            let object = $(this)
-            let target = object.attr('data-target')
-            HT.browseServerCkeditor(object, 'Images', target);
-            e.preventDefault()
-        })
-    }
-
     HT.ckeditor4 = (elementId, elementHeight) => {
         if(typeof(elementHeight) == 'undefined'){
             elementHeight = 500;

@@ -25,6 +25,9 @@ class Product extends Model
         'is_new',
         'is_trending',
         'is_show_home',
+        'attributeCatalogue',
+        'attribute',
+        'variant'
     ];
 
     protected $table = 'products';
