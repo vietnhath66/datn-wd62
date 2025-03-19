@@ -15,6 +15,7 @@ class CartController extends Controller
     public function viewCart()
     {
         $userId = 2;
+        $fixProductId = 20;
         $cart = Cart::where('user_id', $userId)->with('items.productVariant.product')->first();
 
         if (!$cart) {
@@ -23,20 +24,29 @@ class CartController extends Controller
             ]);
         }
 
-        if ($cart->items()->count() === 0) {
-            $product = Product::inRandomOrder()->first();
+        // Lấy product variant theo fixProductId
+        $productVariant = ProductVariant::where('product_id', $fixProductId)->first();
+        // dd($productVariant);
 
-            if ($product) {
-                if ($product && isset($product->id)) {
-                    $productVariant = ProductVariant::where('product_id', $product->id)->first();
+        if ($productVariant) {
+            $cartItem = CartDetail::where('cart_id', $cart->id)
+                ->where('product_variant_id', $productVariant->id)
+                ->first();
+
+            if ($cart->items()->count() === 0) {
+                $product = Product::inRandomOrder()->first();
+
+                if ($product) {
+                    $randomProductVariant = ProductVariant::where('product_id', $product->id)->first();
                 }
 
-                if ($productVariant) {
+                // Kiểm tra xem productVariant có bị null không
+                if (!$cartItem && isset($randomProductVariant)) {
                     CartDetail::create([
                         'cart_id' => $cart->id,
-                        'product_variant_id' => $productVariant->id,
+                        'product_variant_id' => $randomProductVariant->id, // Chỉ dùng nếu chắc chắn không bị null
                         'quantity' => 1,
-                        'price' => $product->price
+                        'price' => optional($randomProductVariant->product)->price ?? 0
                     ]);
                 }
             }
@@ -46,6 +56,7 @@ class CartController extends Controller
             'cart' => $cart
         ]);
     }
+
 
 
 }

@@ -158,6 +158,12 @@
         margin-left: 30px;
 
     }
+
+    .img-product-payment {
+        width: 100px;
+        height: auto;
+        margin-right: 15px
+    }
 </style>
 {{-- Thanh toán --}}
 <form class="bg0 p-t-75 p-b-85">
@@ -166,7 +172,7 @@
             <!-- Phần thông tin vận chuyển (bên trái) -->
             <div class="col-md-7">
                 <div class="title">
-                    <a href="" class="text-primary mb-3">Quay Lại Giỏ Hàng</a>
+                    <a href="{{ route('client.cart.viewCart') }}" class="text-primary mb-3">Quay Lại Giỏ Hàng</a>
                     <h4>Thông Tin Vận Chuyển</h4>
                 </div>
 
@@ -174,18 +180,18 @@
                     <form>
                         <div class="mb-3">
                             <label for="fullName" class="form-label">Họ và Tên</label>
-                            <input type="text" class="form-control" id="fullName" placeholder="Nguyen Viet Nhat"
-                                value="Nguyen Viet Nhat" />
+                            <input type="text" class="form-control" id="fullName" placeholder="VD: Nguyễn văn a"
+                                value="" />
                         </div>
                         <div class="mb-3">
                             <label for="phone" class="form-label">Số Điện Thoại</label>
                             <input type="text" class="form-control" id="phone" placeholder="(012) 345 678 9010"
-                                value="(012) 345 678 9010" />
+                                value="" />
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" placeholder="vietnhatS@gmail.com"
-                                value="vietnhatS@gmail.com" />
+                            <input type="email" class="form-control" id="email" placeholder="nguyenvana@gmail.com"
+                                value="" />
                         </div>
                         <div class="row">
                             <div class="col-md-4 mb-3">
@@ -219,7 +225,9 @@
                     <!-- Danh sách sản phẩm -->
                     <div class="mb-3">
                         <div class="product-item d-flex align-items-center mb-2">
-                            <img src="https://via.placeholder.com/50" alt="Áo Khoác" class="me-3" />
+                            <img class="img-product-payment"
+                                src="https://bizweb.dktcdn.net/100/480/122/products/cdl10-1.jpg?v=1692236733653"
+                                alt="Áo Khoác" class="me-3" />
                             <div class="flex-grow-1">
                                 <p class="mb-0">
                                     Áo Khoác Dù Trắng <span class="text-muted">x1</span>
@@ -228,7 +236,9 @@
                             <p class="mb-0">450.000VND</p>
                         </div>
                         <div class="product-item d-flex align-items-center mb-2">
-                            <img src="https://via.placeholder.com/50" alt="Giày" class="me-3" />
+                            <img class="img-product-payment"
+                                src="https://product.hstatic.net/1000392326/product/bda50137_-__bdq50138_-_568k_3__f422a73fdc22415789f4c4dc15aa8bc9_master.jpg"
+                                alt="Giày" class="me-3" />
                             <div class="flex-grow-1">
                                 <p class="mb-0">
                                     Giày Thể Thao <span class="text-muted">x1</span>
@@ -260,14 +270,13 @@
                     <!-- Phương thức thanh toán -->
                     <div class="mt-4">
                         <h6 class="mb-3">Chọn Phương Thức Thanh Toán</h6>
-                        <div class="payment-method">
+                        <div class="payment-method d-flex">
                             <input type="radio" id="cod" name="payment" checked />
                             <label for="cod">Thanh Toán Khi Nhận Hàng</label>
                         </div>
-                        <div class="payment-method">
+                        <div class="payment-method d-flex">
                             <input type="radio" id="wallet" name="payment" />
-
-                            <label for="wallet">Ví Điện Tử (Momo/ZaloPay)</label>
+                            <label for="wallet">Ví Điện Tử Momo</label>
                         </div>
                     </div>
                     <!-- Nút xác nhận -->

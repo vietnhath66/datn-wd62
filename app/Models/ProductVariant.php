@@ -13,7 +13,7 @@ class ProductVariant extends Model
 
     protected $fillable = [
         'name',
-        'product_id ',
+        'product_id',
         'code',
         'quantity',
         'sku',
@@ -22,12 +22,19 @@ class ProductVariant extends Model
     ];
 
 
-    public function products(){
+    public function products()
+    {
         return $this->belongsTo(Product::class, 'product_id', 'id');
     }
 
-    public function attributes(){
-        return $this->belongsToMany(Attribute::class, 'product_variant_attribute' , 'product_variant_id', 'attribute_id');
+    public function cartDetails()
+    {
+        return $this->hasMany(CartDetail::class, 'product_variant_id');
+    }
+
+    public function attributes()
+    {
+        return $this->belongsToMany(Attribute::class, 'product_variant_attribute', 'product_variant_id', 'attribute_id');
     }
 
 }
