@@ -1,17 +1,5 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 <style>
-    /* body {
-      background-color: #f0f2f5;
-      font-family: "Poppins", sans-serif;
-      font-weight: 400;
-    } */
-
-    /* .container {
-        max-width: 95%;
-        margin-top: 40px;
-        margin-bottom: 40px;
-    } */
-
     h4 {
         font-weight: 600;
         color: #1a2e44;
@@ -164,8 +152,47 @@
         height: auto;
         margin-right: 15px
     }
+
+    .suggestions {
+        position: absolute;
+        background: #1a1d24;
+        color: white;
+        width: 100%;
+        max-height: 300px;
+        overflow-y: auto;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        z-index: 1000;
+        display: none;
+        margin-top: 3px;
+        border: 1px solid #3f4451;
+    }
+
+    .suggestion-item {
+        padding: 12px 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #3f4451;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        background: #292e3a;
+    }
+
+    .suggestion-item:hover {
+        background: #3a4150;
+        color: #ffffff;
+        padding-left: 24px;
+    }
+
+    .suggestion-item:before {
+        content: "📍";
+        margin-right: 10px;
+        font-size: 1.1em;
+        transition: transform 0.3s ease;
+    }
 </style>
-{{-- Thanh toán --}}
 <form class="bg0 p-t-75 p-b-85">
     <div class="">
         <div class="row">
@@ -193,26 +220,28 @@
                             <input type="email" class="form-control" id="email" placeholder="nguyenvana@gmail.com"
                                 value="" />
                         </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Địa chỉ cụ thể</label>
+                            <input type="text" class="form-control" id="address" placeholder="Nhập địa chỉ của bạn"
+                                autocomplete="off" />
+                            <div id="suggestions" class="suggestions"></div>
+                        </div>
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <label for="province" class="form-label">Tỉnh/Thành phố</label>
                                 <input type="text" class="form-control" id="province"
-                                    placeholder="Enter Province" />
+                                    placeholder="Nhập Tỉnh/Thành phố" />
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="district" class="form-label">Quận/Huyện</label>
                                 <input type="text" class="form-control" id="district"
-                                    placeholder="Enter District" />
+                                    placeholder="Nhập Quận/Huyện" />
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="neighborhood" class="form-label">Phường/Xã</label>
                                 <input type="text" class="form-control" id="neighborhood"
-                                    placeholder="Enter Neighborhood" />
+                                    placeholder="Nhập Phường/Xã" />
                             </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="address" class="form-label">Địa chỉ cụ thể</label>
-                            <input type="text" class="form-control" id="address" placeholder="Enter Apartment" />
                         </div>
                     </form>
                 </div>
@@ -288,3 +317,74 @@
 </form>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const apiKey = "0RrqS6ilxPu2hdpgvOQScXvGjycxiUwDaVnHMfkG"; // https://account.goong.io/keys
+    const addressInput = document.getElementById("address");
+    const suggestionsContainer = document.getElementById("suggestions");
+    const provinceInput = document.getElementById("province");
+    const districtInput = document.getElementById("district");
+    const neighborhoodInput = document.getElementById("neighborhood");
+    let sessionToken = crypto.randomUUID();
+
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    const debouncedSearch = debounce((query) => {
+        if (query.length < 2) {
+            suggestionsContainer.style.display = "none";
+            return;
+        }
+
+        fetch(
+                `https://rsapi.goong.io/Place/AutoComplete?api_key=${apiKey}&input=${encodeURIComponent(query)}&sessiontoken=${sessionToken}`
+            )
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.status === "OK") {
+                    suggestionsContainer.innerHTML = "";
+                    suggestionsContainer.style.display = "block";
+
+                    data.predictions.forEach((prediction) => {
+                        const div = document.createElement("div");
+                        div.className = "suggestion-item";
+                        div.textContent = prediction.description;
+                        div.addEventListener("click", () => {
+                            addressInput.value = prediction.description;
+                            suggestionsContainer.style.display = "none";
+
+                            if (prediction.compound) {
+                                provinceInput.value = prediction.compound.province || "";
+                                districtInput.value = prediction.compound.district || "";
+                                neighborhoodInput.value = prediction.compound.commune || "";
+                            }
+                        });
+                        suggestionsContainer.appendChild(div);
+                    });
+                }
+            })
+            .catch((error) => console.error("Lỗi:", error));
+    }, 300);
+
+    addressInput.addEventListener("input", (e) => debouncedSearch(e.target.value));
+
+    document.addEventListener("click", function(e) {
+        if (!suggestionsContainer.contains(e.target) && e.target !== addressInput) {
+            suggestionsContainer.style.display = "none";
+        }
+    });
+
+    document.getElementById("checkoutForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        sessionToken = crypto.randomUUID();
+        alert("Theo dõi mình để xem thêm các video công nghệ nhé!");
+    });
+</script>

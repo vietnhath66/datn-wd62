@@ -39,6 +39,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('client/css/main.css') }}" />
     <!--===============================================================================================-->
     <link rel="stylesheet" href="{{ asset('style.css') }}">
+    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" /> --}}
     @stack('style')
     <style>
         .column-0 {

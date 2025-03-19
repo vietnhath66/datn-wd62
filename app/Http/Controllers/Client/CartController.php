@@ -14,8 +14,11 @@ class CartController extends Controller
 {
     public function viewCart()
     {
-        $userId = 2;
-        $fixProductId = 20;
+        $userId = 2; // Cố định User ID = 2
+        $fixProductId = 20; // Cố định Product ID = 20
+        $fixVariantId = 9; // Cố định Variant ID = 9L
+
+        // Lấy giỏ hàng của user
         $cart = Cart::where('user_id', $userId)->with('items.productVariant.product')->first();
 
         if (!$cart) {
@@ -24,31 +27,29 @@ class CartController extends Controller
             ]);
         }
 
-        // Lấy product variant theo fixProductId
-        $productVariant = ProductVariant::where('product_id', $fixProductId)->first();
-        // dd($productVariant);
+        // Lấy biến thể sản phẩm cố định
+        $productVariant = ProductVariant::where('product_id', $fixProductId)
+            ->where('id', $fixVariantId) // Chỉ lấy đúng variant mong muốn
+            ->first();
 
         if ($productVariant) {
+            // Kiểm tra xem sản phẩm đã tồn tại trong giỏ chưa
             $cartItem = CartDetail::where('cart_id', $cart->id)
                 ->where('product_variant_id', $productVariant->id)
                 ->first();
 
-            if ($cart->items()->count() === 0) {
-                $product = Product::inRandomOrder()->first();
-
-                if ($product) {
-                    $randomProductVariant = ProductVariant::where('product_id', $product->id)->first();
-                }
-
-                // Kiểm tra xem productVariant có bị null không
-                if (!$cartItem && isset($randomProductVariant)) {
-                    CartDetail::create([
-                        'cart_id' => $cart->id,
-                        'product_variant_id' => $randomProductVariant->id, // Chỉ dùng nếu chắc chắn không bị null
-                        'quantity' => 1,
-                        'price' => optional($randomProductVariant->product)->price ?? 0
-                    ]);
-                }
+            if (!$cartItem) {
+                // Nếu sản phẩm chưa có trong giỏ, thêm mới
+                CartDetail::create([
+                    'cart_id' => $cart->id,
+                    'product_id' => $productVariant->product_id,
+                    'product_variant_id' => $productVariant->id,
+                    'quantity' => 1,
+                    'price' => optional($productVariant->product)->price ?? 0
+                ]);
+            } else {
+                // Nếu sản phẩm đã có trong giỏ, tăng số lượng lên
+                $cartItem->increment('quantity');
             }
         }
 
@@ -56,6 +57,7 @@ class CartController extends Controller
             'cart' => $cart
         ]);
     }
+
 
 
 
