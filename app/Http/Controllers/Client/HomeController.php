@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Http\Controllers\Controller;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class HomeController extends Controller
 {
     public function viewHome()
-    {
-        return view('client.home.home');
+    {   $products = Product::all(); // Lấy tất cả sản phẩm
+        return view('client.home.home', compact('products'));
     }
 }
