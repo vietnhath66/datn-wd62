@@ -18,7 +18,7 @@ class CartController extends Controller
         $fixProductId = 20;
         $fixVariantId = 9;
 
-        $cart = Cart::where('user_id', $userId)->with('items.productVariant.products')->first();
+        $cart = Cart::where('user_id', $userId)->with('items.productVariant.attributes')->first();
 
         if (!$cart) {
             $cart = Cart::create([
@@ -32,19 +32,7 @@ class CartController extends Controller
             ->first();
 
         if ($productVariant) {
-            // Kiểm tra xem sản phẩm đã tồn tại trong giỏ chưa
-            $cartItem = CartDetail::where('cart_id', $cart->id)
-                ->where('product_variant_id', $productVariant->id)
-                ->first();
-
-            if (!$cartItem) {
-                // Nếu sản phẩm chưa có trong giỏ, thêm mới
-                CartDetail::create([
-                    'cart_id' => $cart->id,
-                    'product_id' => $productVariant->product_id,
-                    'product_variant_id' => $productVariant->id,
-                    'quantity' => 1,
-                    'price' => optional($productVariant->product)->price
+            // Kiểm tra xưuct)->price
                 ]);
             } else {
                 // Nếu sản phẩm đã có trong giỏ, tăng số lượng lên

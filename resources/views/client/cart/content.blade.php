@@ -34,10 +34,11 @@
                                         <td class="column-3" style="padding: 12px;">
                                             {{ number_format($item->productVariant->products->price) }}
                                             VND</td>
-                                        <td class="column-4" style="padding: 12px;">{{ $item->productVariant->color }}
+                                        <td class="column-4" style="padding: 12px;">
+                                            {{ optional($item->productVariant->attributes->where('attribute_catalogues.type', 'name')->first())->name ?? 'Không có' }}
                                         </td>
                                         <td class="column-5" style="padding: 12px;">
-                                            {{ $item->productVariant->products->size }}
+                                            {{ $item->productVariant->size }}
                                         </td>
                                         <td class="column-6" style="padding: 12px 160px 12px 0;">
                                             <div class="wrap-num-product flex-w m-l-auto m-r-0"
