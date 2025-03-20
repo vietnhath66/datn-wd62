@@ -11,9 +11,9 @@
                 <div class="right-top-bar flex-w h-full">
                     <a href="#" class="flex-c-m trans-04 p-lr-25"> Help & FAQs </a>
 
-                    <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25"> Log in </a>
+                    <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25"> Đăng nhập </a>
 
-                    <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25"> Register </a>
+                    <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25"> Đăng ký </a>
 
                     {{-- <a href="#" class="flex-c-m trans-04 p-lr-25"> EN </a> --}}
 
@@ -162,7 +162,7 @@
                 <img src="images/icons/icon-close2.png" alt="CLOSE" />
             </button>
 
-            <form class="wrap-search-header flex-w p-l-15"  action="{{ route('client.viewSearch') }}" method="GET">
+            <form class="wrap-search-header flex-w p-l-15" action="{{ route('client.viewSearch') }}" method="GET">
                 <button class="flex-c-m trans-04">
                     <i class="zmdi zmdi-search"></i>
                 </button>
