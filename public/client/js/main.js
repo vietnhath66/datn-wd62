@@ -23,7 +23,7 @@
         overlayParentElement : 'html',
         transition: function(url){ window.location.href = url; }
     });
-    
+
     /*[ Back to top ]
     ===========================================================*/
     var windowH = $(window).height()/2;
@@ -52,26 +52,26 @@
     else {
         var posWrapHeader = 0;
     }
-    
+
 
     if($(window).scrollTop() > posWrapHeader) {
         $(headerDesktop).addClass('fix-menu-desktop');
-        $(wrapMenu).css('top',0); 
-    }  
+        $(wrapMenu).css('top',0);
+    }
     else {
         $(headerDesktop).removeClass('fix-menu-desktop');
-        $(wrapMenu).css('top',posWrapHeader - $(this).scrollTop()); 
+        $(wrapMenu).css('top',posWrapHeader - $(this).scrollTop());
     }
 
     $(window).on('scroll',function(){
         if($(this).scrollTop() > posWrapHeader) {
             $(headerDesktop).addClass('fix-menu-desktop');
-            $(wrapMenu).css('top',0); 
-        }  
+            $(wrapMenu).css('top',0);
+        }
         else {
             $(headerDesktop).removeClass('fix-menu-desktop');
-            $(wrapMenu).css('top',posWrapHeader - $(this).scrollTop()); 
-        } 
+            $(wrapMenu).css('top',posWrapHeader - $(this).scrollTop());
+        }
     });
 
 
@@ -104,7 +104,7 @@
                     $(arrowMainMenu).removeClass('turn-arrow-main-menu-m');
                 }
             });
-                
+
         }
     });
 
@@ -137,7 +137,7 @@
             var filterValue = $(this).attr('data-filter');
             $topeContainer.isotope({filter: filterValue});
         });
-        
+
     });
 
     // init Isotope
@@ -169,25 +169,67 @@
 
     /*==================================================================
     [ Filter / Search product ]*/
-    $('.js-show-filter').on('click',function(){
-        $(this).toggleClass('show-filter');
-        $('.panel-filter').slideToggle(400);
+    document.addEventListener("DOMContentLoaded", function () {
+        const filterBtns = document.querySelectorAll(".filter-tope-group button");
+        const sortButtons = document.querySelectorAll(".filter-btn");
+        const filterBtn = document.querySelector(".js-show-filter");
+        const panelFilter = document.querySelector(".panel-filter");
+        const productContainer = document.querySelector(".isotope-grid");
 
-        if($('.js-show-search').hasClass('show-search')) {
-            $('.js-show-search').removeClass('show-search');
-            $('.panel-search').slideUp(400);
-        }    
+        // 👉 Khởi tạo Isotope
+        var $grid = $('.isotope-grid').isotope({
+            itemSelector: '.isotope-item',
+            layoutMode: 'fitRows',
+            getSortData: {
+                name: '.product-name', // Lấy dữ liệu từ class .product-name
+                price: function (itemElem) {
+                    return parseFloat($(itemElem).find(".product-price").text().replace(/[^\d.]/g, ""));
+                }
+            }
+        });
+
+        // 👉 Hiển thị bộ lọc
+        if (filterBtn && panelFilter) {
+            filterBtn.addEventListener("click", function () {
+                this.classList.toggle("show-filter");
+                panelFilter.style.display = panelFilter.style.display === "block" ? "none" : "block";
+            });
+        }
+
+        // 👉 Lọc sản phẩm theo danh mục
+        filterBtns.forEach(button => {
+            button.addEventListener("click", function () {
+                let filterValue = this.getAttribute("data-filter");
+                console.log("Lọc theo:", filterValue);
+
+                $grid.isotope({ filter: filterValue });
+
+                filterBtns.forEach(btn => btn.classList.remove("how-active1"));
+                this.classList.add("how-active1");
+            });
+        });
+
+        // 👉 Sắp xếp sản phẩm theo tên hoặc giá
+        sortButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                let sortType = this.getAttribute("data-sort");
+                console.log("Sắp xếp theo:", sortType);
+
+                let sortBy = sortType.includes("name") ? "name" : "price";
+                let sortAscending = sortType.includes("asc");
+
+                $grid.isotope({
+                    sortBy: sortBy,
+                    sortAscending: sortAscending
+                });
+
+                // Cập nhật trạng thái active của nút bấm
+                sortButtons.forEach(btn => btn.classList.remove("how-active1"));
+                this.classList.add("how-active1");
+            });
+        });
     });
 
-    $('.js-show-search').on('click',function(){
-        $(this).toggleClass('show-search');
-        $('.panel-search').slideToggle(400);
-
-        if($('.js-show-filter').hasClass('show-filter')) {
-            $('.js-show-filter').removeClass('show-filter');
-            $('.panel-filter').slideUp(400);
-        }    
-    });
 
 
 
@@ -265,7 +307,7 @@
             }
         });
     });
-    
+
     /*==================================================================
     [ Show modal1 ]*/
     $('.js-show-modal1').on('click',function(e){
