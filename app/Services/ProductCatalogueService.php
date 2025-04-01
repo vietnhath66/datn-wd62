@@ -12,6 +12,7 @@ use App\Repositories\Interfaces\AttributeRepositoryInterface as AttributeReponsi
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Classes\Nestedsetbie;
+use App\Models\ProductCatalogue;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -65,7 +66,9 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             ['id', 'ASC'],
             [],
         );
-        // dd($productCatalogues);
+        if(isset($condition['keyword'])){
+            $productCatalogues = ProductCatalogue::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->get();
+        }
         return $productCatalogues;
     }
 

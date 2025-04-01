@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Brand;
 use App\Models\User;
 use App\Repositories\Interfaces\BrandRepositoryInterface as BrandRepository;
 use App\Services\Interfaces\BrandServiceInterface;
@@ -29,7 +30,7 @@ class BrandService implements BrandServiceInterface
         $condition['publish'] = $request->integer('publish');
         $perPage = addslashes($request->integer('per_page'));
 
-
+        // dd($condition['keyword']);
         $brands = $this->BrandRepository->pagination(
             ['*'],
             $condition,
@@ -39,6 +40,9 @@ class BrandService implements BrandServiceInterface
             [],
             [],
         );
+        if(isset($_GET) && isset($condition['keyword'])){
+            $brands = Brand::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->get();
+        }
         return $brands;
     }
 

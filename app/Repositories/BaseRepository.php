@@ -35,8 +35,12 @@ class BaseRepository implements BaseRepositoryInterface
         array $rawQuery = [],
     ) {
         $query = $this->model->select($column);
+        // if(isset($condition['keyword'])) {
+        //     // dd($condition['keyword']);
+        //     $query->where('products.name','LIKE', $condition['keyword']);
+        // }
         return $query
-            ->keyword($condition['keyword'] ?? null)
+            // ->keyword($condition['keyword'] ?? null)
             ->publish($condition['publish'] ?? null)
             ->relationCount($relations ?? null)
             ->CustomWhere($condition['where'] ?? null)

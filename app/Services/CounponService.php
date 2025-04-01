@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Counpon;
 use App\Models\User;
 use App\Repositories\Interfaces\CounponRepositoryInterface as CounponRepository;
 use App\Services\Interfaces\CounponServiceInterface;
@@ -29,7 +30,7 @@ class CounponService implements CounponServiceInterface
         $perPage = addslashes($request->integer('per_page'));
 
 
-        $brands = $this->CounponRepository->pagination(
+        $counpons = $this->CounponRepository->pagination(
             ['*'],
             $condition,
             $perPage,
@@ -38,7 +39,10 @@ class CounponService implements CounponServiceInterface
             [],
             [],
         );
-        return $brands;
+        if(isset($_GET) && isset($condition['keyword'])){
+            $counpons = Counpon::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->get();
+        }
+        return $counpons;
     }
 
     public function create($request)
@@ -47,7 +51,6 @@ class CounponService implements CounponServiceInterface
         try {
             $payload = $request->only($this->payload());
             $payload['number'] = 1;
-
             $counpon = $this->CounponRepository->create($payload);
             DB::commit();
             return true;

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Language;
+use App\Models\Product;
 use App\Models\ProductGallery;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\Services\BaseService;
@@ -74,12 +75,12 @@ class ProductService extends BaseService implements ProductServiceInterface
         $perPage = $request->integer('perpage');
         $perPage = 5;
         $condition = [
-            // 'keyword' => addslashes($request->input('keyword')),
+            'keyword' => addslashes($request->input('keyword')),
             'publish' => $request->integer('publish'),
             'where' => [],
         ];
         $paginationConfig = [
-            'path' => ($extend['path']) ?? 'admin/product/index',
+            'path' => ($extend['path']) ?? 'admin/products/product/index',
             'groupBy' => $this->paginateSelect()
         ];
         $orderBy = ['products.id', 'DESC'];
@@ -88,7 +89,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         $joins = [
             ['product_catalogues as tb2', 'products.product_catalogue_id', '=', 'tb2.id'],
         ];
-
         $products = $this->productReponsitory->pagination(
             $this->paginateSelect(),
             $condition,
@@ -99,7 +99,9 @@ class ProductService extends BaseService implements ProductServiceInterface
             $relations,
             $rawQuery
         );
-
+        if(isset($condition['keyword'])){
+            $products = Product::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->get();
+        }
         return $products;
     }
 
