@@ -387,14 +387,21 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function createVariantArray(array $payload = [], $product): array
     {
         // dd($payload);
+
         $variant = [];
         if (isset($payload['variant']['sku']) && count($payload['variant']['sku'])) {
             foreach ($payload['variant']['sku'] as $key => $val) {
+
                 // $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $payload['productVariant']['id'][$key]);
                 $vId = ($payload['productVariant']['id'][$key]) ?? '';
                 $productVariantId = $this->sortString($vId);
+                $variant_details = explode(",", $payload['productVariant']['name'][$key]);
+                // $array = explode(",", $str);
                 $variant[] = [
-                    'name' => $product->name . " " . $payload['productVariant']['name'][$key],
+                    // 'name' => $product->name . " " . $payload['productVariant']['name'][$key],
+                    'name' => $product->name,
+                    'name_variant_size' => $variant_details[0],
+                    'name_variant_color' => $variant_details[1],
                     'code' => $productVariantId,
                     'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
                     'sku' => $val,
@@ -407,6 +414,7 @@ class ProductService extends BaseService implements ProductServiceInterface
                 ];
             }
         }
+        // dd($payload['productVariant']);
         // dd($variant);
         return $variant;
     }
