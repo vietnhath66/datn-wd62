@@ -21,27 +21,32 @@
                             @if ($cart && $cart->items->count() > 0)
                                 @foreach ($cart->items as $item)
                                     <tr>
-                                        {{-- Chọn 1 sản phẩm mới cho thực hiện thanh toán --}}
                                         <td>
                                             <input type="checkbox" class="product-checkbox"
                                                 data-id="{{ $item->id }}" data-price="{{ $cartTotal }}"
                                                 style="width: 18px; height: 18px; cursor: pointer;">
                                         </td>
+
                                         <td>
                                             <img src="images/item-cart-04.jpg" alt="IMG" class="product-img">
                                         </td>
+
                                         <td class="kanit-thin product-name">
                                             {{ $item->productVariant->products->name }}
                                         </td>
+
                                         <td class="kanit-thin">
                                             {{ number_format($item->productVariant->price) }} VND
                                         </td>
+
                                         <td class="kanit-thin">
                                             {{ $item->productVariant->name }}
                                         </td>
+
                                         <td class="kanit-thin">
                                             {{ $item->productVariant->size }}
                                         </td>
+
                                         <td>
                                             {{-- Tăng số lượng sản phẩm --}}
                                             <form class="update-cart-form"
@@ -60,9 +65,11 @@
                                                 </div>
                                             </form>
                                         </td>
+
                                         <td class="kanit-thin" data-id="{{ $item->id }}">
-                                            {{ number_format($cartTotal) }} VND
+                                            {{ number_format($item->quantity * $item->productVariant->price) }} VND
                                         </td>
+
                                         <td>
                                             {{-- Xoá sản phẩm --}}
                                             <form action="{{ route('client.cart.deleteCart', $item->id) }}"

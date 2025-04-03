@@ -1,4 +1,5 @@
-<form class="bg0 p-t-75 p-b-85">
+<form action="{{ route('client.order.completeOrder') }}" method="POST" class="bg0 p-t-75 p-b-85">
+    @csrf
     <div class="">
         <div class="row">
             <!-- Phần thông tin vận chuyển (bên trái) -->
@@ -7,54 +8,51 @@
                     <a href="{{ route('client.cart.viewCart') }}" class="text-primary mb-3">Quay Lại Giỏ Hàng</a>
                     <h4>Thông Tin Vận Chuyển</h4>
                 </div>
-
                 <div class="shipping-info">
                     @if ($user)
-                        <form>
-                            <div class="mb-3">
-                                <label for="fullName" class="form-label">Họ và Tên</label>
-                                <input type="text" class="form-control" id="fullName" placeholder="Nhập họ và tên"
-                                    value="{{ $user->name }}" />
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Họ và Tên</label>
+                            <input type="text" class="form-control" id="fullName" name="name"
+                                placeholder="Nhập họ và tên" value="{{ $user->name }}" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Số Điện Thoại</label>
+                            <input type="text" class="form-control" id="phone" name="phone"
+                                placeholder="Nhập số điện thoại" value="{{ $user->phone }}" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                placeholder="Nhập email" value="{{ $user->email }}" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Địa chỉ cụ thể</label>
+                            <input type="text" class="form-control" id="address" placeholder="Nhập địa chỉ của bạn"
+                                name="address" autocomplete="off" />
+                            <div id="suggestions" class="suggestions"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label for="number_house" class="form-label">Số nhà</label>
+                                <input type="text" class="form-control" name="number_house" id="number_house"
+                                    placeholder="Nhập số nhà" />
                             </div>
-                            <div class="mb-3">
-                                <label for="phone" class="form-label">Số Điện Thoại</label>
-                                <input type="text" class="form-control" id="phone"
-                                    placeholder="Nhập số điện thoại" value="{{ $user->phone }}" />
+                            <div class="col-md-3 mb-3">
+                                <label for="neighborhood" class="form-label">Phường/Xã</label>
+                                <input type="text" class="form-control" name="neighborhood" id="neighborhood"
+                                    placeholder="Nhập Phường/Xã" />
                             </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" placeholder="Nhập email"
-                                    value="{{ $user->email }}" />
+                            <div class="col-md-3 mb-3">
+                                <label for="district" class="form-label">Quận/Huyện</label>
+                                <input type="text" class="form-control" name="district" id="district"
+                                    placeholder="Nhập Quận/Huyện" />
                             </div>
-                            <div class="mb-3">
-                                <label for="address" class="form-label">Địa chỉ cụ thể</label>
-                                <input type="text" class="form-control" id="address"
-                                    placeholder="Nhập địa chỉ của bạn" autocomplete="off" />
-                                <div id="suggestions" class="suggestions"></div>
+                            <div class="col-md-3 mb-3">
+                                <label for="province" class="form-label">Tỉnh/Thành phố</label>
+                                <input type="text" class="form-control" name="province" id="province"
+                                    placeholder="Nhập Tỉnh/Thành phố" />
                             </div>
-                            <div class="row">
-                                <div class="col-md-3 mb-3">
-                                    <label for="" class="form-label">Số nhà</label>
-                                    <input type="text" class="form-control" id=""
-                                        placeholder="Nhập số nhà" />
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="neighborhood" class="form-label">Phường/Xã</label>
-                                    <input type="text" class="form-control" id="neighborhood"
-                                        placeholder="Nhập Phường/Xã" />
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="district" class="form-label">Quận/Huyện</label>
-                                    <input type="text" class="form-control" id="district"
-                                        placeholder="Nhập Quận/Huyện" />
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="province" class="form-label">Tỉnh/Thành phố</label>
-                                    <input type="text" class="form-control" id="province"
-                                        placeholder="Nhập Tỉnh/Thành phố" />
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     @endif
                 </div>
             </div>
@@ -84,7 +82,7 @@
                         <div class="mb-3">
                             <label for="coupon" class="form-label">Mã khuyến mãi</label>
                             <div class="coupon-section">
-                                <input type="text" class="form-control" id="coupon"
+                                <input type="text" class="form-control" name="coupon" id="coupon"
                                     placeholder="Nhập mã khuyến mãi" />
                                 <button type="button" class="btn btn-apply-coupon">
                                     Áp Dụng
@@ -103,16 +101,16 @@
                         <div class="mt-4">
                             <h6 class="mb-3">Chọn Phương Thức Thanh Toán</h6>
                             <div class="payment-method d-flex">
-                                <input type="radio" id="cod" name="payment" checked />
+                                <input type="radio" id="cod" value="cod" name="payment_status" checked />
                                 <label for="cod">Thanh Toán Khi Nhận Hàng</label>
                             </div>
                             <div class="payment-method d-flex">
-                                <input type="radio" id="wallet" name="payment" />
+                                <input type="radio" id="wallet" value="wallet" name="payment_status" />
                                 <label for="wallet">Ví Điện Tử Momo</label>
                             </div>
                         </div>
                         <!-- Nút xác nhận -->
-                        <button class="btn-custom w-100 mt-4">Hoàn Tất Thanh Toán</button>
+                        <button type="submit" class="btn-custom w-100 mt-4">Hoàn Tất Thanh Toán</button>
                     </div>
                 @endforeach
 

@@ -62,7 +62,7 @@
         }
 
         .form-label {
-            font-weight: 500;
+            font-weight: bold;
             color: #2c3e50;
             margin-bottom: 8px;
         }

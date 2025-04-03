@@ -29,19 +29,21 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
 
 
-    //Cart
+    // Cart
     Route::group(['prefix' => 'cart', 'as' => 'cart.'], function () {
         Route::get('/', [CartController::class, 'viewCart'])->name('viewCart');
         Route::post('update-cart', [CartController::class, 'updateCart'])->name('updateCart');
         Route::delete('delete-cart/{id}', [CartController::class, 'deleteCart'])->name('deleteCart');
     });
 
-
-    //Order
+    // Order
     Route::group(['prefix' => 'order', 'as' => 'order.'], function () {
         Route::get('/', [OrderController::class, 'viewOrder'])->name('viewOrder');
         Route::post('checkout', [OrderController::class, 'checkout'])->name('checkout');
+        Route::post('complete', [OrderController::class, 'completeOrder'])->name('completeOrder');
     });
+
+
 
 });
 

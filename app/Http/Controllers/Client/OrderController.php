@@ -48,23 +48,58 @@ class OrderController extends Controller
             return redirect()->back()->with('error', 'Giỏ hàng của bạn đang trống!');
         }
 
-        // Tạo đơn hàng mới
-        $order = Order::create([
-            'user_id' => $userId,
-            'total' => 0, // Cập nhật sau khi tính tổng tiền
-            'status' => 'pending',
-        ]);
+        // Kiểm tra xem user đã có đơn hàng 'pending' chưa
+        $order = Order::where('user_id', $userId)
+            ->where('status', 'pending')
+            ->first();
+
+        if (!$order) {
+            // Nếu chưa có đơn hàng, tạo mới
+            do {
+                $barcode = mt_rand(100000000, 999999999);
+            } while (Order::where('barcode', $barcode)->exists());
+
+            $order = Order::create([
+                'user_id' => $userId,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'total' => 0, // Cập nhật sau khi tính tổng tiền
+                'status' => 'pending',
+                'payment_status' => 'pending',
+                'address' => $request->address,
+                'number_house' => $request->number_house,
+                'neighborhood' => $request->neighborhood,
+                'district' => $request->district,
+                'province' => $request->province,
+                'coupon' => $request->coupon ?? null,
+                'barcode' => $barcode,
+            ]);
+        } else {
+            // Nếu có đơn hàng pending, cập nhật thông tin đơn hàng
+            $order->update([
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'number_house' => $request->number_house,
+                'neighborhood' => $request->neighborhood,
+                'district' => $request->district,
+                'province' => $request->province,
+                'coupon' => $request->coupon ?? null,
+            ]);
+        }
 
         $totalPrice = 0;
 
+        // **Xóa các sản phẩm cũ trong order_items**
+        OrderDetail::where('order_id', $order->id)->delete();
+
+        // Thêm lại sản phẩm từ giỏ hàng
         foreach ($cart->items as $item) {
-            // Kiểm tra sản phẩm có tồn tại không
             $product = Product::find($item->product_id);
             if (!$product) {
                 return redirect()->back()->with('error', 'Sản phẩm không tồn tại trong hệ thống.');
             }
 
-            // Thêm sản phẩm vào bảng order_items
             OrderDetail::create([
                 'order_id' => $order->id,
                 'product_id' => $item->product_id,
@@ -79,14 +114,49 @@ class OrderController extends Controller
         // Cập nhật tổng tiền cho đơn hàng
         $order->update(['total' => $totalPrice]);
 
-        // Xoá giỏ hàng sau khi đặt hàng
-        CartDetail::where('cart_id', $cart->id)->delete();
-
         // Lưu order_id vào session để hiển thị trên trang thanh toán
         Session::put('order_id', $order->id);
 
-        return redirect()->route('client.order.viewOrder')->with('success', 'Chuyển sang trang thanh toán');
+        return redirect()->route('client.order.viewOrder');
     }
 
+
+
+    public function completeOrder(Request $request)
+    {
+        // Kiểm tra order_id có trong session không
+        $orderId = Session::get('order_id');
+        if (!$orderId) {
+            return redirect()->route('client.cart.viewCart')->with('error', 'Không tìm thấy đơn hàng.');
+        }
+
+        // Lấy đơn hàng từ database
+        $order = Order::find($orderId);
+        if (!$order) {
+            return redirect()->route('client.cart.viewCart')->with('error', 'Đơn hàng không tồn tại.');
+        }
+
+        // Cập nhật thông tin đơn hàng với dữ liệu mới từ form
+        $order->update([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'address' => $request->address,
+            'number_house' => $request->number_house,
+            'neighborhood' => $request->neighborhood,
+            'district' => $request->district,
+            'province' => $request->province,
+            'payment_status' => $request->payment_status == 'wallet' ? 'wallet' : 'cod', // Cập nhật trạng thái thanh toán
+            'status' => 'completed', // Đơn hàng được xác nhận
+        ]);
+
+        // Xoá giỏ hàng sau khi đặt hàng
+        CartDetail::where('cart_id', $order->user_id)->delete();
+
+        // Xóa session order_id sau khi hoàn tất thanh toán
+        Session::forget('order_id');
+
+        return redirect()->route('client.viewHome')->with('success', 'Đơn hàng đã được xác nhận.');
+    }
 
 }
