@@ -17,9 +17,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -58,5 +58,5 @@ Route::get('admin/login', [AuthController::class, 'index'])->name('auth.admin')-
 Route::post('login', [AuthController::class, 'login'])->name('auth.login');
 Route::get('admin/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 

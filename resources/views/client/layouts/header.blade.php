@@ -1,3 +1,32 @@
+<style>
+    .dropdown-toggle {
+        display: flex;
+        align-items: center;
+        border: none;
+        background: none;
+        color: white
+    }
+
+    .dropdown-toggle img {
+        margin-right: 8px;
+    }
+
+    .dropdown-item i {
+        width: 20px;
+        text-align: center;
+        margin-right: 10px;
+    }
+
+    .dropdown-menu {
+        z-index: 1050 !important;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        min-width: 200px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
 <header>
     <!-- Header desktop -->
     <div class="container-menu-desktop">
@@ -11,9 +40,52 @@
                 <div class="right-top-bar flex-w h-full">
                     <a href="#" class="flex-c-m trans-04 p-lr-25"> Help & FAQs </a>
 
-                    <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25"> Đăng nhập </a>
+                    @if (Auth::check())
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="{{ Auth::user()->avatar ?? asset('images/default-avatar.png') }}"
+                                    alt="Avatar" class="rounded-circle" width="30" height="30">
+                                {{ Auth::user()->name }}
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                                <span class="dropdown-item text-muted">
+                                    <i class="fa fa-envelope"></i> <span class="ml-4">{{ Auth::user()->email }}</span>
+                                </span>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="">
+                                    <i class="fa fa-cogs"></i> <span class="ml-2">Trang quản trị</span>
+                                </a>
+                                <a class="dropdown-item" href="">
+                                    <i class="fa fa-user"></i> <span class="ml-2">Tài khoản</span>
+                                </a>
+                                <a class="dropdown-item" href="">
+                                    <i class="fa fa-shopping-cart"></i> <span class="ml-2">Đơn hàng</span>
+                                </a>
+                                <a class="dropdown-item" href="">
+                                    <i class="fa fa-envelope"></i> <span class="ml-2">Đổi email</span>
+                                </a>
+                                <a class="dropdown-item" href="">
+                                    <i class="fa fa-heart"></i> <span class="ml-2">Yêu thích</span>
+                                </a>
+                                <a class="dropdown-item" href="">
+                                    <i class="fa fa-lock"></i> <span class="ml-2">Thay mật khẩu</span>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-danger" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fa fa-sign-out"></i> <span class="ml-2">Đăng xuất</span>
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </div>
+                        </div>
+                    @else
+                        <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25"> Đăng nhập </a>
 
-                    <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25"> Đăng ký </a>
+                        <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25"> Đăng ký </a>
+                    @endif
 
                     {{-- <a href="#" class="flex-c-m trans-04 p-lr-25"> EN </a> --}}
 
