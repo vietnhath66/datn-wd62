@@ -147,7 +147,7 @@ class OrderController extends Controller
             'district' => $request->district,
             'province' => $request->province,
             'payment_status' => $request->payment_status == 'wallet' ? 'wallet' : 'cod', // Cập nhật trạng thái thanh toán
-            'status' => 'completed', // Đơn hàng được xác nhận
+            'status' => 'pending', // Đơn hàng được xác nhận
         ]);
 
         // Xoá giỏ hàng sau khi đặt hàng
