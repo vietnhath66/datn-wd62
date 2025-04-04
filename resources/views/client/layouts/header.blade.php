@@ -22,7 +22,7 @@
         position: absolute;
         right: 0;
         top: 100%;
-        min-width: 200px;
+        min-width: 250px;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     }
 </style>
@@ -44,18 +44,20 @@
                         <div class="dropdown">
                             <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="{{ Auth::user()->avatar ?? asset('images/default-avatar.png') }}"
-                                    alt="Avatar" class="rounded-circle" width="30" height="30">
+                                <img src="{{ Auth::user()->avatar ?? asset('client/images/avt.jpg') }}" alt=""
+                                    class="rounded-circle" width="30" height="30">
                                 {{ Auth::user()->name }}
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                                 <span class="dropdown-item text-muted">
-                                    <i class="fa fa-envelope"></i> <span class="ml-4">{{ Auth::user()->email }}</span>
+                                    <i class="fa fa-envelope"></i> <span class="ml-2">{{ Auth::user()->email }}</span>
                                 </span>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="">
-                                    <i class="fa fa-cogs"></i> <span class="ml-2">Trang quản trị</span>
-                                </a>
+                                @if (Auth::user()->role == 'admin')
+                                    <a class="dropdown-item" href="">
+                                        <i class="fa fa-cogs"></i> <span class="ml-2">Trang quản trị</span>
+                                    </a>
+                                @endif
                                 <a class="dropdown-item" href="">
                                     <i class="fa fa-user"></i> <span class="ml-2">Tài khoản</span>
                                 </a>
