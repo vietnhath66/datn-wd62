@@ -32,10 +32,14 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     // Route::get('products', [ProductsController::class, 'viewProductss'])->name('viewProductss');
     Route::get('products', [ProductsController::class, 'index'])->name('index');
 
-    Route::get('/products/{id}', [ProductsController::class, 'show'])->name('productss.show');
+    Route::get('products/{id}', [ProductsController::class, 'show'])->name('productss.show');
 
     //Quick view
     Route::get('/products/{id}/quick-view', [ProductsController::class, 'quickview'])->name('products.quickView');
+
+    
+
+    
 });
 
 // Admin
