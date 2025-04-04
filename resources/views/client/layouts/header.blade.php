@@ -9,16 +9,41 @@
                 </div>
 
                 <div class="right-top-bar flex-w h-full">
-                    <a href="#" class="flex-c-m trans-04 p-lr-25"> Help & FAQs </a>
+                    <a href="#" class="flex-c-m trans-04 p-lr-25 text-[#b2b2b2]">Help & FAQs</a>
 
-                    <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25"> Log in </a>
+                    @guest
+                        <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25 text-[#b2b2b2]">Log in</a>
+                        <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25 text-[#b2b2b2]">Register</a>
+                    @endguest
 
-                    <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25"> Register </a>
+                    @auth
+                    <div x-data="{ open: false }" class="relative z-[9999] flex items-center">
+                        <!-- Trigger -->
+                        <button @click="open = !open"
+                            class="inline-flex items-center px-4 py-2 text-[#b2b2b2] text-sm font-medium hover:text-[#2231af] focus:outline-none transition">
+                            {{ Auth::user()->name ?? 'Khách' }}
+                            <svg class="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0L5.293 8.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
 
-                    {{-- <a href="#" class="flex-c-m trans-04 p-lr-25"> EN </a> --}}
-
-                    {{-- <a href="#" class="flex-c-m trans-04 p-lr-25"> USD </a> --}}
+                        <!-- Dropdown Menu: căn giữa dưới tên người dùng -->
+                        <div x-show="open" @click.away="open = false"
+                            class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-xl z-[9999]">
+                            <a href="{{ route('profile.edit') }}"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit"
+                                    class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Log Out</button>
+                            </form>
+                        </div>
+                    </div>
+                    @endauth
                 </div>
+
             </div>
         </div>
 
@@ -45,7 +70,7 @@
                         </li>
 
                         <li>
-                            <a href="{{route('client.viewAbout')}}">Giới thiệu</a>
+                            <a href="{{ route('client.viewAbout') }}">Giới thiệu</a>
                         </li>
 
                         <li>
@@ -142,11 +167,11 @@
             </li>
 
             <li>
-                <a href="{{route('client.viewAbout')}}">Chính sách</a>
+                <a href="{{ route('client.viewAbout') }}">Chính sách</a>
             </li>
 
             <li>
-                <a href="{{route('client.viewAbout')}}">Giới thiệu</a>
+                <a href="{{ route('client.viewAbout') }}">Giới thiệu</a>
             </li>
 
             <li>
@@ -162,7 +187,7 @@
                 <img src="images/icons/icon-close2.png" alt="CLOSE" />
             </button>
 
-            <form class="wrap-search-header flex-w p-l-15"  action="{{ route('client.viewSearch') }}" method="GET">
+            <form class="wrap-search-header flex-w p-l-15" action="{{ route('client.viewSearch') }}" method="GET">
                 <button class="flex-c-m trans-04">
                     <i class="zmdi zmdi-search"></i>
                 </button>
