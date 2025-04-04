@@ -48,6 +48,8 @@
              </div>
         </div>
     </div>
+    @elseif(auth()->user()->hasRole([4, 5]))
+    <div class="messenger-favorites app-scroll-hidden" style="width:0px; padding: 0px;"></div>
     @endif
 
     {{-- ----------------------Messaging side---------------------- --}}
