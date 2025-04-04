@@ -42,4 +42,5 @@ class Product extends Model
     protected $casts = [
         'attribute' => 'json',
     ];
+
 }

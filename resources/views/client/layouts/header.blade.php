@@ -1,4 +1,34 @@
-<header class="header-v4">
+<style>
+    .dropdown-toggle {
+        display: flex;
+        align-items: center;
+        border: none;
+        background: none;
+        color: white
+    }
+
+    .dropdown-toggle img {
+        margin-right: 8px;
+    }
+
+    .dropdown-item i {
+        width: 20px;
+        text-align: center;
+        margin-right: 10px;
+    }
+
+    .dropdown-menu {
+        z-index: 1050 !important;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        min-width: 250px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<header>
+
     <!-- Header desktop -->
     <div class="container-menu-desktop">
         <!-- Topbar -->
@@ -10,12 +40,55 @@
 
                 <div class="right-top-bar flex-w h-full">
                     <a href="" class="flex-c-m trans-04 p-lr-25"> Help & FAQs </a>
+                    @if (Auth::check())
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="{{ Auth::user()->avatar ?? asset('client/images/avt.jpg') }}" alt=""
+                                    class="rounded-circle" width="30" height="30">
+                                {{ Auth::user()->name }}
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                                <span class="dropdown-item text-muted">
+                                    <i class="fa fa-envelope"></i> <span class="ml-2">{{ Auth::user()->email }}</span>
+                                </span>
+                                <div class="dropdown-divider"></div>
+                                @if (Auth::user()->role == 'admin')
+                                    <a class="dropdown-item" href="">
+                                        <i class="fa fa-cogs"></i> <span class="ml-2">Trang quản trị</span>
+                                    </a>
+                                @endif
+                                <a class="dropdown-item" href="">
+                                    <i class="fa fa-user"></i> <span class="ml-2">Tài khoản</span>
+                                </a>
+                                <a class="dropdown-item" href="">
+                                    <i class="fa fa-shopping-cart"></i> <span class="ml-2">Đơn hàng</span>
+                                </a>
+                                <a class="dropdown-item" href="">
+                                    <i class="fa fa-envelope"></i> <span class="ml-2">Đổi email</span>
+                                </a>
+                                <a class="dropdown-item" href="">
+                                    <i class="fa fa-heart"></i> <span class="ml-2">Yêu thích</span>
+                                </a>
+                                <a class="dropdown-item" href="">
+                                    <i class="fa fa-lock"></i> <span class="ml-2">Thay mật khẩu</span>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-danger" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fa fa-sign-out"></i> <span class="ml-2">Đăng xuất</span>
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </div>
+                        </div>
+                    @else
+                        <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25"> Đăng nhập </a>
 
-                    <a href="" class="flex-c-m trans-04 p-lr-25"> Tài khoản </a>
+                        <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25"> Đăng ký </a>
+                    @endif
 
-                    {{-- <a href="#" class="flex-c-m trans-04 p-lr-25"> EN </a> --}}
-
-                    {{-- <a href="#" class="flex-c-m trans-04 p-lr-25"> USD </a> --}}
                 </div>
             </div>
         </div>
@@ -23,7 +96,7 @@
         <div class="wrap-menu-desktop">
             <nav class="limiter-menu-desktop container">
                 <!-- Logo desktop -->
-                <a href="#" class="logo">
+                <a href="{{ route('client.viewHome') }}" class="logo">
                     <img src="images/icons/logo-03.png" alt="IMG-LOGO" />
                 </a>
 
@@ -39,7 +112,7 @@
                         </li>
 
                         <li>
-                            <a href="{{ route('client.viewPolicy') }}">Chính sách</a>
+                            <a href="{{ route('client.viewAbout') }}">Chính sách</a>
                         </li>
 
                         <li>
@@ -47,7 +120,7 @@
                         </li>
 
                         <li>
-                            <a href="">Liên hệ</a>
+                            <a href="{{ route('client.viewContact') }}">Liên hệ</a>
                         </li>
                     </ul>
                 </div>
@@ -77,7 +150,7 @@
     <div class="wrap-header-mobile">
         <!-- Logo moblie -->
         <div class="logo-mobile">
-            <a href="index.html"><img src="images/icons/logo-01.png" alt="IMG-LOGO" /></a>
+            <a href="{{ route('client.viewHome') }}"><img src="images/icons/logo-01.png" alt="IMG-LOGO" /></a>
         </div>
 
         <!-- Icon header -->
@@ -160,7 +233,7 @@
                 <img src="images/icons/icon-close2.png" alt="CLOSE" />
             </button>
 
-            <form class="wrap-search-header flex-w p-l-15">
+            <form class="wrap-search-header flex-w p-l-15" action="{{ route('client.viewSearch') }}" method="GET">
                 <button class="flex-c-m trans-04">
                     <i class="zmdi zmdi-search"></i>
                 </button>
