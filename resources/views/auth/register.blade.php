@@ -4,64 +4,85 @@
 
         <!-- Name -->
         <div>
-            <x-input-label for="name" :value="__('Name')" />
+            <x-input-label for="name" :value="__('Họ Và Tên')" />
             <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+            @error('name')
+                <span style="color: red;">{{ $message }}</span>
+            @enderror
         </div>
 
         <!-- Email Address -->
         <div class="mt-4">
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            @error('email')
+                <span style="color: red;">{{ $message }}</span>
+            @enderror
         </div>
-
-        <!-- Phone -->
-        <div>
-            <x-input-label for="phone" :value="__('Phone')" />
-            <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="old('phone')" required />
-            <x-input-error :messages="$errors->get('phone')" class="mt-2" />
-        </div>
-        
-        <!-- Role ID -->
-        <div>
-            <x-input-label for="role_id" :value="__('Role ID')" />
-            <x-text-input id="role_id" class="block mt-1 w-full" type="text" name="role_id" :value="old('role_id')" required />
-            <x-input-error :messages="$errors->get('role_id')" class="mt-2" />
-        </div>
-
 
         <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="mt-4 relative">
+            <x-input-label for="password" :value="__('Mật Khẩu')" />
+            <x-text-input id="password" class="block mt-1 w-full pr-12" type="password" name="password" required autocomplete="new-password" />
+            <!-- Button để ẩn/hiển thị mật khẩu -->
+            <button type="button" onclick="togglePassword()" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
+                <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm9 0c0 4-6 8-9 8s-9-4-9-8 6-8 9-8 9 4 9 8z" />
+                </svg>
+            </button>
+            @error('password')
+                <span style="color: red;">{{ $message }}</span>
+            @enderror
         </div>
 
         <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
+        <div class="mt-4 relative">
+            <x-input-label for="password_confirmation" :value="__('Xác nhận mật khẩu')" />
+            <x-text-input id="password_confirmation" class="block mt-1 w-full pr-12" type="password" name="password_confirmation" required autocomplete="new-password" />
+            <!-- Button để ẩn/hiển thị mật khẩu xác nhận -->
+            <button type="button" onclick="toggleConfirmPassword()" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
+                <svg id="eyeIconConfirm" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm9 0c0 4-6 8-9 8s-9-4-9-8 6-8 9-8 9 4 9 8z" />
+                </svg>
+            </button>
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
+                {{ __('Đã Đăng Ký?') }}
             </a>
 
             <x-primary-button class="ms-4">
-                {{ __('Register') }}
+                {{ __('Đăng Ký') }}
             </x-primary-button>
         </div>
     </form>
+
+    <!-- Script Hiển/Ẩn Mật khẩu -->
+    <script>
+        function togglePassword() {
+            let passwordInput = document.getElementById("password");
+            let eyeIcon = document.getElementById("eyeIcon");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 5.121A12.034 12.034 0 0112 3c6.627 0 12 5.373 12 12a12.034 12.034 0 01-2.121 6.879m-4.95-4.95a5 5 0 00-7.07 0m12.02-4.95a12.034 12.034 0 01-7.879 2.121A12.034 12.034 0 015.121 5.121" />`;
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm9 0c0 4-6 8-9 8s-9-4-9-8 6-8 9-8 9 4 9 8z" />`;
+            }
+        }
+
+        function toggleConfirmPassword() {
+            let confirmPasswordInput = document.getElementById("password_confirmation");
+            let eyeIconConfirm = document.getElementById("eyeIconConfirm");
+            if (confirmPasswordInput.type === "password") {
+                confirmPasswordInput.type = "text";
+                eyeIconConfirm.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 5.121A12.034 12.034 0 0112 3c6.627 0 12 5.373 12 12a12.034 12.034 0 01-2.121 6.879m-4.95-4.95a5 5 0 00-7.07 0m12.02-4.95a12.034 12.034 0 01-7.879 2.121A12.034 12.034 0 015.121 5.121" />`;
+            } else {
+                confirmPasswordInput.type = "password";
+                eyeIconConfirm.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zm9 0c0 4-6 8-9 8s-9-4-9-8 6-8 9-8 9 4 9 8z" />`;
+            }
+        }
+    </script>
 </x-guest-layout>

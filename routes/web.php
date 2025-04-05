@@ -4,6 +4,7 @@ use App\Http\Controllers\Client\AboutController;
 use App\Http\Controllers\Client\ContactController;
 use App\Http\Controllers\Client\ProductController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 
+// Auth::routes(['verify'=> true]);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -32,9 +34,11 @@ use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\AuthController;
 
+
+
 // Client
 Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
-
+    
     Route::get('home', [HomeController::class, 'viewHome'])->name('viewHome');
     Route::get('about', [AboutController::class, 'viewAbout'])->name('viewAbout');
     Route::get('contact', [ContactController::class, 'viewContact'])->name('viewContact');
