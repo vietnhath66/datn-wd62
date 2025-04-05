@@ -1,4 +1,4 @@
-@extends('client.layouts.master')
+@extends('client.master')
 
 @section('title', 'Trang Chủ')
 
@@ -6,5 +6,5 @@
     @include('client.layouts.slide')
     @include('client.layouts.banner')
     @include('client.products.product')
-    @include('client.layouts.modal')
+    @include('client.products.modal')
 @endsection

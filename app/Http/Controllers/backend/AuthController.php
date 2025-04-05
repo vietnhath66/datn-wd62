@@ -9,11 +9,13 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public function index()
-    {   
-        if(Auth::id() > 0){
+    {
+        if (Auth::id() > 0) {
             return redirect()->route('admin.dashboard.index');
         }
 
@@ -32,20 +34,21 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->route('admin.dashboard.index')->with('success', 'Đăng nhập thành công');
-        }else {
+        } else {
             return redirect()->route('auth.admin')->with('error', 'Email hoặc mật khẩu không chính xác');
         }
 
         // toastr()->error('Email hoặc mật khẩu không chính xác !');
- 
+
         return redirect()->route('auth.admin')->with('error', 'Đăng nhập thất bại');
     }
 
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
         Auth::logout();
 
         $request->session()->invalidate();
-        
+
         $request->session()->regenerateToken();
 
         return redirect()->route('auth.admin');
