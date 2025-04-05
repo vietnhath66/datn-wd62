@@ -1,6 +1,6 @@
 @extends('client.master')
 
-@section('title', 'chi tiet Sản phẩm')
+@section('title', 'Chi tiết sản phẩm')
 
 @section('content')
     @include('client.productss.show')
