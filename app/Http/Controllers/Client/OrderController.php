@@ -39,7 +39,7 @@ class OrderController extends Controller
 
     public function checkout(Request $request)
     {
-        $userId = 2; // Lấy user_id của user hiện tại
+        $userId = auth()->id();
 
         // Lấy giỏ hàng của user
         $cart = Cart::where('user_id', $userId)->with('items.productVariant')->first();

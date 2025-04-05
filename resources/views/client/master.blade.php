@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!--===============================================================================================-->
     <link rel="icon" type="image/png" href="{{ asset('client/images/icons/favicon.png') }}" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('client/vendor/bootstrap/css/bootstrap.min.css') }}" />

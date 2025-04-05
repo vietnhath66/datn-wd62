@@ -20,10 +20,10 @@
 
                             @if ($cart && $cart->items->count() > 0)
                                 @foreach ($cart->items as $item)
-                                    <tr>
+                                    <tr data-unit-price="{{ $item->price }}">
                                         <td>
                                             <input type="checkbox" class="product-checkbox"
-                                                data-id="{{ $item->id }}" data-price="{{ $cartTotal }}"
+                                                data-id="{{ $item->id }}"
                                                 style="width: 18px; height: 18px; cursor: pointer;">
                                         </td>
 
@@ -40,30 +40,25 @@
                                         </td>
 
                                         <td class="kanit-thin">
-                                            {{ $item->productVariant->name }}
+                                            {{ $item->productVariant->name_variant_color }}
                                         </td>
 
                                         <td class="kanit-thin">
-                                            {{ $item->productVariant->size }}
+                                            {{ $item->productVariant->name_variant_size }}
                                         </td>
 
                                         <td>
-                                            {{-- Tăng số lượng sản phẩm --}}
-                                            <form class="update-cart-form"
-                                                action="{{ route('client.cart.updateCart') }}" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="product_id" value="{{ $item->id }}">
-                                                <div class="quantity-control">
-                                                    <button type="button" class="quantity-btn btn-num-product-down">
-                                                        <i class="fs-16 zmdi zmdi-minus"></i>
-                                                    </button>
-                                                    <input class="quantity-input kanit-thin" type="number"
-                                                        name="quantity" value="{{ $item->quantity }}" min="1">
-                                                    <button type="button" class="quantity-btn btn-num-product-up">
-                                                        <i class="fs-16 zmdi zmdi-plus"></i>
-                                                    </button>
-                                                </div>
-                                            </form>
+                                            <input type="hidden" name="product_id" value="{{ $item->id }}">
+                                            <div class="quantity-control">
+                                                <button type="button" class="quantity-btn btn-num-product-down">
+                                                    <i class="fs-16 zmdi zmdi-minus"></i>
+                                                </button>
+                                                <input class="quantity-input kanit-thin" type="number" name="quantity"
+                                                    value="{{ $item->quantity }}" min="1">
+                                                <button type="button" class="quantity-btn btn-num-product-up">
+                                                    <i class="fs-16 zmdi zmdi-plus"></i>
+                                                </button>
+                                            </div>
                                         </td>
 
                                         <td class="kanit-thin" data-id="{{ $item->id }}">
@@ -72,25 +67,21 @@
 
                                         <td>
                                             {{-- Xoá sản phẩm --}}
-                                            <form action="{{ route('client.cart.deleteCart', $item->id) }}"
-                                                method="POST" style="display: inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn-delete-cart-item" title="Xóa sản phẩm"
-                                                    data-cart-item-id="{{ $item->id }}">
-                                                    <svg width="14" height="14" viewBox="0 0 24 24"
-                                                        fill="none" stroke="#721c24" stroke-width="2"
-                                                        stroke-linecap="round" stroke-linejoin="round">
-                                                        <path d="M3 6h18"></path>
-                                                        <path
-                                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                                        </path>
-                                                        <path d="M10 11v6"></path>
-                                                        <path d="M14 11v6"></path>
-                                                    </svg>
-                                                </button>
-                                            </form>
+                                            <button type="submit" class="btn-delete-cart-item" title="Xóa sản phẩm"
+                                                data-cart-item-id="{{ $item->id }}">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                    stroke="#721c24" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path d="M3 6h18"></path>
+                                                    <path
+                                                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                                    </path>
+                                                    <path d="M10 11v6"></path>
+                                                    <path d="M14 11v6"></path>
+                                                </svg>
+                                            </button>
                                         </td>
+
                                     </tr>
                                 @endforeach
                             @else

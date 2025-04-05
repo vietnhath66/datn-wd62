@@ -61,9 +61,9 @@
             <div class="col-md-5">
                 <h4>Thanh Toán</h4>
 
-                @foreach ($order->items as $item)
-                    <div class="payment-info">
-                        <!-- Danh sách sản phẩm -->
+                <div class="payment-info">
+                    <!-- Danh sách sản phẩm -->
+                    @foreach ($order->items as $item)
                         <div class="mb-3">
                             <div class="product-item d-flex align-items-center mb-2">
                                 <img class="product-img" src="images/item-cart-04.jpg" alt="Áo Khoác" class="me-3" />
@@ -77,43 +77,43 @@
                                 </p>
                             </div>
                         </div>
-                        <hr />
-                        <!-- Mã coupon -->
-                        <div class="mb-3">
-                            <label for="coupon" class="form-label">Mã khuyến mãi</label>
-                            <div class="coupon-section">
-                                <input type="text" class="form-control" name="coupon" id="coupon"
-                                    placeholder="Nhập mã khuyến mãi" />
-                                <button type="button" class="btn btn-apply-coupon">
-                                    Áp Dụng
-                                </button>
-                            </div>
-                        </div>
-                        <hr />
-                        <!-- Tổng tiền -->
-                        <div class="total-section">
-                            <div class="d-flex justify-content-between">
-                                <p class="mb-0">Tổng Tiền</p>
-                                <p class="mb-0 total-price">{{ number_format($totalPrice) }} VND</p>
-                            </div>
-                        </div>
-                        <!-- Phương thức thanh toán -->
-                        <div class="mt-4">
-                            <h6 class="mb-3">Chọn Phương Thức Thanh Toán</h6>
-                            <div class="payment-method d-flex">
-                                <input type="radio" id="cod" value="cod" name="payment_status" checked />
-                                <label for="cod">Thanh Toán Khi Nhận Hàng</label>
-                            </div>
-                            <div class="payment-method d-flex">
-                                <input type="radio" id="wallet" value="wallet" name="payment_status" />
-                                <label for="wallet">Ví Điện Tử Momo</label>
-                            </div>
-                        </div>
-                        <!-- Nút xác nhận -->
-                        <button type="submit" class="btn-custom w-100 mt-4">Hoàn Tất Thanh Toán</button>
-                    </div>
-                @endforeach
+                    @endforeach
 
+                    <hr />
+                    <!-- Mã coupon -->
+                    <div class="mb-3">
+                        <label for="coupon" class="form-label">Mã khuyến mãi</label>
+                        <div class="coupon-section">
+                            <input type="text" class="form-control" name="coupon" id="coupon"
+                                placeholder="Nhập mã khuyến mãi" />
+                            <button type="button" class="btn btn-apply-coupon">
+                                Áp Dụng
+                            </button>
+                        </div>
+                    </div>
+                    <hr />
+                    <!-- Tổng tiền -->
+                    <div class="total-section">
+                        <div class="d-flex justify-content-between">
+                            <p class="mb-0">Tổng Tiền</p>
+                            <p class="mb-0 total-price">{{ number_format($totalPrice) }} VND</p>
+                        </div>
+                    </div>
+                    <!-- Phương thức thanh toán -->
+                    <div class="mt-4">
+                        <h6 class="mb-3">Chọn Phương Thức Thanh Toán</h6>
+                        <div class="payment-method d-flex">
+                            <input type="radio" id="cod" value="cod" name="payment_status" checked />
+                            <label for="cod">Thanh Toán Khi Nhận Hàng</label>
+                        </div>
+                        <div class="payment-method d-flex">
+                            <input type="radio" id="wallet" value="wallet" name="payment_status" />
+                            <label for="wallet">Ví Điện Tử Momo</label>
+                        </div>
+                    </div>
+                    <!-- Nút xác nhận -->
+                    <button type="submit" class="btn-custom w-100 mt-4">Hoàn Tất Thanh Toán</button>
+                </div>
             </div>
         </div>
     </div>

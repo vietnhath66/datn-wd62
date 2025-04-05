@@ -17,21 +17,11 @@ use App\Http\Controllers\Client\PolicyController;
 use App\Http\Controllers\Client\ContactController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\Backend\DashboardController;
+use App\Http\Controllers\Backend\AuthController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -42,9 +32,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-use App\Http\Controllers\Client\HomeController;
-use App\Http\Controllers\Backend\DashboardController;
-use App\Http\Controllers\Backend\AuthController;
 
 
 // Client
@@ -172,6 +159,7 @@ Route::prefix('admin')
         Route::get('ajax/attribute/getAttribute', [AjaxAttributeController::class, 'getAttribute'])->name('ajax.attribute.getAttribute');
         Route::get('ajax/attribute/loadAttribute', [AjaxAttributeController::class, 'loadAttribute'])->name('ajax.attribute.loadAttribute');
     });
+
 
 Route::get('admin/login', [AuthController::class, 'index'])->name('auth.admin')->middleware('login');
 Route::post('login', [AuthController::class, 'login'])->name('auth.login');
