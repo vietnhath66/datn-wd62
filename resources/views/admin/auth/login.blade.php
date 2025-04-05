@@ -15,10 +15,6 @@
     <!-- Layout config Js -->
     <script src="{{ asset('admin/js/layout.js') }}"></script>
 
-    <link rel="shortcut icon" href="admin/images/favicon.ico">
-    <!-- Layout config Js -->
-    <script src="admin/js/layout.js"></script>
-
     <!-- Icons CSS -->
 
     <!-- StarCode CSS -->
@@ -50,7 +46,7 @@
                 @csrf
                 <div class="mt-3">
                     <label for="email" class="inline-block mb-2 text-base font-medium">Email</label>
-                    <input type="text" <<<<<<< HEAD
+                    <input type="text"
                         class="form-input dark:bg-zink-600/50 border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"=======class="form-input border-slate-200 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-500 placeholder:text-slate-400">>>>>>>
                     chatrealtime
                     placeholder="Email" name="email" value="{{ request('email') ?: old('email') }}">
@@ -60,7 +56,7 @@
                 </div>
                 <div class="mt-3">
                     <label for="password" class="inline-block mb-2 text-base font-medium">Mật khẩu</label>
-                    <input type="password" <<<<<<< HEAD
+                    <input type="password"
                         class="form-input dark:bg-zink-600/50 border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"=======class="form-input border-slate-200 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-500 placeholder:text-slate-400">>>>>>>
                     chatrealtime
                     placeholder="Password" name="password">
@@ -69,7 +65,7 @@
                     @enderror
                 </div>
                 <div class="mt-10">
-                    <button type="submit" <<<<<<< HEAD
+                    <button type="submit"
                         class="w-full text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">Đăng
                         =======
                         class="w-full text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100">Đăng

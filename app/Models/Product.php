@@ -10,7 +10,9 @@ use App\Traits\QueryScopes;
 
 class Product extends Model
 {
+
     use HasFactory, SoftDeletes, QueryScopes;
+
 
     protected $fillable = [
         'name',
@@ -44,3 +46,4 @@ class Product extends Model
     ];
 
 }
+

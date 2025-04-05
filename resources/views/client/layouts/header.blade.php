@@ -107,7 +107,7 @@
                         </li>
 
                         <li class="label1" data-label1="hot">
-                            <a href="product.html">Sản phẩm</a>
+                            <a href="{{ route('client.product.index') }}">Sản phẩm</a>
                         </li>
 
                         <li>

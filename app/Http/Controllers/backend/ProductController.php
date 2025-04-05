@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Services\Interfaces\ProductServiceInterface  as ProductService;
+use App\Services\Interfaces\ProductServiceInterface as ProductService;
 // use App\Repositories\Interfaces\ProductRepositoryInterface  as ProductReponsitory;
-use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface  as AttributeCatalogueRepository;
+use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface as AttributeCatalogueRepository;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Classes\Nestedsetbie;
@@ -28,8 +28,8 @@ class ProductController extends Controller
         ProductService $productService,
         // ProductReponsitory $productReponsitory,
         AttributeCatalogueRepository $attributeCatalogue,
-    ){
-        $this->middleware(function($request, $next){
+    ) {
+        $this->middleware(function ($request, $next) {
             $locale = app()->getLocale(); // vn en cn
             $this->initialize();
             return $next($request);
@@ -39,17 +39,19 @@ class ProductController extends Controller
         // $this->productReponsitory = $productReponsitory;
         $this->attributeCatalogue = $attributeCatalogue;
         $this->initialize();
-        
+
     }
 
-    private function initialize(){
+    private function initialize()
+    {
         $this->nestedset = new Nestedsetbie([
             'table' => 'product_catalogues',
             'foreignkey' => 'product_catalogue_id',
         ]);
-    } 
+    }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $this->authorize('modules', 'admin.product.index');
         $products = $this->productService->paginate($request, $this->language);
         $config = [
@@ -65,7 +67,7 @@ class ProductController extends Controller
         ];
         $config['seo'] = __('messages.product');
         $template = 'admin.product.product.index';
-        $dropdown  = $this->nestedset->Dropdown();
+        $dropdown = $this->nestedset->Dropdown();
         return view('admin.dashboard.layout', compact(
             'template',
             'config',
@@ -74,7 +76,8 @@ class ProductController extends Controller
         ));
     }
 
-    public function create(){
+    public function create()
+    {
         // $this->authorize('modules', 'admin.product.create');
         // $attributeCatalogue = $this->attributeCatalogue->getAll($this->language);
         $attributeCatalogue = AttributeCatalogue::get();
@@ -82,7 +85,7 @@ class ProductController extends Controller
         $brands = Brand::get();
 
         $config = $this->configData();
-        $config['seo'] =  [
+        $config['seo'] = [
             'index' => [
                 'title' => 'Quản lý sản phẩm',
                 'table' => 'Danh sách sản phẩm'
@@ -98,7 +101,7 @@ class ProductController extends Controller
             ],
         ];
         $config['method'] = 'create';
-        $dropdown  = $this->nestedset->Dropdown();
+        $dropdown = $this->nestedset->Dropdown();
         $template = 'admin.products.product.store';
         return view('admin.dashboard.layout', compact(
             'template',
@@ -109,16 +112,23 @@ class ProductController extends Controller
         ));
     }
 
-    public function store(StoreProductRequest $request){
+    public function store(StoreProductRequest $request)
+    {
         // dd($request);
 
-        if($this->productService->create($request)){
-            return redirect()->route('admin.product.index')->with('success','Thêm mới bản ghi thành công');
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('products', 'public');
+            $request->merge(['image' => $path]);
         }
-        return redirect()->route('admin.product.index')->with('error','Thêm mới bản ghi không thành công. Hãy thử lại');
+
+        if ($this->productService->create($request)) {
+            return redirect()->route('admin.product.index')->with('success', 'Thêm mới bản ghi thành công');
+        }
+        return redirect()->route('admin.product.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         // dd($id);
         $this->authorize('modules', 'admin.product.update');
         $attributeCatalogue = AttributeCatalogue::with('attribute_catalogue_language')->get();
@@ -127,7 +137,7 @@ class ProductController extends Controller
         $config = $this->configData();
         $config['seo'] = __('messages.product');
         $config['method'] = 'edit';
-        $dropdown  = $this->nestedset->Dropdown();
+        $dropdown = $this->nestedset->Dropdown();
         // $album = json_decode($product->album);
         $template = 'admin.product.product.store';
         return view('admin.dashboard.layout', compact(
@@ -140,14 +150,16 @@ class ProductController extends Controller
         ));
     }
 
-    public function update($id, UpdateProductRequest $request){
-        if($this->productService->update($id, $request, $this->language)){
-            return redirect()->route('admin.product.index')->with('success','Cập nhật bản ghi thành công');
+    public function update($id, UpdateProductRequest $request)
+    {
+        if ($this->productService->update($id, $request, $this->language)) {
+            return redirect()->route('admin.product.index')->with('success', 'Cập nhật bản ghi thành công');
         }
-        return redirect()->route('admin.product.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('admin.product.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $this->authorize('modules', 'admin.product.destroy');
         $config['seo'] = __('messages.product');
         $product = $this->productReponsitory->getProductById($id, $this->language);
@@ -159,14 +171,16 @@ class ProductController extends Controller
         ));
     }
 
-    public function destroy($id){
-        if($this->productService->destroy($id, $this->language)){
-            return redirect()->route('admin.product.index')->with('success','Xóa bản ghi thành công');
+    public function destroy($id)
+    {
+        if ($this->productService->destroy($id, $this->language)) {
+            return redirect()->route('admin.product.index')->with('success', 'Xóa bản ghi thành công');
         }
-        return redirect()->route('admin.product.index')->with('error','Xóa bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('admin.product.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
 
-    private function configData(){
+    private function configData()
+    {
         return [
             'js' => [
                 'backend/plugins/ckeditor/ckeditor.js',
@@ -184,10 +198,10 @@ class ProductController extends Controller
                 'backend/css/plugins/switchery/switchery.css',
                 'backend/css/bootstrap.min.css'
             ]
-          
+
         ];
     }
 
-   
+
 
 }

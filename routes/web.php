@@ -1,10 +1,9 @@
 <?php
-
-
 use App\Http\Controllers\Client\AboutController;
-
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
+use App\Http\Controllers\Backend\DashboardController;
+use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\BrandController;
 use App\Http\Controllers\Backend\ProductCatalogueController;
 use App\Http\Controllers\Backend\ProductController;
@@ -14,12 +13,11 @@ use App\Http\Controllers\Backend\AttributeCatalogueController;
 use App\Http\Controllers\Backend\AttributeController;
 use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\Client\PolicyController;
-use App\Http\Controllers\Client\ContactController;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\HomeController;
-use App\Http\Controllers\Backend\DashboardController;
-use App\Http\Controllers\Backend\AuthController;
+use App\Http\Controllers\Client\ContactController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Client\ProductsController;
 
 
 
@@ -32,6 +30,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
 
 
 // Client
@@ -56,6 +56,16 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
         Route::get('/', [OrderController::class, 'viewOrder'])->name('viewOrder');
         Route::post('checkout', [OrderController::class, 'checkout'])->name('checkout');
         Route::post('complete', [OrderController::class, 'completeOrder'])->name('completeOrder');
+    });
+
+    // Product
+    Route::group(['prefix' => 'product', 'as' => 'product.'], function () {
+        // Route::get('products', [ProductsController::class, 'viewProductss'])->name('viewProductss');
+        Route::get('/', [ProductsController::class, 'index'])->name('index');
+        Route::get('product-detail/{id}', [ProductsController::class, 'show'])->name('show');
+
+        //Quick view
+        // Route::get('products/{id}/quick-view', [ProductsController::class, 'quickview'])->name('products.quickView');
     });
 
 
