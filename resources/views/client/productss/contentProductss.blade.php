@@ -3,9 +3,9 @@
     <div class="container">
         <div class="flex-w flex-sb-m p-b-52">
             <div class="flex-w flex-l-m filter-tope-group m-tb-10">
-                
+
             </div>
-            
+
             <div class="flex-w flex-c-m m-tb-10">
                 <div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
                     <i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
@@ -19,7 +19,7 @@
                     Search
                 </div>
             </div>
-            
+
             <!-- Search product -->
             <div class="dis-none panel-search w-full p-t-10 p-b-15">
                 <div class="bor8 dis-flex p-l-15">
@@ -31,7 +31,7 @@
                         placeholder="Search">
                 </div>
             </div>
-            
+
             <!-- Filter -->
             <div class="dis-none panel-filter w-full p-t-10">
                 <div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
@@ -233,9 +233,8 @@
                     <!-- Block2 -->
                     <div class="block2">
                         <div class="block2-pic hov-img0">
-                        <img src="{{ Storage::url($product->image) }}"
-     alt="{{ $product->name }}"
-     style="aspect-ratio: 3 / 4; object-fit: cover; width: 100%; height: auto; max-width: 300px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);" />
+                            <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}"
+                                style="aspect-ratio: 3 / 4; object-fit: cover; width: 100%; height: auto; max-width: 300px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);" />
 
                             <!-- <a href="#"
                                 class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
@@ -247,18 +246,18 @@
                         <div class="block2-txt flex-w flex-t p-t-14">
                             <div class="block2-txt-child1 flex-col-l ">
 
-                            <style>
-                            .black-bold-link {
-                            color: black;
-                            font-weight: bold;
-                            text-decoration: none;
-                             }
-                            </style>
+                                <style>
+                                    .black-bold-link {
+                                        color: black;
+                                        font-weight: bold;
+                                        text-decoration: none;
+                                    }
+                                </style>
 
-                            <a href="{{ Route('client.productss.show', $product->id) }}"
-                            class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6 black-bold-link">
-                                {{ $product->name }}
-                            </a>
+                                <a href="{{ Route('client.product.show', $product->id) }}"
+                                    class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6 black-bold-link">
+                                    {{ $product->name }}
+                                </a>
                                 <span class="stext-105 cl3">
                                     {{ number_format($product->price, 0, ',', '.') }} VNĐ
                                 </span>
@@ -280,6 +279,6 @@
         </div>
 
         <!-- Load more -->
-        
+
     </div>
 </div>
