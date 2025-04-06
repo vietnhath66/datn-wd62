@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\Client\AboutController;
+use App\Http\Controllers\Client\AccountController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
 use App\Http\Controllers\Backend\DashboardController;
@@ -44,11 +45,18 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     Route::get('product/{id}', [ProductController::class, 'viewShow'])->name('viewShow');
     Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
 
+    // Account
+    Route::group(['prefix' => 'account', 'as' => 'account.'], function () {
+        Route::get('order', [AccountController::class, 'accountOrder'])->name('accountOrder');
+
+    });
+
     // Cart
     Route::group(['prefix' => 'cart', 'as' => 'cart.'], function () {
         Route::get('/', [CartController::class, 'viewCart'])->name('viewCart');
         Route::post('update-cart', [CartController::class, 'updateCart'])->name('updateCart');
         Route::delete('delete-cart/{id}', [CartController::class, 'deleteCart'])->name('deleteCart');
+        Route::post('add-to-cart', [CartController::class, 'addToCart'])->name('addToCart');
     });
 
     // Order

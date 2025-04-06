@@ -18,7 +18,7 @@
     }
 
     .dropdown-menu {
-        z-index: 1050 !important;
+        z-index: 2000 !important;
         position: absolute;
         right: 0;
         top: 100%;
@@ -52,15 +52,16 @@
                                     <i class="fa fa-envelope"></i> <span class="ml-2">{{ Auth::user()->email }}</span>
                                 </span>
                                 <div class="dropdown-divider"></div>
-                                @if (Auth::user()->role == 'admin')
-                                    <a class="dropdown-item" href="">
+                                @if (Auth::user()->role_id == 5)
+                                @else
+                                    <a class="dropdown-item" href="{{ route('admin.dashboard.index') }}">
                                         <i class="fa fa-cogs"></i> <span class="ml-2">Trang quản trị</span>
                                     </a>
                                 @endif
                                 <a class="dropdown-item" href="">
                                     <i class="fa fa-user"></i> <span class="ml-2">Tài khoản</span>
                                 </a>
-                                <a class="dropdown-item" href="">
+                                <a class="dropdown-item" href="{{ route('client.account.accountOrder') }}">
                                     <i class="fa fa-shopping-cart"></i> <span class="ml-2">Đơn hàng</span>
                                 </a>
                                 <a class="dropdown-item" href="">
@@ -96,7 +97,7 @@
             <nav class="limiter-menu-desktop container">
                 <!-- Logo desktop -->
                 <a href="{{ route('client.viewHome') }}" class="logo">
-                    <img src="images/icons/logo-03.png" alt="IMG-LOGO" />
+                    <img src="{{ asset('client/images/icons/logo-03.png') }}" alt="IMG-LOGO" />
                 </a>
 
                 <!-- Menu desktop -->

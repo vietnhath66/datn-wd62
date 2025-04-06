@@ -10,11 +10,17 @@ use App\Models\ProductVariant;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
+use Log;
+use Validator;
 
 class CartController extends Controller
 {
     public function viewCart()
     {
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('warning', 'Vui lòng đăng nhập để xem giỏ hàng.');
+        }
+
         $cart = null;
         $cartTotal = 0;
 
@@ -58,6 +64,116 @@ class CartController extends Controller
             'cart' => $cart,         // Truyền đối tượng cart (có thể null)
             'cartTotal' => $cartTotal,
         ]);
+    }
+
+    public function addToCart(Request $request) // Tên phương thức khớp với route
+    {
+        // 1. Kiểm tra đăng nhập
+        if (!Auth::check()) {
+            // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+            return redirect()->route('login')->with('warning', 'Vui lòng đăng nhập để thêm sản phẩm.');
+        }
+
+        // 2. Validate dữ liệu từ Form
+        $validator = Validator::make($request->all(), [
+            // Đổi tên input nếu bạn đặt khác trong form
+            'product_variant_id' => 'required|integer|exists:product_variants,id',
+            'quantity' => 'required|integer|min:1',
+        ], [
+            'product_variant_id.required' => 'Vui lòng chọn đầy đủ Màu sắc và Size.',
+            'product_variant_id.exists' => 'Sản phẩm không hợp lệ.',
+            'quantity.required' => 'Vui lòng nhập số lượng.',
+            'quantity.min' => 'Số lượng phải ít nhất là 1.',
+        ]);
+
+        // Nếu validation thất bại, quay lại trang trước với lỗi và input cũ
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput(); // Giữ lại các giá trị input cũ (ngoại trừ password)
+        }
+
+        $productVariantId = $request->input('product_variant_id');
+        $quantity = (int) $request->input('quantity');
+        $userId = Auth::id();
+
+        DB::beginTransaction();
+        try {
+            // 3. Lấy thông tin biến thể sản phẩm
+            $variant = ProductVariant::find($productVariantId);
+            // Không cần kiểm tra lại vì đã có validation exists, nhưng kiểm tra tồn kho là cần thiết
+
+            // 4. Kiểm tra tồn kho (quan trọng)
+            if ($variant->quantity < 1) {
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Sản phẩm này đã hết hàng.')->withInput();
+            }
+
+
+            // 5. Tìm hoặc tạo giỏ hàng
+            $cart = Cart::firstOrCreate(['user_id' => $userId]);
+
+            // 6. Kiểm tra sản phẩm đã có trong giỏ chưa
+            $existingItem = CartDetail::where('cart_id', $cart->id)
+                ->where('product_variant_id', $productVariantId)
+                ->first();
+
+            if ($existingItem) {
+                // Nếu có -> Cộng dồn số lượng
+                $newQuantity = $existingItem->quantity + $quantity;
+
+                // Kiểm tra lại tồn kho cho tổng số lượng mới
+                if ($variant->quantity < $newQuantity) {
+                    DB::rollBack();
+                    // Thông báo số lượng còn lại để người dùng biết
+                    $allowedToAdd = $variant->quantity - $existingItem->quantity;
+                    $message = 'Số lượng tồn kho không đủ. ';
+                    if ($allowedToAdd > 0) {
+                        $message .= "Bạn chỉ có thể thêm tối đa {$allowedToAdd} sản phẩm nữa.";
+                    } else {
+                        $message .= "Bạn không thể thêm sản phẩm này nữa.";
+                    }
+                    return redirect()->back()->with('error', $message)->withInput();
+                }
+
+                $existingItem->quantity = $newQuantity;
+                $existingItem->save();
+                Log::info("Updated quantity for item ID: {$existingItem->id} in cart ID: {$cart->id}");
+            } else {
+                // Nếu chưa có -> Tạo mới
+                // Kiểm tra lại tồn kho cho số lượng thêm mới
+                if ($variant->quantity < $quantity) {
+                    DB::rollBack();
+                    return redirect()->back()->with('error', 'Số lượng tồn kho không đủ (' . $variant->quantity . ').')->withInput();
+                }
+
+                $newItem = CartDetail::create([
+                    'cart_id' => $cart->id,
+                    'product_variant_id' => $variant->id,
+                    'product_id' => $variant->product_id,
+                    'quantity' => $quantity,
+                    'price' => $variant->price, // Lưu giá hiện tại
+                ]);
+                Log::info("Created new cart item ID: {$newItem->id} for variant ID: {$variant->id} in cart ID: {$cart->id}");
+            }
+
+            DB::commit();
+
+            // 7. Chuyển hướng người dùng (ví dụ: về trang giỏ hàng) với thông báo thành công
+            return redirect()->route('client.cart.viewCart') // Chuyển đến trang xem giỏ hàng
+                ->with('success', 'Đã thêm sản phẩm vào giỏ hàng thành công!'); // Gửi thông báo flash
+
+            // Hoặc chuyển hướng về trang sản phẩm vừa xem
+            // return redirect()->back()->with('success', 'Đã thêm sản phẩm vào giỏ hàng thành công!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("Lỗi thêm vào giỏ hàng (Form Submit): " . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
+            // Chuyển hướng về trang trước với thông báo lỗi chung
+            return redirect()->back()
+                ->with('error', 'Đã xảy ra lỗi hệ thống khi thêm sản phẩm. Vui lòng thử lại.')
+                ->withInput();
+        }
     }
 
     public function updateCart(Request $request)

@@ -71,8 +71,6 @@
 
 <body class="animsition">
 
-
-
     <!-- Header -->
     @include('client.layouts.header')
 

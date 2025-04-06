@@ -28,7 +28,8 @@
                                         </td>
 
                                         <td>
-                                            <img src="images/item-cart-04.jpg" alt="IMG" class="product-img">
+                                            <img src="{{ Storage::url($item->productVariant->products->image) }}"
+                                                alt="IMG" class="product-img">
                                         </td>
 
                                         <td class="kanit-thin product-name">

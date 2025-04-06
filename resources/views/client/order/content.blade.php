@@ -66,7 +66,8 @@
                     @foreach ($order->items as $item)
                         <div class="mb-3">
                             <div class="product-item d-flex align-items-center mb-2">
-                                <img class="product-img" src="images/item-cart-04.jpg" alt="Áo Khoác" class="me-3" />
+                                <img class="product-img" src="{{ Storage::url($item->product->image) }}"
+                                    class="me-3" />
                                 <div class="flex-grow-1">
                                     <p class="mb-0">
                                         {{ $item->product->name }} <span

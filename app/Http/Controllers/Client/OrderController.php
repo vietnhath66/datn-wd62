@@ -9,13 +9,21 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
 use App\Models\User;
+use Auth;
+use DB;
 use Illuminate\Http\Request;
+use Log;
 use Session;
+use Validator;
 
 class OrderController extends Controller
 {
     public function viewOrder()
     {
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('warning', 'Vui lòng đăng nhập để đặt hàng.');
+        }
+
         $orderId = Session::get('order_id');
         if (!$orderId) {
             return redirect()->route('client.cart.viewCart')->with('error', 'Không tìm thấy đơn hàng.');
@@ -23,7 +31,7 @@ class OrderController extends Controller
 
         $order = Order::with('items.product')->find($orderId);
         $totalPrice = $order ? $order->total : 0;
-        $user = User::find(2);
+        $user = Auth::user();
 
         if (!$order) {
             return redirect()->route('client.cart.viewCart')->with('error', 'Không tìm thấy đơn hàng.');
@@ -39,87 +47,145 @@ class OrderController extends Controller
 
     public function checkout(Request $request)
     {
-        $userId = auth()->id();
+        // 1. Kiểm tra đăng nhập
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('warning', 'Vui lòng đăng nhập để đặt hàng.');
+        }
+        $userId = Auth::id();
+        $user = Auth::user(); // Lấy thông tin user đang đăng nhập
 
-        // Lấy giỏ hàng của user
-        $cart = Cart::where('user_id', $userId)->with('items.productVariant')->first();
+        // 2. Validate input chứa ID sản phẩm được chọn từ giỏ hàng
+        $validator = Validator::make($request->all(), [
+            // Giả sử input tên là 'selected_products' chứa chuỗi ID cách nhau bởi dấu phẩy
+            'selected_products' => [
+                'required',
+                // Custom validation rule để kiểm tra chuỗi ID hợp lệ
+                function ($attribute, $value, $fail) {
+                    $ids = explode(',', $value);
+                    if (empty(array_filter($ids, 'is_numeric'))) {
+                        $fail('Vui lòng chọn ít nhất một sản phẩm từ giỏ hàng.');
+                    }
+                    foreach ($ids as $id) {
+                        if (!is_numeric(trim($id))) {
+                            $fail('Danh sách sản phẩm chọn không hợp lệ.');
+                            break;
+                        }
+                    }
+                },
+            ]
+        ], [
+            'selected_products.required' => 'Vui lòng chọn sản phẩm từ giỏ hàng để tiếp tục.',
+        ]);
 
-        if (!$cart || $cart->items->isEmpty()) {
-            return redirect()->back()->with('error', 'Giỏ hàng của bạn đang trống!');
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
-        // Kiểm tra xem user đã có đơn hàng 'pending' chưa
-        $order = Order::where('user_id', $userId)
-            ->where('status', 'pending')
-            ->first();
+        // Lấy danh sách ID các CartDetail được chọn
+        $selectedCartItemIds = array_map('intval', explode(',', $request->input('selected_products')));
 
-        if (!$order) {
-            // Nếu chưa có đơn hàng, tạo mới
-            do {
-                $barcode = mt_rand(100000000, 999999999);
-            } while (Order::where('barcode', $barcode)->exists());
+        // 3. Lấy các CartDetail được chọn thuộc về user này
+        $selectedItems = CartDetail::whereIn('id', $selectedCartItemIds)
+            ->whereHas('cart', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->with('productVariant') // Eager load variant để lấy giá và kiểm tra tồn kho
+            ->get();
 
-            $order = Order::create([
-                'user_id' => $userId,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'total' => 0, // Cập nhật sau khi tính tổng tiền
-                'status' => 'pending',
-                'payment_status' => 'pending',
-                'address' => $request->address,
-                'number_house' => $request->number_house,
-                'neighborhood' => $request->neighborhood,
-                'district' => $request->district,
-                'province' => $request->province,
-                'coupon' => $request->coupon ?? null,
-                'barcode' => $barcode,
-            ]);
-        } else {
-            // Nếu có đơn hàng pending, cập nhật thông tin đơn hàng
-            $order->update([
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'address' => $request->address,
-                'number_house' => $request->number_house,
-                'neighborhood' => $request->neighborhood,
-                'district' => $request->district,
-                'province' => $request->province,
-                'coupon' => $request->coupon ?? null,
-            ]);
+        // Kiểm tra lại xem có thực sự lấy được item nào không (phòng trường hợp ID gửi lên không đúng)
+        if ($selectedItems->isEmpty()) {
+            return redirect()->back()->with('error', 'Không tìm thấy sản phẩm được chọn trong giỏ hàng của bạn.');
         }
 
-        $totalPrice = 0;
+        DB::beginTransaction();
+        try {
+            // 4. Kiểm tra xem user đã có đơn hàng 'pending' chưa
+            $order = Order::where('user_id', $userId)
+                ->where('status', 'pending') // Chỉ tìm đơn hàng đang chờ xử lý
+                ->first();
 
-        // **Xóa các sản phẩm cũ trong order_items**
-        OrderDetail::where('order_id', $order->id)->delete();
+            if (!$order) {
+                // Nếu chưa có đơn hàng pending, tạo mới
+                do {
+                    $barcode = mt_rand(100000000, 999999999);
+                } while (Order::where('barcode', $barcode)->exists());
 
-        // Thêm lại sản phẩm từ giỏ hàng
-        foreach ($cart->items as $item) {
-            $product = Product::find($item->product_id);
-            if (!$product) {
-                return redirect()->back()->with('error', 'Sản phẩm không tồn tại trong hệ thống.');
+                $order = Order::create([
+                    'user_id' => $userId,
+                    // Lấy thông tin cơ bản từ user đăng nhập, không lấy từ request ở bước này
+                    'name' => $user->name, // Giả sử User model có 'name'
+                    'email' => $user->email, // Giả sử User model có 'email'
+                    'phone' => $user->phone, // Giả sử User model có 'phone'
+                    // Địa chỉ chi tiết sẽ được cập nhật ở bước 'completeOrder'
+                    'address' => null,
+                    'number_house' => null,
+                    'neighborhood' => null,
+                    'district' => null,
+                    'province' => null,
+                    'total' => 0, // Sẽ tính lại bên dưới
+                    'status' => 'pending',
+                    'payment_status' => 'pending',
+                    'coupon' => null, // Coupon sẽ xử lý sau nếu có
+                    'barcode' => $barcode,
+                ]);
+                Log::info("Created new pending order ID: {$order->id} for user ID: {$userId}");
+            } else {
+                // Nếu đã có đơn hàng pending, có thể cập nhật thông tin cơ bản nếu cần
+                // Ví dụ: $order->touch(); // Cập nhật updated_at
+                Log::info("Found existing pending order ID: {$order->id} for user ID: {$userId}");
+                // Không nên cập nhật địa chỉ/email/phone ở đây
             }
 
-            OrderDetail::create([
-                'order_id' => $order->id,
-                'product_id' => $item->product_id,
-                'product_variant_id' => $item->product_variant_id,
-                'quantity' => $item->quantity,
-                'price' => $item->productVariant->price, // Lấy giá từ biến thể sản phẩm
-            ]);
+            $totalPrice = 0;
 
-            $totalPrice += $item->quantity * $item->productVariant->price;
+            // 5. Xóa các OrderDetail cũ của đơn hàng pending này (để làm mới theo lựa chọn hiện tại)
+            OrderDetail::where('order_id', $order->id)->delete();
+            Log::info("Deleted old OrderDetails for order ID: {$order->id}");
+
+            // 6. Thêm lại OrderDetail chỉ từ các sản phẩm đã được chọn trong giỏ hàng
+            foreach ($selectedItems as $item) {
+                // Kiểm tra tồn kho của biến thể trước khi thêm vào chi tiết đơn hàng
+                if (!$item->productVariant || $item->productVariant->quantity < $item->quantity) {
+                    DB::rollBack(); // Hoàn tác transaction
+                    $productName = $item->productVariant->products->name ?? 'Sản phẩm'; // Lấy tên SP nếu có
+                    $availableQty = $item->productVariant->quantity ?? 0;
+                    return redirect()->route('cart.viewCart') // Quay về giỏ hàng
+                        ->with('error', "Sản phẩm '{$productName}' không đủ số lượng tồn kho (chỉ còn {$availableQty}). Vui lòng cập nhật giỏ hàng.");
+                }
+
+                OrderDetail::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item->product_id,
+                    'product_variant_id' => $item->product_variant_id,
+                    'quantity' => $item->quantity,
+                    'price' => $item->price, // *** Lấy giá ĐÃ LƯU trong CartDetail ***
+                ]);
+
+                // Tính tổng tiền dựa trên giá ĐÃ LƯU trong CartDetail
+                $totalPrice += $item->quantity * $item->price;
+            }
+            Log::info("Added new OrderDetails for order ID: {$order->id}. Calculated total: {$totalPrice}");
+
+            // 7. Cập nhật tổng tiền cuối cùng cho đơn hàng
+            $order->update(['total' => $totalPrice]);
+
+            DB::commit(); // Lưu tất cả thay đổi vào database
+
+            // 8. Lưu order_id vào session để chuyển sang trang xác nhận/thanh toán
+            Session::put('order_id', $order->id);
+
+            // 9. Chuyển hướng đến trang xem/xác nhận đơn hàng
+            // *** Đảm bảo tên route này ('order.viewOrder') khớp với định nghĩa trong web.php ***
+            return redirect()->route('client.order.viewOrder');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("Lỗi Checkout: " . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
+            return redirect()->back()->with('error', 'Đã xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại.');
         }
-
-        // Cập nhật tổng tiền cho đơn hàng
-        $order->update(['total' => $totalPrice]);
-
-        // Lưu order_id vào session để hiển thị trên trang thanh toán
-        Session::put('order_id', $order->id);
-
-        return redirect()->route('client.order.viewOrder');
     }
-
 
 
     public function completeOrder(Request $request)
@@ -151,8 +217,10 @@ class OrderController extends Controller
         ]);
 
         // Xoá giỏ hàng sau khi đặt hàng
-        CartDetail::where('cart_id', $order->user_id)->delete();
-
+        $cart = Cart::where('user_id', $order->user_id)->first();
+        if ($cart) {
+            CartDetail::where('cart_id', $cart->id)->delete();
+        }
         // Xóa session order_id sau khi hoàn tất thanh toán
         Session::forget('order_id');
 
