@@ -8,6 +8,7 @@
         .custom-container {
             max-width: 1800px;
             margin: 0 auto;
+            min-height: 500px;
         }
 
         /* Table responsive */
@@ -169,7 +170,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($orders as $order)
+                            @forelse ($orders as $order)
                                 @php
                                     // Lấy tên sản phẩm đầu tiên làm đại diện
                                     $firstItem = $order->items->first();
@@ -230,21 +231,21 @@
                                                 class="fa fa-eye custom-icon-eye"></i></a>
                                     </td>
                                 </tr>
-                                @empty
-                                    {{-- Trường hợp $orders là collection rỗng (không có đơn hàng nào) --}}
-                                    <tr>
-                                        {{-- Đặt số cột (colspan) bằng đúng số lượng thẻ <th> trong thead (là 8) --}}
-                                        <td colspan="8" class="text-center p-t-50 p-b-50">Bạn chưa có đơn hàng nào.</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                            @empty
+                                {{-- Trường hợp $orders là collection rỗng (không có đơn hàng nào) --}}
+                                <tr>
+                                    {{-- Đặt số cột (colspan) bằng đúng số lượng thẻ <th> trong thead (là 8) --}}
+                                    <td colspan="8" class="text-center p-t-50 p-b-50">Bạn chưa có đơn hàng nào.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
+    </div>
 
-    @endsection
+@endsection
 
-    @push('script')
-    @endpush
+@push('script')
+@endpush
