@@ -69,7 +69,7 @@ class OrderService extends BaseService implements OrderServiceInterface
         $this->controllerName = 'OrderController';
     }
 
-//     public function paginates($request, $modelCatalogue = null, $page = 1, $extend = [])
+    //     public function paginates($request, $modelCatalogue = null, $page = 1, $extend = [])
 //     {
 //         if (!is_null($modelCatalogue)) {
 //             Paginator::currentPageResolver(function () use ($page) {
@@ -78,7 +78,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 //         }
 
 
-//         $perPage = $request->integer('perpage');
+    //         $perPage = $request->integer('perpage');
 //         $perPage = 5;
 //         $condition = [
 //             'keyword' => addslashes($request->input('keyword')),
@@ -94,8 +94,8 @@ class OrderService extends BaseService implements OrderServiceInterface
 //             // ['products'],
 //             // ['product_variants'],
 //             // ['order_items']
-        
-//         $rawQuery = $this->whereRaw($request, $modelCatalogue);
+
+    //         $rawQuery = $this->whereRaw($request, $modelCatalogue);
 //         $joins = [
 //             ['users as tb2', 'orders.user_id', '=', 'tb2.id'],
 //             ['order_items', 'orders.id', '=', 'order_items.order_id'],
@@ -107,7 +107,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 //         ];
 //         $orders = $this->orderReponsitory->pagination(
 
-//             $this->paginateSelect(),
+    //             $this->paginateSelect(),
 //             $condition,
 //             $perPage,
 //             $paginationConfig,
@@ -123,7 +123,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 //     }
 
 
-// "data" => array:1 [▼
+    // "data" => array:1 [▼
 //     0 => array:17 [▼
 //       "id" => 1
 //       "user_id" => 1
@@ -188,18 +188,18 @@ class OrderService extends BaseService implements OrderServiceInterface
 //       ]
 //     ]
 //   ]
-public function paginates($request, $modelCatalogue = null, $page = 1, $extend = [])
-{
-    if (!is_null($modelCatalogue)) {
-        Paginator::currentPageResolver(function () use ($page) {
-            return $page;
-        });
-    }
+    public function paginates($request, $modelCatalogue = null, $page = 1, $extend = [])
+    {
+        if (!is_null($modelCatalogue)) {
+            Paginator::currentPageResolver(function () use ($page) {
+                return $page;
+            });
+        }
 
-    $perPage = $request->integer('perpage') ?: 5;
-    $keyword = addslashes($request->input('keyword'));
+        $perPage = $request->integer('perpage') ?: 5;
+        $keyword = addslashes($request->input('keyword'));
 
-    $orders = Order::selectRaw("
+        $orders = Order::selectRaw("
             orders.id,
             orders.user_id,
             users.name as customer_name,
@@ -218,23 +218,24 @@ public function paginates($request, $modelCatalogue = null, $page = 1, $extend =
             orders.created_at,
             orders.updated_at
         ")
-        ->leftJoin('users', 'users.id', '=', 'orders.user_id')
-        ->when($keyword, function ($query) use ($keyword) {
-            return $query->where('orders.id', 'like', "%{$keyword}%");
-        })
-        ->groupBy('orders.id')
-        ->orderBy('orders.id', 'DESC')
-        ->paginate($perPage);
+            ->leftJoin('users', 'users.id', '=', 'orders.user_id')
+            ->when($keyword, function ($query) use ($keyword) {
+                return $query->where('orders.id', 'like', "%{$keyword}%");
+            })
+            ->groupBy('orders.id')
+            ->orderBy('orders.id', 'DESC')
+            ->paginate($perPage);
 
-    // Load quan hệ sau khi lấy dữ liệu
-    $orders->load(['orderItems.products.product_variants']);
+        // Load quan hệ sau khi lấy dữ liệu
+        $orders->load(['orderItems.products.product_variants']);
 
-    return $orders;
-}
+        return $orders;
+    }
 
-public function edit($id) {
-    // Lấy thông tin đơn hàng theo ID
-    $order = Order::selectRaw("
+    public function edit($id)
+    {
+        // Lấy thông tin đơn hàng theo ID
+        $order = Order::selectRaw("
             orders.id,
             orders.user_id,
             users.name as customer_name,
@@ -253,31 +254,31 @@ public function edit($id) {
             orders.created_at,
             orders.updated_at
         ")
-        ->leftJoin('users', 'users.id', '=', 'orders.user_id')
-        ->where('orders.id', $id)
-        ->first(); // Chỉ lấy 1 đơn hàng theo ID
+            ->leftJoin('users', 'users.id', '=', 'orders.user_id')
+            ->where('orders.id', $id)
+            ->first(); // Chỉ lấy 1 đơn hàng theo ID
 
-    if (!$order) {
-        return redirect()->route('admin.order.index')->with('error', 'Đơn hàng không tồn tại');
+        if (!$order) {
+            return redirect()->route('admin.order.index')->with('error', 'Đơn hàng không tồn tại');
+        }
+
+        // Load thêm thông tin chi tiết đơn hàng (sản phẩm)
+        $order->load(['orderItems.products.product_variants']);
+
+        return view('admin.orders.store', compact('order'));
     }
 
-    // Load thêm thông tin chi tiết đơn hàng (sản phẩm)
-    $order->load(['orderItems.products.product_variants']);
-
-    return view('admin.orders.store', compact('order'));
-}
-    
     // public function update($id, Request $request){
     //     $order = Order::find($id);
     //     if (!$order) {
     //         return redirect()->route('admin.orders.index')->with('error', 'Đơn hàng không tồn tại');
     //     }
-    
+
     //     // Cập nhật thông tin đơn hàng
     //     $order->update($request->only([
     //         'email', 'phone', 'status', 'payment_status', 'total_discount', 'address_detail'
     //     ]));
-    
+
     //     // Cập nhật sản phẩm trong đơn hàng nếu cần
     //     if ($request->has('order_items')) {
     //         foreach ($request->order_items as $item) {
@@ -290,10 +291,10 @@ public function edit($id) {
     //             }
     //         }
     //     }
-    
+
     //     return redirect()->route('admin.orders.index')->with('success', 'Cập nhật đơn hàng thành công');
     // }
-    
+
 
     // public function update($id, $request)
     // {
@@ -795,7 +796,7 @@ public function edit($id) {
             'product_variants.name_variant_size',
             'product_variants.name_variant_color',
             'product_variants.price'
-            
+
         ];
     }
 
@@ -828,7 +829,7 @@ public function edit($id) {
             'product_variants.name_variant_size',
             'product_variants.name_variant_color',
             'product_variants.price'
-            
+
         ];
     }
 

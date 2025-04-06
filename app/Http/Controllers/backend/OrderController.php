@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Services\Interfaces\ProductServiceInterface  as ProductService;
-use App\Services\Interfaces\OrderServiceInterface  as OrderService;
-use App\Repositories\Interfaces\ProductRepositoryInterface  as productReponsitory;
-use App\Repositories\Interfaces\OrderRepositoryInterface  as orderReponsitory;
-use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface  as AttributeCatalogueRepository;
+use App\Services\Interfaces\ProductServiceInterface as ProductService;
+use App\Services\Interfaces\OrderServiceInterface as OrderService;
+use App\Repositories\Interfaces\ProductRepositoryInterface as productReponsitory;
+use App\Repositories\Interfaces\OrderRepositoryInterface as orderReponsitory;
+use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface as AttributeCatalogueRepository;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Classes\Nestedsetbie;
@@ -36,8 +36,8 @@ class OrderController extends Controller
         ProductReponsitory $productReponsitory,
         orderReponsitory $orderReponsitory,
         AttributeCatalogueRepository $attributeCatalogue,
-    ){
-        $this->middleware(function($request, $next){
+    ) {
+        $this->middleware(function ($request, $next) {
             $locale = app()->getLocale(); // vn en cn
             $this->initialize();
             return $next($request);
@@ -49,21 +49,23 @@ class OrderController extends Controller
         $this->orderReponsitory = $orderReponsitory;
         $this->attributeCatalogue = $attributeCatalogue;
         $this->initialize();
-        
+
     }
 
-    private function initialize(){
+    private function initialize()
+    {
         $this->nestedset = new Nestedsetbie([
             'table' => 'users',
             'foreignkey' => 'user_id',
         ]);
-    } 
+    }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         // $this->authorize('modules', 'admin.product.index');
         $orders = $this->orderService->paginates($request);
         // dd($orders->toArray());
-       
+
         $config = [
             'js' => [
                 'admin/js/plugins/switchery/switchery.js',
@@ -75,7 +77,7 @@ class OrderController extends Controller
             ],
             'model' => 'Order'
         ];
-        $config['seo'] =  [
+        $config['seo'] = [
             'index' => [
                 'title' => 'Quản lý sản phẩm',
                 'table' => 'Danh sách sản phẩm'
@@ -91,7 +93,7 @@ class OrderController extends Controller
             ],
         ];
         $template = 'admin.orders.index';
-        $dropdowns  = $this->nestedset->Dropdownss();
+        $dropdowns = $this->nestedset->Dropdownss();
         return view('admin.dashboard.layout', compact(
             'template',
             'config',
@@ -100,17 +102,18 @@ class OrderController extends Controller
         ));
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         // Lấy thông tin đơn hàng
         $order = $this->orderReponsitory->getOrderById($id);
         if (!$order) {
             return redirect()->route('admin.order.index')->with('error', 'Đơn hàng không tồn tại');
         }
-    
-    
+
+
 
         $config = $this->configData();
-        $config['seo'] =  [
+        $config['seo'] = [
             'index' => [
                 'title' => 'Quản lý sản phẩm',
                 'table' => 'Danh sách sản phẩm'
@@ -126,31 +129,33 @@ class OrderController extends Controller
             ],
         ];
         $config['method'] = 'edit';
-    
+
         // Load danh sách tỉnh/thành để chỉnh sửa địa chỉ nếu cần
         $dropdown = $this->nestedset->Dropdownss();
-    
+
         // View template dành riêng cho đơn hàng
         $template = 'admin.orders.store';
         return view('admin.dashboard.layout', compact(
             'template',
-             'config',
+            'config',
             'dropdown',
             'order'
         ));
     }
-    
-    public function update($id, Request $request){
+
+    public function update($id, Request $request)
+    {
         $order = Order::find($id);
         if (!$order) {
             return redirect()->route('admin.order.index')->with('error', 'Đơn hàng không tồn tại');
         }
-    
+
         // Cập nhật thông tin đơn hàng
         $order->update($request->only([
-            'status', 'payment_status'
+            'status',
+            'payment_status'
         ]));
-    
+
         // Cập nhật sản phẩm trong đơn hàng nếu cần
         // if ($request->has('order_items')) {
         //     foreach ($request->order_items as $item) {
@@ -163,11 +168,12 @@ class OrderController extends Controller
         //         }
         //     }
         // }
-    
+
         return redirect()->route('admin.order.index')->with('success', 'Cập nhật đơn hàng thành công');
     }
-    
-    private function configData(){
+
+    private function configData()
+    {
         return [
             'js' => [
                 'backend/plugins/ckeditor/ckeditor.js',
@@ -186,10 +192,10 @@ class OrderController extends Controller
                 'backend/css/bootstrap.min.css'
             ],
             'model' => 'Order'
-          
+
         ];
     }
 
-   
+
 
 }

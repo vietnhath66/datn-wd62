@@ -31,19 +31,21 @@ class Order extends Model
         'confirmation_deadline',
         'created_at',
         'updated_at'
-        
+
     ];
 
     protected $table = 'orders';
 
-    public function users(){
+    public function users()
+    {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function orderItems(){
+    public function orderItems()
+    {
         return $this->hasMany(OrderItem::class, 'order_id', 'id');
     }
-    
+
     protected $casts = [
         'attribute' => 'json',
     ];
