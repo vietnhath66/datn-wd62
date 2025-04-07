@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Services\Interfaces\ProductServiceInterface  as ProductService;
+
 use App\Repositories\Interfaces\ProductRepositoryInterface  as ProductReponsitory;
+
 use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface  as AttributeCatalogueRepository;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
@@ -55,6 +57,7 @@ class ProductController extends Controller
         $products = $this->productService->paginate($request);
         $brands = Brand::all();
         $productCatalogues = ProductCatalogue::all();
+        // dd($products);
         $config = [
             'js' => [
                 'admin/js/plugins/switchery/switchery.js',
@@ -95,11 +98,16 @@ class ProductController extends Controller
 
     public function create(){
         // $this->authorize('modules', 'admin.product.create');
+
         // $attributeCatalogue = $this->attributeCatalogue->getAll;
+
+
         $attributeCatalogue = AttributeCatalogue::get();
-        // dd($attributeCatalogue[0]['attribute_catalogue_language']);
         $brands = Brand::get();
+
         $productCatalogues = ProductCatalogue::get();
+
+
 
         $config = $this->configData();
         $config['seo'] =  [
@@ -141,13 +149,38 @@ class ProductController extends Controller
     }
 
     public function edit($id){
+
         // dd($id);
         $this->authorize('modules', 'admin.product.update');
         $attributeCatalogue = AttributeCatalogue::with('attribute_catalogue_language')->get();
         $product = $this->productReponsitory->getProductById($id);
 
+
+        // $this->authorize('modules', 'admin.product.update');
+        // $attributeCatalogue = AttributeCatalogue::with('attribute_catalogue_language')->get();
+        $attributeCatalogue = AttributeCatalogue::get();
+        $brands = Brand::get();
+        
+        $product = $this->productReponsitory->getProductById($id);
+        // dd($product);
+        
+
         $config = $this->configData();
-        $config['seo'] = __('messages.product');
+        $config['seo'] =  [
+            'index' => [
+                'title' => 'Quản lý sản phẩm',
+                'table' => 'Danh sách sản phẩm'
+            ],
+            'create' => [
+                'title' => 'Thêm mới sản phẩm'
+            ],
+            'edit' => [
+                'title' => 'Cập nhật sản phẩm'
+            ],
+            'delete' => [
+                'title' => 'Xóa sản phẩm'
+            ],
+        ];
         $config['method'] = 'edit';
         $dropdown  = $this->nestedset->Dropdown();
         // $album = json_decode($product->album);
@@ -158,7 +191,7 @@ class ProductController extends Controller
             'dropdown',
             'attributeCatalogue',
             'product',
-            // 'album',
+            'brands',
         ));
     }
 

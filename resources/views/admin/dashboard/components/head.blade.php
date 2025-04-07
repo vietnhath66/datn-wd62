@@ -24,6 +24,7 @@
 <link href="../backend/css/customize.css" rel="stylesheet">
 <link rel="icon" href="../backend/img/logo.jpg" type="image/x-icon" />
 <link href="../backend/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+
 @if (isset($config['css']))
     @foreach ($config['css'] as $css => $value)
         <link href="{{ $value }}" rel="stylesheet">
@@ -31,9 +32,15 @@
 @endif
 
 <script src="../backend/js/jquery-3.1.1.min.js"></script>
+<!-- CSS -->
+{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css">
 
+<!-- JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script> --}}
 <script>
     var BASE_URL = '{{ env('APP_URL') }}';
     var SUFFIX = '{{ config('apps.general.suffix') }}';
 </script>
+
+
 {{-- C:\laragon\www\admindatn\resources\css\admin\starcode2.css --}}

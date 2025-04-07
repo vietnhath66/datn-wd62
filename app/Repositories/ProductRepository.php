@@ -51,12 +51,18 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             ]
         )
             ->with([
-                'product_catalogues',
-                'brand',
+                'product_catalogues:id,name',
+                'brand:id,name',
                 'product_variants',
                 'galleries',
                 'reviews'
             ])
+
+                // 'products.description',
+                // 'products.content',
+            
+        
+
             ->find($id);
     }
 
@@ -120,6 +126,10 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'products.price',
             'products.image',
             'products.product_catalogue_id',
+            'products.brand_id',
+            'products.name',
+            'products.description',
+            'products.content'
         ]);
 
         if (isset($param['select']) && count($param['select'])) {

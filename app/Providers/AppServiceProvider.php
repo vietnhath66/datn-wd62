@@ -7,9 +7,11 @@ use App\Repositories\AttributeReponsitory;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\Interfaces\BrandRepositoryInterface;
 use App\Repositories\BrandRepository;
+use App\Repositories\CounponRepository;
 use App\Repositories\DistrictRepository;
 use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface;
 use App\Repositories\Interfaces\AttributeReponsitoryInterface;
+use App\Repositories\Interfaces\CounponRepositoryInterface;
 use App\Repositories\Interfaces\DistrictRepositoryInterface;
 use App\Repositories\Interfaces\ProductCatalogueRepositoryInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
@@ -29,8 +31,10 @@ use App\Services\AttributeCatalogueService;
 use App\Services\AttributeService;
 use App\Services\Interfaces\BrandServiceInterface;
 use App\Services\BrandService;
+use App\Services\CounponService;
 use App\Services\Interfaces\AttributeCatalogueServiceInterface;
 use App\Services\Interfaces\AttributeServiceInterface;
+use App\Services\Interfaces\CounponServiceInterface;
 use App\Services\Interfaces\ProductCatalogueServiceInterface;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\Services\Interfaces\RoleServiceInterface;
@@ -74,7 +78,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ProductServiceInterface::class, ProductService::class);
         $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
         $this->app->bind(ProductVariantAttributeReponsitoryInterface::class, ProductVariantAttributeRepository::class);
-
+        $this->app->bind(CounponRepositoryInterface::class, CounponRepository::class);
+        $this->app->bind(CounponServiceInterface::class, CounponService::class);
     }
 
     /**

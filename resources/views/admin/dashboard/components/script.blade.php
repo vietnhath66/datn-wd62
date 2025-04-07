@@ -31,3 +31,12 @@
         {!! '<script src="' . $value . '"></script>' !!}
     @endforeach
 @endif
+
+{{-- <script>
+    Dropzone.options.myDropzone = {
+        paramName: "file",
+        maxFilesize: 2, // Giới hạn 2MB
+        acceptedFiles: "image/*", // Chỉ nhận ảnh
+        dictDefaultMessage: "Kéo thả ảnh vào đây hoặc click để chọn ảnh"
+    };
+</script> --}}
