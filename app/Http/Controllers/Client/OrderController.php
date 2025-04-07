@@ -227,4 +227,107 @@ class OrderController extends Controller
         return redirect()->route('client.viewHome')->with('success', 'Đơn hàng đã được xác nhận.');
     }
 
+
+    public function applyCoupon(Request $request)
+    {
+        if (!Auth::check()) { /* ... */
+        }
+
+        $validator = Validator::make($request->all(), ['coupon_code' => 'required|string|max:255',]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $couponCode = strtoupper(trim($request->input('coupon_code')));
+        $orderId = Session::get('order_id');
+
+        if (!$orderId) {
+            return response()->json(['success' => false, 'message' => 'Không tìm thấy thông tin đơn hàng.'], 404);
+        }
+
+        $order = Order::where('id', $orderId)->where('user_id', Auth::id())->first();
+
+        if (!$order) {
+            return response()->json(['success' => false, 'message' => 'Đơn hàng không hợp lệ.'], 404);
+        }
+        if ($order->status !== 'pending') {
+            return response()->json(['success' => false, 'message' => 'Không thể áp dụng mã cho đơn hàng này.'], 400);
+        }
+        // Quan trọng: Kiểm tra coupon hiện tại trước khi lấy total gốc
+        if (!empty($order->coupon) && empty($request->input('remove_coupon'))) { // Chỉ báo lỗi nếu không phải đang cố xóa coupon cũ
+            // Nếu đã có coupon và không phải đang xóa, thì không cho áp mã mới
+            // Hoặc bạn có thể thêm logic xóa mã cũ trước khi áp mã mới tại đây
+            return response()->json(['success' => false, 'message' => 'Chỉ áp dụng được 1 mã giảm giá mỗi đơn hàng.'], 400);
+        }
+
+        // Lấy tổng tiền gốc (quan trọng: lấy trước khi coupon có thể đã được áp dụng trước đó và ghi đè total)
+        // Cách 1: Tính lại từ chi tiết đơn hàng (An toàn nhất nếu `order->total` có thể đã bị ghi đè)
+        $originalTotal = $order->items()->sum(DB::raw('price * quantity'));
+        // Cách 2: Giả sử `order->total` hiện tại chính là tổng gốc (chỉ đúng nếu chưa có coupon nào được áp dụng và lưu)
+        // $originalTotal = $order->total;
+
+        // Tìm Coupon
+        $coupon = Coupon::where('code', $couponCode)->first();
+
+        // --- Validate Coupon (exists, date, usage, minimum amount based on $originalTotal) ---
+        if (!$coupon) {
+            return response()->json(['success' => false, 'message' => 'Mã giảm giá không tồn tại hoặc không hợp lệ.'], 404);
+        }
+        $today = Carbon::now()->toDateString();
+        if ($coupon->end_date < $today) {
+            return response()->json(['success' => false, 'message' => 'Mã giảm giá đã hết hạn.'], 400);
+        }
+        if ($coupon->start_date > $today) {
+            return response()->json(['success' => false, 'message' => 'Mã giảm giá chưa đến ngày sử dụng.'], 400);
+        }
+        if (is_numeric($coupon->number) && $coupon->number <= 0) {
+            return response()->json(['success' => false, 'message' => 'Mã giảm giá này đã hết lượt sử dụng.'], 400);
+        }
+        if ($originalTotal < $coupon->minimum_order_amount) {
+            $minAmountFormatted = number_format($coupon->minimum_order_amount);
+            return response()->json(['success' => false, 'message' => "Đơn hàng chưa đạt giá trị tối thiểu ({$minAmountFormatted} VNĐ) để dùng mã này."], 400);
+        }
+        // --- End Coupon Validation ---
+
+        DB::beginTransaction();
+        try {
+            // Tính toán số tiền giảm giá
+            $discountAmount = 0;
+            if ($coupon->discount_type === 'fixed') {
+                $discountAmount = $coupon->discount_value;
+            } elseif ($coupon->discount_type === 'percentage') {
+                $discountAmount = ($originalTotal * $coupon->discount_value) / 100;
+            }
+            $discountAmount = min($discountAmount, $originalTotal); // Đảm bảo không giảm quá tổng tiền
+            $finalTotal = $originalTotal - $discountAmount; // Tổng tiền cuối cùng
+
+            // --- Cập nhật Order ---
+            $order->coupon = $coupon->code;           // Lưu mã coupon
+            $order->total = $finalTotal;             // *** Ghi đè total bằng giá đã giảm ***
+            // Bỏ qua $order->discount_amount và $order->final_total
+            $order->save();
+
+            // Giảm số lượt sử dụng coupon (nếu `number` là số lượt còn lại)
+            if (is_numeric($coupon->number)) {
+                $coupon->number = max(0, $coupon->number - 1);
+                $coupon->save();
+            }
+
+            DB::commit();
+
+            // --- Trả về JSON chứa cả giá gốc và giá mới ---
+            return response()->json([
+                'success' => true,
+                'message' => 'Áp dụng mã giảm giá thành công!',
+                'original_total_price_display' => number_format($originalTotal) . ' VNĐ', // Giá gốc để gạch ngang
+                'new_total_price_display' => number_format($finalTotal) . ' VNĐ',     // Giá mới để hiển thị chính
+                'coupon_code' => $coupon->code
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("Lỗi Apply Coupon: " . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
+            return response()->json(['success' => false, 'message' => 'Đã xảy ra lỗi khi áp dụng mã giảm giá.'], 500);
+        }
+    }
 }

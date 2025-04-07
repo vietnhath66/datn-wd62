@@ -64,6 +64,7 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
         Route::get('/', [OrderController::class, 'viewOrder'])->name('viewOrder');
         Route::post('checkout', [OrderController::class, 'checkout'])->name('checkout');
         Route::post('complete', [OrderController::class, 'completeOrder'])->name('completeOrder');
+        Route::post('apply-coupon', [OrderController::class, 'applyCoupon'])->name('applyCoupon');
     });
 
     // Product

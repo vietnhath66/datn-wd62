@@ -218,7 +218,7 @@
                                     <td class="text-center custom-td">
                                         @if ($order->coupon)
                                             {{-- Nên có style riêng cho mã giảm giá --}}
-                                            <span class="badge bg-secondary">{{ $order->coupon }}</span>
+                                            <span class="badge custom-badge badge bg-success">{{ $order->coupon }}</span>
                                         @else
                                             {{-- Hoặc dùng class của template --}}
                                             <span class="badge custom-badge custom-badge-no-discount"
