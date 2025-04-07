@@ -59,7 +59,7 @@
                                     @foreach ($orders as $order)
                                         <tr>
                                             <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
-                                                <span class="text-blue-500">{{ $order->id }}</span>
+                                                <span class="text-blue-500">{{ $order->barcode }}</span>
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">

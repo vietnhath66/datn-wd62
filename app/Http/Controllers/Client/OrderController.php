@@ -225,7 +225,7 @@ class OrderController extends Controller
         Session::forget('order_id');
         Session::forget('processed_cart_item_ids');
 
-        return redirect()->route('client.account.order-detail')->with('success', 'Đơn hàng đã được xác nhận.');
+        return redirect()->route('client.account.accountOrder')->with('success', 'Đơn hàng đã được xác nhận.');
     }
 
 

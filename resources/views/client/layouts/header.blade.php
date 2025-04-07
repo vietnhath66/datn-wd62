@@ -33,8 +33,8 @@
         <!-- Topbar -->
         <div class="top-bar">
             <div class="content-topbar flex-sb-m h-full container">
-                <div class="left-top-bar">
-                    Free shipping for standard order over $100
+                <div class="left-top-bar kanit-thin">
+                    Tặng ưu đãi hấp dẫn khi thanh toán tổng giá trị trên 1.500.000 VND
                 </div>
 
                 <div class="right-top-bar flex-w h-full">
@@ -121,15 +121,17 @@
                         </li>
 
                         <li>
-                            <a href="blog.html">Giới thiệu</a>
+                            <a href="{{ route('client.viewPolicy') }}">Chính sách</a>
+
                         </li>
 
                         <li>
-                            <a href="about.html">Chính sách</a>
+                            <a href="{{ route('client.viewAbout') }}">Giới thiệu</a>
+
                         </li>
 
                         <li>
-                            <a href="contact.html">Liên hệ</a>
+                            <a href="{{ route('client.viewContact') }}">Liên hệ</a>
                         </li>
                     </ul>
                 </div>
