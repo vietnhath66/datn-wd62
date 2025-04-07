@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Services\Interfaces\ProductServiceInterface  as ProductService;
-use App\Services\Interfaces\OrderServiceInterface  as OrderService;
-use App\Repositories\Interfaces\ProductRepositoryInterface  as productReponsitory;
-use App\Repositories\Interfaces\OrderRepositoryInterface  as orderReponsitory;
-use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface  as AttributeCatalogueRepository;
+use App\Services\Interfaces\ProductServiceInterface as ProductService;
+use App\Services\Interfaces\OrderServiceInterface as OrderService;
+use App\Repositories\Interfaces\ProductRepositoryInterface as productReponsitory;
+use App\Repositories\Interfaces\OrderRepositoryInterface as orderReponsitory;
+use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface as AttributeCatalogueRepository;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Classes\Nestedsetbie;
@@ -36,8 +36,8 @@ class OrderController extends Controller
         ProductReponsitory $productReponsitory,
         orderReponsitory $orderReponsitory,
         AttributeCatalogueRepository $attributeCatalogue,
-    ){
-        $this->middleware(function($request, $next){
+    ) {
+        $this->middleware(function ($request, $next) {
             $locale = app()->getLocale(); // vn en cn
             $this->initialize();
             return $next($request);
@@ -49,21 +49,23 @@ class OrderController extends Controller
         $this->orderReponsitory = $orderReponsitory;
         $this->attributeCatalogue = $attributeCatalogue;
         $this->initialize();
-        
+
     }
 
-    private function initialize(){
+    private function initialize()
+    {
         $this->nestedset = new Nestedsetbie([
             'table' => 'users',
             'foreignkey' => 'user_id',
         ]);
-    } 
+    }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         // $this->authorize('modules', 'admin.product.index');
         $orders = $this->orderService->paginates($request);
         // dd($orders->toArray());
-       
+
         $config = [
             'js' => [
                 'admin/js/plugins/switchery/switchery.js',
@@ -75,7 +77,7 @@ class OrderController extends Controller
             ],
             'model' => 'Order'
         ];
-        $config['seo'] =  [
+        $config['seo'] = [
             'index' => [
                 'title' => 'Quản lý đơn hàng',
                 'table' => 'Danh sách đơn hàng'
@@ -91,7 +93,7 @@ class OrderController extends Controller
             ],
         ];
         $template = 'admin.orders.index';
-        $dropdowns  = $this->nestedset->Dropdownss();
+        $dropdowns = $this->nestedset->Dropdownss();
         return view('admin.dashboard.layout', compact(
             'template',
             'config',
@@ -100,18 +102,19 @@ class OrderController extends Controller
         ));
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         // Lấy thông tin đơn hàng
         $order = $this->orderReponsitory->getOrderById($id);
         // dd($order->toArray());
         if (!$order) {
             return redirect()->route('admin.order.index')->with('error', 'Đơn hàng không tồn tại');
         }
-    
-    
+
+
 
         $config = $this->configData();
-        $config['seo'] =  [
+        $config['seo'] = [
             'index' => [
                 'title' => 'Quản lý đơn hàng',
                 'table' => 'Danh sách đơn hàng'
@@ -127,31 +130,33 @@ class OrderController extends Controller
             ],
         ];
         $config['method'] = 'edit';
-    
+
         // Load danh sách tỉnh/thành để chỉnh sửa địa chỉ nếu cần
         $dropdown = $this->nestedset->Dropdownss();
-    
+
         // View template dành riêng cho đơn hàng
         $template = 'admin.orders.store';
         return view('admin.dashboard.layout', compact(
             'template',
-             'config',
+            'config',
             'dropdown',
             'order'
         ));
     }
-    
-    public function update($id, Request $request){
+
+    public function update($id, Request $request)
+    {
         $order = Order::find($id);
         if (!$order) {
             return redirect()->route('admin.order.index')->with('error', 'Đơn hàng không tồn tại');
         }
-    
+
         // Cập nhật thông tin đơn hàng
         $order->update($request->only([
-            'status', 'payment_status'
+            'status',
+            'payment_status'
         ]));
-    
+
         // Cập nhật sản phẩm trong đơn hàng nếu cần
         // if ($request->has('order_items')) {
         //     foreach ($request->order_items as $item) {
@@ -164,14 +169,14 @@ class OrderController extends Controller
         //         }
         //     }
         // }
-    
+
         return redirect()->route('admin.order.index')->with('success', 'Cập nhật đơn hàng thành công');
     }
 
     public function show($id)
-{
-    // Lấy thông tin đơn hàng
-    $order = Order::select([
+    {
+        // Lấy thông tin đơn hàng
+        $order = Order::select([
             'orders.id',
             'orders.user_id',
             'users.name as customer_name',
@@ -189,64 +194,67 @@ class OrderController extends Controller
             'orders.created_at',
             'orders.updated_at'
         ])
-        ->leftJoin('users', 'users.id', '=', 'orders.user_id')
-        ->where('orders.id', $id)
-        ->first();
+            ->leftJoin('users', 'users.id', '=', 'orders.user_id')
+            ->where('orders.id', $id)
+            ->first(); // Dùng first() để chỉ lấy một bản ghi duy nhất
 
-    if (!$order) {
-        return redirect()->route('admin.orders.index')->with('error', 'Đơn hàng không tồn tại.');
-    }
+        if (!$order) {
+            return redirect()->route('admin.orders.index')->with('error', 'Đơn hàng không tồn tại.');
+        }
 
-    // Lấy các item trong đơn hàng
-    $orderItems = OrderItem::select([
+        // Lấy các item trong đơn hàng
+        $orderItems = OrderItem::select([
             'order_items.*',
             'products.name as product_name',
+            'products.image as image',
             'product_variants.name as variant_name',
             'product_variants.sku',
             'product_variants.name_variant_size',
             'product_variants.name_variant_color',
             'product_variants.price as variant_price'
         ])
-        ->join('products', 'products.id', '=', 'order_items.product_id')
-        ->leftJoin('product_variants', 'product_variants.id', '=', 'order_items.product_variant_id')
-        ->where('order_items.order_id', $id)
-        ->get();
+            ->join('products', 'products.id', '=', 'order_items.product_id')
+            ->leftJoin('product_variants', 'product_variants.id', '=', 'order_items.product_variant_id')
+            ->where('order_items.order_id', $id)
+            ->get();
 
-    // dd($order->toArray());
-    // dd($orderItems->toArray());
+        // $orderItems = $orderItems ?: collect(); 
 
-    $config = $this->configData();
-    $config['seo'] =  [
-        'index' => [
-            'title' => 'Quản lý đơn hàng',
-            'table' => 'Danh sách đơn hàng'
-        ],
-        'show' => [
-            'title' => 'Thông tin đơn hàng'
-        ],
-        'edit' => [
-            'title' => 'Cập nhật đơn hàng'
-        ],
-        'delete' => [
-            'title' => 'Xóa đơn hàng'
-        ],
-    ];
-    $config['method'] = 'edit';
+        $config = $this->configData();
+        $config['seo'] = [
+            'index' => [
+                'title' => 'Quản lý đơn hàng',
+                'table' => 'Danh sách đơn hàng',
+                'show'  => 'Thông tin đơn hàng'
+            ],
+            'show' => [
+                'title' => 'Thông tin đơn hàng'
+            ],
+            'edit' => [
+                'title' => 'Cập nhật đơn hàng'
+            ],
+            'delete' => [
+                'title' => 'Xóa đơn hàng'
+            ],
+        ];
+        $config['method'] = 'edit';
 
-    $dropdown = $this->nestedset->Dropdownss(); 
+        $dropdown = $this->nestedset->Dropdownss();
 
-    $template = 'admin.orders.store'; 
+        $template = 'admin.orders.show';
 
-    return view('admin.dashboard.layout', compact(
-        'template',
-        'config',
-        'dropdown',
-        'order',
-        'orderItems'
-    ));
-}
-    
-    private function configData(){
+        return view('admin.dashboard.layout', compact(
+            'template',
+            'config',
+            'dropdown',
+            'order',
+            'orderItems'
+        ));
+    }
+
+
+    private function configData()
+    {
         return [
             'js' => [
                 'backend/plugins/ckeditor/ckeditor.js',
@@ -265,10 +273,10 @@ class OrderController extends Controller
                 'backend/css/bootstrap.min.css'
             ],
             'model' => 'Order'
-          
+
         ];
     }
 
-   
+
 
 }
