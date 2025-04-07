@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\CartDetail;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
 use App\Models\User;
 use Auth;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Log;
@@ -101,48 +103,33 @@ class OrderController extends Controller
 
         DB::beginTransaction();
         try {
-            // 4. Kiểm tra xem user đã có đơn hàng 'pending' chưa
-            $order = Order::where('user_id', $userId)
-                ->where('status', 'pending') // Chỉ tìm đơn hàng đang chờ xử lý
-                ->first();
 
-            if (!$order) {
-                // Nếu chưa có đơn hàng pending, tạo mới
-                do {
-                    $barcode = mt_rand(100000000, 999999999);
-                } while (Order::where('barcode', $barcode)->exists());
+            // Nếu chưa có đơn hàng pending, tạo mới
+            do {
+                $barcode = mt_rand(100000000, 999999999);
+            } while (Order::where('barcode', $barcode)->exists());
 
-                $order = Order::create([
-                    'user_id' => $userId,
-                    // Lấy thông tin cơ bản từ user đăng nhập, không lấy từ request ở bước này
-                    'name' => $user->name, // Giả sử User model có 'name'
-                    'email' => $user->email, // Giả sử User model có 'email'
-                    'phone' => $user->phone, // Giả sử User model có 'phone'
-                    // Địa chỉ chi tiết sẽ được cập nhật ở bước 'completeOrder'
-                    'address' => null,
-                    'number_house' => null,
-                    'neighborhood' => null,
-                    'district' => null,
-                    'province' => null,
-                    'total' => 0, // Sẽ tính lại bên dưới
-                    'status' => 'pending',
-                    'payment_status' => 'pending',
-                    'coupon' => null, // Coupon sẽ xử lý sau nếu có
-                    'barcode' => $barcode,
-                ]);
-                Log::info("Created new pending order ID: {$order->id} for user ID: {$userId}");
-            } else {
-                // Nếu đã có đơn hàng pending, có thể cập nhật thông tin cơ bản nếu cần
-                // Ví dụ: $order->touch(); // Cập nhật updated_at
-                Log::info("Found existing pending order ID: {$order->id} for user ID: {$userId}");
-                // Không nên cập nhật địa chỉ/email/phone ở đây
-            }
+            $order = Order::create([
+                'user_id' => $userId,
+                // Lấy thông tin cơ bản từ user đăng nhập, không lấy từ request ở bước này
+                'name' => $user->name, // Giả sử User model có 'name'
+                'email' => $user->email, // Giả sử User model có 'email'
+                'phone' => $user->phone, // Giả sử User model có 'phone'
+                // Địa chỉ chi tiết sẽ được cập nhật ở bước 'completeOrder'
+                'address' => null,
+                'number_house' => null,
+                'neighborhood' => null,
+                'district' => null,
+                'province' => null,
+                'total' => 0, // Sẽ tính lại bên dưới
+                'status' => 'pending',
+                'payment_status' => 'pending',
+                'coupon' => null, // Coupon sẽ xử lý sau nếu có
+                'barcode' => $barcode,
+            ]);
+            Log::info("Created new pending order ID: {$order->id} for user ID: {$userId}");
 
             $totalPrice = 0;
-
-            // 5. Xóa các OrderDetail cũ của đơn hàng pending này (để làm mới theo lựa chọn hiện tại)
-            OrderDetail::where('order_id', $order->id)->delete();
-            Log::info("Deleted old OrderDetails for order ID: {$order->id}");
 
             // 6. Thêm lại OrderDetail chỉ từ các sản phẩm đã được chọn trong giỏ hàng
             foreach ($selectedItems as $item) {
@@ -175,6 +162,7 @@ class OrderController extends Controller
 
             // 8. Lưu order_id vào session để chuyển sang trang xác nhận/thanh toán
             Session::put('order_id', $order->id);
+            Session::put('processed_cart_item_ids', $selectedCartItemIds);
 
             // 9. Chuyển hướng đến trang xem/xác nhận đơn hàng
             // *** Đảm bảo tên route này ('order.viewOrder') khớp với định nghĩa trong web.php ***
@@ -192,7 +180,11 @@ class OrderController extends Controller
     {
         // Kiểm tra order_id có trong session không
         $orderId = Session::get('order_id');
+        $processedCartItemIds = Session::get('processed_cart_item_ids');
+
         if (!$orderId) {
+            Session::forget('order_id');
+            Session::forget('processed_cart_item_ids');
             return redirect()->route('client.cart.viewCart')->with('error', 'Không tìm thấy đơn hàng.');
         }
 
@@ -217,14 +209,23 @@ class OrderController extends Controller
         ]);
 
         // Xoá giỏ hàng sau khi đặt hàng
-        $cart = Cart::where('user_id', $order->user_id)->first();
-        if ($cart) {
-            CartDetail::where('cart_id', $cart->id)->delete();
+        if (!empty($processedCartItemIds)) {
+            $cart = Cart::where('user_id', $order->user_id)->first();
+            if ($cart) {
+                CartDetail::where('cart_id', $cart->id)
+                    ->whereIn('id', $processedCartItemIds) // <-- Chỉ xóa các ID trong danh sách này
+                    ->delete();
+                Log::info("Deleted specific CartDetail IDs: " . implode(',', $processedCartItemIds) . " for cart ID: {$cart->id}");
+            }
+        } else {
+            // Ghi log nếu không tìm thấy ID trong session, không xóa gì cả
+            Log::warning("No processed_cart_item_ids found in session for order ID: {$orderId}. Cart not cleared selectively.");
         }
         // Xóa session order_id sau khi hoàn tất thanh toán
         Session::forget('order_id');
+        Session::forget('processed_cart_item_ids');
 
-        return redirect()->route('client.viewHome')->with('success', 'Đơn hàng đã được xác nhận.');
+        return redirect()->route('client.account.order-detail')->with('success', 'Đơn hàng đã được xác nhận.');
     }
 
 
@@ -295,7 +296,7 @@ class OrderController extends Controller
             $discountAmount = 0;
             if ($coupon->discount_type === 'fixed') {
                 $discountAmount = $coupon->discount_value;
-            } elseif ($coupon->discount_type === 'percentage') {
+            } elseif ($coupon->discount_type === 'percent') {
                 $discountAmount = ($originalTotal * $coupon->discount_value) / 100;
             }
             $discountAmount = min($discountAmount, $originalTotal); // Đảm bảo không giảm quá tổng tiền

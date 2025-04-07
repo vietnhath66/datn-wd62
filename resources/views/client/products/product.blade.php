@@ -87,7 +87,7 @@
 
 
         <div class="row isotope-grid">
-            <div class=" 1 col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+            {{-- <div class=" 1 col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
                 <!-- Block2 -->
                 <div class="block2">
                     <div class="block2-pic hov-img0">
@@ -493,7 +493,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             @foreach ($products as $product)
                 <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">

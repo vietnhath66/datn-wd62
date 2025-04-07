@@ -95,9 +95,25 @@
                     <hr />
                     <!-- Tổng tiền -->
                     <div class="total-section">
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-between align-items-center"> {{-- Căn chỉnh dọc nếu cần --}}
                             <p class="mb-0">Tổng Tiền</p>
-                            <p class="mb-0 total-price">{{ number_format($totalPrice) }} VND</p>
+                            <div>
+                                {{-- Thẻ <del> để hiển thị giá gốc bị gạch ngang, ban đầu ẩn đi --}}
+                                <del class="original-price cl9"
+                                    style="display: none; margin-left: 10px; font-size: 0.9em;"></del>
+                                {{-- Thẻ <span> hiển thị giá chính (giá sau giảm nếu có) --}}
+                                <span class="mb-0 total-price mtext-110 cl2">
+                                    {{-- Hiển thị tổng tiền ban đầu từ controller --}}
+                                    {{-- $totalPrice này là giá trị gốc trước khi áp coupon ajax --}}
+                                    {{ number_format($totalPrice) }} VNĐ
+                                </span>
+                            </div>
+                        </div>
+                        {{-- (Tùy chọn) Hiển thị thông tin coupon đã áp dụng --}}
+                        <div id="applied-coupon-div" class="text-success p-t-10"
+                            style="display: none; font-size: 0.9em;">
+                            Đã áp dụng mã: <strong id="applied-coupon-code"></strong>
+                            {{-- <span id="discount-amount-display" class="text-danger"></span> --}} {{-- Không có số tiền giảm cụ thể nếu không lưu --}}
                         </div>
                     </div>
                     <!-- Phương thức thanh toán -->

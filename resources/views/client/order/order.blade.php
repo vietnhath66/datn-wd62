@@ -291,4 +291,129 @@
             alert("Theo dõi mình để xem thêm các video công nghệ nhé!");
         });
     </script>
+
+    <script>
+        $(document).ready(function() {
+
+            // --- Setup AJAX CSRF Token (Quan trọng) ---
+            // Đảm bảo chỉ chạy một lần duy nhất trong toàn bộ trang
+            if (typeof $.ajaxSetup === 'function') {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            } else {
+                console.error("jQuery chưa được tải!");
+                alert("Có lỗi xảy ra với thư viện jQuery!");
+                return; // Dừng nếu chưa có jQuery
+            }
+
+            // --- Bắt sự kiện click nút "Áp Dụng" coupon ---
+            // Sử dụng class 'btn-apply-coupon' làm ví dụ
+            $('.btn-apply-coupon').on('click', function(e) {
+                e.preventDefault(); // Ngăn nút bấm gửi form (nếu nó là type="submit")
+
+                let applyButton = $(this);
+                let couponInput = $('#coupon'); // Lấy ô nhập coupon
+                let couponCode = couponInput.val().trim(); // Lấy mã người dùng nhập, bỏ khoảng trắng thừa
+
+                // --- Validate cơ bản ---
+                if (!couponCode) {
+                    alert('Vui lòng nhập mã giảm giá.');
+                    couponInput.focus(); // Focus vào ô nhập liệu
+                    return;
+                }
+
+                // (Tùy chọn) Hiển thị trạng thái đang xử lý
+                applyButton.prop('disabled', true).text('Đang xử lý...');
+                // Xóa thông báo lỗi cũ (nếu có)
+                // $('.coupon-error-message').remove(); // Giả sử có thẻ div để báo lỗi coupon
+
+                // --- Gửi yêu cầu AJAX ---
+                $.ajax({
+                    type: 'POST',
+                    // *** ĐẢM BẢO TÊN ROUTE NÀY ĐÚNG VỚI FILE routes/web.php ***
+                    // Ví dụ: 'order.applyCoupon' hoặc 'client.order.applyCoupon'
+                    url: '{{ route('client.order.applyCoupon') }}',
+                    data: {
+                        coupon_code: couponCode // Dữ liệu gửi lên server
+                    },
+                    dataType: 'json', // Mong muốn nhận về dữ liệu dạng JSON
+
+                    // --- HÀM SUCCESS: Xử lý khi Server trả về thành công (HTTP 200 và success: true) ---
+                    success: function(response) {
+                        console.log('Apply Coupon Response:', response); // Xem log để debug
+
+                        if (response.success) {
+                            // 1. Cập nhật giá chính bằng giá mới
+                            $('.total-price').text(response.new_total_price_display);
+
+                            // 2. Cập nhật và hiển thị giá gốc bị gạch ngang
+                            $('.original-price')
+                                .text(response.original_total_price_display)
+                                .show(); // Hiển thị thẻ <del>
+
+                            // 3. (Tùy chọn) Hiển thị mã coupon đã áp dụng
+                            $('#applied-coupon-code').text(response.coupon_code);
+                            $('#applied-coupon-div').show();
+
+                            // 4. Vô hiệu hóa ô nhập và nút bấm
+                            couponInput.prop('disabled', true);
+                            applyButton.text(
+                                'Đã áp dụng'); // Không disable nút nữa mà chỉ đổi text
+
+                            // 5. Hiển thị thông báo thành công
+                            if (typeof swal === 'function') { // Ưu tiên SweetAlert
+                                swal("Thành công!", response.message ||
+                                    "Áp dụng mã giảm giá thành công!", "success");
+                            } else {
+                                alert(response.message || "Áp dụng mã giảm giá thành công!");
+                            }
+
+                        } else {
+                            // --- Xử lý khi Server trả về success: false (Lỗi logic như mã sai, hết hạn...) ---
+                            if (typeof swal === 'function') {
+                                swal("Lỗi", response.message || "Áp dụng mã giảm giá thất bại.",
+                                    "error");
+                            } else {
+                                alert(response.message || "Áp dụng mã giảm giá thất bại.");
+                            }
+                            // Kích hoạt lại nút và ô nhập nếu áp dụng lỗi
+                            applyButton.prop('disabled', false).text('Áp Dụng');
+                            couponInput.prop('disabled', false);
+                            // (Tùy chọn) Hiển thị lỗi gần ô input
+                            // couponInput.after('<div class="coupon-error-message text-danger">'+response.message+'</div>');
+                        }
+                    },
+
+                    // --- HÀM ERROR: Xử lý khi có lỗi kết nối hoặc lỗi server (HTTP 500, 404...) ---
+                    error: function(xhr, status, error) {
+                        console.error("AJAX Apply Coupon Error:", status, error, xhr
+                            .responseText);
+                        let errorMsg = "Đã xảy ra lỗi kết nối hoặc lỗi server khi áp dụng mã.";
+                        // Cố gắng lấy lỗi chi tiết hơn nếu server trả về JSON lỗi
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        }
+                        if (typeof swal === 'function') {
+                            swal("Lỗi", errorMsg, "error");
+                        } else {
+                            alert(errorMsg);
+                        }
+                        // Kích hoạt lại nút và ô nhập khi có lỗi AJAX
+                        applyButton.prop('disabled', false).text('Áp Dụng');
+                        couponInput.prop('disabled', false);
+                    },
+
+                    // --- HÀM COMPLETE: Luôn chạy sau khi success hoặc error hoàn thành ---
+                    // complete: function() {
+                    //      // Ví dụ: Ẩn biểu tượng loading nếu có
+                    // }
+
+                }); // Kết thúc $.ajax
+            }); // Kết thúc .on('click')
+
+        }); // Kết thúc $(document).ready
+    </script>
 @endpush
