@@ -18,20 +18,18 @@ class Order extends Model
         'user_id',
         'email',
         'total',
+        'phone',
         'status',
         'barcode',
         'province',
         'district',
-        'ward',
-        'address_detail',
-        'phone',
+        'number_house',
+        'address',
         'coupon',
         'payment_status',
-        'total_discount',
-        'confirmation_deadline',
+        'neighborhood',
         'created_at',
         'updated_at'
-        
     ];
 
     protected $table = 'orders';

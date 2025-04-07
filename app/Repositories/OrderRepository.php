@@ -37,12 +37,12 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             'orders.total',
             'orders.status',
             'orders.payment_status',
-            'orders.total_discount',
+            'orders.neighborhood',
             'orders.barcode',
             'orders.province',
             'orders.district',
-            'orders.ward',
-            'orders.address_detail',
+            'orders.number_house',
+            'orders.address',
             'orders.created_at',
             'orders.updated_at',
             'order_items.product_id',
@@ -55,10 +55,10 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             'product_variants.name_variant_color',
             'product_variants.price'
         ])
-        ->Join('users', 'users.id', '=', 'orders.user_id') // Lấy thông tin user
-        ->Join('order_items', 'order_items.order_id', '=', 'orders.id') // Lấy chi tiết sản phẩm trong đơn
-        ->Join('products', 'products.id', '=', 'order_items.product_id') // Lấy thông tin sản phẩm
-        ->Join('product_variants', 'product_variants.product_id', '=', 'products.id') // Lấy thông tin biến thể sản phẩm
+        ->join('users', 'users.id', '=', 'orders.user_id')
+        ->join('order_items', 'order_items.order_id', '=', 'orders.id')
+        ->join('products', 'products.id', '=', 'order_items.product_id')
+        ->join('product_variants', 'product_variants.id', '=', 'order_items.product_variant_id') 
         ->where('orders.id', $id)
         ->first();
     }
