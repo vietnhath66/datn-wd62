@@ -23,4 +23,5 @@ class ProductVariantAttribute extends Model
             ->withPivot(['value'])
             ->withTimestamps();
     }
+
 }

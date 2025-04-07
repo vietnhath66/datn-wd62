@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+
+use App\Models\Role;
 use App\Models\User;
 use App\Repositories\Interfaces\RoleRepositoryInterface as RoleRepository;
 use App\Services\Interfaces\RoleServiceInterface;
@@ -28,7 +30,9 @@ class RoleService implements RoleServiceInterface
         $perPage = addslashes($request->integer('per_page'));
 
 
-        $brands = $this->RoleRepository->pagination(
+
+        $roles = $this->RoleRepository->pagination(
+
             ['*'],
             $condition,
             $perPage,
@@ -37,7 +41,12 @@ class RoleService implements RoleServiceInterface
             [],
             ['users'],
         );
-        return $brands;
+
+        if (isset($condition['keyword'])) {
+            $roles = Role::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->get();
+        }
+        return $roles;
+
     }
 
     public function create($request)

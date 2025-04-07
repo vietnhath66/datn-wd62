@@ -39,6 +39,7 @@ class ProductVariant extends Model
     public function attributes()
     {
         return $this->belongsToMany(Attribute::class, 'product_variant_attribute', 'product_variant_id', 'attribute_id');
+
     }
 
 }

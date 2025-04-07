@@ -16,14 +16,16 @@ class AttributeReponsitory extends BaseRepository implements AttributeReponsitor
 
     public function __construct(
         Attribute $model
-    ){
+    ) {
         $this->model = $model;
     }
 
-    
 
-    public function getAttributeById(int $id = 0, $language_id = 0){
-        return $this->model->select([
+
+    public function getAttributeById(int $id = 0, $language_id = 0)
+    {
+        return $this->model->select(
+            [
                 'attributes.id',
                 'attributes.attribute_catalogue_id',
                 'attributes.image',
@@ -40,41 +42,43 @@ class AttributeReponsitory extends BaseRepository implements AttributeReponsitor
                 'tb2.canonical',
             ]
         )
-        ->join('attribute_language as tb2', 'tb2.attribute_id', '=','attributes.id')
-        ->with('attribute_catalogues')
-        ->where('tb2.language_id', '=', $language_id)
-        ->find($id);
+            ->join('attribute_language as tb2', 'tb2.attribute_id', '=', 'attributes.id')
+            ->with('attribute_catalogues')
+            ->where('tb2.language_id', '=', $language_id)
+            ->find($id);
     }
 
-    public function searchAttributes(string $keyword = '', array $option = []){
-        return $this->model->whereHas('attribute_catalogues', function($query) use ($option){
+    public function searchAttributes(string $keyword = '', array $option = [])
+    {
+        return $this->model->whereHas('attribute_catalogues', function ($query) use ($option) {
             $query->where('attribute_catalogue_id', $option['attributeCatalogueId']);
-        })->where('name', 'like', '%'.$keyword.'%')->get();
+        })->where('name', 'like', '%' . $keyword . '%')->get();
     }
 
-    public function findAttributeByIdArray(array $attributeArray = [], $languageId = 0) {
+
+    public function findAttributeByIdArray(array $attributeArray = [])
+    {
         return $this->model->select([
-            'attributes.id',
-            'attributes.attribute_catalogue_id',
-            'tb2.name'
+            'id',
+            'attribute_catalogue_id',
+            'name'
         ])
-        ->join('attribute_language as tb2', 'tb2.attribute_id', '=','attributes.id')
-        ->where('tb2.language_id', '=', $languageId)
-        ->where([config('apps.general.defaultPublish')])
-        ->whereIn('attributes.id', $attributeArray)
-        ->get();
+            // ->where([config('apps.general.defaultPublish')])
+            ->whereIn('attributes.id', $attributeArray)
+            ->get();
     }
 
-    public function findAttributeproductCatalogueAndProductVariant($attribuetId = [], $productCatalogueId = 0){
+    public function findAttributeproductCatalogueAndProductVariant($attribuetId = [], $productCatalogueId = 0)
+    {
         return $this->model->select([
             'attributes.id',
         ])
-        ->leftJoin('product_variant_attribute as tb2', 'tb2.attribute_id', '=', 'attributes.id')
-        ->leftJoin('product_variants as tb3', 'tb3.id', '=', 'tb2.product_variant_id')
-        ->leftJoin('product_catalogue_product as tb4', 'tb4.product_id', '=', 'tb4.product_id')
-        ->where('tb4.product_catalogue_id', '=', $productCatalogueId)
-        ->whereIn('attributes.id', $attribuetId)
-        ->distinct()
-        ->pluck('attributes.id');
+            ->leftJoin('product_variant_attribute as tb2', 'tb2.attribute_id', '=', 'attributes.id')
+            ->leftJoin('product_variants as tb3', 'tb3.id', '=', 'tb2.product_variant_id')
+            ->leftJoin('product_catalogue_product as tb4', 'tb4.product_id', '=', 'tb4.product_id')
+            ->where('tb4.product_catalogue_id', '=', $productCatalogueId)
+            ->whereIn('attributes.id', $attribuetId)
+            ->distinct()
+            ->pluck('attributes.id');
     }
 }

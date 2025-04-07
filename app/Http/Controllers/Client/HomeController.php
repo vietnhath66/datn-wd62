@@ -8,9 +8,12 @@ use App\Http\Controllers\Controller;
 
 class HomeController extends Controller
 {
+
     public function viewHome()
-    {   $products = Product::all(); // Lấy tất cả sản phẩm
+    {
+        $products = Product::all(); // Lấy tất cả sản phẩm
         return view('client.home.home', compact('products'));
+
     }
 
 }

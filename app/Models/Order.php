@@ -37,4 +37,14 @@ class Order extends Model
     {
         return $this->hasMany(OrderDetail::class);
     }
+
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'order_id', 'id');
+    }
+
+    protected $casts = [
+        'attribute' => 'json',
+    ];
 }

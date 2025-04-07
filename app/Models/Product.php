@@ -10,7 +10,6 @@ use App\Traits\QueryScopes;
 
 class Product extends Model
 {
-
     use HasFactory, SoftDeletes, QueryScopes;
 
 
@@ -43,7 +42,7 @@ class Product extends Model
 
     protected $casts = [
         'attribute' => 'json',
-    ];
 
+    ];
 }
 
