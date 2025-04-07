@@ -57,12 +57,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'galleries',
                 'reviews'
             ])
-
-                // 'products.description',
-                // 'products.content',
-            
-        
-
             ->find($id);
     }
 
@@ -169,7 +163,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         // if (isset($param['whereRaw']) && count($param['whereRaw'])) {
         //     $query->whereRaw($param['whereRaw'][0][0],$param['whereRaw'][0][1]);
         // }
-        $query->with(['reviews', 'brand','product_catalogues']);
+        $query->with(['reviews','product_catalogues:id,name', 'brand:id,name']);
         return $query->paginate($perpage);
     }
 

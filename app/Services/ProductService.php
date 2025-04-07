@@ -599,16 +599,15 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function paginateSelect()
     {
         return [
-            'products.id',
+            'products.description',
+            'products.content',
+            'products.product_catalogue_id',
+            'products.brand_id',
             'products.publish',
-            // 'products.name',
             'products.image',
             'products.price',
-
             'products.name',
-
-            // 'tb2.name AS catalogue_name'
-
+            'products.id',
         ];
     }
 
@@ -628,7 +627,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             'is_show_home',
             'product_catalogue_id',
             'price',
-            'attributeCatalogue',
+            // 'attributeCatalogue',
             'attribute',
             'variant'
         ];
