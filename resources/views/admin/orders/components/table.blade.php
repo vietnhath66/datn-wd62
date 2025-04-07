@@ -38,18 +38,19 @@
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_code"
                                         data-sort="product_code">Mã Đơn</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_code"
-                                        data-sort="product_code">Khách Hàng</th> 
+                                        data-sort="product_code">Khách Hàng</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
                                         data-sort="product_name">Số Điện Thoại</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
                                         data-sort="product_name">Tổng tiền</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
-                                        data-sort="product_name">Thanh Toán</th>   
+                                        data-sort="product_name">Thanh Toán</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
                                         data-sort="status">Trạng Thái</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
                                         data-sort="status">Ngày Đặt</th>
-                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 action">
+                                    <th
+                                        class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 action">
                                         Hành động</th>
                                 </tr>
                             </thead>
@@ -58,29 +59,30 @@
                                     @foreach ($orders as $order)
                                         <tr>
                                             <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
-                                                <span class="text-blue-500">{{ $order->id }}</span>
+                                                <span class="text-blue-500">{{ $order->barcode }}</span>
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">
-                                                    <h6 class="product_name">{{ $order->users->name }}</h6>
+                                                <h6 class="product_name">{{ $order->users->name }}</h6>
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">
-                                                    <h6 class="product_name">{{ $order->phone }}</h6>
+                                                <h6 class="product_name">{{ $order->phone }}</h6>
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name text-red-500">
-                                                    <h6 class="text-red-500">{{ number_format($order->total) }} vnđ</h6>
+                                                <h6 class="text-red-500">{{ number_format($order->total) }} vnđ</h6>
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
-                                                @if ($order->payment_status == 'pending')
+                                                @if ($order->payment_status == 'cod')
                                                     <span
-                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Chưa thanh toán</span>
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">COD</span>
                                                 @elseif($order->payment_status == 'wallet')
                                                     <span
-                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Ví điện tử</span>
-                                                {{-- @elseif($order->payment_status == 2)
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Thanh
+                                                        toán MOMO</span>
+                                                    {{-- @elseif($order->payment_status == 2)
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Đã hoàn lại</span> --}}
                                                 @endif
@@ -89,25 +91,29 @@
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
                                                 @if ($order->status == 'pending')
                                                     <span
-                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Chưa xác nhận</span>
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Chưa
+                                                        xác nhận</span>
                                                 @elseif($order->status == 'processing')
                                                     <span
-                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đang xử lý</span>
-                                                {{-- @elseif($order->status == 'Đang giao hàng')
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đang
+                                                        xử lý</span>
+                                                    {{-- @elseif($order->status == 'Đang giao hàng')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Đang giao hàng</span> --}}
                                                 @elseif($order->status == 'completed')
                                                     <span
-                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Đã giao</span>
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Đã
+                                                        giao</span>
                                                 @elseif($order->status == 'cancelled')
                                                     <span
-                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Đã hủy</span>
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Đã
+                                                        hủy</span>
                                                 @endif
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
                                                 <span
-                                                    class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">{{$order->created_at }}</span>
+                                                    class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">{{ $order->created_at }}</span>
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 action">
