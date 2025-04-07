@@ -9,7 +9,7 @@
                 <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
                     <li
                         class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1  before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
-                        <a href="#!" class="text-slate-400 dark:text-zink-200">Thương hiệu</a>
+                        <a href="#!" class="text-slate-400 dark:text-zink-200">Đơn hàng</a>
                     </li>
                     <li class="text-slate-700 dark:text-zink-100">
                         {{ $config['seo']['index']['table'] }}
@@ -74,32 +74,32 @@
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
-                                                @if ($order->payment_status == 1)
-                                                    <span
-                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Đã thanh toán</span>
-                                                @elseif($order->payment_status == 0)
+                                                @if ($order->payment_status == 'pending')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Chưa thanh toán</span>
-                                                @elseif($order->payment_status == 2)
+                                                @elseif($order->payment_status == 'wallet')
                                                     <span
-                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Đã hoàn lại</span>
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Ví điện tử</span>
+                                                {{-- @elseif($order->payment_status == 2)
+                                                    <span
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Đã hoàn lại</span> --}}
                                                 @endif
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
-                                                @if ($order->status == 'Chưa xác nhận')
+                                                @if ($order->status == 'pending')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Chưa xác nhận</span>
-                                                @elseif($order->status == 'Đã xác nhận')
+                                                @elseif($order->status == 'processing')
                                                     <span
-                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đã xác nhận</span>
-                                                @elseif($order->status == 'Đang giao hàng')
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đang xử lý</span>
+                                                {{-- @elseif($order->status == 'Đang giao hàng')
                                                     <span
-                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Đang giao hàng</span>
-                                                @elseif($order->status == 'Hoàn thành')
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Đang giao hàng</span> --}}
+                                                @elseif($order->status == 'completed')
                                                     <span
-                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Hoàn thành</span>
-                                                @elseif($order->status == 'Đã hủy')
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Đã giao</span>
+                                                @elseif($order->status == 'cancelled')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Đã hủy</span>
                                                 @endif
@@ -107,7 +107,7 @@
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
                                                 <span
-                                                    class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">{{$order->confirmation_deadline }}</span>
+                                                    class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">{{$order->created_at }}</span>
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 action">
@@ -120,7 +120,7 @@
                                                         aria-labelledby="productAction1">
                                                         <li>
                                                             <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-product hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
-                                                                href="apps-ecommerce-product-overview.html"><i
+                                                                href="{{ route('admin.order.show', $order->id) }}"><i
                                                                     data-lucide="eye"
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
                                                                 <span class="align-middle">Overview</span></a>

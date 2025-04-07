@@ -20,7 +20,7 @@
                 <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
                     <li
                         class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1 before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400 dark:text-zink-200">
-                        <a href="#!" class="text-slate-400 dark:text-zink-200">Thương loại sản phẩm</a>
+                        <a href="#!" class="text-slate-400 dark:text-zink-200">Đơn hàng</a>
                     </li>
                     <li class="text-slate-700 dark:text-zink-100">{{ $config['seo'][$config['method']]['title'] }}
                     </li>
@@ -45,9 +45,9 @@
                                         <select id="payment_status" name="payment_status"
                                             class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200">
                                              
-                                            <option value="0" {{ $order->payment_status == '0' ? 'selected' : '' }}>Chưa thanh toán</option>
-                                            <option value="1" {{ $order->payment_status == '1' ? 'selected' : '' }}>Đã thanh toán</option>
-                                            <option value="2" {{ $order->payment_status == '2' ? 'selected' : '' }}>Đã hoàn lại</option>
+                                            <option value="pending" {{ $order->payment_status == 'pending' ? 'selected' : '' }}>Chưa thanh toán</option>
+                                            <option value="wallet" {{ $order->payment_status == 'wallet' ? 'selected' : '' }}>Ví điện tử</option>
+                                            {{-- <option value="2" {{ $order->payment_status == '2' ? 'selected' : '' }}>Đã hoàn lại</option> --}}
                                         </select>
                                         {{-- <p class="mt-1 text-sm text-slate-400 dark:text-zink-200">
                                             Code will be generated automatically
@@ -59,11 +59,11 @@
                                         <select id="status" name="status"
                                             class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200">
                                              
-                                            <option value="Chưa xác nhận" {{ $order->status == 'Chưa xác nhận' ? 'selected' : '' }}>Chưa xác nhận</option>
-                                            <option value="Đã xác nhận" {{ $order->status == 'Đã xác nhận' ? 'selected' : '' }}>Đã xác nhận</option>
-                                            <option value="Đang giao hàng" {{ $order->status == 'Đang giao hàng' ? 'selected' : '' }}>Đang giao hàng</option>
-                                            <option value="Hoàn thành" {{ $order->status == 'Hoàn thành' ? 'selected' : '' }}>Hoàn thành</option>
-                                            <option value="Đã hủy" {{ $order->status == 'Đã hủy' ? 'selected' : '' }}>Đã hủy</option>
+                                            <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Chưa xác nhận</option>
+                                            <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Đang xử lý</option>
+                                            {{-- <option value="Đang giao hàng" {{ $order->status == 'Đang giao hàng' ? 'selected' : '' }}>Đang giao hàng</option> --}}
+                                            <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Đã giao</option>
+                                            <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Đã hủy</option>
                                         </select>
                                         {{-- <p class="mt-1 text-sm text-slate-400 dark:text-zink-200">
                                             Code will be generated automatically

@@ -199,25 +199,25 @@ class OrderService extends BaseService implements OrderServiceInterface
         $perPage = $request->integer('perpage') ?: 5;
         $keyword = addslashes($request->input('keyword'));
 
+
         $orders = Order::selectRaw("
-            orders.id,
-            orders.user_id,
-            users.name as customer_name,
-            orders.email,
-            orders.phone,
-            orders.total,
-            orders.status,
-            orders.payment_status,
-            orders.total_discount,
-            orders.barcode,
-            orders.province,
-            orders.district,
-            orders.ward,
-            orders.address_detail,
-            orders.confirmation_deadline,
-            orders.created_at,
-            orders.updated_at
-        ")
+        orders.id,
+        MAX(orders.user_id) as user_id,
+        MAX(users.name) as customer_name,
+        MAX(orders.email) as email,
+        MAX(orders.phone) as phone,
+        MAX(orders.total) as total,
+        MAX(orders.status) as status,
+        MAX(orders.payment_status) as payment_status,
+        MAX(orders.neighborhood) as neighborhood,
+        MAX(orders.barcode) as barcode,
+        MAX(orders.province) as province,
+        MAX(orders.district) as district,
+        MAX(orders.number_house) as number_house,
+        MAX(orders.address) as address,
+        MAX(orders.created_at) as created_at,
+        MAX(orders.updated_at) as updated_at
+    ")
             ->leftJoin('users', 'users.id', '=', 'orders.user_id')
             ->when($keyword, function ($query) use ($keyword) {
                 return $query->where('orders.id', 'like', "%{$keyword}%");
@@ -225,6 +225,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             ->groupBy('orders.id')
             ->orderBy('orders.id', 'DESC')
             ->paginate($perPage);
+
 
         // Load quan hệ sau khi lấy dữ liệu
         $orders->load(['orderItems.products.product_variants']);
@@ -244,13 +245,12 @@ class OrderService extends BaseService implements OrderServiceInterface
             orders.total,
             orders.status,
             orders.payment_status,
-            orders.total_discount,
+            orders.neighborhood,
             orders.barcode,
             orders.province,
             orders.district,
-            orders.ward,
-            orders.address_detail,
-            orders.confirmation_deadline,
+            orders.number_house,
+            orders.address,
             orders.created_at,
             orders.updated_at
         ")
@@ -779,12 +779,12 @@ class OrderService extends BaseService implements OrderServiceInterface
             'orders.total',
             'orders.status',
             'orders.payment_status',
-            'orders.total_discount',
+            'orders.neighborhood',
             'orders.barcode',
             'orders.province',
             'orders.district',
-            'orders.ward',
-            'orders.address_detail',
+            'orders.number_house',
+            'orders.address',
             'orders.created_at',
             'orders.updated_at',
             'order_items.product_id',
@@ -812,12 +812,12 @@ class OrderService extends BaseService implements OrderServiceInterface
             'orders.total',
             'orders.status',
             'orders.payment_status',
-            'orders.total_discount',
+            'orders.neighborhood',
             'orders.barcode',
             'orders.province',
             'orders.district',
-            'orders.ward',
-            'orders.address_detail',
+            'orders.number_house',
+            'orders.address',
             'orders.created_at',
             'orders.updated_at',
             'order_items.product_id',

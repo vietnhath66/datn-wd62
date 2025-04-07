@@ -1,4 +1,4 @@
-<form action="{{ route('admin.product.index') }}">
+<form action="{{ route('admin.order.index') }}">
     <div class="filter-wrapper">
         <div class="row">
             {{-- @include('backend.dashboard.components.perpage') --}}

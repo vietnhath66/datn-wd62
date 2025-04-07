@@ -141,6 +141,7 @@ Route::prefix('admin')
                 Route::get('index',                                     [OrderController::class, 'index'])->name('index');
                 Route::get('edit/{order}',                            [OrderController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
                 Route::put('update/{order}',                          [OrderController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
+                Route::get('show/{order}',                            [OrderController::class, 'show'])->where(['id' => '[0-9]+'])->name('show');
             });
 
 

@@ -79,17 +79,17 @@ class OrderController extends Controller
         ];
         $config['seo'] = [
             'index' => [
-                'title' => 'Quản lý sản phẩm',
-                'table' => 'Danh sách sản phẩm'
+                'title' => 'Quản lý đơn hàng',
+                'table' => 'Danh sách đơn hàng'
             ],
             'create' => [
-                'title' => 'Thêm mới sản phẩm'
+                'title' => 'Thêm mới đơn hàng'
             ],
             'edit' => [
-                'title' => 'Cập nhật sản phẩm'
+                'title' => 'Cập nhật đơn hàng'
             ],
             'delete' => [
-                'title' => 'Xóa sản phẩm'
+                'title' => 'Xóa đơn hàng'
             ],
         ];
         $template = 'admin.orders.index';
@@ -106,6 +106,7 @@ class OrderController extends Controller
     {
         // Lấy thông tin đơn hàng
         $order = $this->orderReponsitory->getOrderById($id);
+        // dd($order->toArray());
         if (!$order) {
             return redirect()->route('admin.order.index')->with('error', 'Đơn hàng không tồn tại');
         }
@@ -115,17 +116,17 @@ class OrderController extends Controller
         $config = $this->configData();
         $config['seo'] = [
             'index' => [
-                'title' => 'Quản lý sản phẩm',
-                'table' => 'Danh sách sản phẩm'
+                'title' => 'Quản lý đơn hàng',
+                'table' => 'Danh sách đơn hàng'
             ],
             'create' => [
-                'title' => 'Thêm mới sản phẩm'
+                'title' => 'Thêm mới đơn hàng'
             ],
             'edit' => [
-                'title' => 'Cập nhật sản phẩm'
+                'title' => 'Cập nhật đơn hàng'
             ],
             'delete' => [
-                'title' => 'Xóa sản phẩm'
+                'title' => 'Xóa đơn hàng'
             ],
         ];
         $config['method'] = 'edit';
@@ -171,6 +172,87 @@ class OrderController extends Controller
 
         return redirect()->route('admin.order.index')->with('success', 'Cập nhật đơn hàng thành công');
     }
+
+
+    public function show($id)
+    {
+        // Lấy thông tin đơn hàng
+        $order = Order::select([
+            'orders.id',
+            'orders.user_id',
+            'users.name as customer_name',
+            'orders.email',
+            'orders.phone',
+            'orders.total',
+            'orders.status',
+            'orders.payment_status',
+            'orders.neighborhood',
+            'orders.barcode',
+            'orders.province',
+            'orders.district',
+            'orders.number_house',
+            'orders.address',
+            'orders.created_at',
+            'orders.updated_at'
+        ])
+            ->leftJoin('users', 'users.id', '=', 'orders.user_id')
+            ->where('orders.id', $id)
+            ->first(); // Dùng first() để chỉ lấy một bản ghi duy nhất
+
+        if (!$order) {
+            return redirect()->route('admin.orders.index')->with('error', 'Đơn hàng không tồn tại.');
+        }
+
+        // Lấy các item trong đơn hàng
+        $orderItems = OrderItem::select([
+            'order_items.*',
+            'products.name as product_name',
+            'products.image as image',
+            'product_variants.name as variant_name',
+            'product_variants.sku',
+            'product_variants.name_variant_size',
+            'product_variants.name_variant_color',
+            'product_variants.price as variant_price'
+        ])
+            ->join('products', 'products.id', '=', 'order_items.product_id')
+            ->leftJoin('product_variants', 'product_variants.id', '=', 'order_items.product_variant_id')
+            ->where('order_items.order_id', $id)
+            ->get();
+
+        // $orderItems = $orderItems ?: collect(); 
+
+        $config = $this->configData();
+        $config['seo'] = [
+            'index' => [
+                'title' => 'Quản lý đơn hàng',
+                'table' => 'Danh sách đơn hàng',
+                'show' => 'Thông tin đơn hàng'
+            ],
+            'show' => [
+                'title' => 'Thông tin đơn hàng'
+            ],
+            'edit' => [
+                'title' => 'Cập nhật đơn hàng'
+            ],
+            'delete' => [
+                'title' => 'Xóa đơn hàng'
+            ],
+        ];
+        $config['method'] = 'edit';
+
+        $dropdown = $this->nestedset->Dropdownss();
+
+        $template = 'admin.orders.show';
+
+        return view('admin.dashboard.layout', compact(
+            'template',
+            'config',
+            'dropdown',
+            'order',
+            'orderItems'
+        ));
+    }
+
 
     private function configData()
     {
