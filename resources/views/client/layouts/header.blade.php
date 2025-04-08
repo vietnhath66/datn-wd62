@@ -65,12 +65,6 @@
                                     <i class="fa fa-shopping-cart"></i> <span class="ml-2">Đơn hàng</span>
                                 </a>
                                 <a class="dropdown-item" href="">
-                                    <i class="fa fa-envelope"></i> <span class="ml-2">Đổi email</span>
-                                </a>
-                                <a class="dropdown-item" href="">
-                                    <i class="fa fa-heart"></i> <span class="ml-2">Yêu thích</span>
-                                </a>
-                                <a class="dropdown-item" href="">
                                     <i class="fa fa-lock"></i> <span class="ml-2">Thay mật khẩu</span>
                                 </a>
                                 <div class="dropdown-divider"></div>
@@ -108,8 +102,7 @@
                 <div class="menu-desktop">
                     <ul class="main-menu">
                         <li class="active-menu">
-                            <a href="index.html">Trang chủ</a>
-
+                            <a href="{{ route('client.viewHome') }}">Trang chủ</a>
                         </li>
 
 
