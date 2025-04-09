@@ -16,14 +16,14 @@
 <!-- StarCode CSS -->
 <link rel="stylesheet" href="{{ asset('admin/css/starcode2.css') }}" />
 
-<link href="../backend/font-awesome/css/font-awesome.css" rel="stylesheet">
+<link href="{{ asset('backend/font-awesome/css/font-awesome.css') }}" rel="stylesheet">
 
-{{-- <link href="../backend/css/animate.css" rel="stylesheet"> --}}
-{{-- <link href="../backend/css/style.css" rel="stylesheet"> --}}
-{{-- <link href="../backend/css/customize.css" rel="stylesheet"> --}}
-<link href="../backend/css/customize.css" rel="stylesheet">
-<link rel="icon" href="../backend/img/logo.jpg" type="image/x-icon" />
-<link href="../backend/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+{{-- <link href="{{asset('')}}backend/css/animate.css" rel="stylesheet"> --}}
+{{-- <link href="{{asset('')}}backend/css/style.css" rel="stylesheet"> --}}
+{{-- <link href="{{asset('')}}backend/css/customize.css" rel="stylesheet"> --}}
+<link href="{{ asset('backend/css/customize.css') }}" rel="stylesheet">
+<link rel="icon" href="{{ asset('backend/img/logo.jpg') }}" type="image/x-icon" />
+<link href="{{ asset('backend/css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
 
 @if (isset($config['css']))
     @foreach ($config['css'] as $css => $value)
@@ -31,7 +31,7 @@
     @endforeach
 @endif
 
-<script src="../backend/js/jquery-3.1.1.min.js"></script>
+<script src="{{ asset('backend/js/jquery-3.1.1.min.js') }}"></script>
 <!-- CSS -->
 {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css">
 
