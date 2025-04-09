@@ -1,3 +1,4 @@
+
 @extends('client.master')
 
 @section('title', 'Trang Chủ')
