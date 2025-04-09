@@ -22,12 +22,19 @@ class AttributeCatalogue extends Model
         'content',
         'description',
     ];
-
     protected $table = 'attribute_catalogues';
+
+
+    public function attributess()
+    {
+        return $this->hasMany(Attribute::class, 'attribute_catalogue_id');
+    }
 
     public function attributes()
     {
         return $this->belongsToMany(Attribute::class, 'attribute_catalogue_attribute', 'attribute_catalogue_id', 'attribute_id');
     }
+
+
 
 }
