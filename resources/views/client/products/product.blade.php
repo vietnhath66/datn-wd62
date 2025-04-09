@@ -146,7 +146,7 @@ color-{{ Str::slug($variant->name_variant_color) }}
                         <!-- Block2 -->
                         <div class="block2">
                             <div class="block2-pic hov-img0">
-                                <img src="https://product.hstatic.net/200000887901/product/img_3516.1_daad562e8ac94e70b5d2141a26296612.jpg"
+                                <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}"
                                     style="aspect-ratio: 3 / 4; object-fit: cover; width: 100%; height: auto; max-width: 300px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);" />
 
 
