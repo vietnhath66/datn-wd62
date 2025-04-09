@@ -44,5 +44,14 @@ class Product extends Model
         'attribute' => 'json',
 
     ];
+    public function attributes()
+    {
+        return $this->belongsToMany(Attribute::class, 'product_attributes', 'product_id', 'attribute_id');
+    }
+
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class, 'product_id');
+    }
 }
 

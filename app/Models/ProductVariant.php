@@ -42,4 +42,24 @@ class ProductVariant extends Model
 
     }
 
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function attributess()
+{
+    return $this->belongsToMany(Attribute::class, 'attribute_product_variant', 'variant_id', 'attribute_id');
+}
+
+public function size()
+{
+    return $this->belongsTo(Attribute::class, 'size_id');
+}
+
+public function color()
+{
+    return $this->belongsTo(Attribute::class, 'color_id');
+}
 }

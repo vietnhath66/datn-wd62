@@ -47,6 +47,8 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     Route::get('search', [ProductController::class, 'viewSearch'])->name('viewSearch');
     Route::get('product/{id}', [ProductController::class, 'viewShow'])->name('viewShow');
     Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
+    Route::get('products', [ProductController::class, 'index'])->name('client.products.index');
+
 
     // Account
     Route::group(['prefix' => 'account', 'as' => 'account.'], function () {
