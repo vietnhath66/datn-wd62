@@ -22,8 +22,8 @@ class SetDefaultLocale
 
         App::setLocale($locale);
 
-        if(is_null(Session::get('app_locale'))){
-           Session::put('app_locale', $locale);    
+        if (is_null(Session::get('app_locale'))) {
+            Session::put('app_locale', $locale);
         }
 
         return $next($request);

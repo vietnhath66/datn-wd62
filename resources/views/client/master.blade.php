@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!--===============================================================================================-->
     <link rel="icon" type="image/png" href="{{ asset('client/images/icons/favicon.png') }}" />
+    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('client/vendor/bootstrap/css/bootstrap.min.css') }}" />
     <!--===============================================================================================-->
@@ -39,24 +42,42 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('client/css/main.css') }}" />
     <!--===============================================================================================-->
     <link rel="stylesheet" href="{{ asset('style.css') }}">
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" /> --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2Lw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     @stack('style')
+    <style>
+        .column-0 {
+            width: 20px;
+            text-align: center;
+        }
+
+        .column-0 input {
+            cursor: pointer;
+        }
+
+        .size-208 {
+            flex: 1;
+            text-align: left;
+        }
+
+        .size-209 {
+            flex: 1;
+            text-align: right;
+        }
+    </style>
 </head>
 
 <body class="animsition">
-
-
 
     <!-- Header -->
     @include('client.layouts.header')
 
     <!-- Cart -->
-    @include('client.layouts.cart')
+    @include('client.layouts.cart-temporary')
 
     <main>
         @yield('content')
@@ -185,6 +206,6 @@
 </script>
 <!--===============================================================================================-->
 <script src="{{ asset('client/js/main.js') }}"></script>
-@stack('scrips')
+@stack('script')
 
 </html>
