@@ -52,7 +52,8 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
 
     // Account
     Route::group(['prefix' => 'account', 'as' => 'account.'], function () {
-        Route::get('order', [AccountController::class, 'accountOrder'])->name('accountOrder');
+        Route::get('order', [AccountController::class, 'accountMyOrder'])->name('accountMyOrder');
+        Route::get('order-detail', [AccountController::class, 'accountOrderDetail'])->name('accountOrderDetail');
 
     });
 

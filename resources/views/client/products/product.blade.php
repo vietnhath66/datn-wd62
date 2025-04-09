@@ -30,7 +30,6 @@
                                 required />
                         </form>
                     </div>
-                    <<<<<<< HEAD=======>>>>>>> chatrealtime
                 </div>
             </div>
 
@@ -234,7 +233,3 @@
         <!-- Load more -->
 
     </div>
-    <<<<<<< HEAD </section>
-        =======
-        </section>
-        >>>>>>> chatrealtime

@@ -61,7 +61,7 @@
                                 <a class="dropdown-item" href="">
                                     <i class="fa fa-user"></i> <span class="ml-2">Tài khoản</span>
                                 </a>
-                                <a class="dropdown-item" href="{{ route('client.account.accountOrder') }}">
+                                <a class="dropdown-item" href="{{ route('client.account.accountMyOrder') }}">
                                     <i class="fa fa-shopping-cart"></i> <span class="ml-2">Đơn hàng</span>
                                 </a>
                                 <a class="dropdown-item" href="">

@@ -1,137 +1,184 @@
 @extends('client.master')
 
-@section('title', 'Đơn hàng của bạn')
+@section('title', 'Chi tiết đơn hàng')
 
 @push('style')
     <style>
-        /* Container tùy chỉnh */
         .custom-container {
             max-width: 1800px;
             margin: 0 auto;
             min-height: 500px;
         }
 
-        /* Table responsive */
-        .custom-table-responsive {
-            border-radius: 8px;
-            overflow: hidden;
-            background: #fff;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-            padding: 0;
-        }
-
-        /* Table chính */
-        .custom-table {
-            margin-bottom: 0;
-            border: none;
-            background: #fff;
-            width: 100%;
-        }
-
-        /* Header của bảng */
-        .custom-thead-dark th {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        .order-header {
+            background: linear-gradient(135deg, #222222 0%, #333 100%);
             color: #fff;
-            padding: 15px;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 0.5px;
-            border: none;
-        }
-
-        /* Hiệu ứng hover cho hàng */
-        .custom-table tbody tr {
-            background: #fff;
-            transition: all 0.3s ease;
-        }
-
-        .custom-table tbody tr:hover {
-            background: #f8f9fa;
-            transform: translateY(-2px);
-        }
-
-        /* Ô dữ liệu */
-        .custom-td {
-            font-family: "Anton", sans-serif;
-            font-weight: 650;
-            font-style: normal;
-            padding: 15px;
-            border: none;
-            border-bottom: 1px solid #eee;
-            vertical-align: middle;
-            font-size: 0.95rem;
-        }
-
-        .custom-table tbody tr:first-child td {
-            border-top: none;
-        }
-
-        /* Badge chung */
-        .custom-badge {
-            padding: 6px 12px;
+            padding: 25px;
             border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            text-transform: capitalize;
-            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .order-header .status {
             display: inline-block;
-        }
-
-        .custom-badge:hover {
-            transform: scale(1.05);
-        }
-
-        /* Badge trạng thái */
-        .custom-badge-warning {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
             background: #ffeaa7;
             color: #d35400;
         }
 
-        .custom-badge-secondary {
-            background: #636e72;
-            color: white;
+        .order-header .status-label {
+            font-size: 0.9rem;
+            color: #ddd;
+            margin-bottom: 5px;
         }
 
-        .custom-badge-success {
-            background: #55efc4;
-            color: #006266;
+        .order-header .order-info {
+            font-size: 0.95rem;
+            font-weight: 500;
         }
 
-        .custom-badge-danger {
-            background: #ff7675;
-            color: #fff;
+        .order-details {
+            display: flex;
+            gap: 25px;
         }
 
-        /* Badge cho Không áp mã */
-        .custom-badge-no-discount {
-            background: #dfe6e9;
-            color: #636e72;
+        .order-details .left-section {
+            flex: 2;
         }
 
-        /* Icon xem chi tiết */
-        .custom-icon-link {
-            display: inline-flex;
+        .order-details .right-section {
+            flex: 1;
+        }
+
+        .order-details .card {
+            background: #fff;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .order-details .card-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #222222;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .order-details .card-body {
+            padding: 25px;
+        }
+
+        .order-details .product-item {
+            display: flex;
             align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #e9ecef;
+            gap: 20px;
+            padding: 15px 0;
+            border-bottom: 1px solid #e9ecef;
+            transition: background 0.3s ease;
+        }
+
+        .order-details .product-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-details .product-item img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-details .product-item .product-info {
+            flex: 1;
+        }
+
+        .order-details .product-item .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #222222;
+        }
+
+        .order-details .product-item .product-price {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        .order-details .total-section {
+            font-size: 0.95rem;
+            color: #222222;
+        }
+
+        .order-details .total-section .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .order-details .total-section .total-row:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #222222;
+        }
+
+        .order-details .info-section {
+            font-size: 0.95rem;
+            color: #222222;
+        }
+
+        .order-details .info-section .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .order-details .info-section .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .order-details .info-section .info-label {
+            color: #666;
+        }
+
+        .order-details .info-section .info-value {
+            font-weight: 500;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .order-actions .btn {
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 500;
             transition: all 0.3s ease;
         }
 
-        .custom-icon-eye {
-            color: #0984e3;
-            font-size: 1.1rem;
+        .order-actions .btn-primary {
+            background: #222222;
+            border-color: #222222;
         }
 
-        .custom-icon-link:hover {
-            background: #0984e3;
-        }
-
-        .custom-icon-link:hover .custom-icon-eye {
-            color: #fff;
+        .order-actions .btn-danger {
+            background: #e74c3c;
+            border-color: #e74c3c;
         }
     </style>
 @endpush
@@ -148,103 +195,147 @@
                 <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
             </span>
             <span class="stext-109 cl4" style="font-size: 16px">
-                Đơn hàng
+                Chi tiết đơn hàng
             </span>
         </div>
     </div>
 
     <div class="bg0 p-t-75 p-b-85 custom-container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="table-responsive custom-table-responsive">
-                    <table class="table table-bordered table-hover custom-table">
-                        <thead class="thead-dark custom-thead-dark">
-                            <tr>
-                                <th class="text-center custom-th">Mã đơn hàng</th>
-                                <th class="text-left custom-th">Tên sản phẩm</th>
-                                <th class="text-center custom-th">Trạng thái</th>
-                                <th class="text-center custom-th">Phương thức thanh toán</th>
-                                <th class="text-right custom-th">Tổng tiền</th>
-                                <th class="text-center custom-th">Mã giảm giá</th>
-                                <th class="text-center custom-th">Xem</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($orders as $order)
-                                @php
-                                    // Lấy tên sản phẩm đầu tiên làm đại diện
-                                    $firstItem = $order->items->first();
-                                    // Cần kiểm tra $firstItem và $firstItem->product tồn tại
-                                    $productName =
-                                        $firstItem && $firstItem->product
-                                            ? $firstItem->product->name
-                                            : 'Không có thông tin';
-                                    if ($order->items->count() > 1) {
-                                        $productName .= '... (' . $order->items->count() . ' SP)'; // Thêm số lượng SP
-                                    }
+        <!-- Order Header -->
+        <div class="order-header">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="order-info">
+                        <div class="status-label">Mã đơn hàng</div>
+                        <div>93574834555</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="order-info">
+                        <div class="status-label">Ngày đặt hàng</div>
+                        <div>2025-04-02 21:34:00</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="order-info">
+                        <div class="status-label">Phương thức thanh toán</div>
+                        <div>Chờ xử lý</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="order-info">
+                        <div class="status-label">Tổng tiền</div>
+                        <div>850,000VND</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="order-info">
+                        <div class="status-label">Trạng thái</div>
+                        <div>Chờ xử lý</div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="order-info">
+                        <div class="status-label">Thông tin đặt hàng</div>
+                        <div>Nguyen Viet Nhat<br />viethnat@gmail.com</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                                    // Định dạng Trạng thái đơn hàng (Ví dụ)
-                                    // Bạn nên tạo một helper hoặc dùng accessor trong Model để xử lý việc này gọn hơn
-                                    $statusText = match (strtolower($order->status ?? '')) {
-                                        'pending'
-                                            => '<span class="badge custom-badge custom-badge-secondary">Chờ xử lý</span>',
-                                        'processing'
-                                            => '<span class="badge custom-badge custom-badge-warning">Đang xử lý</span>',
-                                        'completed'
-                                            => '<span class="badge custom-badge custom-badge-success">Đã giao</span>',
-                                        'cancelled'
-                                            => '<span class="badge custom-badge custom-badge-danger">Đã hủy</span>',
-                                        default => '<span class="badge bg-light text-dark">' .
-                                            ucfirst($order->status ?? 'N/A') .
-                                            '</span>',
-                                    };
+        <!-- Order Details -->
+        <div class="order-details">
+            <!-- Left Section: Product List -->
+            <div class="left-section">
+                <div class="card">
+                    <div class="card-header">Chi tiết đơn hàng</div>
+                    <div class="card-body">
+                        <div class="product-item">
+                            <img src="https://via.placeholder.com/70" alt="Product Image" />
+                            <div class="product-info">
+                                <div class="product-name">Áo Khoác Trơn Bông <span>x2</span></div>
+                                <div class="product-price">425,000VND x 2</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">Mã giảm giá</div>
+                    <div class="card-body">
+                        <div class="total-section">
+                            <div class="total-row">
+                                <span>Tổng tiền được giảm</span>
+                                <span>0 VND</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">Tổng tiền trả</div>
+                    <div class="card-body">
+                        <div class="total-section">
+                            <div class="total-row">
+                                <span>Tổng tiền</span>
+                                <span>850,000 VND</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                                    // Định dạng Trạng thái thanh toán (Ví dụ)
-                                    $paymentText = match (strtolower($order->payment_status ?? '')) {
-                                        'cod' => 'COD',
-                                        'wallet' => 'Ví điện tử',
-                                        'paid' => 'Đã thanh toán',
-                                        'pending' => 'Chờ thanh toán',
-                                        default => ucfirst($order->payment_status ?? 'N/A'),
-                                    };
-                                @endphp
+            <!-- Right Section: Payment and Shipping Info -->
+            <div class="right-section">
+                <div class="card">
+                    <div class="card-header">Thông tin thanh toán</div>
+                    <div class="card-body">
+                        <div class="info-section">
+                            <div class="info-row">
+                                <span class="info-label">Tổng tiền</span>
+                                <span class="info-value">850,000 VND</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Phương thức</span>
+                                <span class="info-value">Thanh toán khi nhận hàng</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Trạng thái</span>
+                                <span class="info-value">Thanh toán sau</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">Thông tin vận chuyển</div>
+                    <div class="card-body">
+                        <div class="info-section">
+                            <div class="info-row">
+                                <span class="info-label">Phương thức</span>
+                                <span class="info-value">Giao hàng nhanh</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Quận huyện</span>
+                                <span class="info-value">Hà Nội</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Số nhà</span>
+                                <span class="info-value">123 Đường ABC</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                                <tr class="custom-tr">
-                                    <td class="text-center custom-td">{{ $order->barcode }}</td>
-                                    <td class="text-left custom-td">{{ $productName }}</td>
-                                    <td class="text-center custom-td">{!! $statusText !!}</td>
-                                    <td class="text-center custom-td">{{ $paymentText }}</td>
-                                    <td class="text-right custom-td">{{ number_format($order->total) }} VND</td>
-                                    <td class="text-center custom-td">
-                                        @if ($order->coupon)
-                                            {{-- Nên có style riêng cho mã giảm giá --}}
-                                            <span class="badge custom-badge badge bg-success">{{ $order->coupon }}</span>
-                                        @else
-                                            {{-- Hoặc dùng class của template --}}
-                                            <span class="badge custom-badge custom-badge-no-discount"
-                                                style="font-size: 0.9em;">Không áp mã</span>
-                                        @endif
-                                    </td>
-                                    <td class="text-center custom-td">
-                                        <a href="#" title="Xem chi tiết"
-                                            class="text-decoration-none custom-icon-link"><i
-                                                class="fa fa-eye custom-icon-eye"></i></a>
-                                    </td>
-                                </tr>
-                            @empty
-                                {{-- Trường hợp $orders là collection rỗng (không có đơn hàng nào) --}}
-                                <tr>
-                                    {{-- Đặt số cột (colspan) bằng đúng số lượng thẻ <th> trong thead (là 8) --}}
-                                    <td colspan="8" class="text-center p-t-50 p-b-50">Bạn chưa có đơn hàng nào.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                <!-- Order Actions -->
+                <div class="order-actions">
+                    <button style="cursor: pointer" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Save & Print
+                    </button>
+                    <button style="cursor: pointer" class="btn btn-danger">
+                        Hủy đơn hàng
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-
 @endsection
 
 @push('script')

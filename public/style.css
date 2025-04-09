@@ -4,7 +4,8 @@ p,
 h4,
 option,
 button,
-span {
+span,
+div {
     font-family: "Anton", sans-serif !important;
     font-weight: 650 !important;
     font-style: normal !important;
@@ -43,4 +44,3 @@ span {
     width: 35px;
     height: auto;
 }
-

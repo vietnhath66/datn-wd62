@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-    public function accountOrder()
+    public function accountMyOrder()
     {
         $userId = Auth::id();
 
@@ -24,8 +24,14 @@ class AccountController extends Controller
 
         // Trả về view và truyền biến $orders
         // Đảm bảo bạn tạo file view tại resources/views/client/order/history.blade.php
-        return view('client.account.order-detail')->with([
+        return view('client.account.my-order')->with([
             'orders' => $orders
         ]);
+    }
+
+
+    public function accountOrderDetail()
+    {
+        return view('client.account.order-detail');
     }
 }
