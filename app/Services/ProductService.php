@@ -98,7 +98,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             $rawQuery
         );
 
-        if (isset($condition['keyword'])) {
+        if(isset($condition['keyword'])){
             $products = Product::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->get();
         }
 
@@ -137,7 +137,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             $product = $this->uploadProduct($id, $request);
             if ($product) {
 
-
+                
                 $product->product_variants()->each(function ($variant) {
 
                     $variant->attributes()->detach();
@@ -169,7 +169,6 @@ class ProductService extends BaseService implements ProductServiceInterface
             $product = $this->productReponsitory->findById($id);
 
             $deleteProduct = $this->productReponsitory->destroy($product);
-
             DB::commit();
             return true;
         } catch (\Exception $e) {
@@ -234,6 +233,16 @@ class ProductService extends BaseService implements ProductServiceInterface
         if ($request->hasFile('image') && $currentImage && Storage::exists($currentImage)) {
             Storage::delete($currentImage);
         }
+        $payload['price'] = (float) $payload['price'];
+        $payload['attributeCatalogue'] = $this->formatJson($request, 'attributeCatalogue');
+        $payload['attribute'] = $request->input('attribute');
+        $payload['variant'] = $this->formatJson($request, 'variant');
+        $payload['publish'] == "on" ? $payload['publish'] = 1 : $payload['publish'] = 0;
+        // $payload['is_active'] == "on" ? $payload['publish'] = 1 : $payload['publish'] = 0;
+        $payload['is_sale'] == "on" ? $payload['is_sale'] = 1 : $payload['is_sale'] = 0;
+        $payload['is_new'] == "on" ? $payload['is_new'] = 1 : $payload['is_new'] = 0;
+        $payload['is_trending'] == "on" ? $payload['is_trending'] = 1 : $payload['is_trending'] = 0;
+        $payload['is_show_home'] == "on" ? $payload['is_show_home'] = 1 : $payload['is_show_home'] = 0;
 
         $payload['price'] = (float) $payload['price'];
         $payload['attributeCatalogue'] = $this->formatJson($request, 'attributeCatalogue');
@@ -362,12 +371,10 @@ class ProductService extends BaseService implements ProductServiceInterface
         $variantId = $varriants->pluck('id');
 
 
-
         $variantAttribute = [];
         $attributeCombines = $this->combineAttributes(array_values($payload['attribute']));
         if (count($variantId)) {
             foreach ($variantId as $key => $val) {
-
 
                 if (count($attributeCombines)) {
                     foreach ($attributeCombines[$key] as $attributeId) {
@@ -380,7 +387,6 @@ class ProductService extends BaseService implements ProductServiceInterface
             }
         }
         // dd($variantAttribute);
-
 
         $variantAttributes = $this->productVariantAttributeReponsitory->createBatch($variantAttribute);
     }
@@ -624,7 +630,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         return [
             'products.id',
             'products.publish',
-
             'products.name',
             'products.image',
             'products.price',

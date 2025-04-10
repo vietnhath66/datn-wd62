@@ -66,7 +66,9 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             ['id', 'ASC'],
             [],
         );
-        if (isset($condition['keyword'])) {
+
+        if(isset($condition['keyword'])){
+
             $productCatalogues = ProductCatalogue::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->get();
         }
         return $productCatalogues;

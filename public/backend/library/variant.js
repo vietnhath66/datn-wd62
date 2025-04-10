@@ -776,7 +776,6 @@
         if ($(".selectVariant").length) {
             let count = $(".selectVariant").length;
             console.log(count);
-
             $(".selectVariant").each(function () {
                 let _this = $(this);
                 let attributeCatalogueId = _this.attr("data-catid");

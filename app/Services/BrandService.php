@@ -43,7 +43,8 @@ class BrandService implements BrandServiceInterface
             [],
         );
 
-        if (isset($_GET) && isset($condition['keyword'])) {
+        if(isset($_GET) && isset($condition['keyword'])){
+
             $brands = Brand::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->get();
         }
         return $brands;

@@ -8,6 +8,7 @@ use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\BrandController;
+use App\Http\Controllers\Backend\CounponController;
 use App\Http\Controllers\Backend\ProductCatalogueController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\RoleController;
@@ -97,7 +98,6 @@ Route::prefix('admin')
         Route::prefix('brands')
             ->as('brands.')
             ->group(function () {
-
                 Route::get('index', [BrandController::class, 'index'])->name('index');
                 Route::get('create', [BrandController::class, 'create'])->name('create');
                 Route::post('store', [BrandController::class, 'store'])->name('store');
@@ -105,7 +105,6 @@ Route::prefix('admin')
                 Route::put('update/{brand}', [BrandController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
                 Route::get('delete/{brand}', [BrandController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
                 Route::delete('destroy/{brand}', [BrandController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
-
             });
 
         Route::prefix('product_catalogue')
@@ -125,7 +124,6 @@ Route::prefix('admin')
         Route::prefix('product')
             ->as('product.')
             ->group(function () {
-
                 Route::get('index', [ProductController::class, 'index'])->name('index');
                 Route::get('create', [ProductController::class, 'create'])->name('create');
                 Route::post('store', [ProductController::class, 'store'])->name('store');
@@ -153,7 +151,6 @@ Route::prefix('admin')
         Route::prefix('users')
             ->as('users.')
             ->group(function () {
-
                 Route::get('index', [UserController::class, 'index'])->name('index');
                 Route::get('create', [UserController::class, 'create'])->name('create');
                 Route::post('store', [UserController::class, 'store'])->name('store');
@@ -181,6 +178,7 @@ Route::prefix('admin')
         Route::prefix('attribute')
             ->as('attribute.')
             ->group(function () {
+
 
                 Route::get('index', [AttributeController::class, 'index'])->name('index');
                 Route::get('create', [AttributeController::class, 'create'])->name('create');
@@ -210,6 +208,7 @@ Route::prefix('admin')
                 Route::get('edit/{order}', [App\Http\Controllers\Backend\OrderController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
                 Route::put('update/{order}', [App\Http\Controllers\Backend\OrderController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
                 Route::get('show/{order}', [App\Http\Controllers\Backend\OrderController::class, 'show'])->where(['id' => '[0-9]+'])->name('show');
+
             });
 
 

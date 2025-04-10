@@ -56,16 +56,18 @@ class AttributeReponsitory extends BaseRepository implements AttributeReponsitor
     }
 
 
-    public function findAttributeByIdArray(array $attributeArray = [])
-    {
+    public function findAttributeByIdArray(array $attributeArray = []) {
+
         return $this->model->select([
             'id',
             'attribute_catalogue_id',
             'name'
         ])
-            // ->where([config('apps.general.defaultPublish')])
-            ->whereIn('attributes.id', $attributeArray)
-            ->get();
+
+        // ->where([config('apps.general.defaultPublish')])
+        ->whereIn('attributes.id', $attributeArray)
+        ->get();
+
     }
 
     public function findAttributeproductCatalogueAndProductVariant($attribuetId = [], $productCatalogueId = 0)

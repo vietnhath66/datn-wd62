@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Services\Interfaces\ProductServiceInterface as ProductService;
-// use App\Repositories\Interfaces\ProductRepositoryInterface  as ProductReponsitory;
-use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface as AttributeCatalogueRepository;
+
+use App\Services\Interfaces\ProductServiceInterface  as ProductService;
+use App\Repositories\Interfaces\ProductRepositoryInterface  as productReponsitory;
+use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface  as AttributeCatalogueRepository;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Classes\Nestedsetbie;
@@ -26,7 +27,7 @@ class ProductController extends Controller
 
     public function __construct(
         ProductService $productService,
-        // ProductReponsitory $productReponsitory,
+        ProductReponsitory $productReponsitory,
         AttributeCatalogueRepository $attributeCatalogue,
     ) {
         $this->middleware(function ($request, $next) {
@@ -36,7 +37,7 @@ class ProductController extends Controller
         });
 
         $this->productService = $productService;
-        // $this->productReponsitory = $productReponsitory;
+        $this->productReponsitory = $productReponsitory;
         $this->attributeCatalogue = $attributeCatalogue;
         $this->initialize();
 
@@ -50,10 +51,13 @@ class ProductController extends Controller
         ]);
     }
 
-    public function index(Request $request)
-    {
-        $this->authorize('modules', 'admin.product.index');
-        $products = $this->productService->paginate($request, $this->language);
+
+    public function index(Request $request){
+        // $this->authorize('modules', 'admin.product.index');
+        $products = $this->productService->paginate($request);
+        // dd($products);
+       
+>>>>>>> truongpcph43675
         $config = [
             'js' => [
                 'admin/js/plugins/switchery/switchery.js',
@@ -65,9 +69,29 @@ class ProductController extends Controller
             ],
             'model' => 'Product'
         ];
+<<<<<<< HEAD
         $config['seo'] = __('messages.product');
         $template = 'admin.product.product.index';
         $dropdown = $this->nestedset->Dropdown();
+=======
+        $config['seo'] =  [
+            'index' => [
+                'title' => 'Quản lý sản phẩm',
+                'table' => 'Danh sách sản phẩm'
+            ],
+            'create' => [
+                'title' => 'Thêm mới sản phẩm'
+            ],
+            'edit' => [
+                'title' => 'Cập nhật sản phẩm'
+            ],
+            'delete' => [
+                'title' => 'Xóa sản phẩm'
+            ],
+        ];
+        $template = 'admin.products.product.index';
+        $dropdown  = $this->nestedset->Dropdown();
+>>>>>>> truongpcph43675
         return view('admin.dashboard.layout', compact(
             'template',
             'config',
@@ -79,11 +103,8 @@ class ProductController extends Controller
     public function create()
     {
         // $this->authorize('modules', 'admin.product.create');
-        // $attributeCatalogue = $this->attributeCatalogue->getAll($this->language);
         $attributeCatalogue = AttributeCatalogue::get();
-        // dd($attributeCatalogue[0]['attribute_catalogue_language']);
         $brands = Brand::get();
-
         $config = $this->configData();
         $config['seo'] = [
             'index' => [
@@ -127,6 +148,7 @@ class ProductController extends Controller
         return redirect()->route('admin.product.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
 
+<<<<<<< HEAD
     public function edit($id)
     {
         // dd($id);
@@ -134,26 +156,57 @@ class ProductController extends Controller
         $attributeCatalogue = AttributeCatalogue::with('attribute_catalogue_language')->get();
         $product = $this->productReponsitory->getProductById($id, $this->language);
 
+=======
+    public function edit($id){
+        // $this->authorize('modules', 'admin.product.update');
+        // $attributeCatalogue = AttributeCatalogue::with('attribute_catalogue_language')->get();
+        $attributeCatalogue = AttributeCatalogue::get();
+        $brands = Brand::get();
+        
+        $product = $this->productReponsitory->getProductById($id);
+        // dd($product);
+        
+>>>>>>> truongpcph43675
         $config = $this->configData();
-        $config['seo'] = __('messages.product');
+        $config['seo'] =  [
+            'index' => [
+                'title' => 'Quản lý sản phẩm',
+                'table' => 'Danh sách sản phẩm'
+            ],
+            'create' => [
+                'title' => 'Thêm mới sản phẩm'
+            ],
+            'edit' => [
+                'title' => 'Cập nhật sản phẩm'
+            ],
+            'delete' => [
+                'title' => 'Xóa sản phẩm'
+            ],
+        ];
         $config['method'] = 'edit';
         $dropdown = $this->nestedset->Dropdown();
         // $album = json_decode($product->album);
-        $template = 'admin.product.product.store';
+        $template = 'admin.products.product.store';
         return view('admin.dashboard.layout', compact(
             'template',
             'config',
             'dropdown',
             'attributeCatalogue',
             'product',
-            // 'album',
+            'brands',
         ));
     }
 
+<<<<<<< HEAD
     public function update($id, UpdateProductRequest $request)
     {
         if ($this->productService->update($id, $request, $this->language)) {
             return redirect()->route('admin.product.index')->with('success', 'Cập nhật bản ghi thành công');
+=======
+    public function update($id, UpdateProductRequest $request){
+        if($this->productService->update($id, $request)){
+            return redirect()->route('admin.product.index')->with('success','Cập nhật bản ghi thành công');
+>>>>>>> truongpcph43675
         }
         return redirect()->route('admin.product.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }

@@ -39,8 +39,9 @@
                                 <div class="grid grid-cols-1 gap-5 lg:grid-cols-2 xl:grid-cols-12">
                                     <div class="xl:col-span-4">
                                         <label for="productNameInput"
-                                            class="inline-block mb-2 text-base font-medium">Tên sản phẩm <a
-                                                class="text-danger">(*)</a></label>
+
+                                            class="inline-block mb-2 text-base font-medium">Tên sản phẩm <a class="text-danger">(*)</a></label>
+
                                         <input type="text" id="productNameInput"
                                             class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
                                             placeholder="tên sản phẩm" name="name"
@@ -51,11 +52,12 @@
                                     </div>
                                     <div class="xl:col-span-3">
                                         <label for="productNameInput"
-                                            class="inline-block mb-2 text-base font-medium">Giá sản phẩm <a
-                                                class="text-danger">(*)</a></label>
+
+                                            class="inline-block mb-2 text-base font-medium">Giá sản phẩm <a class="text-danger">(*)</a></label>
                                         <input type="text" id="productNameInput"
                                             class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
-                                            placeholder="giá sản phẩm" name="price"
+                                            placeholder="giá sản phẩm"  name="price"
+
                                             value="{{ old('price', $product->price ?? '') }}" />
                                     </div>
                                     <!--end col-->
@@ -99,36 +101,51 @@
                                     <div class="xl:col-span-1">
                                         <p>Trạng thái</p>
                                         <td class="text-danger text-center js-switch">
-                                            <input type="checkbox" class="js-switch status" name="publish"
-                                                @if (isset($product) && $product->publish == 1) checked @endif />
+
+                                            <input type="checkbox" class="js-switch status" name="publish" @if (isset($product) && $product->publish == 1)
+                                                checked
+                                            @endif />
+
                                         </td>
                                     </div>
                                     <div class="xl:col-span-1">
                                         <p>is_sale</p>
                                         <td class="text-navy text-center js-switch">
-                                            <input type="checkbox" class="js-switch status" name="is_sale"
-                                                @if (isset($product) && $product->is_sale == 1) checked @endif />
+
+                                            <input type="checkbox" class="js-switch status" name="is_sale" @if (isset($product) && $product->is_sale == 1)
+                                            checked
+                                        @endif />
+
                                         </td>
                                     </div>
                                     <div class="xl:col-span-1">
                                         <p>is_new</p>
                                         <td class="text-navy text-center js-switch">
-                                            <input type="checkbox" class="js-switch status" name="is_new"
-                                                @if (isset($product) && $product->is_new == 1) checked @endif />
+
+                                            <input type="checkbox" class="js-switch status" name="is_new" @if (isset($product) && $product->is_new == 1)
+                                            checked
+                                        @endif />
+
                                         </td>
                                     </div>
                                     <div class="xl:col-span-1">
                                         <p>Is show home</p>
                                         <td class="text-navy text-center js-switch">
-                                            <input type="checkbox" class="js-switch status" name="is_show_home"
-                                                @if (isset($product) && $product->is_show_home == 1) checked @endif />
+
+                                            <input type="checkbox" class="js-switch status" name="is_show_home" @if (isset($product) && $product->is_show_home == 1)
+                                            checked
+                                        @endif />
+
                                         </td>
                                     </div>
                                     <div class="xl:col-span-1">
                                         <p>is_trending</p>
                                         <td class="text-navy text-center js-switch">
-                                            <input type="checkbox" class="js-switch status" name="is_trending"
-                                                @if (isset($product) && $product->is_trending == 1) checked @endif />
+
+                                            <input type="checkbox" class="js-switch status" name="is_trending" @if (isset($product) && $product->is_trending == 1)
+                                            checked
+                                        @endif />
+
                                         </td>
                                     </div>
                                     {{-- </div> --}}
@@ -234,3 +251,4 @@
 
     @include('admin.dashboard.components.footer')
 </div>
+

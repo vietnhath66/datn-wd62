@@ -42,7 +42,7 @@ class RoleService implements RoleServiceInterface
             ['users'],
         );
 
-        if (isset($condition['keyword'])) {
+        if(isset($condition['keyword'])){
             $roles = Role::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->get();
         }
         return $roles;

@@ -41,7 +41,8 @@ class CounponController extends Controller
             ],
             'model' => 'Counpons',
         ];
-        $config['seo'] = [
+
+        $config['seo'] =  [
             'index' => [
                 'title' => 'Quản lý khuyến mãi',
                 'table' => 'Danh sách khuyến mãi'
@@ -70,7 +71,9 @@ class CounponController extends Controller
         // $this->authorize('modules', 'admin.counpons.create');
         $config = $this->configData();
 
-        $config['seo'] = [
+
+        $config['seo'] =  [
+
             'index' => [
                 'title' => 'Quản lý khuyến mãi',
                 'table' => 'Danh sách khuyến mãi'
@@ -110,7 +113,8 @@ class CounponController extends Controller
         $brand = $this->CounponRepository->getBrandById($id);
         // dd($brand);
         $config = $this->configData();
-        $config['seo'] = [
+
+        $config['seo'] =  [
             'index' => [
                 'title' => 'Quản lý khuyến mãi',
                 'table' => 'Danh sách khuyến mãi'

@@ -11,7 +11,9 @@
                 HT.ckeditor4(elementId, elementHeight);
             });
         }
-    };
+
+    }
+
 
     HT.ckeditor4 = (elementId, elementHeight) => {
         if (typeof elementHeight == "undefined") {
