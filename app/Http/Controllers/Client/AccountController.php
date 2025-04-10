@@ -30,8 +30,28 @@ class AccountController extends Controller
     }
 
 
-    public function accountOrderDetail()
+    public function accountOrderDetail(Order $order)
     {
-        return view('client.account.order-detail');
+        if (Auth::id() !== $order->user_id) {
+            // Nếu không phải chủ đơn hàng, báo lỗi 403 (Forbidden)
+            abort(403, 'Bạn không có quyền truy cập đơn hàng này.');
+
+            // Hoặc chuyển hướng về trang lịch sử với thông báo lỗi:
+            // return redirect()->route('client.order.history') // Nhớ kiểm tra tên route
+            //                    ->with('error', 'Bạn không có quyền xem đơn hàng này.');
+        }
+
+        // 2. Tải các relationship cần thiết cho View
+        // (Đảm bảo các relationship này đã được định nghĩa trong các Model tương ứng)
+        $order->load([
+            'items',                     // Chi tiết các sản phẩm trong đơn hàng (OrderDetail)
+            'items.product',             // Thông tin sản phẩm gốc (Product)
+            'items.productVariant',      // Thông tin biến thể sản phẩm (ProductVariant)
+            'items.productVariant.products' // Thông tin sản phẩm gốc từ biến thể (nếu cần lấy ảnh/tên từ đây)
+            // 'user'                    // Thông tin người dùng (nếu cần hiển thị thêm ngoài tên/email đã có trên Order)
+        ]);
+        return view('client.account.order-detail')->with([
+            'order' => $order
+        ]);
     }
 }

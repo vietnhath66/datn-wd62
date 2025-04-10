@@ -201,89 +201,206 @@
     </div>
 
     <div class="bg0 p-t-75 p-b-85 custom-container">
-        <!-- Order Header -->
+        {{-- Header tóm tắt đơn hàng --}}
         <div class="order-header">
             <div class="row">
-                <div class="col-md-2">
+                @php
+                    // --- Xử lý dữ liệu để hiển thị ---
+                    $statusBadge = match (strtolower($order->status ?? '')) {
+                        'pending' => '<span>Chờ xử lý</span>',
+                        'processing' => '<span>Đang xử lý</span>',
+                        'shipped' => '<span>Đang giao</span>',
+                        'delivered', 'completed' => '<span>Đã giao</span>',
+                        'cancelled' => '<span>Đã hủy</span>',
+                        'failed' => '<span>Thất bại</span>',
+                        default => '<span>' . ucfirst($order->status ?? 'Không rõ') . '</span>',
+                    };
+                    $paymentText = match (strtolower($order->payment_status ?? '')) {
+                        'cod' => 'COD',
+                        'wallet' => 'Ví điện tử',
+                        'paid' => 'Đã thanh toán',
+                        'pending' => 'Chờ thanh toán',
+                        default => ucfirst($order->payment_status ?? 'N/A'),
+                    };
+                    $orderCode = $order->barcode ?? 'DH' . sprintf('%03d', $order->id);
+                    $finalTotalFormatted = number_format($order->total ?? 0, 0, ',', '.') . ' VNĐ';
+                    $orderDate = optional($order->created_at)->format('H:i d/m/Y') ?? 'N/A';
+                    $customerName = $order->name ?? (optional($order->user)->name ?? 'N/A'); // Ưu tiên tên trên order, nếu không có lấy từ user
+                    $customerEmail = $order->email ?? (optional($order->user)->email ?? 'N/A');
+                @endphp
+                <div class="col-lg-2 col-md-4 col-sm-6"> {{-- Sử dụng col-lg để tốt hơn trên màn hình lớn --}}
                     <div class="order-info">
                         <div class="status-label">Mã đơn hàng</div>
-                        <div>93574834555</div>
+                        <div>{{ $orderCode }}</div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-lg-2 col-md-4 col-sm-6">
                     <div class="order-info">
                         <div class="status-label">Ngày đặt hàng</div>
-                        <div>2025-04-02 21:34:00</div>
+                        <div>{{ $orderDate }}</div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-lg-2 col-md-4 col-sm-6">
                     <div class="order-info">
                         <div class="status-label">Phương thức thanh toán</div>
-                        <div>Chờ xử lý</div>
+                        <div>{{ $paymentText }}</div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-lg-2 col-md-4 col-sm-6">
                     <div class="order-info">
                         <div class="status-label">Tổng tiền</div>
-                        <div>850,000VND</div>
+                        <div>{{ $finalTotalFormatted }}</div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-lg-2 col-md-4 col-sm-6">
                     <div class="order-info">
-                        <div class="status-label">Trạng thái</div>
-                        <div>Chờ xử lý</div>
+                        <div class="status-label">Trạng thái ĐH</div>
+                        <div>{!! $statusBadge !!}</div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-lg-2 col-md-4 col-sm-6">
                     <div class="order-info">
-                        <div class="status-label">Thông tin đặt hàng</div>
-                        <div>Nguyen Viet Nhat<br />viethnat@gmail.com</div>
+                        <div class="status-label">Người đặt</div>
+                        <div>{{ $customerName }}<br />{{ $customerEmail }}</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Order Details -->
+        {{-- Phần Chi tiết và Thông tin giao hàng/thanh toán --}}
         <div class="order-details">
-            <!-- Left Section: Product List -->
+            {{-- Cột Trái: Sản phẩm, Giảm giá, Tổng --}}
             <div class="left-section">
+                {{-- Danh sách sản phẩm --}}
                 <div class="card">
-                    <div class="card-header">Chi tiết đơn hàng</div>
+                    <div class="card-header">Chi tiết sản phẩm</div>
                     <div class="card-body">
-                        <div class="product-item">
-                            <img src="https://via.placeholder.com/70" alt="Product Image" />
-                            <div class="product-info">
-                                <div class="product-name">Áo Khoác Trơn Bông <span>x2</span></div>
-                                <div class="product-price">425,000VND x 2</div>
+                        @forelse ($order->items as $item)
+                            <div class="product-item">
+                                @php
+                                    // Lấy ảnh (cần kiểm tra $item->productVariant trước)
+                                    $imageUrl = asset('client/images/no-image-available.png'); // Ảnh mặc định
+                                    if (
+                                        $item->productVariant &&
+                                        $item->productVariant->products &&
+                                        $item->productVariant->products->image
+                                    ) {
+                                        $imageUrl = Storage::url($item->productVariant->products->image);
+                                    } elseif ($item->product && $item->product->image) {
+                                        $imageUrl = Storage::url($item->product->image);
+                                    }
+                                    // Lấy tên sản phẩm
+                                    $itemName = optional($item->product)->name ?? 'Sản phẩm không tồn tại';
+                                    // Lấy thông tin biến thể (Ví dụ: màu, size từ accessor hoặc tên)
+                                    $variantInfo = [];
+                                    if ($item->productVariant) {
+                                        // Giả sử có accessor hoặc thuộc tính 'color_name', 'size_name'
+                                        if (isset($item->productVariant->color_name)) {
+                                            $variantInfo[] = $item->productVariant->color_name;
+                                        }
+                                        if (isset($item->productVariant->size_name)) {
+                                            $variantInfo[] = $item->productVariant->size_name;
+                                        }
+                                        // Hoặc lấy từ tên biến thể nếu có
+                                        // if($item->productVariant->name) $variantInfo[] = $item->productVariant->name;
+                                    }
+                                    $variantDisplay = !empty($variantInfo)
+                                        ? '(' . implode(', ', $variantInfo) . ')'
+                                        : '';
+                                @endphp
+                                <img src="{{ $imageUrl }}" alt="{{ $itemName }}" />
+                                <div class="product-info">
+                                    <div class="product-name-details">
+                                        <span class="product-name">{{ $itemName }}</span>
+                                        @if ($variantDisplay)
+                                            <span class="product-variant-info">{{ $variantDisplay }}</span>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <div class="product-quantity">SL: {{ $item->quantity }}</div>
+                                        <div class="product-line-total">
+                                            {{ number_format($item->price * $item->quantity, 0, ',', '.') }} VNĐ
+                                            @if ($item->quantity > 1)
+                                                <small
+                                                    style="display: block; color: #6c757d;">({{ number_format($item->price, 0, ',', '.') }}
+                                                    VNĐ/SP)</small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        @empty
+                            <p>Không có thông tin sản phẩm trong đơn hàng.</p>
+                        @endforelse
                     </div>
                 </div>
+
+                {{-- Thông tin giảm giá và Tổng tiền --}}
                 <div class="card">
-                    <div class="card-header">Mã giảm giá</div>
+                    <div class="card-header">Tổng thanh toán</div>
                     <div class="card-body">
                         <div class="total-section">
+                            @php
+                                // --- Luôn tính toán các giá trị cần thiết ---
+
+                                // 1. Tính lại tổng tiền gốc từ chi tiết đơn hàng (items)
+                                $originalTotal = 0;
+                                if ($order->items && $order->items->count() > 0) {
+                                    $originalTotal = $order->items->sum(function ($item) {
+                                        return ($item->price ?? 0) * ($item->quantity ?? 0);
+                                    });
+                                }
+
+                                // 2. Tính số tiền được giảm
+                                // $order->total là tổng cuối cùng đã lưu trong DB (sau khi áp coupon nếu có)
+                                $finalTotal = $order->total ?? $originalTotal; // Lấy total đã lưu, nếu không có thì lấy tạm original
+                                $calculatedDiscount = $originalTotal - $finalTotal;
+                                $calculatedDiscount = max(0, $calculatedDiscount); // Đảm bảo không âm
+
+                                // 3. Lấy mã coupon hoặc hiển thị mặc định
+                                $couponDisplay = !empty($order->coupon)
+                                    ? '<span>' . e($order->coupon) . '</span>'
+                                    : 'Không áp dụng';
+
+                            @endphp
+
+                            {{-- 1. Hiển thị Tổng tiền hàng (luôn hiển thị) --}}
+                            <div class="total-row">
+                                <span>Tổng tiền hàng</span>
+                                <span>{{ number_format($originalTotal, 0, ',', '.') }} VNĐ</span>
+                            </div>
+
+                            {{-- 2. Hiển thị Mã giảm giá (luôn hiển thị) --}}
+                            <div class="total-row">
+                                <span>Mã giảm giá</span>
+                                <span>{!! $couponDisplay !!}</span> {{-- Dùng {!! !!} vì $couponDisplay có thể chứa HTML --}}
+                            </div>
+
+                            {{-- 3. Hiển thị Tổng tiền được giảm (luôn hiển thị) --}}
                             <div class="total-row">
                                 <span>Tổng tiền được giảm</span>
-                                <span>0 VND</span>
+                                {{-- Hiển thị số tiền giảm (sẽ là 0 nếu không có coupon) --}}
+                                <span class="{{ $calculatedDiscount > 0 ? 'text-danger' : '' }}">-
+                                    {{ number_format($calculatedDiscount, 0, ',', '.') }} VNĐ</span>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">Tổng tiền trả</div>
-                    <div class="card-body">
-                        <div class="total-section">
-                            <div class="total-row">
-                                <span>Tổng tiền</span>
-                                <span>850,000 VND</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Right Section: Payment and Shipping Info -->
+                            {{-- Đường kẻ ngang để phân tách --}}
+                            <hr>
+
+                            {{-- 4. Hiển thị Tổng cộng (luôn hiển thị) --}}
+                            <div class="total-row" style="font-weight: bold;">
+                                <span>Tổng cộng</span>
+                                {{-- Hiển thị tổng tiền cuối cùng --}}
+                                <span>{{ number_format($finalTotal, 0, ',', '.') }} VNĐ</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div> {{-- Kết thúc Cột Trái --}}
+
+            {{-- Cột Phải: Thông tin Thanh toán và Vận chuyển --}}
             <div class="right-section">
                 <div class="card">
                     <div class="card-header">Thông tin thanh toán</div>
@@ -291,48 +408,73 @@
                         <div class="info-section">
                             <div class="info-row">
                                 <span class="info-label">Tổng tiền</span>
-                                <span class="info-value">850,000 VND</span>
+                                <span class="info-value">{{ $finalTotalFormatted }}</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Phương thức</span>
-                                <span class="info-value">Thanh toán khi nhận hàng</span>
+                                <span class="info-value">{{ $paymentText }}</span>
                             </div>
                             <div class="info-row">
-                                <span class="info-label">Trạng thái</span>
-                                <span class="info-value">Thanh toán sau</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">Thông tin vận chuyển</div>
-                    <div class="card-body">
-                        <div class="info-section">
-                            <div class="info-row">
-                                <span class="info-label">Phương thức</span>
-                                <span class="info-value">Giao hàng nhanh</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Quận huyện</span>
-                                <span class="info-value">Hà Nội</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Số nhà</span>
-                                <span class="info-value">123 Đường ABC</span>
+                                <span class="info-label">Trạng thái TT</span>
+                                <span
+                                    class="info-value">{{ $paymentText == 'COD' ? 'Thanh toán khi nhận hàng' : ($order->payment_status == 'wallet' ? 'Đã thanh toán' : 'Chờ thanh toán') }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Order Actions -->
-                <div class="order-actions">
-                    <button style="cursor: pointer" class="btn btn-primary">
-                        <i class="fa fa-save"></i> Save & Print
-                    </button>
-                    <button style="cursor: pointer" class="btn btn-danger">
-                        Hủy đơn hàng
-                    </button>
+                <div class="card">
+                    <div class="card-header">Thông tin vận chuyển</div>
+                    <div class="card-body">
+                        <div class="info-section">
+                            <div class="info-row">
+                                <span class="info-label">Người nhận</span>
+                                <span class="info-value">{{ $customerName }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Điện thoại</span>
+                                <span class="info-value">{{ $order->phone ?? 'N/A' }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Email</span>
+                                <span class="info-value">{{ $order->email ?? 'N/A' }}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Địa chỉ</span>
+                                {{-- Ghép các phần địa chỉ lại --}}
+                                @php
+                                    $fullAddress = implode(', ', array_filter([$order->number_house, $order->address]));
+                                @endphp
+                                <span class="info-value">{{ $fullAddress ?: 'Chưa cập nhật' }}</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                {{-- Hành động trên đơn hàng --}}
+                <div class="order-actions">
+                    {{-- Nút In (Dùng chức năng in của trình duyệt) --}}
+                    <button style="cursor: pointer" class="btn btn-outline-secondary" onclick="window.print();">
+                        <i class="fa fa-print"></i> In đơn hàng
+                    </button>
+
+                    {{-- Nút Hủy Đơn (Chỉ hiển thị nếu trạng thái cho phép hủy) --}}
+                    {{-- Bạn cần định nghĩa các trạng thái nào cho phép hủy --}}
+                    @if (in_array(strtolower($order->status ?? ''), ['pending', 'processing']))
+                        {{-- Form để gửi yêu cầu hủy --}}
+                        {{-- KIỂM TRA LẠI TÊN ROUTE client.order.cancel --}}
+                        <form action="" method="" style="display: inline;"
+                            onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
+                            @csrf
+                            {{-- Phương thức có thể là PUT, PATCH hoặc POST tùy bạn định nghĩa route --}}
+                            @method('PUT')
+                            <button type="submit" style="cursor: pointer" class="btn btn-danger">
+                                Hủy đơn hàng
+                            </button>
+                        </form>
+                    @endif
+                </div>
+
             </div>
         </div>
     </div>

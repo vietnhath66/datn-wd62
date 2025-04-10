@@ -226,8 +226,8 @@
                                         @endif
                                     </td>
                                     <td class="text-center custom-td">
-                                        <a href="{{ route('client.account.accountOrderDetail') }}" title="Xem chi tiết"
-                                            class="text-decoration-none custom-icon-link"><i
+                                        <a href="{{ route('client.account.accountOrderDetail', $order->id) }}"
+                                            title="Xem chi tiết" class="text-decoration-none custom-icon-link"><i
                                                 class="fa fa-eye custom-icon-eye"></i></a>
                                     </td>
                                 </tr>
