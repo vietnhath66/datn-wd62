@@ -74,6 +74,12 @@
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
+                                                <span
+                                                    class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">{{ number_format($product->price) }}
+                                                    vnđ</span>
+                                            </td>
+                                            <td
+                                                class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
                                                 @if ($product->publish == 1)
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Publish</span>
@@ -81,11 +87,6 @@
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Unpublish</span>
                                                 @endif
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
-                                                <span
-                                                    class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">{{ number_format($product->price) }} vnđ</span>
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 action">

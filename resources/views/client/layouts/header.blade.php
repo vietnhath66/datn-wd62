@@ -53,19 +53,30 @@
                                 </span>
                                 <div class="dropdown-divider"></div>
                                 @if (Auth::user()->role_id == 5)
-                                @else
+                                @elseif (Auth::user()->role_id == 1)
                                     <a class="dropdown-item" href="{{ route('admin.dashboard.index') }}">
                                         <i class="fa fa-cogs"></i> <span class="ml-2">Trang quản trị</span>
                                     </a>
+                                @elseif (Auth::user()->role_id == 2)
+                                    <a class="dropdown-item" href="">
+                                        <i class="fa fa-cogs"></i> <span class="ml-2">Trang quản lý đơn
+                                            hàng</span>
+                                    </a>
+                                @elseif (Auth::user()->role_id == 3)
+                                    <a class="dropdown-item" href="{{ route('shipper.listOrderShipper') }}">
+                                        <i class="fa fa-cogs"></i> <span class="ml-2">Trang Shipper</span>
+                                    </a>
+                                @elseif (Auth::user()->role_id == 4)
+                                    <a class="dropdown-item" href="">
+                                        <i class="fa fa-cogs"></i> <span class="ml-2">Trang quản lý sản phẩm
+                                            hàng</span>
+                                    </a>
                                 @endif
-                                <a class="dropdown-item" href="">
+                                <a class="dropdown-item" href="{{ route('client.account.viewAccount') }}">
                                     <i class="fa fa-user"></i> <span class="ml-2">Tài khoản</span>
                                 </a>
                                 <a class="dropdown-item" href="{{ route('client.account.accountMyOrder') }}">
-                                    <i class="fa fa-shopping-cart"></i> <span class="ml-2">Đơn hàng</span>
-                                </a>
-                                <a class="dropdown-item" href="">
-                                    <i class="fa fa-lock"></i> <span class="ml-2">Thay mật khẩu</span>
+                                    <i class="fa fa-shopping-cart"></i> <span class="ml-2">Đơn hàng của bạn</span>
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item text-danger" href="{{ route('logout') }}"

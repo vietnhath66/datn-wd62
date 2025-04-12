@@ -187,6 +187,15 @@
                 });
             }
 
+
+            function showEmptyCartMessage() {
+                // console.log("Running showEmptyCartMessage...");
+                $('.cart-items-container').hide(); // Ẩn div chứa bảng sản phẩm
+                $('.cart-empty-message').show(); // Hiện div chứa thông báo trống
+                $('.cart-summary-column').hide(); // Ẩn cột tổng tiền và nút đặt hàng
+                console.log("Toggled visibility for empty cart.");
+            }
+
             var $cartPlusButtons = $('.cart-table .btn-num-product-up');
             var $cartMinusButtons = $('.cart-table .btn-num-product-down');
             $cartPlusButtons.off('click');

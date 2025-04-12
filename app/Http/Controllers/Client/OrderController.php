@@ -205,7 +205,7 @@ class OrderController extends Controller
             'district' => $request->district,
             'province' => $request->province,
             'payment_status' => $request->payment_status == 'wallet' ? 'wallet' : 'cod', // Cập nhật trạng thái thanh toán
-            'status' => 'pending', // Đơn hàng được xác nhận
+            'status' => 'processing', // Đơn hàng được xác nhận
         ]);
 
         // Xoá giỏ hàng sau khi đặt hàng
@@ -330,5 +330,55 @@ class OrderController extends Controller
             Log::error("Lỗi Apply Coupon: " . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
             return response()->json(['success' => false, 'message' => 'Đã xảy ra lỗi khi áp dụng mã giảm giá.'], 500);
         }
+    }
+
+
+    public function continuePayment(Order $order, Request $request)
+    {
+        // 1. Kiểm tra quyền sở hữu đơn hàng
+        if (Auth::id() !== $order->user_id) {
+            abort(403, 'Không có quyền truy cập.');
+        }
+
+        // 2. Kiểm tra trạng thái đơn hàng và thanh toán có phù hợp để thử lại không
+        $orderStatus = strtolower($order->status ?? '');
+        $paymentStatus = strtolower($order->payment_status ?? '');
+
+        // Ví dụ: Chỉ cho thử lại khi ĐH là 'pending' và TT không phải 'cod' và không phải 'paid'
+        if ($orderStatus !== 'pending' || $paymentStatus === 'cod' || $paymentStatus === 'wallet') {
+            // Chuyển hướng về trang chi tiết kèm cảnh báo (Nhớ kiểm tra tên route)
+            return redirect()->route('client.order.viewOrder', $order->id)
+                ->with('warning', 'Đơn hàng này không thể tiếp tục thanh toán.');
+        }
+
+        // 3. === PHẦN XỬ LÝ GỌI CỔNG THANH TOÁN (Ví dụ: MoMo) SẼ THÊM VÀO ĐÂY SAU ===
+        Log::info("User ID: " . Auth::id() . " yêu cầu thử lại thanh toán cho Order ID: " . $order->id . ". Logic cổng thanh toán chưa được tích hợp.");
+
+        /*
+        // ----- BẮT ĐẦU LOGIC GỌI API THANH TOÁN (MoMo, VNPay...) -----
+        try {
+            // 1. Lấy config của cổng thanh toán (MoMo keys...)
+            // 2. Chuẩn bị dữ liệu gửi đi (ID mới, số tiền $order->total, URL callback...)
+            // 3. Tạo chữ ký (signature)
+            // 4. Gửi request API đến cổng thanh toán
+            // 5. Nhận kết quả (payUrl hoặc lỗi)
+            // 6. Nếu thành công -> return redirect()->away($payUrl);
+            // 7. Nếu thất bại -> throw new \Exception("Thông báo lỗi từ cổng TT");
+
+        } catch (\Exception $e) {
+            Log::error("Lỗi Retry Payment Exception: " . $e->getMessage());
+            return redirect()->route('client.order.detail', $order->id) // Check route name
+                       ->with('error', 'Đã xảy ra lỗi khi thử lại thanh toán: ' . $e->getMessage());
+        }
+        // ----- KẾT THÚC LOGIC GỌI API THANH TOÁN -----
+        */
+
+
+        // --- HÀNH ĐỘNG TẠM THỜI: Chuyển hướng về trang chi tiết với thông báo ---
+        // (Sau này bạn sẽ thay thế dòng này bằng logic gọi cổng thanh toán ở trên)
+        // Nhớ kiểm tra tên route 'client.order.detail'
+        return redirect()->route('client.order.viewOrder', $order->id)
+            ->with('info', 'Chức năng thanh toán lại đang được phát triển. Vui lòng thử lại sau hoặc liên hệ hỗ trợ.');
+
     }
 }

@@ -9,6 +9,13 @@ use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
+
+    public function viewAccount()
+    {
+        return view('client.master-account');
+    }
+
+
     public function accountMyOrder()
     {
         $userId = Auth::id();

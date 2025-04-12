@@ -91,8 +91,8 @@
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
                                                 @if ($order->status == 'pending')
                                                     <span
-                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Chờ
-                                                        xử lý</span>
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Chưa
+                                                        hoàn tất đơn hàng</span>
                                                 @elseif($order->status == 'processing')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đang

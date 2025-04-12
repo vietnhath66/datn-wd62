@@ -8,7 +8,6 @@ use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\BrandController;
-use App\Http\Controllers\Backend\CounponController;
 use App\Http\Controllers\Backend\ProductCatalogueController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\RoleController;
@@ -17,6 +16,7 @@ use App\Http\Controllers\Backend\AttributeCatalogueController;
 use App\Http\Controllers\Backend\AttributeController;
 use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\Client\PolicyController;
+use App\Http\Controllers\Shipper\ShipperController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\ContactController;
@@ -37,6 +37,12 @@ Route::middleware('auth')->group(function () {
 });
 
 
+// Shipper
+Route::group(['prefix' => 'shipper', 'as' => 'shipper.'], function () {
+    Route::get('list', [ShipperController::class, 'listOrderShipper'])->name('listOrderShipper');
+    Route::get('account', [ShipperController::class, 'accountShipper'])->name('accountShipper');
+    Route::get('delivered', [ShipperController::class, 'deliveredShipper'])->name('deliveredShipper');
+});
 
 
 // Client
@@ -53,10 +59,12 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
 
     // Account
     Route::group(['prefix' => 'account', 'as' => 'account.'], function () {
+        Route::get('/', [AccountController::class, 'viewAccount'])->name('viewAccount');
         Route::get('order', [AccountController::class, 'accountMyOrder'])->name('accountMyOrder');
         Route::get('order-detail/{order}', [AccountController::class, 'accountOrderDetail'])->name('accountOrderDetail');
 
     });
+
 
     // Cart
     Route::group(['prefix' => 'cart', 'as' => 'cart.'], function () {
@@ -66,13 +74,16 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
         Route::post('add-to-cart', [CartController::class, 'addToCart'])->name('addToCart');
     });
 
+
     // Order
     Route::group(['prefix' => 'order', 'as' => 'order.'], function () {
         Route::get('/', [OrderController::class, 'viewOrder'])->name('viewOrder');
         Route::post('checkout', [OrderController::class, 'checkout'])->name('checkout');
         Route::post('complete', [OrderController::class, 'completeOrder'])->name('completeOrder');
         Route::post('apply-coupon', [OrderController::class, 'applyCoupon'])->name('applyCoupon');
+        Route::get('continue-payment/{order}', [OrderController::class, 'continuePayment'])->name('continuePayment');
     });
+
 
     // Product
     Route::group(['prefix' => 'product', 'as' => 'product.'], function () {

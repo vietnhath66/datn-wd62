@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 
-use App\Services\Interfaces\ProductServiceInterface  as ProductService;
-use App\Repositories\Interfaces\ProductRepositoryInterface  as productReponsitory;
-use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface  as AttributeCatalogueRepository;
+use App\Services\Interfaces\ProductServiceInterface as ProductService;
+use App\Repositories\Interfaces\ProductRepositoryInterface as productReponsitory;
+use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface as AttributeCatalogueRepository;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Classes\Nestedsetbie;
@@ -52,12 +52,13 @@ class ProductController extends Controller
     }
 
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         // $this->authorize('modules', 'admin.product.index');
         $products = $this->productService->paginate($request);
         // dd($products);
-       
->>>>>>> truongpcph43675
+
+
         $config = [
             'js' => [
                 'admin/js/plugins/switchery/switchery.js',
@@ -69,12 +70,8 @@ class ProductController extends Controller
             ],
             'model' => 'Product'
         ];
-<<<<<<< HEAD
-        $config['seo'] = __('messages.product');
-        $template = 'admin.product.product.index';
-        $dropdown = $this->nestedset->Dropdown();
-=======
-        $config['seo'] =  [
+
+        $config['seo'] = [
             'index' => [
                 'title' => 'Quản lý sản phẩm',
                 'table' => 'Danh sách sản phẩm'
@@ -90,8 +87,7 @@ class ProductController extends Controller
             ],
         ];
         $template = 'admin.products.product.index';
-        $dropdown  = $this->nestedset->Dropdown();
->>>>>>> truongpcph43675
+        $dropdown = $this->nestedset->Dropdown();
         return view('admin.dashboard.layout', compact(
             'template',
             'config',
@@ -148,27 +144,19 @@ class ProductController extends Controller
         return redirect()->route('admin.product.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
 
-<<<<<<< HEAD
     public function edit($id)
     {
-        // dd($id);
-        $this->authorize('modules', 'admin.product.update');
-        $attributeCatalogue = AttributeCatalogue::with('attribute_catalogue_language')->get();
-        $product = $this->productReponsitory->getProductById($id, $this->language);
-
-=======
-    public function edit($id){
         // $this->authorize('modules', 'admin.product.update');
         // $attributeCatalogue = AttributeCatalogue::with('attribute_catalogue_language')->get();
         $attributeCatalogue = AttributeCatalogue::get();
         $brands = Brand::get();
-        
+
         $product = $this->productReponsitory->getProductById($id);
         // dd($product);
-        
->>>>>>> truongpcph43675
+
+
         $config = $this->configData();
-        $config['seo'] =  [
+        $config['seo'] = [
             'index' => [
                 'title' => 'Quản lý sản phẩm',
                 'table' => 'Danh sách sản phẩm'
@@ -197,16 +185,10 @@ class ProductController extends Controller
         ));
     }
 
-<<<<<<< HEAD
     public function update($id, UpdateProductRequest $request)
     {
-        if ($this->productService->update($id, $request, $this->language)) {
+        if ($this->productService->update($id, $request)) {
             return redirect()->route('admin.product.index')->with('success', 'Cập nhật bản ghi thành công');
-=======
-    public function update($id, UpdateProductRequest $request){
-        if($this->productService->update($id, $request)){
-            return redirect()->route('admin.product.index')->with('success','Cập nhật bản ghi thành công');
->>>>>>> truongpcph43675
         }
         return redirect()->route('admin.product.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }

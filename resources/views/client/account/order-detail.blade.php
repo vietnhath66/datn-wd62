@@ -191,7 +191,7 @@
                 <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
             </a>
             <span class="stext-109 cl4" style="font-size: 16px">
-                Tài khoản
+                Đơn hàng của bạn
                 <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
             </span>
             <span class="stext-109 cl4" style="font-size: 16px">
@@ -207,7 +207,7 @@
                 @php
                     // --- Xử lý dữ liệu để hiển thị ---
                     $statusBadge = match (strtolower($order->status ?? '')) {
-                        'pending' => '<span>Chờ xử lý</span>',
+                        'pending' => '<span>Chưa hoàn tất đơn hàng</span>',
                         'processing' => '<span>Đang xử lý</span>',
                         'shipped' => '<span>Đang giao</span>',
                         'delivered', 'completed' => '<span>Đã giao</span>',
@@ -453,21 +453,45 @@
 
                 {{-- Hành động trên đơn hàng --}}
                 <div class="order-actions">
-                    {{-- Nút In (Dùng chức năng in của trình duyệt) --}}
+                    {{-- Nút In --}}
                     <button style="cursor: pointer" class="btn btn-outline-secondary" onclick="window.print();">
                         <i class="fa fa-print"></i> In đơn hàng
                     </button>
 
-                    {{-- Nút Hủy Đơn (Chỉ hiển thị nếu trạng thái cho phép hủy) --}}
-                    {{-- Bạn cần định nghĩa các trạng thái nào cho phép hủy --}}
+                    {{-- === THÊM NÚT TIẾP TỤC THANH TOÁN === --}}
+                    {{-- Chỉ hiển thị khi đơn hàng 'pending' VÀ thanh toán không phải COD VÀ chưa 'paid' --}}
+                    @if (strtolower($order->status ?? '') === 'pending' &&
+                            strtolower($order->payment_status ?? '') !== 'cod' &&
+                            strtolower($order->payment_status ?? '') === 'wallet')
+                        {{-- Nút này sẽ trỏ đến một route mới để xử lý việc tạo lại yêu cầu thanh toán --}}
+                        {{-- Ví dụ sử dụng thẻ <a> nếu route là GET --}}
+                        {{-- NHỚ KIỂM TRA TÊN ROUTE 'client.order.retryPayment' --}}
+                        <a href="{{ route('client.order.continuePayment', $order->id) }}" style="cursor: pointer"
+                            class="btn btn-success"> {{-- Nút màu xanh lá --}}
+                            <i class="fa fa-credit-card"></i> Tiếp tục thanh toán
+                        </a>
+
+                        {{-- Hoặc sử dụng form nếu route là POST --}}
+                        {{--
+                        <form action="{{ route('client.order.retryPayment', $order->id) }}" method="POST" style="display: inline;">
+                            @csrf
+                            <button type="submit" style="cursor: pointer" class="btn btn-success">
+                                 <i class="fa fa-credit-card"></i> Tiếp tục thanh toán
+                             </button>
+                        </form>
+                        --}}
+                    @endif
+                    {{-- === KẾT THÚC THÊM NÚT === --}}
+
+
+                    {{-- Nút Hủy Đơn (Conditional) --}}
                     @if (in_array(strtolower($order->status ?? ''), ['pending', 'processing']))
                         {{-- Form để gửi yêu cầu hủy --}}
-                        {{-- KIỂM TRA LẠI TÊN ROUTE client.order.cancel --}}
-                        <form action="" method="" style="display: inline;"
+                        {{-- NHỚ KIỂM TRA TÊN ROUTE 'client.order.cancel' và ĐIỀN METHOD, ACTION --}}
+                        <form action="" method="POST" style="display: inline;"
                             onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
                             @csrf
-                            {{-- Phương thức có thể là PUT, PATCH hoặc POST tùy bạn định nghĩa route --}}
-                            @method('PUT')
+                            @method('PUT') {{-- Hoặc POST, tùy định nghĩa route --}}
                             <button type="submit" style="cursor: pointer" class="btn btn-danger">
                                 Hủy đơn hàng
                             </button>

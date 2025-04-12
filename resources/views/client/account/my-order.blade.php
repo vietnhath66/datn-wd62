@@ -144,11 +144,7 @@
                 <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
             </a>
             <span class="stext-109 cl4" style="font-size: 16px">
-                Tài khoản
-                <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
-            </span>
-            <span class="stext-109 cl4" style="font-size: 16px">
-                Đơn hàng
+                Đơn hàng của bạn
             </span>
         </div>
     </div>
@@ -187,7 +183,7 @@
                                     // Bạn nên tạo một helper hoặc dùng accessor trong Model để xử lý việc này gọn hơn
                                     $statusText = match (strtolower($order->status ?? '')) {
                                         'pending'
-                                            => '<span class="badge custom-badge custom-badge-secondary">Chờ xử lý</span>',
+                                            => '<span class="badge custom-badge custom-badge-secondary">Chưa hoàn tất đơn hàng</span>',
                                         'processing'
                                             => '<span class="badge custom-badge custom-badge-warning">Đang xử lý</span>',
                                         'completed'
