@@ -38,11 +38,18 @@ Route::middleware('auth')->group(function () {
 
 
 // Shipper
-Route::group(['prefix' => 'shipper', 'as' => 'shipper.'], function () {
-    Route::get('list', [ShipperController::class, 'listOrderShipper'])->name('listOrderShipper');
-    Route::get('account', [ShipperController::class, 'accountShipper'])->name('accountShipper');
-    Route::get('delivered', [ShipperController::class, 'deliveredShipper'])->name('deliveredShipper');
-});
+Route::prefix('shipper')
+    ->as('shipper.')
+    ->middleware(['shipper'])
+    ->group(function () {
+        Route::get('list', [ShipperController::class, 'listOrderShipper'])->name('listOrderShipper');
+        Route::get('account', [ShipperController::class, 'accountShipper'])->name('accountShipper');
+        Route::put('account', [ShipperController::class, 'updateAccount'])->name('updateAccount');
+        Route::get('delivered', [ShipperController::class, 'deliveredShipper'])->name('deliveredShipper');
+        Route::put('delivered/{order}', [ShipperController::class, 'updateOrderStatus'])->name('updateOrderStatus');
+        Route::get('order-detail/{order}', [ShipperController::class, 'orderDetailShipper'])->name('orderDetailShipper');
+        Route::post('accept-order/{order}', [ShipperController::class, 'acceptOrder'])->name('acceptOrder');
+    });
 
 
 // Client

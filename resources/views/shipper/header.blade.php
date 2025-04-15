@@ -21,12 +21,12 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('shipper.listOrderShipper') }}">
-                    <i class="fas fa-history"></i> Danh Sách Đơn Hàng
+                    <i class="fas fa-shopping-cart"></i> Danh Sách Đơn Hàng
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('shipper.deliveredShipper') }}">
-                    <i class="fas fa-history"></i> Giao Hàng
+                    <i class="fas fa-truck"></i> Giao Hàng
                 </a>
             </li>
             <li class="nav-item">

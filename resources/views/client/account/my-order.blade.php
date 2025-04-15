@@ -186,10 +186,18 @@
                                             => '<span class="badge custom-badge custom-badge-secondary">Chưa hoàn tất đơn hàng</span>',
                                         'processing'
                                             => '<span class="badge custom-badge custom-badge-warning">Đang xử lý</span>',
+                                        'confirm'
+                                            => '<span class="badge custom-badge custom-badge-warning">Đã xác nhận</span>',
+                                        'shipping'
+                                            => '<span class="badge custom-badge custom-badge-warning">Đang vận chuyển</span>',
                                         'completed'
-                                            => '<span class="badge custom-badge custom-badge-success">Đã giao</span>',
+                                            => '<span class="badge custom-badge custom-badge-success">Đã hoàn thành</span>',
                                         'cancelled'
                                             => '<span class="badge custom-badge custom-badge-danger">Đã hủy</span>',
+                                        'refunded'
+                                            => '<span class="badge custom-badge custom-badge-danger">Đã hoàn lại</span>',
+                                        'failed'
+                                            => '<span class="badge custom-badge custom-badge-danger">Giao thất bại</span>',
                                         default => '<span class="badge bg-light text-dark">' .
                                             ucfirst($order->status ?? 'N/A') .
                                             '</span>',

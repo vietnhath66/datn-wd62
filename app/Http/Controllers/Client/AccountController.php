@@ -51,11 +51,17 @@ class AccountController extends Controller
         // 2. Tải các relationship cần thiết cho View
         // (Đảm bảo các relationship này đã được định nghĩa trong các Model tương ứng)
         $order->load([
-            'items',                     // Chi tiết các sản phẩm trong đơn hàng (OrderDetail)
-            'items.product',             // Thông tin sản phẩm gốc (Product)
-            'items.productVariant',      // Thông tin biến thể sản phẩm (ProductVariant)
-            'items.productVariant.products' // Thông tin sản phẩm gốc từ biến thể (nếu cần lấy ảnh/tên từ đây)
-            // 'user'                    // Thông tin người dùng (nếu cần hiển thị thêm ngoài tên/email đã có trên Order)
+            'items',
+            'items.product:id,name,image', // Chỉ lấy cột cần thiết
+            'items.productVariant' => function ($query) {
+                // Chỉ lấy cột cần thiết, load kèm product nếu cần ảnh từ variant->product
+                $query->select(['id', 'product_id', /* Thêm cột màu/size nếu có */])
+                    ->with('products:id,image'); // Ví dụ
+            },
+            // === BỔ SUNG LOAD RELATIONSHIP NÀY NẾU VIEW CẦN ===
+            'confirmer:id,name', // Lấy thông tin người xác nhận (chỉ cần ID và name)
+            'shipper:id,name'    // Lấy thông tin shipper (chỉ cần ID và name)
+            // === KẾT THÚC BỔ SUNG ===
         ]);
         return view('client.account.order-detail')->with([
             'order' => $order
