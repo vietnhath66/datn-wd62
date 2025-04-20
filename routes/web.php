@@ -229,10 +229,10 @@ Route::prefix('admin')
     });
 
 
-Route::get('admin/login', [AuthController::class, 'index'])->name('auth.admin')->middleware('login');
-Route::post('login', [AuthController::class, 'login'])->name('auth.login');
 
-Route::get('admin/logout', [AuthController::class, 'logout'])->name('auth.logout');
+    Route::get('admin/login', [AuthController::class, 'index'])->name('auth.admin')->middleware('login');
+    Route::post('login', [AuthController::class, 'login'])->name('auth.login');
+    Route::get('admin/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
 require __DIR__ . '/auth.php';
 
