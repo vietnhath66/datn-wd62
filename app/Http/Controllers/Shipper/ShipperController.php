@@ -186,7 +186,7 @@ class ShipperController extends Controller
                 case 'cancelled':
                     $order->cancelled_at = now();
                     break;
-                case 'returned':
+                case 'refunded':
                     $order->refunded_at = now();
                     break;
                 case 'failed':

@@ -304,35 +304,92 @@
     </div>
 
     <div class="bg0 p-t-75 p-b-85 custom-container">
+        <div style="padding-bottom: 25px">
+            <a href="{{ route('client.account.accountMyOrder') }}">Quay lại trang đơn hàng</a>
+        </div>
         {{-- Header tóm tắt đơn hàng --}}
         <div class="order-header">
+
             <div class="row">
                 @php
-                    // --- Xử lý dữ liệu để hiển thị ---
-                    $statusBadge = match (strtolower($order->status ?? '')) {
-                        'pending' => '<span>Chưa hoàn tất đơn hàng</span>',
-                        'processing' => '<span>Đang xử lý</span>',
-                        'confirm' => '<span>Đã xác nhận</span>',
-                        'shipping' => '<span>Đang vận chuyển</span>',
-                        'completed' => '<span>Đã hoàn thành</span>',
-                        'cancelled' => '<span>Đã hủy</span>',
-                        'refunded' => '<span>Đã hoàn lại</span>',
-                        'failed' => '<span>Giao thất bại</span>',
-                        default => '<span>' . ucfirst($order->status ?? 'Không rõ') . '</span>',
-                    };
-                    $paymentText = match (strtolower($order->payment_status ?? '')) {
+                    // 1. Lấy các giá trị trạng thái từ đối tượng $order
+                    $currentStatus = strtolower($order->status ?? '');
+                    $currentPaymentMethod = strtolower($order->payment_method ?? ''); // <-- Lấy phương thức thanh toán
+                    $currentPaymentStatus = strtolower($order->payment_status ?? ''); // <-- Lấy trạng thái thanh toán
+
+                    // 2. Định nghĩa các nhãn (Labels)
+                    // Nhãn cho Trạng thái Đơn hàng (Order Status)
+                    $statusLabels = [
+                        'pending' => 'Chưa hoàn tất', // Có thể là 'Chờ xử lý' tùy quy trình
+                        'processing' => 'Shop đang xử lý',
+                        'confirm' => 'Shop đã xác nhận',
+                        'shipping' => 'Đang vận chuyển',
+                        'completed' => 'Giao hàng thành công',
+                        'cancelled' => 'Đã hủy',
+                        'refunded' => 'Đã hoàn trả',
+                        'failed' => 'Giao thất bại',
+                        'payment_error' => 'Lỗi thanh toán',
+                    ];
+                    // Nhãn cho Phương thức Thanh toán (Payment Method)
+                    $paymentMethodLabels = [
                         'cod' => 'COD',
-                        'wallet' => 'Ví điện tử',
-                        'paid' => 'Đã thanh toán',
+                        'wallet' => 'Thanh toán MOMO', // Hoặc 'Ví MoMo'
+                        // Thêm các phương thức khác nếu có: 'bank_transfer' => 'Chuyển khoản NH', ...
+                    ];
+                    // Nhãn cho Trạng thái Thanh toán (Payment Status)
+                    $paymentStatusLabels = [
                         'pending' => 'Chờ thanh toán',
-                        default => ucfirst($order->payment_status ?? 'N/A'),
-                    };
+                        'paid' => 'Đã thanh toán',
+                        'failed' => 'Thanh toán thất bại',
+                        'refunded' => 'Đã hoàn tiền', // Nếu có quy trình hoàn tiền
+                    ];
+
+                    // 3. Xác định Text hiển thị cuối cùng
+                    // Trạng thái ĐH
+                    $displayOrderStatusLabel = $statusLabels[$currentStatus] ?? ucfirst($currentStatus);
+                    // Phương thức TT
+                    $displayPaymentMethodText =
+                        $paymentMethodLabels[$currentPaymentMethod] ??
+                        ($currentPaymentMethod ? ucfirst($currentPaymentMethod) : 'Chưa chọn');
+                    // Trạng thái TT (logic đặc biệt cho COD)
+                    $displayPaymentStatusText =
+                        $paymentStatusLabels[$currentPaymentStatus] ?? ucfirst($currentPaymentStatus);
+                    if ($currentPaymentMethod === 'cod') {
+                        $displayPaymentStatusText = 'Thanh toán khi nhận hàng';
+                        // Nếu đơn COD đã ở trạng thái giao thành công/hoàn thành thì coi như đã TT
+                        if (in_array($currentStatus, ['completed', 'delivered', 'confirm'])) {
+                            $displayPaymentStatusText = 'Đã thanh toán (COD)';
+                        } elseif ($currentStatus === 'cancelled') {
+                            $displayPaymentStatusText = 'Không thanh toán (Đã hủy)';
+                        }
+                    } elseif ($currentPaymentMethod === 'wallet' && $currentStatus === 'pending') {
+                        // Hiển thị rõ hơn khi chờ thanh toán MoMo
+                        $displayPaymentStatusText = 'Chờ thanh toán MoMo';
+                    }
+
+                    // 4. Tạo HTML cho Badge trạng thái đơn hàng
+                    $badgeClass = 'bg-light text-dark'; // Mặc định
+                    if ($currentStatus === 'pending') {
+                        $badgeClass = 'bg-warning text-dark';
+                    } elseif ($currentStatus === 'processing') {
+                        $badgeClass = 'bg-info text-dark';
+                    } elseif (in_array($currentStatus, ['completed', 'confirm'])) {
+                        $badgeClass = 'bg-success';
+                    } elseif (in_array($currentStatus, ['cancelled', 'failed', 'refunded', 'payment_error'])) {
+                        $badgeClass = 'bg-danger';
+                    } elseif ($currentStatus === 'shipping') {
+                        $badgeClass = 'bg-primary';
+                    }
+                    $statusBadgeHtml =
+                        '<span class="badge ' . $badgeClass . '">' . $displayOrderStatusLabel . '</span>';
+
                     $orderCode = $order->barcode ?? 'DH' . sprintf('%03d', $order->id);
                     $finalTotalFormatted = number_format($order->total ?? 0, 0, ',', '.') . ' VNĐ';
                     $orderDate = optional($order->created_at)->format('H:i d/m/Y') ?? 'N/A';
                     $customerName = $order->name ?? (optional($order->user)->name ?? 'N/A'); // Ưu tiên tên trên order, nếu không có lấy từ user
                     $customerEmail = $order->email ?? (optional($order->user)->email ?? 'N/A');
                 @endphp
+
                 <div class="col-lg-2 col-md-4 col-sm-6"> {{-- Sử dụng col-lg để tốt hơn trên màn hình lớn --}}
                     <div class="order-info">
                         <div class="status-label">Mã đơn hàng</div>
@@ -348,7 +405,7 @@
                 <div class="col-lg-2 col-md-4 col-sm-6">
                     <div class="order-info">
                         <div class="status-label">Phương thức thanh toán</div>
-                        <div>{{ $paymentText }}</div>
+                        <div>{{ $displayPaymentMethodText }}</div>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-6">
@@ -360,7 +417,7 @@
                 <div class="col-lg-2 col-md-4 col-sm-6">
                     <div class="order-info">
                         <div class="status-label">Trạng thái ĐH</div>
-                        <div>{!! $statusBadge !!}</div>
+                        <div>{{ $displayOrderStatusLabel }}</div>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-6">
@@ -600,6 +657,19 @@
                                         $userName = optional($relatedUser)->name;
                                         $userLabel = $info['user_label'] ?? '';
                                     }
+
+                                    // if ($statusKey === 'confirm' || $statusKey === 'shipping') {
+                                    //     // Dump các giá trị quan trọng cho bước 'confirm' và 'shipping'
+                                    //     dump([
+                                    //         'DEBUG for status' => $statusKey,
+                                    //         'isCompleted?' => $isCompleted,
+                                    //         'isActive?' => $isActive,
+                                    //         'Timestamp?' => optional($timestamp)->format('Y-m-d H:i:s'), // Hiển thị rõ timestamp
+                                    //         'User Naome?' => $userName, // <<-- Xem giá trị này là gì?
+                                    //         'User Label?' => $userLabel, // <<-- Xem giá trị này là gì?
+                                    //     ]);
+                                    // }
+
                                 @endphp
                                 {{-- Thêm class completed/active --}}
                                 <li class="{{ $isCompleted ? 'completed' : '' }} {{ $isActive ? 'active' : '' }}">
@@ -631,6 +701,12 @@
                                                 @elseif($userName)
                                                     <span class="text-muted" style="font-size: 0.9em;"> (bởi
                                                         {{ $userName }})</span>
+                                                    {{-- @php dump("Đang trong elseif - userName:", $userName); @endphp --}}
+                                                    {{-- Hiển thị thêm lý do nữa, đang không hiển thị được $userName trong elseif này --}}
+                                                @endif
+                                                @if ($statusKey === 'completed' && $isCompleted && $order->note)
+                                                    <small style="font-size: 12px" class="d-block text-muted mt-1">Lý do:
+                                                        {{ e($order->note) }}</small>
                                                 @endif
                                             </span>
                                         @endif
@@ -692,12 +768,11 @@
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Phương thức</span>
-                                <span class="info-value">{{ $paymentText }}</span>
+                                <span class="info-value">{{ $displayPaymentMethodText }}</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Trạng thái TT</span>
-                                <span
-                                    class="info-value">{{ $paymentText == 'COD' ? 'Thanh toán khi nhận hàng' : ($order->payment_status == 'wallet' ? 'Đã thanh toán' : 'Chờ thanh toán') }}</span>
+                                <span class="info-value">{{ $displayPaymentStatusText }}</span>
                             </div>
                         </div>
                     </div>
@@ -740,9 +815,7 @@
 
                     {{-- === THÊM NÚT TIẾP TỤC THANH TOÁN === --}}
                     {{-- Chỉ hiển thị khi đơn hàng 'pending' VÀ thanh toán không phải COD VÀ chưa 'paid' --}}
-                    @if (strtolower($order->status ?? '') === 'pending' &&
-                            strtolower($order->payment_status ?? '') !== 'cod' &&
-                            strtolower($order->payment_status ?? '') === 'wallet')
+                    @if ($currentStatus === 'pending' && $currentPaymentStatus !== 'cod' && $currentPaymentStatus !== 'paid')
                         {{-- Nút này sẽ trỏ đến một route mới để xử lý việc tạo lại yêu cầu thanh toán --}}
                         {{-- Ví dụ sử dụng thẻ <a> nếu route là GET --}}
                         {{-- NHỚ KIỂM TRA TÊN ROUTE 'client.order.retryPayment' --}}
@@ -761,17 +834,15 @@
                         </form>
                         --}}
                     @endif
-                    {{-- === KẾT THÚC THÊM NÚT === --}}
 
 
-                    {{-- Nút Hủy Đơn (Conditional) --}}
+                    {{-- Nút Hủy Đơn Hàng --}}
                     @if (in_array(strtolower($order->status ?? ''), ['pending', 'processing']))
-                        {{-- Form để gửi yêu cầu hủy --}}
-                        {{-- NHỚ KIỂM TRA TÊN ROUTE 'client.order.cancel' và ĐIỀN METHOD, ACTION --}}
-                        <form action="" method="POST" style="display: inline;"
+                        <form action="{{ route('client.order.cancelOrder', $order->id) }}" method="POST"
+                            style="display: inline;"
                             onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
                             @csrf
-                            @method('PUT') {{-- Hoặc POST, tùy định nghĩa route --}}
+                            @method('PUT')
                             <button type="submit" style="cursor: pointer" class="btn btn-danger">
                                 Hủy đơn hàng
                             </button>

@@ -204,12 +204,10 @@
                                     };
 
                                     // Định dạng Trạng thái thanh toán (Ví dụ)
-                                    $paymentText = match (strtolower($order->payment_status ?? '')) {
+                                    $paymentText = match (strtolower($order->payment_method ?? '')) {
                                         'cod' => 'COD',
-                                        'wallet' => 'Ví điện tử',
-                                        'paid' => 'Đã thanh toán',
-                                        'pending' => 'Chờ thanh toán',
-                                        default => ucfirst($order->payment_status ?? 'N/A'),
+                                        'wallet' => 'Thanh toán MOMO',
+                                        default => ucfirst($order->payment_method ?? 'N/A'),
                                     };
                                 @endphp
 

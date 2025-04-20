@@ -92,8 +92,8 @@
                                 </tr>
                             </thead>
                             <tbody class="list">
-                                @if (isset($counpons) && is_object($counpons))
-                                    @foreach ($counpons as $item)
+                                @if (isset($brands) && is_object($brands))
+                                    @foreach ($brands as $item)
                                         <tr>
                                             <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
                                                 <a href="#!"
@@ -131,7 +131,7 @@
                                                         </li>
                                                         <li>
                                                             <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
-                                                                href="{{ route('admin.counpons.edit', $item->id) }}"><i
+                                                                href="{{ route('admin.brands.edit', $item->id) }}"><i
                                                                     data-lucide="file-edit"
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
                                                                 <span class="align-middle">Edit</span></a>
@@ -139,7 +139,7 @@
                                                         <li>
                                                             <a data-modal-target="deleteModal"
                                                                 class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
-                                                                href="{{ route('admin.counpons.destroy', $item->id) }}"><i
+                                                                href="{{ route('admin.brands.destroy', $item->id) }}"><i
                                                                     data-lucide="trash-2"
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
                                                                 <span class="align-middle">Delete</span></a>

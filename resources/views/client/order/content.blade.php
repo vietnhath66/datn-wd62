@@ -1,4 +1,4 @@
-<form action="{{ route('client.order.completeOrder') }}" method="POST" class="bg0 p-t-75 p-b-85">
+<form id="checkoutForm" action="{{ route('client.order.completeOrder') }}" method="POST" class="bg0 p-t-75 p-b-85">
     @csrf
     <div class="">
         <div class="row">
@@ -120,11 +120,11 @@
                     <div class="mt-4">
                         <h6 class="mb-3">Chọn Phương Thức Thanh Toán</h6>
                         <div class="payment-method d-flex">
-                            <input type="radio" id="cod" value="cod" name="payment_status" checked />
+                            <input type="radio" id="cod" value="cod" name="payment_method" checked />
                             <label for="cod">Thanh Toán Khi Nhận Hàng</label>
                         </div>
                         <div class="payment-method d-flex">
-                            <input type="radio" id="wallet" value="wallet" name="payment_status" />
+                            <input type="radio" id="wallet" value="wallet" name="payment_method" />
                             <label for="wallet">Ví Điện Tử Momo</label>
                         </div>
                     </div>

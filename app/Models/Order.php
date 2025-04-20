@@ -25,6 +25,7 @@ class Order extends Model
         'shop_confirmed_at',
         'note',
         'payment_status',
+        'payment_status',
         'accepted_at',
         'shipped_at',
         'delivered_at',
@@ -79,6 +80,8 @@ class Order extends Model
         'refunded_at' => 'datetime',
         'failed_at' => 'datetime',
         'shop_confirmed_at' => 'datetime', // <-- Cast timestamp mới
+        'payment_transaction_id' => 'datetime',
+        'paid_at' => 'datetime',
         'total' => 'decimal:2', // Ví dụ cast tiền tệ
         'attribute' => 'json',
     ];
