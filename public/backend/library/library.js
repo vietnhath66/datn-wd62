@@ -32,7 +32,7 @@
                 console.log(option);
 
                 $.ajax({
-                    url: "http://shopprojectt.test/admin/ajax/dashboard/changeStatus",
+                    url: "http://127.0.0.1:8000/admin/ajax/dashboard/changeStatus",
                     type: "POST",
                     data: option,
                     dataType: "json",
@@ -102,7 +102,7 @@
                 };
 
                 $.ajax({
-                    url: "http://shopprojectt.test/admin/ajax/dashboard/changeStatusAll",
+                    url: "http://127.0.0.1:8000/admin/ajax/dashboard/changeStatusAll",
                     type: "POST",
                     data: option,
                     dataType: "json",

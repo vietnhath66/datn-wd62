@@ -32,7 +32,6 @@ class AttributeController extends Controller
                 'text' => $attribute->name,
             ];
         })->all();
-
         return response()->json(array('items' => $attributeMapped));
     }
 

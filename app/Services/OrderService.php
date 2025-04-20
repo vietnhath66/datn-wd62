@@ -18,6 +18,7 @@ use App\Repositories\Interfaces\ProductVariantAttributeReponsitoryInterface as P
 use App\Repositories\Interfaces\PromotionReponsitoryInterface as PromotionReponsitory;
 use App\Repositories\Interfaces\AttributeReponsitoryInterface as AttributeReponsitory;
 use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface as AttributeCatalogueReponsitory;
+// use App\Repositories\Interfaces\OrderReponsitoryInterface as OrderReponsitory;
 
 
 use Illuminate\Pagination\Paginator;
@@ -34,8 +35,9 @@ use Ramsey\Uuid\Uuid;
  */
 class OrderService extends BaseService implements OrderServiceInterface
 {
-    const PATH_UPLOAD = 'Orders';
 
+    const PATH_UPLOAD = 'Orders';
+    protected $model;
     protected $productReponsitory;
     protected $orderReponsitory;
     protected $routerReponsitory;
@@ -47,6 +49,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     protected $ProductCatalogueService;
 
     public function __construct(
+        Order $model,
         ProductReponsitory $productReponsitory,
         OrderRepository $orderReponsitory,
         // RouterReponsitory $routerReponsitory,
@@ -57,6 +60,7 @@ class OrderService extends BaseService implements OrderServiceInterface
         AttributeCatalogueReponsitory $AttributeCatalogueReponsitory,
         ProductCatalogueService $ProductCatalogueService,
     ) {
+        $this->model = $model;
         $this->productReponsitory = $productReponsitory;
         $this->orderReponsitory = $orderReponsitory;
         // $this->productVariantLanguageReponsitory = $productVariantLanguageReponsitory;
@@ -741,6 +745,48 @@ class OrderService extends BaseService implements OrderServiceInterface
         return $query;
     }
 
+
+    public function orderStatistic()
+    {
+        $month = now()->month;
+        $year = now()->year;
+        $previousMoth = ($month == 1) ? 12 : $month - 1;
+        $previousYear = ($month == 1) ? $year - 1 : $year;
+
+        $orderCurrentMonth = $this->orderReponsitory->getOrderByTime($month, $year, $previousMoth, $previousYear);
+        $orderPreviousMonth = $this->orderReponsitory->getOrderByTime($previousMoth, $previousYear);
+        return [
+            'orderCurrentMonth' => $orderCurrentMonth,
+            'orderPreviousMonth' => $orderPreviousMonth,
+            'grow' => $this->growth($orderCurrentMonth, $orderPreviousMonth),
+            'totalOrders' => $this->orderReponsitory->getTotalOrders(),
+            'totalCancelOrders' => $this->orderReponsitory->getCancelOrders(),
+            'revenueOrders' => $this->orderReponsitory->revenueOrders(),
+            // 'revenueChart' => $this->convaertRevenueChartData($this->orderReponsitory->revenueByYear($year))
+        ];
+    }
+
+    private function convaertRevenueChartData($chartData, $data = 'monthly_revenue', $label = 'month', $text= 'Tháng ')
+    {
+        $newArray = [];
+        if(!is_null($chartData)) {
+            foreach ($chartData as $key => $val) {
+                $newArray['data'][] = $val->{$data};
+                $newArray['label'][] = $text.' '.$val->{$label};
+
+            }
+        }
+        return $newArray;
+    }
+
+    private function growth($currentValue, $previousValue)
+    {
+        $division = ($previousValue == 0) ? 1 : $previousValue;
+        $grow = ($currentValue - $previousValue) / $division * 100;
+
+        return number_format($grow, 1);
+    }
+
     private function productCatalogueQuery($request)
     {
         $productCatalogueId = $request->input('productCatalogueId');
@@ -766,6 +812,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         return $query;
     }
+
 
     private function paginateSelect()
     {
