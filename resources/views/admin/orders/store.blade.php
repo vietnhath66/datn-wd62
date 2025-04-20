@@ -63,6 +63,9 @@
                                             <option value="processing"
                                                 {{ $order->status == 'processing' ? 'selected' : '' }}>Đang xử lý
                                             </option>
+                                            <option value="confirm" {{ $order->status == 'confirm' ? 'selected' : '' }}>
+                                                Đã xác nhận
+                                            </option>
                                             {{-- <option value="Đang giao hàng" {{ $order->status == 'Đang giao hàng' ? 'selected' : '' }}>Đang giao hàng</option> --}}
                                             <option value="completed"
                                                 {{ $order->status == 'completed' ? 'selected' : '' }}>Đã giao</option>

@@ -186,22 +186,28 @@
                                             => '<span class="badge custom-badge custom-badge-secondary">Chưa hoàn tất đơn hàng</span>',
                                         'processing'
                                             => '<span class="badge custom-badge custom-badge-warning">Đang xử lý</span>',
+                                        'confirm'
+                                            => '<span class="badge custom-badge custom-badge-warning">Đã xác nhận</span>',
+                                        'shipping'
+                                            => '<span class="badge custom-badge custom-badge-warning">Đang vận chuyển</span>',
                                         'completed'
-                                            => '<span class="badge custom-badge custom-badge-success">Đã giao</span>',
+                                            => '<span class="badge custom-badge custom-badge-success">Đã hoàn thành</span>',
                                         'cancelled'
                                             => '<span class="badge custom-badge custom-badge-danger">Đã hủy</span>',
+                                        'refunded'
+                                            => '<span class="badge custom-badge custom-badge-danger">Đã hoàn lại</span>',
+                                        'failed'
+                                            => '<span class="badge custom-badge custom-badge-danger">Giao thất bại</span>',
                                         default => '<span class="badge bg-light text-dark">' .
                                             ucfirst($order->status ?? 'N/A') .
                                             '</span>',
                                     };
 
                                     // Định dạng Trạng thái thanh toán (Ví dụ)
-                                    $paymentText = match (strtolower($order->payment_status ?? '')) {
+                                    $paymentText = match (strtolower($order->payment_method ?? '')) {
                                         'cod' => 'COD',
-                                        'wallet' => 'Ví điện tử',
-                                        'paid' => 'Đã thanh toán',
-                                        'pending' => 'Chờ thanh toán',
-                                        default => ucfirst($order->payment_status ?? 'N/A'),
+                                        'wallet' => 'Thanh toán MOMO',
+                                        default => ucfirst($order->payment_method ?? 'N/A'),
                                     };
                                 @endphp
 

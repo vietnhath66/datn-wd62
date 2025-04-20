@@ -284,12 +284,6 @@
                 suggestionsContainer.style.display = "none";
             }
         });
-
-        document.getElementById("checkoutForm").addEventListener("submit", function(e) {
-            e.preventDefault();
-            sessionToken = crypto.randomUUID();
-            alert("Theo dõi mình để xem thêm các video công nghệ nhé!");
-        });
     </script>
 
     <script>

@@ -40,7 +40,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\AuthenticateMiddleware::class,
         'locale' => \App\Http\Middleware\SetLocale::class,
         'backend_default_locale' => \App\Http\Middleware\SetDefaultLocale::class,
+        'shipper' => \App\Http\Middleware\CheckShipperRole::class,
     ];
 }

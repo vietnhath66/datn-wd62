@@ -181,6 +181,109 @@
             border-color: #e74c3c;
         }
     </style>
+    <style>
+        /* Copy lại CSS cho .order-tracking-list, li, .tracking-icon, .tracking-content... như đã cung cấp trước đó */
+        .order-tracking-list {
+            list-style: none;
+            padding: 0;
+            position: relative;
+            margin-left: 30px;
+        }
+
+        .order-tracking-list:before {
+            content: '';
+            position: absolute;
+            left: -21px;
+            top: 5px;
+            bottom: 5px;
+            width: 2px;
+            background-color: #e9ecef;
+            z-index: 1;
+        }
+
+        .order-tracking-list li {
+            margin-bottom: 30px;
+            position: relative;
+            padding-left: 15px;
+            z-index: 2;
+        }
+
+        .order-tracking-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .order-tracking-list li .tracking-icon {
+            position: absolute;
+            left: -35px;
+            top: 0;
+            width: 30px;
+            height: 30px;
+            background-color: #e9ecef;
+            color: #adb5bd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            border: 3px solid #fff;
+            font-size: 14px;
+        }
+
+        .order-tracking-list li.completed .tracking-icon {
+            background-color: #198754;
+            color: #fff;
+        }
+
+        .order-tracking-list li.active .tracking-icon {
+            background-color: #0d6efd;
+            color: #fff;
+        }
+
+        .order-tracking-list li.ended-state.cancelled .tracking-icon,
+        .order-tracking-list li.ended-state.failed .tracking-icon,
+        .order-tracking-list li.ended-state.returned .tracking-icon,
+        .order-tracking-list li.ended-state.refunded .tracking-icon {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .order-tracking-list li.completed:not(:last-child):after {
+            content: '';
+            position: absolute;
+            left: -21px;
+            top: 15px;
+            height: calc(100% + 15px);
+            width: 2px;
+            background-color: #198754;
+            z-index: 2;
+        }
+
+        .order-tracking-list li .tracking-content {
+            padding-top: 3px;
+        }
+
+        .order-tracking-list li .tracking-title {
+            font-weight: 500;
+            display: block;
+            color: #6c757d;
+        }
+
+        .order-tracking-list li.completed .tracking-title,
+        .order-tracking-list li.active .tracking-title {
+            color: #212529;
+        }
+
+        .order-tracking-list li.ended-state .tracking-title {
+            color: #dc3545;
+        }
+
+        .order-tracking-list li .tracking-date {
+            display: block;
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-top: 3px;
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -201,33 +304,92 @@
     </div>
 
     <div class="bg0 p-t-75 p-b-85 custom-container">
+        <div style="padding-bottom: 25px">
+            <a href="{{ route('client.account.accountMyOrder') }}">Quay lại trang đơn hàng</a>
+        </div>
         {{-- Header tóm tắt đơn hàng --}}
         <div class="order-header">
+
             <div class="row">
                 @php
-                    // --- Xử lý dữ liệu để hiển thị ---
-                    $statusBadge = match (strtolower($order->status ?? '')) {
-                        'pending' => '<span>Chưa hoàn tất đơn hàng</span>',
-                        'processing' => '<span>Đang xử lý</span>',
-                        'shipped' => '<span>Đang giao</span>',
-                        'delivered', 'completed' => '<span>Đã giao</span>',
-                        'cancelled' => '<span>Đã hủy</span>',
-                        'failed' => '<span>Thất bại</span>',
-                        default => '<span>' . ucfirst($order->status ?? 'Không rõ') . '</span>',
-                    };
-                    $paymentText = match (strtolower($order->payment_status ?? '')) {
+                    // 1. Lấy các giá trị trạng thái từ đối tượng $order
+                    $currentStatus = strtolower($order->status ?? '');
+                    $currentPaymentMethod = strtolower($order->payment_method ?? ''); // <-- Lấy phương thức thanh toán
+                    $currentPaymentStatus = strtolower($order->payment_status ?? ''); // <-- Lấy trạng thái thanh toán
+
+                    // 2. Định nghĩa các nhãn (Labels)
+                    // Nhãn cho Trạng thái Đơn hàng (Order Status)
+                    $statusLabels = [
+                        'pending' => 'Chưa hoàn tất', // Có thể là 'Chờ xử lý' tùy quy trình
+                        'processing' => 'Shop đang xử lý',
+                        'confirm' => 'Shop đã xác nhận',
+                        'shipping' => 'Đang vận chuyển',
+                        'completed' => 'Giao hàng thành công',
+                        'cancelled' => 'Đã hủy',
+                        'refunded' => 'Đã hoàn trả',
+                        'failed' => 'Giao thất bại',
+                        'payment_error' => 'Lỗi thanh toán',
+                    ];
+                    // Nhãn cho Phương thức Thanh toán (Payment Method)
+                    $paymentMethodLabels = [
                         'cod' => 'COD',
-                        'wallet' => 'Ví điện tử',
-                        'paid' => 'Đã thanh toán',
+                        'wallet' => 'Thanh toán MOMO', // Hoặc 'Ví MoMo'
+                        // Thêm các phương thức khác nếu có: 'bank_transfer' => 'Chuyển khoản NH', ...
+                    ];
+                    // Nhãn cho Trạng thái Thanh toán (Payment Status)
+                    $paymentStatusLabels = [
                         'pending' => 'Chờ thanh toán',
-                        default => ucfirst($order->payment_status ?? 'N/A'),
-                    };
+                        'paid' => 'Đã thanh toán',
+                        'failed' => 'Thanh toán thất bại',
+                        'refunded' => 'Đã hoàn tiền', // Nếu có quy trình hoàn tiền
+                    ];
+
+                    // 3. Xác định Text hiển thị cuối cùng
+                    // Trạng thái ĐH
+                    $displayOrderStatusLabel = $statusLabels[$currentStatus] ?? ucfirst($currentStatus);
+                    // Phương thức TT
+                    $displayPaymentMethodText =
+                        $paymentMethodLabels[$currentPaymentMethod] ??
+                        ($currentPaymentMethod ? ucfirst($currentPaymentMethod) : 'Chưa chọn');
+                    // Trạng thái TT (logic đặc biệt cho COD)
+                    $displayPaymentStatusText =
+                        $paymentStatusLabels[$currentPaymentStatus] ?? ucfirst($currentPaymentStatus);
+                    if ($currentPaymentMethod === 'cod') {
+                        $displayPaymentStatusText = 'Thanh toán khi nhận hàng';
+                        // Nếu đơn COD đã ở trạng thái giao thành công/hoàn thành thì coi như đã TT
+                        if (in_array($currentStatus, ['completed', 'delivered', 'confirm'])) {
+                            $displayPaymentStatusText = 'Đã thanh toán (COD)';
+                        } elseif ($currentStatus === 'cancelled') {
+                            $displayPaymentStatusText = 'Không thanh toán (Đã hủy)';
+                        }
+                    } elseif ($currentPaymentMethod === 'wallet' && $currentStatus === 'pending') {
+                        // Hiển thị rõ hơn khi chờ thanh toán MoMo
+                        $displayPaymentStatusText = 'Chờ thanh toán MoMo';
+                    }
+
+                    // 4. Tạo HTML cho Badge trạng thái đơn hàng
+                    $badgeClass = 'bg-light text-dark'; // Mặc định
+                    if ($currentStatus === 'pending') {
+                        $badgeClass = 'bg-warning text-dark';
+                    } elseif ($currentStatus === 'processing') {
+                        $badgeClass = 'bg-info text-dark';
+                    } elseif (in_array($currentStatus, ['completed', 'confirm'])) {
+                        $badgeClass = 'bg-success';
+                    } elseif (in_array($currentStatus, ['cancelled', 'failed', 'refunded', 'payment_error'])) {
+                        $badgeClass = 'bg-danger';
+                    } elseif ($currentStatus === 'shipping') {
+                        $badgeClass = 'bg-primary';
+                    }
+                    $statusBadgeHtml =
+                        '<span class="badge ' . $badgeClass . '">' . $displayOrderStatusLabel . '</span>';
+
                     $orderCode = $order->barcode ?? 'DH' . sprintf('%03d', $order->id);
                     $finalTotalFormatted = number_format($order->total ?? 0, 0, ',', '.') . ' VNĐ';
                     $orderDate = optional($order->created_at)->format('H:i d/m/Y') ?? 'N/A';
                     $customerName = $order->name ?? (optional($order->user)->name ?? 'N/A'); // Ưu tiên tên trên order, nếu không có lấy từ user
                     $customerEmail = $order->email ?? (optional($order->user)->email ?? 'N/A');
                 @endphp
+
                 <div class="col-lg-2 col-md-4 col-sm-6"> {{-- Sử dụng col-lg để tốt hơn trên màn hình lớn --}}
                     <div class="order-info">
                         <div class="status-label">Mã đơn hàng</div>
@@ -243,7 +405,7 @@
                 <div class="col-lg-2 col-md-4 col-sm-6">
                     <div class="order-info">
                         <div class="status-label">Phương thức thanh toán</div>
-                        <div>{{ $paymentText }}</div>
+                        <div>{{ $displayPaymentMethodText }}</div>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-6">
@@ -255,7 +417,7 @@
                 <div class="col-lg-2 col-md-4 col-sm-6">
                     <div class="order-info">
                         <div class="status-label">Trạng thái ĐH</div>
-                        <div>{!! $statusBadge !!}</div>
+                        <div>{{ $displayOrderStatusLabel }}</div>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-6">
@@ -266,6 +428,7 @@
                 </div>
             </div>
         </div>
+
 
         {{-- Phần Chi tiết và Thông tin giao hàng/thanh toán --}}
         <div class="order-details">
@@ -398,6 +561,199 @@
                     </div>
                 </div>
 
+                {{-- Theo dõi đơn hàng --}}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light py-3">
+                        <h6 class="m-0 font-weight-bold text-info"><i class="fas fa-route mr-2"></i> Theo dõi đơn hàng</h6>
+                    </div>
+                    <div class="card-body">
+                        @php
+                            // 1. Định nghĩa các trạng thái chính trong quy trình thành công
+                            // Thứ tự này quan trọng để xác định tiến trình
+                            $statuses = ['processing', 'confirm', 'shipping', 'completed'];
+
+                            // 2. Nhãn Tiếng Việt (từ danh sách bạn cung cấp)
+                            $statusLabels = [
+                                'processing' => 'Shop đang xử lý',
+                                'confirm' => 'Shop đã xác nhận',
+                                'shipping' => 'Đang vận chuyển',
+                                'completed' => 'Giao hàng thành công',
+                                'cancelled' => 'Đã hủy',
+                                'refunded' => 'Đã hoàn trả',
+                                'failed' => 'Giao thất bại',
+                                'pending' => 'Đơn hàng chờ xử lý', // Fallback
+                            ];
+
+                            // 3. Map trạng thái với thông tin cần hiển thị thêm
+                            // Đảm bảo các cột và relationship ('confirmer', 'shipper') tồn tại và được load từ Controller
+                            $statusInfo = [
+                                'processing' => [
+                                    'timestamp_col' => null,
+                                    'user_relation' => null,
+                                    'user_label' => null,
+                                ],
+                                'confirm' => [
+                                    'timestamp_col' => 'shop_confirmed_at',
+                                    'user_relation' => 'confirmer',
+                                    'user_label' => 'Admin',
+                                ],
+                                'shipping' => [
+                                    'timestamp_col' => 'accepted_at',
+                                    'user_relation' => 'shipper',
+                                    'user_label' => 'Shipper',
+                                ],
+                                'completed' => [
+                                    'timestamp_col' => 'delivered_at',
+                                    'user_relation' => null,
+                                    'user_label' => null,
+                                ],
+                                'cancelled' => [
+                                    'timestamp_col' => 'cancelled_at',
+                                    'user_relation' => null,
+                                    'user_label' => null,
+                                ],
+                                'refunded' => [
+                                    'timestamp_col' => 'refunded_at',
+                                    'user_relation' => null,
+                                    'user_label' => null,
+                                ],
+                                'failed' => [
+                                    'timestamp_col' => 'failed_at',
+                                    'user_relation' => null,
+                                    'user_label' => null,
+                                ],
+                            ];
+
+                            // 4. Xác định trạng thái hiện tại và tiến trình
+                            $currentStatus = strtolower($order->status ?? '');
+                            $endedStatuses = ['completed', 'cancelled', 'refunded', 'failed'];
+                            $isEndedState = in_array($currentStatus, $endedStatuses);
+                            $isCompletedSuccess = $currentStatus === 'completed';
+
+                            $statusOrder = array_flip($statuses);
+                            $currentLogicalLevel = $statusOrder[$currentStatus] ?? -1;
+
+                        @endphp
+
+                        <ul class="order-tracking-list">
+                            {{-- Lặp qua các trạng thái chính của quy trình thành công --}}
+                            @foreach ($statuses as $index => $statusKey)
+                                @php
+                                    // Bước này hoàn thành nếu level hiện tại >= level của bước này HOẶC đơn hàng đã completed thành công
+                                    $isCompleted =
+                                        ($currentLogicalLevel !== -1 && $currentLogicalLevel >= $index) ||
+                                        $isCompletedSuccess;
+                                    // Bước này active nếu là status hiện tại VÀ chưa kết thúc
+                                    $isActive = $currentStatus === $statusKey && !$isEndedState;
+
+                                    $info = $statusInfo[$statusKey] ?? null;
+                                    $timestamp =
+                                        $info && $info['timestamp_col'] ? $order->{$info['timestamp_col']} : null;
+                                    $userName = null;
+                                    $userLabel = '';
+                                    // Lấy tên người thực hiện NẾU bước đã hoàn thành và có thông tin relationship
+                                    if ($info && $info['user_relation'] && $isCompleted) {
+                                        $relatedUser = $order->{$info['user_relation']}; // $order->confirmer, $order->shipper
+                                        $userName = optional($relatedUser)->name;
+                                        $userLabel = $info['user_label'] ?? '';
+                                    }
+
+                                    // if ($statusKey === 'confirm' || $statusKey === 'shipping') {
+                                    //     // Dump các giá trị quan trọng cho bước 'confirm' và 'shipping'
+                                    //     dump([
+                                    //         'DEBUG for status' => $statusKey,
+                                    //         'isCompleted?' => $isCompleted,
+                                    //         'isActive?' => $isActive,
+                                    //         'Timestamp?' => optional($timestamp)->format('Y-m-d H:i:s'), // Hiển thị rõ timestamp
+                                    //         'User Naome?' => $userName, // <<-- Xem giá trị này là gì?
+                                    //         'User Label?' => $userLabel, // <<-- Xem giá trị này là gì?
+                                    //     ]);
+                                    // }
+
+                                @endphp
+                                {{-- Thêm class completed/active --}}
+                                <li class="{{ $isCompleted ? 'completed' : '' }} {{ $isActive ? 'active' : '' }}">
+                                    <div class="tracking-icon">
+                                        {{-- Icons --}}
+                                        @if ($statusKey === 'processing')
+                                            <i class="fas fa-cogs"></i>
+                                        @elseif($statusKey === 'confirm')
+                                            <i class="fas fa-user-check"></i>
+                                        @elseif($statusKey === 'shipping')
+                                            <i class="fas fa-truck"></i>
+                                        @elseif($statusKey === 'completed')
+                                            <i class="fas fa-check-circle"></i>
+                                        @endif
+                                    </div>
+                                    <div class="tracking-content">
+                                        <span
+                                            class="tracking-title">{{ $statusLabels[$statusKey] ?? ucfirst($statusKey) }}</span>
+                                        {{-- Hiển thị timestamp & user nếu có và bước đã hoàn thành --}}
+                                        @if ($isCompleted && ($timestamp || $userName))
+                                            <span class="tracking-date">
+                                                @if ($timestamp)
+                                                    {{ optional($timestamp)->format('H:i d/m/Y') }}
+                                                @endif
+                                                {{-- Hiển thị tên người thực hiện nếu có --}}
+                                                @if ($userName && $userLabel)
+                                                    <br> <span class="text-muted" style="font-size: 0.9em;">
+                                                        {{ $userLabel }}: {{ $userName }}</span>
+                                                @elseif($userName)
+                                                    <span class="text-muted" style="font-size: 0.9em;"> (bởi
+                                                        {{ $userName }})</span>
+                                                    {{-- @php dump("Đang trong elseif - userName:", $userName); @endphp --}}
+                                                    {{-- Hiển thị thêm lý do nữa, đang không hiển thị được $userName trong elseif này --}}
+                                                @endif
+                                                @if ($statusKey === 'completed' && $isCompleted && $order->note)
+                                                    <small style="font-size: 12px" class="d-block text-muted mt-1">Lý do:
+                                                        {{ e($order->note) }}</small>
+                                                @endif
+                                            </span>
+                                        @endif
+                                    </div>
+                                </li>
+                            @endforeach
+
+                            {{-- Xử lý hiển thị các trạng thái KẾT THÚC TIÊU CỰC (cancelled, failed, refunded) --}}
+                            @if ($isEndedState && $currentStatus !== 'completed')
+                                @php
+                                    $finalStatusLabel = $statusLabels[$currentStatus] ?? ucfirst($currentStatus);
+                                    $finalIcon = match ($currentStatus) {
+                                        'cancelled' => 'fas fa-times-circle',
+                                        'failed' => 'fas fa-exclamation-circle',
+                                        'refunded' => 'fas fa-undo',
+                                        default => 'fas fa-info-circle',
+                                    };
+                                    // Lấy timestamp tương ứng cho trạng thái kết thúc tiêu cực
+                                    $finalTimestampValue =
+                                        $statusInfo[$currentStatus]['timestamp_col'] ?? null
+                                            ? $order->{$statusInfo[$currentStatus]['timestamp_col']}
+                                            : $order->updated_at;
+                                    $finalColorClass = 'ended-state ' . $currentStatus; // Class để style màu đỏ ví dụ
+                                @endphp
+                                {{-- Hiển thị trạng thái kết thúc tiêu cực --}}
+                                <li class="{{ $finalColorClass }} active"> {{-- Luôn active để làm nổi bật --}}
+                                    <div class="tracking-icon"><i class="{{ $finalIcon }}"></i></div>
+                                    <div class="tracking-content">
+                                        <span class="tracking-title">{{ $finalStatusLabel }}</span>
+                                        @if ($finalTimestampValue)
+                                            <span
+                                                class="tracking-date">{{ optional($finalTimestampValue)->format('H:i d/m/Y') }}</span>
+                                        @endif
+                                        {{-- Hiển thị Lý do/Ghi chú --}}
+                                        @if ($order->note)
+                                            <small class="d-block text-muted mt-1">Lý do: {{ e($order->note) }}</small>
+                                        @else
+                                            {{-- Có thể hiển thị dòng này nếu muốn rõ ràng là không có ghi chú --}}
+                                            {{-- <small class="d-block text-muted mt-1">Lý do: (Không có ghi chú)</small> --}}
+                                        @endif
+                                    </div>
+                                </li>
+                            @endif
+                        </ul>
+                    </div>
+                </div>
+
             </div> {{-- Kết thúc Cột Trái --}}
 
             {{-- Cột Phải: Thông tin Thanh toán và Vận chuyển --}}
@@ -412,12 +768,11 @@
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Phương thức</span>
-                                <span class="info-value">{{ $paymentText }}</span>
+                                <span class="info-value">{{ $displayPaymentMethodText }}</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Trạng thái TT</span>
-                                <span
-                                    class="info-value">{{ $paymentText == 'COD' ? 'Thanh toán khi nhận hàng' : ($order->payment_status == 'wallet' ? 'Đã thanh toán' : 'Chờ thanh toán') }}</span>
+                                <span class="info-value">{{ $displayPaymentStatusText }}</span>
                             </div>
                         </div>
                     </div>
@@ -460,9 +815,7 @@
 
                     {{-- === THÊM NÚT TIẾP TỤC THANH TOÁN === --}}
                     {{-- Chỉ hiển thị khi đơn hàng 'pending' VÀ thanh toán không phải COD VÀ chưa 'paid' --}}
-                    @if (strtolower($order->status ?? '') === 'pending' &&
-                            strtolower($order->payment_status ?? '') !== 'cod' &&
-                            strtolower($order->payment_status ?? '') === 'wallet')
+                    @if ($currentStatus === 'pending' && $currentPaymentStatus !== 'cod' && $currentPaymentStatus !== 'paid')
                         {{-- Nút này sẽ trỏ đến một route mới để xử lý việc tạo lại yêu cầu thanh toán --}}
                         {{-- Ví dụ sử dụng thẻ <a> nếu route là GET --}}
                         {{-- NHỚ KIỂM TRA TÊN ROUTE 'client.order.retryPayment' --}}
@@ -481,17 +834,15 @@
                         </form>
                         --}}
                     @endif
-                    {{-- === KẾT THÚC THÊM NÚT === --}}
 
 
-                    {{-- Nút Hủy Đơn (Conditional) --}}
+                    {{-- Nút Hủy Đơn Hàng --}}
                     @if (in_array(strtolower($order->status ?? ''), ['pending', 'processing']))
-                        {{-- Form để gửi yêu cầu hủy --}}
-                        {{-- NHỚ KIỂM TRA TÊN ROUTE 'client.order.cancel' và ĐIỀN METHOD, ACTION --}}
-                        <form action="" method="POST" style="display: inline;"
+                        <form action="{{ route('client.order.cancelOrder', $order->id) }}" method="POST"
+                            style="display: inline;"
                             onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
                             @csrf
-                            @method('PUT') {{-- Hoặc POST, tùy định nghĩa route --}}
+                            @method('PUT')
                             <button type="submit" style="cursor: pointer" class="btn btn-danger">
                                 Hủy đơn hàng
                             </button>

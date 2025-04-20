@@ -15,6 +15,7 @@ use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\AttributeCatalogueController;
 use App\Http\Controllers\Backend\AttributeController;
 use App\Http\Controllers\Client\OrderController;
+use App\Http\Controllers\Client\PaymentController;
 use App\Http\Controllers\Client\PolicyController;
 use App\Http\Controllers\Shipper\ShipperController;
 use Illuminate\Support\Facades\Route;
@@ -38,11 +39,22 @@ Route::middleware('auth')->group(function () {
 
 
 // Shipper
-Route::group(['prefix' => 'shipper', 'as' => 'shipper.'], function () {
-    Route::get('list', [ShipperController::class, 'listOrderShipper'])->name('listOrderShipper');
-    Route::get('account', [ShipperController::class, 'accountShipper'])->name('accountShipper');
-    Route::get('delivered', [ShipperController::class, 'deliveredShipper'])->name('deliveredShipper');
-});
+Route::prefix('shipper')
+    ->as('shipper.')
+    ->middleware(['shipper'])
+    ->group(function () {
+        Route::get('list', [ShipperController::class, 'listOrderShipper'])->name('listOrderShipper');
+        Route::get('account', [ShipperController::class, 'accountShipper'])->name('accountShipper');
+        Route::put('account', [ShipperController::class, 'updateAccount'])->name('updateAccount');
+        Route::get('delivered', [ShipperController::class, 'deliveredShipper'])->name('deliveredShipper');
+        Route::put('delivered/{order}', [ShipperController::class, 'updateOrderStatus'])->name('updateOrderStatus');
+        Route::get('order-detail/{order}', [ShipperController::class, 'orderDetailShipper'])->name('orderDetailShipper');
+        Route::post('accept-order/{order}', [ShipperController::class, 'acceptOrder'])->name('acceptOrder');
+    });
+
+
+Route::get('/momo/payment/return', [PaymentController::class, 'momoReturn'])->name('momo.return');
+Route::post('/momo/payment/notify', [PaymentController::class, 'momoNotify'])->name('momo.notify');
 
 
 // Client
@@ -62,7 +74,6 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
         Route::get('/', [AccountController::class, 'viewAccount'])->name('viewAccount');
         Route::get('order', [AccountController::class, 'accountMyOrder'])->name('accountMyOrder');
         Route::get('order-detail/{order}', [AccountController::class, 'accountOrderDetail'])->name('accountOrderDetail');
-
     });
 
 
@@ -82,6 +93,7 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
         Route::post('complete', [OrderController::class, 'completeOrder'])->name('completeOrder');
         Route::post('apply-coupon', [OrderController::class, 'applyCoupon'])->name('applyCoupon');
         Route::get('continue-payment/{order}', [OrderController::class, 'continuePayment'])->name('continuePayment');
+        Route::put('cancel/{order}', [OrderController::class, 'cancelOrder'])->name('cancelOrder');
     });
 
 
