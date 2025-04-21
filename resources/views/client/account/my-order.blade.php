@@ -207,7 +207,7 @@
                                     $paymentText = match (strtolower($order->payment_method ?? '')) {
                                         'cod' => 'COD',
                                         'wallet' => 'Thanh toán MOMO',
-                                        default => ucfirst($order->payment_method ?? 'N/A'),
+                                        default => ucfirst($order->payment_method ?? 'Chưa chọn'),
                                     };
                                 @endphp
 

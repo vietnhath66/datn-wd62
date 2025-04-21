@@ -160,14 +160,21 @@ class OrderController extends Controller
             // 7. Cập nhật tổng tiền cuối cùng cho đơn hàng
             $order->update(['total' => $totalPrice]);
 
-            DB::commit(); // Lưu tất cả thay đổi vào database
+            if (!empty($selectedCartItemIds)) {
+                CartDetail::whereIn('id', $selectedCartItemIds)
+                    ->whereHas('cart', function ($query) use ($userId) {
+                        $query->where('user_id', $userId);
+                    })
+                    ->update(['status' => 'checkout']);
+                Log::info("Marked CartDetail IDs as 'checkout' for Order {$order->id}: " . implode(',', $selectedCartItemIds));
+            }
+
+            DB::commit();
 
             // 8. Lưu order_id vào session để chuyển sang trang xác nhận/thanh toán
             Session::put('order_id', $order->id);
-            Session::put('processed_cart_item_ids', $selectedCartItemIds);
 
             // 9. Chuyển hướng đến trang xem/xác nhận đơn hàng
-            // *** Đảm bảo tên route này ('order.viewOrder') khớp với định nghĩa trong web.php ***
             return redirect()->route('client.order.viewOrder');
 
         } catch (\Exception $e) {
@@ -221,19 +228,20 @@ class OrderController extends Controller
             // 6. Xử lý theo phương thức thanh toán
             if ($order->payment_method === 'cod') {
                 // ----- XỬ LÝ COD (Như cũ) -----
-                $order->status = 'processing'; // Chuyển sang đang xử lý
+                $order->status = 'processing';
                 $order->save();
-                if (!empty($processedCartItemIds)) {
-                    $cart = Cart::where('user_id', $order->user_id)->first();
-                    if ($cart) {
-                        CartDetail::where('cart_id', $cart->id)
-                            ->whereIn('id', $processedCartItemIds)->delete(); // <-- XÓA Ở ĐÂY
-                        Log::info("COD Order {$order->id}: Deleted CartDetail IDs: " . implode(',', $processedCartItemIds));
-                    }
+                $cart = Cart::where('user_id', $order->user_id)->first();
+
+                if ($cart) {
+                    $deletedCount = CartDetail::where('cart_id', $cart->id)
+                        ->where('status', 'checkout')
+                        ->delete();
+                    Log::info("COD Order {$order->id}: Deleted {$deletedCount} 'checkout' status CartDetail items for Cart ID {$cart->id}.");
                 }
+
                 DB::commit();
                 Session::forget('order_id');
-                Session::forget('processed_cart_item_ids');
+                // Session::forget('processed_cart_item_ids');
                 // Gửi email COD?
                 return redirect()->route('client.account.accountMyOrder')->with('success', 'Đơn hàng đã được đặt thành công! Vui lòng chờ admin xác nhận.'); // Check route name
 
@@ -269,7 +277,7 @@ class OrderController extends Controller
                 $redirectUrl = route($returnRouteName);
                 // $ipnUrl = route($notifyRouteName);
                 // --- Thay đổi TẠM THỜI cho testing ---
-                $ngrokForwardingUrl = "https://53c6-2001-ee0-40e1-45a5-ad1f-7ffc-3827-8564.ngrok-free.app"; // <<-- DÁN URL NGROK HTTPS CỦA BẠN VÀO ĐÂY
+                $ngrokForwardingUrl = "https://cc96-2001-ee0-40e1-45a5-59b-8ec7-6975-82f.ngrok-free.app"; // <<-- DÁN URL NGROK HTTPS CỦA BẠN VÀO ĐÂY
                 $ipnRouteUri = "/momo/payment/notify"; // <<-- Đảm bảo đây là URI bạn định nghĩa trong routes/web.php
                 $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
                 Log::info('Using temporary Ngrok IPN URL: ' . $ipnUrl); // Log để kiểm tra
@@ -475,7 +483,7 @@ class OrderController extends Controller
         $allowedPaymentStatuses = ['pending', 'failed'];
         if ($orderStatus !== 'pending' || !in_array($paymentStatus, $allowedPaymentStatuses) || $paymentMethod !== 'wallet') {
             // Kiểm tra lại tên route trang chi tiết đơn hàng client
-            return redirect()->route('client.order.detail', $order->id)
+            return redirect()->route('client.account.accountOrderDetail', $order->id)
                 ->with('warning', 'Đơn hàng này không thể tiếp tục thanh toán.');
         }
 
@@ -501,7 +509,7 @@ class OrderController extends Controller
             $redirectUrl = route($returnRouteName);
             // $ipnUrl = route($notifyRouteName);
             // --- Thay đổi TẠM THỜI cho testing ---
-            $ngrokForwardingUrl = "https://53c6-2001-ee0-40e1-45a5-ad1f-7ffc-3827-8564.ngrok-free.app"; // <<-- DÁN URL NGROK HTTPS CỦA BẠN VÀO ĐÂY
+            $ngrokForwardingUrl = "https://cc96-2001-ee0-40e1-45a5-59b-8ec7-6975-82f.ngrok-free.app"; // <<-- DÁN URL NGROK HTTPS CỦA BẠN VÀO ĐÂY
             $ipnRouteUri = "/momo/payment/notify"; // <<-- Đảm bảo đây là URI bạn định nghĩa trong routes/web.php
             $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
             Log::info('Using temporary Ngrok IPN URL: ' . $ipnUrl); // Log để kiểm tra
@@ -553,7 +561,7 @@ class OrderController extends Controller
             return redirect()->route('client.account.accountOrderDetail', $order->id)
                 ->with('error', 'Đã xảy ra lỗi khi thử lại thanh toán: ' . $e->getMessage());
         }
-    } // Kết thúc continuePayment
+    }
 
 
     public function cancelOrder(Order $order, Request $request)

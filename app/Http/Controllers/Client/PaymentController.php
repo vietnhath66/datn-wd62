@@ -16,7 +16,7 @@ class PaymentController extends Controller
     {
         Log::info('MoMo Return Request:', $request->all());
 
-        $orderIdFromMomo = $request->query('orderId'); 
+        $orderIdFromMomo = $request->query('orderId');
         $orderIdParts = explode('_', $orderIdFromMomo);
         $originalOrderId = $orderIdParts[0] ?? null;
 
@@ -27,9 +27,9 @@ class PaymentController extends Controller
                     'momo_return_data' => $request->query(),
                     'success',
                     'Đơn hàng đã được đặt thành công! Vui lòng chờ admin xác nhận.'
-                ]); 
+                ]);
         } else {
-            
+
             return redirect()->route('client.account.accountMyOrder')->with([
                 'momo_return_data',
                 $request->query(),
@@ -153,26 +153,14 @@ class PaymentController extends Controller
                 $order->paid_at = now();         // <-- Lưu thời gian thanh toán (cần cột này)
                 $order->payment_transaction_id = $transId; // <-- Lưu mã GD MoMo (cần cột này)
 
-                // Lấy và xóa danh sách ID item trong giỏ hàng đã lưu tạm
-                $processedCartItemIdsJson = $order->temporary_cart_ids; // <-- Cần cột này
-                $order->temporary_cart_ids = null; // Xóa đi sau khi dùng
                 $order->save();
 
-                // Xóa CartDetail tương ứng
-                if (!empty($processedCartItemIdsJson)) {
-                    $processedCartItemIds = json_decode($processedCartItemIdsJson, true);
-                    if (is_array($processedCartItemIds) && !empty($processedCartItemIds)) {
-                        $cart = Cart::where('user_id', $order->user_id)->first();
-                        if ($cart) {
-                            CartDetail::where('cart_id', $cart->id)
-                                ->whereIn('id', $processedCartItemIds)->delete(); // <-- XÓA CART ITEM
-                            Log::info("MoMo IPN Success: Deleted CartDetail IDs for Order {$order->id}: " . implode(',', $processedCartItemIds));
-                        }
-                    } else {
-                        Log::warning("MoMo IPN: Invalid JSON in temporary_cart_ids for Order {$order->id}.");
-                    }
-                } else {
-                    Log::warning("MoMo IPN: No temporary_cart_ids found on Order {$order->id}.");
+                $cart = Cart::where('user_id', $order->user_id)->first();
+                if ($cart) {
+                    $deletedCount = CartDetail::where('cart_id', $cart->id)
+                        ->where('status', 'checkout')
+                        ->delete();
+                    Log::info("MoMo IPN Success Order {$order->id}: Deleted {$deletedCount} 'checkout' status CartDetail items for Cart ID {$cart->id}.");
                 }
 
                 DB::commit();

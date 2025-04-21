@@ -18,36 +18,41 @@ class CartController extends Controller
     public function viewCart()
     {
         if (!Auth::check()) {
-            return redirect()->route('login')->with('warning', 'Vui lòng đăng nhập để xem giỏ hàng.');
+            return redirect()->route('login')->with('warning', 'Vui lòng đăng nhập để xem giỏ hàng.'); // CHECK NAME
         }
 
-        $cart = null;
+        $userId = Auth::id();
+        // Lấy đối tượng Cart chính
+        $cart = Cart::where('user_id', $userId)->first();
+
+        $activeCartItems = collect(); // Khởi tạo collection rỗng
         $cartTotal = 0;
 
-
-        if (Auth::check()) {
-            $userId = Auth::id();
-            $cart = Cart::where('user_id', $userId)
-                ->with([
-                    'items.productVariant' => function ($query) {
-                        // $query->select('id', 'product_id', 'price', ...);
-                    },
-                    'items.productVariant.products' => function ($query) {
-                        // $query->select('id', 'name', 'image', ...);
-                    }
+        if ($cart) {
+            // --- TRUY VẤN RIÊNG CÁC ITEM CÓ STATUS = 'active' ---
+            $activeCartItems = CartDetail::where('cart_id', $cart->id)
+                ->where('status', 'active') // <-- Lọc theo status
+                ->with([ // Load relationship cần thiết
+                    'productVariant' => function ($query) {
+                        $query->select(/*...*/);
+                    }, // Chọn cột cần thiết
+                    'productVariant.products:id,name,image',
+                    'product:id,name,image'
                 ])
-                ->first();
+                ->get();
+            // --- KẾT THÚC TRUY VẤN RIÊNG ---
 
-            if ($cart) {
-                foreach ($cart->items as $item) {
-                    $cartTotal += $item->quantity * $item->price;
-                }
-            }
+            // Tính tổng tiền chỉ dựa trên các item active
+            $cartTotal = $activeCartItems->sum(function ($item) {
+                return ($item->quantity ?? 0) * ($item->price ?? 0);
+            });
         }
 
+        // Truyền cả $cart và danh sách item đã lọc $activeCartItems sang view
         return view('client.cart.cart', [
-            'cart' => $cart,
-            'cartTotal' => $cartTotal,
+            'cart' => $cart,                 // <-- Giữ lại biến $cart
+            'cartItems' => $activeCartItems, // <-- Truyền danh sách item đã lọc (dùng tên $cartItems trong view)
+            'cartTotal' => $cartTotal,       // <-- Tổng tiền đã lọc
         ]);
     }
 
