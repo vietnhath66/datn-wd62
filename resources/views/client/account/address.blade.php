@@ -325,17 +325,17 @@
 <script>
     // Hàm hiển thị toast
     function showToast(id, message) {
-    const snackbar = document.getElementById('snackbar');
-    if (!snackbar) return;
+        const snackbar = document.getElementById('snackbar');
+        if (!snackbar) return;
 
-    snackbar.textContent = message;
-    snackbar.className = 'snackbar show';
+        snackbar.textContent = message;
+        snackbar.className = 'snackbar show';
 
-    // Ẩn sau 3 giây
-    setTimeout(() => {
-        snackbar.className = 'snackbar';
-    }, 3000);
-}
+        // Ẩn sau 3 giây
+        setTimeout(() => {
+            snackbar.className = 'snackbar';
+        }, 3000);
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
 
