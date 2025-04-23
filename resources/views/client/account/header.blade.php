@@ -3,8 +3,8 @@
         <i class="fas fa-user"></i>
     </div>
     <div class="details">
-        <div class="name">Nguyen Viet Nhat</div>
-        <div class="role">Super Admin</div>
+        <div class="name">{{ Auth::user()->name }}</div>
+        <div class="role">{{ Auth::user()->roles->name ?? 'Không xác định' }}</div>
         <div class="stats">
             <div class="stat-item">
                 <i class="fas fa-shopping-cart"></i> 0 VND

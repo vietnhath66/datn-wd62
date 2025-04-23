@@ -270,62 +270,119 @@
     }
 </style>
 
+<div id="snackbar" class="snackbar"></div>
 <!-- Form Cập Nhật Địa Chỉ -->
 <div class="address-section">
     <div class="section-title">Cập nhật địa chỉ</div>
     <div class="section-desc">
         Thêm hoặc chỉnh sửa địa chỉ giao hàng của bạn.
     </div>
-    <form id="addressForm" novalidate>
+
+
+    <form id="addressForm" method="POST" action="{{ route('address.store') }}">
+        @csrf
         <div class="form-group">
-            <label>Họ và tên</label>
-            <input type="text" id="fullName" name="fullName" value="Nguyen Viet Nhat" required pattern="[A-Za-z\s]+"
-                minlength="2" />
-            <div class="error" id="fullNameError">
-                Tên chỉ được chứa chữ cái và khoảng trắng, tối thiểu 2 ký tự.
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Số điện thoại</label>
-            <input type="tel" id="phone" name="phone" value="+855 8456 555 23" required pattern="\+[0-9\s]+"
-                minlength="10" />
-            <div class="error" id="phoneError">
-                Số điện thoại phải bắt đầu bằng "+" và chỉ chứa số, tối thiểu 10
-                ký tự.
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Địa chỉ</label>
+            <label>Địa chỉ cụ thể</label>
             <input type="text" id="address" name="address" required minlength="5" />
             <div class="error" id="addressError">
                 Địa chỉ phải có ít nhất 5 ký tự.
             </div>
         </div>
         <div class="form-group">
-            <label>Tỉnh/Thành phố</label>
-            <select id="city" name="city" required>
-                <option value="">Chọn tỉnh/thành phố</option>
-                <option value="hanoi">Hà Nội</option>
-                <option value="hcm">TP. Hồ Chí Minh</option>
+            <label>Phường/Xã</label>
+            <select id="ward" name="neighborhood" required>
+                <option value="">Chọn phường/xã</option>
+                @foreach ($wards as $ward)
+                    <option value="{{ $ward->name }}">{{ $ward->name }}</option>
+                @endforeach
             </select>
-            <div class="error" id="cityError">
-                Vui lòng chọn tỉnh/thành phố.
-            </div>
         </div>
         <div class="form-group">
             <label>Quận/Huyện</label>
             <select id="district" name="district" required>
                 <option value="">Chọn quận/huyện</option>
-                <option value="q1">Quận 1</option>
-                <option value="badinh">Quận Ba Đình</option>
+                @foreach ($districts as $district)
+                    <option value="{{ $district->name }}">{{ $district->name }}</option>
+                @endforeach
             </select>
-            <div class="error" id="districtError">
-                Vui lòng chọn quận/huyện.
-            </div>
+        </div>
+        <div class="form-group">
+            <label>Tỉnh/Thành phố</label>
+            <select id="city" name="city" required>
+                <option value="">Chọn tỉnh/thành phố</option>
+                @foreach ($provinces as $province)
+                    <option value="{{ $province->name }}">{{ $province->name }}</option>
+                @endforeach
+            </select>
         </div>
         <div class="form-actions">
             <button type="button" class="cancel-btn">Hủy</button>
             <button type="submit" class="save-btn">Lưu thay đổi</button>
         </div>
+
     </form>
 </div>
+<script>
+    // Hàm hiển thị toast
+    function showToast(id, message) {
+        const snackbar = document.getElementById('snackbar');
+        if (!snackbar) return;
+
+        snackbar.textContent = message;
+        snackbar.className = 'snackbar show';
+
+        // Ẩn sau 3 giây
+        setTimeout(() => {
+            snackbar.className = 'snackbar';
+        }, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const form = document.getElementById('addressForm');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+
+            // Xóa lỗi cũ (nếu có)
+            form.querySelectorAll('.error').forEach(el => {
+                el.style.display = 'none';
+                el.textContent = '';
+            });
+
+            fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                    },
+                    body: formData
+                })
+                .then(async response => {
+                    let data;
+                    try {
+                        data = await response.json();
+
+                    } catch (err) {
+
+                        return showToast('error-toast', 'Lỗi xử lý phản hồi từ server.');
+                    }
+                    if (response.ok) {
+                        showToast('success-toast', data.message || 'Địa chỉ đã được cập nhật!');
+                        form.reset(); // Xóa form sau khi thêm thành công (nếu muốn)
+                    } else if (response.status === 422) {
+                        showToast('error-toast', 'Vui lòng kiểm tra lại thông tin.');
+                    } else {
+                        showToast('error-toast', data.message ||
+                            'Đã xảy ra lỗi. Vui lòng thử lại.');
+                    }
+                })
+                .catch(err => {
+                    showToast('error-toast', 'Không thể gửi yêu cầu.');
+                });
+        });
+    });
+</script>

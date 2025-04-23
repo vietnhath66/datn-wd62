@@ -17,15 +17,15 @@ use App\Http\Controllers\Backend\AttributeController;
 use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\Client\PaymentController;
 use App\Http\Controllers\Client\PolicyController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\Shipper\ShipperController;
+use App\Http\Controllers\UserController1;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\ContactController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Client\ProductsController;
-
-
-
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -248,3 +248,8 @@ Route::get('admin/logout', [AuthController::class, 'logout'])->name('auth.logout
 
 require __DIR__ . '/auth.php';
 
+Route::get('/account/password/view', function () {
+    return view('client.account.pass');})->name('account.password.view');
+    Route::post('/account/update', [UserController1::class, 'updateProfile'])->name('update.profile');
+    Route::post('/address/store', [App\Http\Controllers\AddressController::class, 'store'])->name('address.store');
+    Route::get('/coupons', [CouponController::class, 'index'])->name('coupons.index');
