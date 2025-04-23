@@ -261,16 +261,6 @@ function filterByColorAndSize() {
     checkIfEmpty();
 }
 
-    $('.js-show-search').on('click',function(){
-        $(this).toggleClass('show-search');
-        $('.panel-search').slideToggle(400);
-
-        if($('.js-show-filter').hasClass('show-filter')) {
-            $('.js-show-filter').removeClass('show-filter');
-            $('.panel-filter').slideUp(400);
-        }
-    });
-
         // 👉 Hàm kiểm tra nếu không có sản phẩm nào khớp
         function checkIfEmpty() {
             $grid.isotope('once', 'arrangeComplete', function (filteredItems) {

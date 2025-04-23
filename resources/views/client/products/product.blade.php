@@ -52,87 +52,31 @@
 
 
                         <div class="mtext-102 cl2 p-b-15">Sắp xếp theo</div>
-
-
                         <ul>
                             <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    Default
-                                </a>
+                                <button class="filter-btn stext-106 trans-04" data-sort="name_asc">
+                                    Thứ tự bảng chữ cái (từ A-Z)
+                                </button>
                             </li>
-
                             <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    Popularity
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    Average rating
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-                                    Newness
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    Price: Low to High
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    Price: High to Low
-                                </a>
+                                <button class="filter-btn stext-106 trans-04" data-sort="name_desc">
+                                    Thứ tự bảng chữ cái (từ Z-A)
+                                </button>
                             </li>
                         </ul>
                     </div>
-
                     <div class="filter-col2 p-r-15 p-b-27">
-
                         <div class="mtext-102 cl2 p-b-15">Giá</div>
-
-
                         <ul>
                             <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-                                    All
-                                </a>
+                                <button class="filter-btn stext-106 trans-04" data-sort="price_asc">
+                                    Giá (từ thấp đến cao)
+                                </button>
                             </li>
-
                             <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    $0.00 - $50.00
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    $50.00 - $100.00
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    $100.00 - $150.00
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    $150.00 - $200.00
-                                </a>
-                            </li>
-
-                            <li class="p-b-6">
-                                <a href="#" class="filter-link stext-106 trans-04">
-                                    $200.00+
-                                </a>
+                                <button class="filter-btn stext-106 trans-04" data-sort="price_desc">
+                                    Giá (từ cao đến thấp)
+                                </button>
                             </li>
                         </ul>
                     </div>
@@ -171,7 +115,7 @@
             @foreach ($products as $product)
                 @foreach ($product->variants as $variant)
                     @php
-                        $ids = explode(',', $variant->code);
+                        $ids = explode(',',  $variant->code);
                         $size_id = trim($ids[0] ?? '');
                         $color_id = trim($ids[1] ?? '');
                     @endphp
@@ -179,10 +123,10 @@
 
                     <div
                         class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women
-                        color-{{ Str::slug($variant->name_variant_color) }}
-                            size-{{ Str::slug($variant->name_variant_size) }}
-                                ">
-                        {{-- size-{{ $size_id }} color-{{ $color_id }} --}}
+color-{{ Str::slug($variant->name_variant_color) }}
+     size-{{ Str::slug($variant->name_variant_size) }}
+        ">
+        {{-- size-{{ $size_id }} color-{{ $color_id }} --}}
                         <!-- Block2 -->
                         <div class="block2">
                             <div class="block2-pic hov-img0">
@@ -233,3 +177,4 @@
         <!-- Load more -->
 
     </div>
+</section>
