@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Coupon;
+use App\Models\District;
 use App\Models\Order;
+use App\Models\Province;
+use App\Models\Ward;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -12,7 +16,11 @@ class AccountController extends Controller
 
     public function viewAccount()
     {
-        return view('client.master-account');
+        $coupons = Coupon::all();
+        $provinces = Province::all();
+        $districts = District::all();
+        $wards = Ward::all();
+        return view('client.master-account', compact('coupons', 'provinces', 'districts', 'wards'));
     }
 
 
