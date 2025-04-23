@@ -43,7 +43,7 @@
                         <div class="dropdown">
                             <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="{{ asset('client/images/avt.jpg') }}" alt="" class="rounded-circle"
+                                <img src="{{ asset('storage/avatars/' .  Auth::user()->avt) }}" alt="" class="rounded-circle"
                                     width="30" height="30">
                                 {{ Auth::user()->name }}
                             </button>
