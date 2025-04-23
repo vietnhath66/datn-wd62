@@ -40,7 +40,7 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     Route::get('contact', [ContactController::class, 'viewContact'])->name('viewContact');
     Route::get('search', [ProductController::class, 'viewSearch'])->name('viewSearch');
     Route::get('product/{id}', [ProductController::class, 'viewShow'])->name('viewShow');
-
+    Route::get('products', [ProductController::class, 'index'])->name('client.products.index');
 });
 
 // Admin
