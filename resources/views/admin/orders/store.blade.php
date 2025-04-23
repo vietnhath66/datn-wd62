@@ -63,14 +63,21 @@
                                             <option value="processing"
                                                 {{ $order->status == 'processing' ? 'selected' : '' }}>Đang xử lý
                                             </option>
-                                            <option value="confirm" {{ $order->status == 'confirm' ? 'selected' : '' }}>
-                                                Đã xác nhận
+                                            <option value="shipping"
+                                                {{ $order->status == 'shipping' ? 'selected' : '' }}>Đang giao hàng
                                             </option>
-                                            {{-- <option value="Đang giao hàng" {{ $order->status == 'Đang giao hàng' ? 'selected' : '' }}>Đang giao hàng</option> --}}
+                                            <option value="delivered"
+                                                {{ $order->status == 'delivered' ? 'selected' : '' }}>Đã giao
+                                            </option>
                                             <option value="completed"
-                                                {{ $order->status == 'completed' ? 'selected' : '' }}>Đã giao</option>
+                                                {{ $order->status == 'completed' ? 'selected' : '' }}>Đã hoàn tất
+                                            </option>
                                             <option value="cancelled"
-                                                {{ $order->status == 'cancelled' ? 'selected' : '' }}>Đã hủy</option>
+                                                {{ $order->status == 'cancelled' ? 'selected' : '' }}>Đã hủy
+                                            </option>
+                                            <option value="refunded"
+                                                {{ $order->status == 'refunded' ? 'selected' : '' }}>Đã hoàn lại
+                                            </option>
                                         </select>
                                         {{-- <p class="mt-1 text-sm text-slate-400 dark:text-zink-200">
                                             Code will be generated automatically

@@ -92,22 +92,32 @@
                                                 @if ($order->status == 'pending')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Chưa
-                                                        hoàn tất đơn hàng</span>
+                                                        hoàn tất</span>
                                                 @elseif($order->status == 'processing')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đang
                                                         xử lý</span>
-                                                    {{-- @elseif($order->status == 'Đang giao hàng')
+                                                @elseif($order->status == 'shipping')
                                                     <span
-                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Đang giao hàng</span> --}}
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đang
+                                                        giao hàng</span>
+                                                @elseif($order->status == 'delivered')
+                                                    <span
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đã
+                                                        giao</span>
                                                 @elseif($order->status == 'completed')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Đã
-                                                        giao</span>
+                                                        hoàn tất</span>
                                                 @elseif($order->status == 'cancelled')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Đã
                                                         hủy</span>
+                                                @endif
+                                                @if ($order->status == 'refunded')
+                                                    <span
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đã
+                                                        hoàn lại</span>
                                                 @endif
                                             </td>
                                             <td
