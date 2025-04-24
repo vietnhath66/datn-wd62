@@ -268,6 +268,32 @@
     .address-section .form-actions .cancel-btn:hover {
         background: #dfe6e9;
     }
+
+    .select2-container--default .select2-selection--single {
+    height: 50px !important; /* CHÍNH chỗ để set chiều cao */
+    padding: 10px 12px;
+    border-radius: 4px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center; /* căn giữa văn bản theo chiều dọc */
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 1.2;
+    padding-left: 0; /* tránh padding đè lên text */
+    color: #495057;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 50px !important;
+}
+
+select:disabled {
+    background-color: #f0f0f0;
+    color: #999;
+    cursor: not-allowed;
+}
 </style>
 
 <div id="snackbar" class="snackbar"></div>
@@ -286,14 +312,12 @@
             <input type="text" id="address" placeholder="Nhập địa chỉ cụ thể của bạn" name="address" required minlength="5" />
         </div>
         <div class="form-group">
-            <label>Phường/Xã</label>
-
-            <select id="ward" name="neighborhood" required>
-                <option value="">Chọn phường/xã</option>
-                @foreach ($wards as $ward)
-                    <option value="{{ $ward->name }}">{{ $ward->name }}</option>
+            <label>Tỉnh/Thành phố</label>
+            <select id="city" name="city" required>
+                <option value="">Chọn tỉnh/thành phố</option>
+                @foreach ($provinces as $province)
+                    <option value="{{ $province->name }}">{{ $province->name }}</option>
                 @endforeach
-
             </select>
         </div>
         <div class="form-group">
@@ -305,13 +329,16 @@
                 @endforeach
             </select>
         </div>
+
         <div class="form-group">
-            <label>Tỉnh/Thành phố</label>
-            <select id="city" name="city" required>
-                <option value="">Chọn tỉnh/thành phố</option>
-                @foreach ($provinces as $province)
-                    <option value="{{ $province->name }}">{{ $province->name }}</option>
+            <label>Phường/Xã</label>
+
+            <select id="ward" name="neighborhood" required>
+                <option value="">Chọn phường/xã</option>
+                @foreach ($wards as $ward)
+                    <option value="{{ $ward->name }}">{{ $ward->name }}</option>
                 @endforeach
+
             </select>
         </div>
 
@@ -383,6 +410,89 @@
                 .catch(err => {
                     showToast('error-toast', 'Không thể gửi yêu cầu.');
                 });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('#city').select2({
+            placeholder: 'Chọn tỉnh/thành phố',
+            allowClear: true,
+            width: '100%' // rất quan trọng để giữ giao diện full như form-control
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('#district').select2({
+            placeholder: 'Chọn quận/huyện',
+            allowClear: true,
+            width: '100%' // rất quan trọng để giữ giao diện full như form-control
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#ward').select2({
+            placeholder: 'Chọn phường/xã',
+            allowClear: true,
+            width: '100%' // rất quan trọng để giữ giao diện full như form-control
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('addressForm');
+
+        form.addEventListener('submit', function (e) {
+            // Đợi form submit thành công rồi reset form
+            // Nếu bạn redirect lại thì dùng đoạn này ở trang load lại
+
+            // Reset sau 500ms nếu form không redirect (AJAX hoặc không có lỗi)
+            setTimeout(() => {
+                form.reset();
+
+                // Nếu bạn dùng Select2 hoặc plugin khác thì cần reset thủ công
+                $('#city').val('').trigger('change');
+                $('#district').val('').trigger('change');
+                $('#ward').val('').trigger('change');
+            }, 500);
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const citySelect = $('#city');
+        const districtSelect = $('#district');
+        const wardSelect = $('#ward');
+
+        // Khởi tạo select2
+        citySelect.select2();
+        districtSelect.select2();
+        wardSelect.select2();
+
+        // Kiểm tra xem có giá trị không (old value)
+        const hasCity = citySelect.val() !== '';
+        const hasDistrict = districtSelect.val() !== '';
+        const hasWard = wardSelect.val() !== '';
+
+        districtSelect.prop('disabled', !hasCity);
+        wardSelect.prop('disabled', !hasDistrict);
+
+        // Khi chọn Tỉnh
+        citySelect.on('change', function () {
+            districtSelect.val('').trigger('change');
+            wardSelect.val('').trigger('change');
+
+            districtSelect.prop('disabled', !this.value);
+            wardSelect.prop('disabled', true);
+        });
+
+        // Khi chọn Quận
+        districtSelect.on('change', function () {
+            wardSelect.val('').trigger('change');
+            wardSelect.prop('disabled', !this.value);
         });
     });
 </script>
