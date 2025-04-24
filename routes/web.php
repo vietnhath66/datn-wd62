@@ -23,6 +23,7 @@ use App\Http\Controllers\UserController1;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\ContactController;
+use App\Http\Controllers\Client\ProductController as ClientProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Client\ProductsController;
 use Illuminate\Support\Facades\Auth;
@@ -63,7 +64,7 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     Route::get('home', [HomeController::class, 'viewHome'])->name('viewHome');
     Route::get('about', [AboutController::class, 'viewAbout'])->name('viewAbout');
     Route::get('contact', [ContactController::class, 'viewContact'])->name('viewContact');
-    Route::get('search', [ProductController::class, 'viewSearch'])->name('viewSearch');
+    Route::get('search', [ClientProductController::class, 'viewSearch'])->name('viewSearch');
     Route::get('product/{id}', [ProductController::class, 'viewShow'])->name('viewShow');
     Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
     Route::get('products', [ProductController::class, 'index'])->name('client.products.index');
