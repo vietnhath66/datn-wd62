@@ -12,14 +12,6 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>Chọn tệp</label>
-                <select id="fileSelect" name="fileSelect">
-                    <option value="">Chưa có tệp nào được chọn</option>
-                    <option value="file1">Tệp 1</option>
-                </select>
-                <div class="error" id="fileSelectError">Vui lòng chọn một tệp.</div>
-            </div>
-            <div class="form-group">
                 <label>Tên người dùng</label>
                 <input type="text" id="name" name="name" value="Nguyen Viet Nhat" required
                     pattern="[A-Za-z\s]+" minlength="2" />

@@ -3,38 +3,69 @@
 namespace App\Http\Controllers\Client;
 
 use App\Models\Product;
+use App\Models\ProductCatalogue;
+use App\Models\Review;
+use Auth;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
+use Log;
+use Validator;
 
 
 class ProductsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all(); // Lấy tất cả sản phẩm
-        return view('client.productss.productss', compact('products'));
+        $categories = ProductCatalogue::where('publish', 1)
+            ->where('parent_id', 0)
+            ->with([
+                'children' => function ($query) {
+                    $query->where('publish', 1)->orderBy('name', 'asc');
+                }
+            ])
+            ->orderBy('name', 'asc')
+            ->get();
+
+        $selectedCategoryId = $request->query('category');
+        $productsQuery = Product::query()->where('publish', 1);
+        $filterType = $request->query('type');
+        $selectedCategory = null;
+        $pageTitle = 'Tất Cả Sản Phẩm';
+
+        if ($selectedCategoryId && is_numeric($selectedCategoryId)) {
+            $selectedCategory = ProductCatalogue::with('parent')->find($selectedCategoryId);
+            if ($selectedCategory) {
+                $pageTitle = $selectedCategory->name;
+                $productsQuery->where('product_catalogue_id', $selectedCategoryId);
+            } else {
+                $selectedCategoryId = null;
+            }
+        }
+
+        if ($filterType === 'new') {
+            $pageTitle = 'Sản Phẩm Mới';
+            $productsQuery->orderBy('created_at', 'desc');
+        } elseif ($filterType === 'sale') {
+            $pageTitle = 'Sản Phẩm Sale';
+            $productsQuery->orderBy('created_at', 'desc');
+        } elseif ($filterType === 'trend') {
+            $pageTitle = 'Sản Phẩm Hot Trend';
+            $productsQuery->orderBy('created_at', 'desc');
+        }
+
+        $products = $productsQuery->paginate(16)->withQueryString();
+
+        return view('client.productss.productss', [
+            'products' => $products,
+            'pageTitle' => $pageTitle,
+            'categories' => $categories,
+            'selectedCategory' => $selectedCategory,
+            'selectedCategoryId' => $selectedCategoryId
+        ]);
     }
 
-    //     public function show($id)
-// {
-//     $product = Product::findOrFail($id);
 
-    //     // Lấy các biến thể của sản phẩm với color và size
-//     $variants = ProductVariant::where('product_id', $id)
-//                                 ->whereNull('deleted_at')  // Lọc các bản không bị xóa
-//                                 ->get();
-//                                 // dd($variants);
-
-    //     // Lấy tất cả màu sắc có sẵn (unique)
-//     $colors = $variants->pluck('name_variant_color')->unique();
-
-    //     // Lấy tất cả kích thước có sẵn (unique)
-//     $sizes = $variants->pluck('name_variant_size')->unique();
-
-    //     // Truyền dữ liệu vào view
-//     return view('client.productss.detailProducts', compact('product', 'variants', 'colors', 'sizes'));
-// }
     public function show($id)
     {
         $product = Product::findOrFail($id);
@@ -54,7 +85,6 @@ class ProductsController extends Controller
     }
 
 
-
     public function quickView($id)
     {
         $product = Product::findOrFail($id);
@@ -62,8 +92,57 @@ class ProductsController extends Controller
     }
 
 
+    public function reviewProduct(Request $request, Product $product)
+    {
+        $validator = Validator::make($request->all(), [
+            'rating' => ['required', 'integer', 'min:1', 'max:5'],
+            'comment' => ['nullable', 'string', 'max:1000'],
+        ], [
+            'rating.required' => 'Vui lòng chọn số sao đánh giá.',
+            'rating.integer' => 'Điểm đánh giá không hợp lệ.',
+            'rating.min' => 'Điểm đánh giá thấp nhất là 1 sao.',
+            'rating.max' => 'Điểm đánh giá cao nhất là 5 sao.',
+            'comment.string' => 'Bình luận phải là dạng văn bản.',
+            'comment.max' => 'Bình luận không được vượt quá 1000 ký tự.',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator) // <-- Đảm bảo có dòng này
+                ->withInput()
+                ->with('error_scroll', '#reviews');
+        }
 
 
+        // $existingReview = Review::where('user_id', Auth::id())
+        //     ->where('product_id', $product->id)
+        //     ->first();
+        // if ($existingReview) {
+        //     return redirect()->route('client.product.show', $product->id)
+        //         ->with('warning', 'Bạn đã đánh giá sản phẩm này rồi.');
+        // }
+
+
+        try {
+            Review::create([
+                'user_id' => Auth::id(),
+                'product_id' => $product->id,
+                'rating' => $request->input('rating'),
+                'comment' => $request->input('comment'),
+            ]);
+
+            $redirectUrl = route('client.product.show', $product->id) . '#reviews';
+
+            return redirect($redirectUrl)->with('success', 'Cảm ơn bạn đã gửi đánh giá!');
+
+        } catch (\Exception $e) {
+            Log::error("Error saving review: " . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Đã xảy ra lỗi khi gửi đánh giá. Vui lòng thử lại.')
+                ->withInput()
+                ->with('error_scroll', '#reviews');
+        }
+    }
 
 }
 

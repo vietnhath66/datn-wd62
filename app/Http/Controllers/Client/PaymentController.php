@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderPlacedMail;
 use App\Models\Cart;
 use App\Models\CartDetail;
 use App\Models\Order;
 use DB;
 use Illuminate\Http\Request;
 use Log;
+use Mail;
 
 class PaymentController extends Controller
 {
@@ -167,7 +169,14 @@ class PaymentController extends Controller
 
                 Log::info("MoMo IPN Success: Order {$order->id} finalized. Status: 'processing', Payment: 'paid'. Cart items cleared.");
 
-                // (Gửi email/thông báo ở đây)
+                // Gửi email
+                try {
+                    $order->loadMissing(['items.product', 'items.productVariant']);
+                    Mail::to($order->email)->send(new OrderPlacedMail($order));
+                    Log::info("Sent OrderPlacedMail for paid MoMo Order ID {$order->id} to {$order->email}");
+                } catch (\Exception $e) {
+                    Log::error("Failed to send OrderPlacedMail after IPN for Order ID {$order->id}: " . $e->getMessage());
+                }
 
                 // 7. Phản hồi thành công cho MoMo
                 return response()->json($this->momoIpnResponse($request, 0, "Confirm Success"));

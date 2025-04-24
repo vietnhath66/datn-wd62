@@ -1,18 +1,18 @@
 <!-- Product -->
-<div class="bg0 m-t-23 p-b-140">
+<div class="bg0 m-t-23 p-t-20 p-b-140">
     <div class="container">
-        <div class="flex-w flex-sb-m p-b-52">
+        <div class="flex-w flex-sb-m">
             {{-- <div class="flex-w flex-l-m filter-tope-group m-tb-10">
                 <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
                     All Products
                 </button>
 
                 <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women">
-                    Women
+                    Áo
                 </button>
 
                 <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
-                    Men
+                    Quần
                 </button>
 
                 <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".bag">
@@ -27,6 +27,11 @@
                     Watches
                 </button>
             </div> --}}
+            <div>
+                <h3 class="ltext-103 cl5">
+                    {{ $pageTitle ?? 'Tất Cả Sản Phẩm' }}
+                </h3>
+            </div>
             <div class="flex-w flex-l-m filter-tope-group m-tb-10">
 
             </div>
@@ -56,7 +61,6 @@
                         placeholder="Search">
                 </div>
             </div>
-
             <!-- Filter -->
             <div class="dis-none panel-filter w-full p-t-10">
                 <div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
@@ -251,6 +255,8 @@
                 </div>
             </div>
         </div>
+        <hr class="p-b-52">
+
 
         <div class="row isotope-grid">
             @foreach ($products as $product)

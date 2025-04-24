@@ -99,12 +99,9 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
 
     // Product
     Route::group(['prefix' => 'product', 'as' => 'product.'], function () {
-        // Route::get('products', [ProductsController::class, 'viewProductss'])->name('viewProductss');
         Route::get('/', [ProductsController::class, 'index'])->name('index');
         Route::get('product-detail/{id}', [ProductsController::class, 'show'])->name('show');
-
-        //Quick view
-        // Route::get('products/{id}/quick-view', [ProductsController::class, 'quickview'])->name('products.quickView');
+        Route::post('product-detail/{product}/reviews', [ProductsController::class, 'reviewProduct'])->name('reviewProduct')->middleware('auth');
     });
 });
 

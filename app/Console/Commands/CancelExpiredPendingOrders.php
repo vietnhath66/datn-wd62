@@ -32,11 +32,11 @@ class CancelExpiredPendingOrders extends Command
     public function handle(): void
     {
         // --- Định nghĩa thời gian hết hạn thanh toán (24 giờ) ---
-        $paymentTimeLimitHours = 2;
-        $this->info("Bắt đầu kiểm tra các đơn hàng chờ thanh toán online quá {$paymentTimeLimitHours} phút...");
+        $paymentTimeLimitMinutes = 1;
+        $this->info("Kiểm tra các đơn hàng chờ thanh toán online quá {$paymentTimeLimitMinutes} phút (TESTING)...");
 
         // Thời gian ngưỡng: Hiện tại trừ đi số giờ giới hạn
-        $threshold = Carbon::now()->subMinutes($paymentTimeLimitHours);
+        $threshold = Carbon::now()->subMinutes($paymentTimeLimitMinutes);
 
         // Tìm các đơn hàng thỏa mãn điều kiện:
         // - status = 'pending' (Đang chờ xử lý/thanh toán)
@@ -44,7 +44,6 @@ class CancelExpiredPendingOrders extends Command
         // - Thời gian cập nhật cuối (updated_at) trước thời gian ngưỡng
         //   (Dùng updated_at vì nó có thể được cập nhật khi áp coupon hoặc chỉnh sửa đơn hàng)
         $expiredOrders = Order::where('status', 'pending')
-            ->where('payment_method', 'wallet') // Chỉ xử lý đơn MoMo/Ví
             ->where('updated_at', '<', $threshold)
             ->with('items.productVariant', 'user') // Load sẵn items, variant để hoàn kho và user để tìm cart
             ->get();
@@ -67,7 +66,7 @@ class CancelExpiredPendingOrders extends Command
 
                 // 1. Cập nhật trạng thái đơn hàng thành 'cancelled'
                 $order->status = 'cancelled';
-                $order->note = ($order->note ? $order->note . "\n" : '') . "Đơn hàng tự động hủy do quá hạn thanh toán online sau {$paymentTimeLimitHours} giờ.";
+                $order->note = ($order->note ? $order->note . "\n" : '') . "Đơn hàng tự động hủy do quá hạn thanh toán online sau {$paymentTimeLimitMinutes} giờ.";
                 $order->cancelled_at = now(); // Lưu thời gian hủy (nếu có cột)
                 // Xóa luôn ID cart item tạm nếu bạn vẫn còn lưu trên order (dù không cần nữa)
                 $order->temporary_cart_ids = null;

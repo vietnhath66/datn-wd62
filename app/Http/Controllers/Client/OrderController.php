@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderPlacedMail;
 use App\Models\Cart;
 use App\Models\CartDetail;
 use App\Models\Coupon;
@@ -14,6 +15,7 @@ use DB;
 use Http;
 use Illuminate\Http\Request;
 use Log;
+use Mail;
 use Route;
 use Session;
 use Str;
@@ -50,19 +52,17 @@ class OrderController extends Controller
 
     public function checkout(Request $request)
     {
-        // 1. Kiểm tra đăng nhập
+
         if (!Auth::check()) {
             return redirect()->route('login')->with('warning', 'Vui lòng đăng nhập để đặt hàng.');
         }
         $userId = Auth::id();
-        $user = Auth::user(); // Lấy thông tin user đang đăng nhập
+        $user = Auth::user();
 
-        // 2. Validate input chứa ID sản phẩm được chọn từ giỏ hàng
+
         $validator = Validator::make($request->all(), [
-            // Giả sử input tên là 'selected_products' chứa chuỗi ID cách nhau bởi dấu phẩy
             'selected_products' => [
                 'required',
-                // Custom validation rule để kiểm tra chuỗi ID hợp lệ
                 function ($attribute, $value, $fail) {
                     $ids = explode(',', $value);
                     if (empty(array_filter($ids, 'is_numeric'))) {
@@ -86,18 +86,17 @@ class OrderController extends Controller
                 ->withInput();
         }
 
-        // Lấy danh sách ID các CartDetail được chọn
+
         $selectedCartItemIds = array_map('intval', explode(',', $request->input('selected_products')));
 
-        // 3. Lấy các CartDetail được chọn thuộc về user này
+
         $selectedItems = CartDetail::whereIn('id', $selectedCartItemIds)
             ->whereHas('cart', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })
-            ->with('productVariant') // Eager load variant để lấy giá và kiểm tra tồn kho
+            ->with('productVariant')
             ->get();
 
-        // Kiểm tra lại xem có thực sự lấy được item nào không (phòng trường hợp ID gửi lên không đúng)
         if ($selectedItems->isEmpty()) {
             return redirect()->back()->with('error', 'Không tìm thấy sản phẩm được chọn trong giỏ hàng của bạn.');
         }
@@ -105,42 +104,37 @@ class OrderController extends Controller
         DB::beginTransaction();
         try {
 
-            // Nếu chưa có đơn hàng pending, tạo mới
             do {
                 $barcode = mt_rand(100000000, 999999999);
             } while (Order::where('barcode', $barcode)->exists());
 
             $order = Order::create([
                 'user_id' => $userId,
-                // Lấy thông tin cơ bản từ user đăng nhập, không lấy từ request ở bước này
-                'name' => $user->name, // Giả sử User model có 'name'
-                'email' => $user->email, // Giả sử User model có 'email'
-                'phone' => $user->phone, // Giả sử User model có 'phone'
-                // Địa chỉ chi tiết sẽ được cập nhật ở bước 'completeOrder'
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
                 'address' => null,
                 'number_house' => null,
                 'neighborhood' => null,
                 'district' => null,
                 'province' => null,
-                'total' => 0, // Sẽ tính lại bên dưới
+                'total' => 0,
                 'status' => 'pending',
                 'payment_status' => 'pending',
                 'payment_method' => null,
-                'coupon' => null, // Coupon sẽ xử lý sau nếu có
+                'coupon' => null,
                 'barcode' => $barcode,
             ]);
             Log::info("Created new pending order ID: {$order->id} for user ID: {$userId}");
 
             $totalPrice = 0;
 
-            // 6. Thêm lại OrderDetail chỉ từ các sản phẩm đã được chọn trong giỏ hàng
             foreach ($selectedItems as $item) {
-                // Kiểm tra tồn kho của biến thể trước khi thêm vào chi tiết đơn hàng
                 if (!$item->productVariant || $item->productVariant->quantity < $item->quantity) {
-                    DB::rollBack(); // Hoàn tác transaction
-                    $productName = $item->productVariant->products->name ?? 'Sản phẩm'; // Lấy tên SP nếu có
+                    DB::rollBack();
+                    $productName = $item->productVariant->products->name ?? 'Sản phẩm';
                     $availableQty = $item->productVariant->quantity ?? 0;
-                    return redirect()->route('cart.viewCart') // Quay về giỏ hàng
+                    return redirect()->route('cart.viewCart')
                         ->with('error', "Sản phẩm '{$productName}' không đủ số lượng tồn kho (chỉ còn {$availableQty}). Vui lòng cập nhật giỏ hàng.");
                 }
 
@@ -149,15 +143,13 @@ class OrderController extends Controller
                     'product_id' => $item->product_id,
                     'product_variant_id' => $item->product_variant_id,
                     'quantity' => $item->quantity,
-                    'price' => $item->price, // *** Lấy giá ĐÃ LƯU trong CartDetail ***
+                    'price' => $item->price,
                 ]);
 
-                // Tính tổng tiền dựa trên giá ĐÃ LƯU trong CartDetail
                 $totalPrice += $item->quantity * $item->price;
             }
             Log::info("Added new OrderDetails for order ID: {$order->id}. Calculated total: {$totalPrice}");
 
-            // 7. Cập nhật tổng tiền cuối cùng cho đơn hàng
             $order->update(['total' => $totalPrice]);
 
             if (!empty($selectedCartItemIds)) {
@@ -169,12 +161,21 @@ class OrderController extends Controller
                 Log::info("Marked CartDetail IDs as 'checkout' for Order {$order->id}: " . implode(',', $selectedCartItemIds));
             }
 
+            if (!empty($selectedCartItemIds)) {
+                // Lưu danh sách ID (đã lấy ở đầu hàm) vào cột tạm dưới dạng JSON
+                $order->temporary_cart_ids = json_encode($selectedCartItemIds);
+                $order->save(); // Lưu lại lần nữa để cập nhật cột này
+                Log::info("Đã lưu temporary_cart_ids vào Order ID {$order->id}");
+            } else {
+                // Ghi log nếu không có ID nào được chọn (trường hợp hiếm sau validation)
+                Log::warning("Không tìm thấy selectedCartItemIds để lưu trong checkout cho Order {$order->id}.");
+                // Cân nhắc: Có nên throw Exception ở đây không?
+            }
+
             DB::commit();
 
-            // 8. Lưu order_id vào session để chuyển sang trang xác nhận/thanh toán
             Session::put('order_id', $order->id);
 
-            // 9. Chuyển hướng đến trang xem/xác nhận đơn hàng
             return redirect()->route('client.order.viewOrder');
 
         } catch (\Exception $e) {
@@ -241,8 +242,15 @@ class OrderController extends Controller
 
                 DB::commit();
                 Session::forget('order_id');
-                // Session::forget('processed_cart_item_ids');
-                // Gửi email COD?
+
+                try {
+                    $order->loadMissing(['items.product', 'items.productVariant']);
+                    Mail::to($order->email)->send(new OrderPlacedMail($order));
+                    Log::info("Sent OrderPlacedMail for COD Order ID {$order->id} to {$order->email}");
+                } catch (\Exception $e) {
+                    Log::error("Failed to send OrderPlacedMail for Order ID {$order->id}: " . $e->getMessage());
+                }
+
                 return redirect()->route('client.account.accountMyOrder')->with('success', 'Đơn hàng đã được đặt thành công! Vui lòng chờ admin xác nhận.'); // Check route name
 
             } elseif ($order->payment_method === 'wallet') {
@@ -277,7 +285,7 @@ class OrderController extends Controller
                 $redirectUrl = route($returnRouteName);
                 // $ipnUrl = route($notifyRouteName);
                 // --- Thay đổi TẠM THỜI cho testing ---
-                $ngrokForwardingUrl = "https://cc96-2001-ee0-40e1-45a5-59b-8ec7-6975-82f.ngrok-free.app"; // <<-- DÁN URL NGROK HTTPS CỦA BẠN VÀO ĐÂY
+                $ngrokForwardingUrl = "https://b8c4-2001-ee0-40e1-b7bf-fce7-5306-f1f4-1a27.ngrok-free.app"; // <<-- DÁN URL NGROK HTTPS CỦA BẠN VÀO ĐÂY
                 $ipnRouteUri = "/momo/payment/notify"; // <<-- Đảm bảo đây là URI bạn định nghĩa trong routes/web.php
                 $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
                 Log::info('Using temporary Ngrok IPN URL: ' . $ipnUrl); // Log để kiểm tra
@@ -466,7 +474,7 @@ class OrderController extends Controller
     }
 
 
-    public function continuePayment(Order $order, Request $request) // Giữ Request nếu sau này cần
+    public function continuePayment(Order $order, Request $request)
     {
         // 1. Kiểm tra quyền sở hữu đơn hàng
         if (Auth::id() !== $order->user_id) {
@@ -475,8 +483,34 @@ class OrderController extends Controller
 
         // 2. Kiểm tra trạng thái đơn hàng và thanh toán
         $orderStatus = strtolower($order->status ?? '');
+        if ($orderStatus !== 'pending') {
+            return redirect()->route('client.account.accountOrderDetail', $order->id)
+                ->with('warning', 'Đơn hàng này không còn ở trạng thái chờ thanh toán.');
+        }
+
         $paymentMethod = strtolower($order->payment_method ?? '');
         $paymentStatus = strtolower($order->payment_status ?? '');
+
+
+        if (is_null($order->payment_method) || $paymentMethod === '') {
+            Log::info("User continuing Order {$order->id} with null payment_method. Restoring session for viewOrder.");
+
+            $cartItemIdsJson = $order->temporary_cart_ids ?? '[]';
+            $cartItemIds = json_decode($cartItemIdsJson, true);
+
+            if (!empty($cartItemIds) && is_array($cartItemIds)) {
+                Session::put('order_id', $order->id);
+                Session::put('processed_cart_item_ids', $cartItemIds);
+                Log::info("Restored session for Order {$order->id} before redirecting to viewOrder.");
+                return redirect()->route('client.order.viewOrder');
+
+            } else {
+                Log::error("Cannot continue Order {$order->id}: Missing temporary_cart_ids to reconstruct viewOrder session.");
+                Session::forget('order_id');
+                return redirect()->route('client.cart.viewCart')
+                    ->with('error', 'Đã có lỗi xảy ra khi tiếp tục đơn hàng này. Vui lòng thử lại từ giỏ hàng.');
+            }
+        }
 
         // Chỉ cho phép thử lại khi: ĐH là 'pending', Phương thức là 'wallet', và TT là 'pending' (hoặc 'failed'?)
         // Thêm 'failed' vào nếu bạn muốn cho phép thử lại sau khi thanh toán thất bại
@@ -509,7 +543,7 @@ class OrderController extends Controller
             $redirectUrl = route($returnRouteName);
             // $ipnUrl = route($notifyRouteName);
             // --- Thay đổi TẠM THỜI cho testing ---
-            $ngrokForwardingUrl = "https://cc96-2001-ee0-40e1-45a5-59b-8ec7-6975-82f.ngrok-free.app"; // <<-- DÁN URL NGROK HTTPS CỦA BẠN VÀO ĐÂY
+            $ngrokForwardingUrl = "https://b8c4-2001-ee0-40e1-b7bf-fce7-5306-f1f4-1a27.ngrok-free.app"; // <<-- DÁN URL NGROK HTTPS CỦA BẠN VÀO ĐÂY
             $ipnRouteUri = "/momo/payment/notify"; // <<-- Đảm bảo đây là URI bạn định nghĩa trong routes/web.php
             $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
             Log::info('Using temporary Ngrok IPN URL: ' . $ipnUrl); // Log để kiểm tra

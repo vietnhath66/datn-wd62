@@ -1,3 +1,4 @@
+<link rel="stylesheet" type="text/css" href="{{ asset('client/fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}" />
 <!-- breadcrumb -->
 <section class="sec-product-detail bg0 p-t-65 p-b-60">
     <div class="container">
@@ -163,28 +164,132 @@
             <div class="tab01">
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item p-b-10">
-                        <a class="nav-link active" data-toggle="tab" href="#description" role="tab">Description</a>
+                        <a class="nav-link active" data-toggle="tab" href="#description" role="tab">Mô tả</a>
                     </li>
-
                     <li class="nav-item p-b-10">
-                        <a class="nav-link" data-toggle="tab" href="#information" role="tab">Additional
-                            information</a>
-                    </li>
-
-                    <li class="nav-item p-b-10">
-                        <a class="nav-link" data-toggle="tab" href="#reviews" role="tab">Reviews (1)</a>
+                        <a class="nav-link" data-toggle="tab" href="#reviews" role="tab">Đánh giá
+                            ({{ $product->reviews->count() }})</a>
                     </li>
                 </ul>
 
                 <div class="tab-content p-t-43">
                     <div class="tab-pane fade show active" id="description" role="tabpanel">
                         <div class="how-pos2 p-lr-15-md">
-                            <p class="stext-102 cl6">
-                                {{ $product->content }}
-                            </p>
+                            <p class="stext-102 cl6">{!! $product->content ?? 'Chưa có mô tả cho sản phẩm này.' !!}</p>
                         </div>
                     </div>
 
+                    <div class="tab-pane fade" id="reviews" role="tabpanel">
+                        <div class="row">
+                            <div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
+                                <div class="p-b-30 m-lr-15-sm">
+
+                                    <h5 class="mtext-108 cl2 p-b-20">
+                                        {{ $product->reviews->count() }} Đánh giá cho "{{ $product->name }}"
+                                    </h5>
+
+                                    @forelse ($product->reviews()->latest()->paginate(5) as $review)
+                                        <div class="flex-w flex-t p-b-40 {{ !$loop->last ? 'bor18' : '' }}">
+                                            <div class="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
+                                                <img src="{{ optional($review->user)->avatar ? Storage::url($review->user->avatar) : asset('images/avatar-default.png') }}"
+                                                    alt="{{ optional($review->user)->name }}">
+                                            </div>
+                                            <div class="size-207">
+                                                <div class="flex-w flex-sb-m p-b-17">
+                                                    <span class="mtext-107 cl2 p-r-20">
+                                                        {{ optional($review->user)->name ?? 'Người dùng ẩn danh' }}
+                                                    </span>
+                                                    <span class="fs-18 cl11">
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            @if ($i <= $review->rating)
+                                                                <i class="zmdi zmdi-star"></i>
+                                                            @else
+                                                                <i class="zmdi zmdi-star-outline"></i>
+                                                            @endif
+                                                        @endfor
+                                                    </span>
+                                                </div>
+                                                <p class="stext-102 cl6">
+                                                    <small>{{ optional($review->created_at)->diffForHumans() }}</small>
+                                                </p>
+                                                @if ($review->comment)
+                                                    <p class="stext-102 cl6 m-t-10">
+                                                        {{ $review->comment }}
+                                                    </p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <p class="stext-102 cl6">Chưa có đánh giá nào cho sản phẩm này.</p>
+                                    @endforelse
+
+                                    <div class="d-flex justify-content-center p-t-30">
+                                        {{ $product->reviews()->latest()->paginate(5)->links() }}
+                                    </div>
+
+
+                                    @auth
+                                        <form class="w-full p-t-40" method="POST"
+                                            action="{{ route('client.product.reviewProduct', $product->id) }}">
+                                            @csrf
+
+                                            <div class="flex-w flex-m p-t-25 p-b-23">
+                                                <span class="stext-102 cl3 m-r-16">
+                                                    Đánh giá của bạn <span class="text-danger">*</span>
+                                                </span>
+                                                <span class="wrap-rating fs-30 cl11 pointer">
+                                                    <i class="item-rating pointer zmdi zmdi-star-outline"
+                                                        data-rating="1"></i>
+                                                    <i class="item-rating pointer zmdi zmdi-star-outline"
+                                                        data-rating="2"></i>
+                                                    <i class="item-rating pointer zmdi zmdi-star-outline"
+                                                        data-rating="3"></i>
+                                                    <i class="item-rating pointer zmdi zmdi-star-outline"
+                                                        data-rating="4"></i>
+                                                    <i class="item-rating pointer zmdi zmdi-star-outline"
+                                                        data-rating="5"></i>
+
+                                                    <input class="dis-none" type="number" name="rating"
+                                                        value="{{ old('rating') }}" />
+                                                </span>
+
+                                                @error('rating')
+                                                    <div class="text-danger w-100 d-block mt-2">
+                                                        <small>{{ $message }}</small>
+                                                    </div>
+                                                @enderror
+                                            </div>
+
+
+                                            <div class="row p-b-25">
+                                                <div class="col-12 p-b-5">
+                                                    <label class="kanit-thin stext-102 cl3" for="comment">Bình luận của
+                                                        bạn</label>
+                                                    <textarea placeholder="Nhập bình luận của bạn ở đây..."
+                                                        class="kanit-thin size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10 form-control @error('comment') is-invalid @enderror"
+                                                        id="comment" name="comment" rows="5">{{ old('comment') }}</textarea>
+                                                    @error('comment')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            {{-- Nút Submit --}}
+                                            <button type="submit"
+                                                class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 m-b-10">
+                                                Gửi đánh giá
+                                            </button>
+                                        </form>
+                                    @else
+                                        {{-- Thông báo nếu chưa đăng nhập --}}
+                                        <p class="p-t-40"><a href="{{ route('login') }}">Đăng nhập</a> để gửi đánh giá
+                                            của bạn.</p>
+                                    @endauth
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

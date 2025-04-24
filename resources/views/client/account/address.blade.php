@@ -172,9 +172,9 @@
         transition: transform 0.3s ease;
     }
 
-    .address-section:hover {
+    /* .address-section:hover {
         transform: translateY(-5px);
-    }
+    } */
 
     .address-section .section-title {
         font-size: 1.5rem;
@@ -278,39 +278,16 @@
     </div>
     <form id="addressForm" novalidate>
         <div class="form-group">
-            <label>Họ và tên</label>
-            <input type="text" id="fullName" name="fullName" value="Nguyen Viet Nhat" required pattern="[A-Za-z\s]+"
-                minlength="2" />
-            <div class="error" id="fullNameError">
-                Tên chỉ được chứa chữ cái và khoảng trắng, tối thiểu 2 ký tự.
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Số điện thoại</label>
-            <input type="tel" id="phone" name="phone" value="+855 8456 555 23" required pattern="\+[0-9\s]+"
-                minlength="10" />
-            <div class="error" id="phoneError">
-                Số điện thoại phải bắt đầu bằng "+" và chỉ chứa số, tối thiểu 10
-                ký tự.
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Địa chỉ</label>
+            <label>Địa chỉ cụ thể</label>
             <input type="text" id="address" name="address" required minlength="5" />
-            <div class="error" id="addressError">
-                Địa chỉ phải có ít nhất 5 ký tự.
-            </div>
         </div>
         <div class="form-group">
-            <label>Tỉnh/Thành phố</label>
-            <select id="city" name="city" required>
-                <option value="">Chọn tỉnh/thành phố</option>
-                <option value="hanoi">Hà Nội</option>
-                <option value="hcm">TP. Hồ Chí Minh</option>
+            <label>Phường/Xã</label>
+            <select id="district" name="district" required>
+                <option value="">Chọn Phường/Xã</option>
+                <option value="q1">Quận 1</option>
+                <option value="badinh">Quận Ba Đình</option>
             </select>
-            <div class="error" id="cityError">
-                Vui lòng chọn tỉnh/thành phố.
-            </div>
         </div>
         <div class="form-group">
             <label>Quận/Huyện</label>
@@ -319,9 +296,14 @@
                 <option value="q1">Quận 1</option>
                 <option value="badinh">Quận Ba Đình</option>
             </select>
-            <div class="error" id="districtError">
-                Vui lòng chọn quận/huyện.
-            </div>
+        </div>
+        <div class="form-group">
+            <label>Tỉnh/Thành phố</label>
+            <select id="city" name="city" required>
+                <option value="">Chọn tỉnh/thành phố</option>
+                <option value="hanoi">Hà Nội</option>
+                <option value="hcm">TP. Hồ Chí Minh</option>
+            </select>
         </div>
         <div class="form-actions">
             <button type="button" class="cancel-btn">Hủy</button>
