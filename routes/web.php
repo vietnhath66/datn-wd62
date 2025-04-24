@@ -247,7 +247,8 @@ Route::get('admin/logout', [AuthController::class, 'logout'])->name('auth.logout
 require __DIR__ . '/auth.php';
 
 Route::get('/account/password/view', function () {
-    return view('client.account.pass');})->name('account.password.view');
-    Route::post('/account/update', [UserController1::class, 'updateProfile'])->name('update.profile');
-    Route::post('/address/store', [App\Http\Controllers\AddressController::class, 'store'])->name('address.store');
-    Route::get('/coupons', [CouponController::class, 'index'])->name('coupons.index');
+    return view('client.account.pass');
+})->name('account.password.view');
+Route::post('/account/update', [UserController1::class, 'updateProfile'])->name('update.profile');
+Route::post('/address/store', [App\Http\Controllers\AddressController::class, 'store'])->name('address.store');
+Route::get('/coupons', [CouponController::class, 'index'])->name('coupons.index');

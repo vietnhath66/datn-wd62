@@ -27,32 +27,39 @@ class ProductsController extends Controller
             ->orderBy('name', 'asc')
             ->get();
 
-        $selectedCategoryId = $request->query('category');
         $productsQuery = Product::query()->where('publish', 1);
+
+        $selectedCategoryId = $request->query('category');
         $filterType = $request->query('type');
         $selectedCategory = null;
         $pageTitle = 'Tất Cả Sản Phẩm';
 
         if ($selectedCategoryId && is_numeric($selectedCategoryId)) {
-            $selectedCategory = ProductCatalogue::with('parent')->find($selectedCategoryId);
+            $selectedCategory = ProductCatalogue::find($selectedCategoryId);
             if ($selectedCategory) {
                 $pageTitle = $selectedCategory->name;
                 $productsQuery->where('product_catalogue_id', $selectedCategoryId);
+                $filterType = null;
             } else {
                 $selectedCategoryId = null;
             }
         }
 
+
         if ($filterType === 'new') {
             $pageTitle = 'Sản Phẩm Mới';
+            $productsQuery->where('is_new', 1);
             $productsQuery->orderBy('created_at', 'desc');
         } elseif ($filterType === 'sale') {
             $pageTitle = 'Sản Phẩm Sale';
-            $productsQuery->orderBy('created_at', 'desc');
+            $productsQuery->where('is_sale', 1);
+            $productsQuery->orderBy('updated_at', 'desc');
         } elseif ($filterType === 'trend') {
             $pageTitle = 'Sản Phẩm Hot Trend';
-            $productsQuery->orderBy('created_at', 'desc');
+            $productsQuery->where('is_trending', 1);
+            $productsQuery->orderBy('updated_at', 'desc');
         }
+
 
         $products = $productsQuery->paginate(16)->withQueryString();
 
@@ -108,7 +115,7 @@ class ProductsController extends Controller
 
         if ($validator->fails()) {
             return redirect()->back()
-                ->withErrors($validator) // <-- Đảm bảo có dòng này
+                ->withErrors($validator)
                 ->withInput()
                 ->with('error_scroll', '#reviews');
         }

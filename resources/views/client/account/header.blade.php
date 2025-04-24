@@ -1,6 +1,7 @@
 <div class="user-info">
     <div class="avatar">
-        <i class="fas fa-user"></i>
+        <img src="{{ asset('storage/avatars/' . Auth::user()->avt) }}" alt="" class="rounded-circle" width="90"
+            height="90">
     </div>
     <div class="details">
         <div class="name">{{ Auth::user()->name }}</div>

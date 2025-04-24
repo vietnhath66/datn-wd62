@@ -29,7 +29,8 @@ class Product extends Model
         'is_show_home',
         'attributeCatalogue',
         'attribute',
-        'variant'
+        'variant',
+        'view',
     ];
 
     protected $table = 'products';

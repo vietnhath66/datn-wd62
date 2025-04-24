@@ -283,7 +283,7 @@
         @csrf
         <div class="form-group">
             <label>Địa chỉ cụ thể</label>
-            <input type="text" id="address" name="address" required minlength="5" />
+            <input type="text" id="address" placeholder="Nhập địa chỉ cụ thể của bạn" name="address" required minlength="5" />
         </div>
         <div class="form-group">
             <label>Phường/Xã</label>
@@ -313,21 +313,12 @@
                     <option value="{{ $province->name }}">{{ $province->name }}</option>
                 @endforeach
             </select>
-            <<<<<<< HEAD </div>
-                <div class="form-group">
-                    <label>Tỉnh/Thành phố</label>
-                    <select id="city" name="city" required>
-                        <option value="">Chọn tỉnh/thành phố</option>
-                        <option value="hanoi">Hà Nội</option>
-                        <option value="hcm">TP. Hồ Chí Minh</option>
-                    </select>
-                    =======
-                    >>>>>>> a91ee282d338f3a9d0d4caa56d73a856777fecc4
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="cancel-btn">Hủy</button>
-                    <button type="submit" class="save-btn">Lưu thay đổi</button>
-                </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="cancel-btn">Hủy</button>
+            <button type="submit" class="save-btn">Lưu thay đổi</button>
+        </div>
 
     </form>
 </div>

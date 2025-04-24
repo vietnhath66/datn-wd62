@@ -291,14 +291,16 @@
         <!-- Mật khẩu hiện tại -->
         <div class="form-group">
             <label for="currentPassword">Mật khẩu hiện tại</label>
-            <input type="password" id="password" name="current_password" required minlength="6" />
-             <div class="error"></div>
+            <input type="password" placeholder="Nhập mật khẩu hiện tại của bạn vào đây" id="password"
+                name="current_password" required minlength="6" />
+            <div class="error"></div>
         </div>
 
         <!-- Mật khẩu mới -->
         <div class="form-group">
             <label for="newPassword">Mật khẩu mới</label>
-            <input type="password" id="newPassword" name="password" required minlength="8" />
+            <input type="password" id="newPassword" placeholder="Nhập mật khẩu mới của bạn" name="password" required
+                minlength="8" />
             @error('password')
                 <div class="error">{{ $message }}</div>
             @enderror
@@ -307,7 +309,8 @@
         <!-- Xác nhận mật khẩu mới -->
         <div class="form-group">
             <label for="confirmPassword">Xác nhận mật khẩu mới</label>
-            <input type="password" id="password_confirmation" name="password_confirmation" required />
+            <input type="password" id="password_confirmation" placeholder="Nhập mật khẩu mới của bạn"
+                name="password_confirmation" required />
             @error('password_confirmation')
                 <div class="error">{{ $message }}</div>
             @enderror
@@ -315,14 +318,15 @@
 
         <!-- Các nút hành động -->
         <div class="form-actions">
-            <button type="button" class="cancel-btn" onclick="window.location.href='{{ url()->previous() }}'">Hủy</button>
+            <button type="button" class="cancel-btn"
+                onclick="window.location.href='{{ url()->previous() }}'">Hủy</button>
             <button type="submit" class="save-btn">Lưu thay đổi</button>
         </div>
     </form>
 </div>
 
 <script>
-    document.getElementById('password-form').addEventListener('submit', function (e) {
+    document.getElementById('password-form').addEventListener('submit', function(e) {
         e.preventDefault();
 
         const form = e.target;
@@ -335,37 +339,38 @@
         });
 
         fetch(form.action, {
-            method: 'POST',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-            },
-            body: formData
-        })
-        .then(async response => {
-            if (response.ok) {
-                showToast('success-toast', 'Mật khẩu đã được cập nhật!');
-                form.reset();
-            } else if (response.status === 422) {
-                const data = await response.json();
-                if (data.errors) {
-                    Object.keys(data.errors).forEach(key => {
-                        const errorEl = form.querySelector(`[name="${key}"]`)?.parentElement.querySelector('.error');
-                        if (errorEl) {
-                            errorEl.textContent = data.errors[key][0];
-                            errorEl.style.display = 'block';
-                        }
-                    });
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                },
+                body: formData
+            })
+            .then(async response => {
+                if (response.ok) {
+                    showToast('success-toast', 'Mật khẩu đã được cập nhật!');
+                    form.reset();
+                } else if (response.status === 422) {
+                    const data = await response.json();
+                    if (data.errors) {
+                        Object.keys(data.errors).forEach(key => {
+                            const errorEl = form.querySelector(`[name="${key}"]`)?.parentElement
+                                .querySelector('.error');
+                            if (errorEl) {
+                                errorEl.textContent = data.errors[key][0];
+                                errorEl.style.display = 'block';
+                            }
+                        });
+                    }
+                } else {
+                    console.error('Lỗi không xác định:', await response.text());
+                    showToast('error-toast', 'Đã xảy ra lỗi. Vui lòng thử lại.');
                 }
-            } else {
-                console.error('Lỗi không xác định:', await response.text());
-                showToast('error-toast', 'Đã xảy ra lỗi. Vui lòng thử lại.');
-            }
-        })
-        .catch(err => {
-            console.error('Lỗi fetch:', err);
-            showToast('error-toast', 'Không thể gửi yêu cầu. Vui lòng kiểm tra kết nối.');
-        });
+            })
+            .catch(err => {
+                console.error('Lỗi fetch:', err);
+                showToast('error-toast', 'Không thể gửi yêu cầu. Vui lòng kiểm tra kết nối.');
+            });
 
         function showToast(id, message) {
             const toast = document.getElementById(id);
