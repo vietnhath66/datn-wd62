@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Coupon;
 use App\Repositories\AttributeCatalogueReponsitory;
 use App\Repositories\AttributeReponsitory;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
@@ -47,6 +48,7 @@ use App\Services\ProductCatalogueService;
 use App\Services\ProductService;
 use App\Services\RoleService;
 use App\Services\UserService;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {

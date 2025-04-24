@@ -60,8 +60,15 @@ class User extends Authenticatable
         return $this->hasOne(ShipperProfile::class, 'user_id', 'id');
     }
 
+
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class, 'user_id');
     }
+
+    public function addresses()
+    {
+        return $this->hasMany(Attribute::class, 'user_id');
+    }
+
 }

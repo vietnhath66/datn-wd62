@@ -17,15 +17,16 @@ use App\Http\Controllers\Backend\AttributeController;
 use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\Client\PaymentController;
 use App\Http\Controllers\Client\PolicyController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\Shipper\ShipperController;
+use App\Http\Controllers\UserController1;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\ContactController;
+use App\Http\Controllers\Client\ProductController as ClientProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Client\ProductsController;
-
-
-
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -63,7 +64,7 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     Route::get('home', [HomeController::class, 'viewHome'])->name('viewHome');
     Route::get('about', [AboutController::class, 'viewAbout'])->name('viewAbout');
     Route::get('contact', [ContactController::class, 'viewContact'])->name('viewContact');
-    Route::get('search', [ProductController::class, 'viewSearch'])->name('viewSearch');
+    Route::get('search', [ClientProductController::class, 'viewSearch'])->name('viewSearch');
     Route::get('product/{id}', [ProductController::class, 'viewShow'])->name('viewShow');
     Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
     Route::get('products', [ProductController::class, 'index'])->name('client.products.index');
@@ -245,3 +246,8 @@ Route::get('admin/logout', [AuthController::class, 'logout'])->name('auth.logout
 
 require __DIR__ . '/auth.php';
 
+Route::get('/account/password/view', function () {
+    return view('client.account.pass');})->name('account.password.view');
+    Route::post('/account/update', [UserController1::class, 'updateProfile'])->name('update.profile');
+    Route::post('/address/store', [App\Http\Controllers\AddressController::class, 'store'])->name('address.store');
+    Route::get('/coupons', [CouponController::class, 'index'])->name('coupons.index');
