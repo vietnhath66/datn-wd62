@@ -161,119 +161,90 @@
 
     /*==================================================================
     [ Filter / Search product ]*/
-    $('.js-show-filter').on('click',function(){
-        $(this).toggleClass('show-filter');
-        $('.panel-filter').slideToggle(400);
-
-        // 👉 Khởi tạo Isotope
+    $(document).ready(function () {
+        // ✅ Khởi tạo Isotope chỉ 1 lần
         var $grid = $(".isotope-grid").isotope({
             itemSelector: ".isotope-item",
             layoutMode: "fitRows",
             getSortData: {
-                name: ".product-name",
+                name: function (itemElem) {
+                    return $(itemElem)
+                        .find(".product-name")
+                        .text()
+                        .trim()
+                        .toLowerCase()
+                        .normalize("NFD")
+                        .replace(/[\u0300-\u036f]/g, "")
+                        .replace(/[^a-z0-9\s]/gi, "");
+                },
                 price: function (itemElem) {
                     return parseFloat(
-                        $(itemElem).find(".product-price").text().replace(/[^\d.]/g, "")
+                        $(itemElem).find(".product-price").text().replace(/[^\d]/g, "")
                     );
                 },
             },
         });
 
-        // 👉 Hiển thị bộ lọc
-        if (filterBtn && panelFilter) {
-            filterBtn.addEventListener("click", function () {
-                this.classList.toggle("show-filter");
-                panelFilter.style.display =
-                    panelFilter.style.display === "block" ? "none" : "block";
+        // 👉 Gắn sự kiện cho nút sắp xếp (filter-btn)
+        $(".filter-btn").on("click", function () {
+            let sortType = $(this).data("sort"); // ví dụ: "name_asc"
+            let [sortBy, direction] = sortType.split("_");
+
+            $grid.isotope({
+                sortBy: sortBy,
+                sortAscending: direction === "asc",
             });
-        }
 
-        // 👉 Lọc sản phẩm theo danh mục
-        filterBtns.forEach((button) => {
-            button.addEventListener("click", function () {
-                let filterValue = this.getAttribute("data-filter");
-                console.log("Lọc theo:", filterValue);
-
-                $grid.isotope({ filter: filterValue });
-                checkIfEmpty();
-
-                filterBtns.forEach((btn) => btn.classList.remove("how-active1"));
-                this.classList.add("how-active1");
-            });
+            // ✅ Highlight nút đang chọn (tuỳ ý)
+            $(".filter-btn").removeClass("how-active1");
+            $(this).addClass("how-active1");
         });
 
-        // 👉 Sắp xếp sản phẩm theo tên hoặc giá
-        sortButtons.forEach((button) => {
-            button.addEventListener("click", function () {
-                let sortType = this.getAttribute("data-sort");
-                console.log("Sắp xếp theo:", sortType);
+        // 👉 Toggle filter panel
+        $('.js-show-filter').on('click', function () {
+            $(this).toggleClass('show-filter');
+            $('.panel-filter').slideToggle(400);
+        });
 
-                let sortBy = sortType.includes("name") ? "name" : "price";
-                let sortAscending = sortType.includes("asc");
+        $('input[name="sizes[]"], input[name="colors[]"]').on('change', function () {
+            let selectedSizes = $('input[name="sizes[]"]:checked')
+                .map(function () {
+                    return '.size-' + $(this).val();
+                })
+                .get();
 
-                $grid.isotope({
-                    sortBy: sortBy,
-                    sortAscending: sortAscending,
+            let selectedColors = $('input[name="colors[]"]:checked')
+                .map(function () {
+                    return '.color-' + $(this).val();
+                })
+                .get();
+
+            // 👉 Kết hợp cả màu và size
+            let filters = [];
+
+            // Nếu có cả màu và size thì ghép lại từng cặp
+            if (selectedSizes.length && selectedColors.length) {
+                selectedSizes.forEach(function (size) {
+                    selectedColors.forEach(function (color) {
+                        filters.push(size + color);
+                    });
                 });
+            } else if (selectedSizes.length) {
+                filters = selectedSizes;
+            } else if (selectedColors.length) {
+                filters = selectedColors;
+            }
 
-                sortButtons.forEach((btn) => btn.classList.remove("how-active1"));
-                this.classList.add("how-active1");
-            });
-        });
+            let filterValue = filters.length ? filters.join(', ') : '*';
 
-        // 👉 Lọc theo màu và size
-        const colorCheckboxes = document.querySelectorAll('input[name="colors[]"]');
-const sizeCheckboxes = document.querySelectorAll('input[name="sizes[]"]');
+            // 👉 Apply filter
+            $grid.isotope({ filter: filterValue });
 
-[colorCheckboxes, sizeCheckboxes].forEach((group) => {
-    group.forEach((checkbox) => {
-        checkbox.addEventListener("change", function () {
-            filterByColorAndSize();
+            // 👉 Hiện hoặc ẩn "Không có sản phẩm"
+            let visibleItems = $grid.data('isotope').filteredItems.length;
+            $('#no-products').toggle(visibleItems === 0);
         });
     });
-});
-
-function filterByColorAndSize() {
-    let selectedColors = [...colorCheckboxes]
-        .filter((cb) => cb.checked)
-        .map((cb) => `.color-${cb.value}`);
-
-    let selectedSizes = [...sizeCheckboxes]
-        .filter((cb) => cb.checked)
-        .map((cb) => `.size-${cb.value}`);
-
-    let filterSelector = "";
-
-    if (selectedColors.length && selectedSizes.length) {
-        filterSelector = selectedColors
-            .map((c) => selectedSizes.map((s) => `${c}${s}`))
-            .flat()
-            .join(", ");
-    } else if (selectedColors.length) {
-        filterSelector = selectedColors.join(", ");
-    } else if (selectedSizes.length) {
-        filterSelector = selectedSizes.join(", ");
-    } else {
-        filterSelector = "*";
-    }
-    console.log("Lọc selector:", filterSelector);
-    $grid.isotope({ filter: filterSelector });
-    checkIfEmpty();
-}
-
-        // 👉 Hàm kiểm tra nếu không có sản phẩm nào khớp
-        function checkIfEmpty() {
-            $grid.isotope('once', 'arrangeComplete', function (filteredItems) {
-                const noProducts = document.getElementById('no-products');
-                if (filteredItems.length === 0) {
-                    noProducts.style.display = 'block';
-                } else {
-                    noProducts.style.display = 'none';
-                }
-            });
-        }
-    });
-
 
     /*==================================================================
     [ Cart ]*/
