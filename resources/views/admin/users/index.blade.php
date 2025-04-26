@@ -11,6 +11,7 @@
                 <div class="ibox-content">
                    {{-- @include('admin.product.catalogue.components.filter') --}}
                    @include('admin.users.components.table', ['table' => $config['seo']['index']['table']])
+
                 </div>
             </div>
         </div>

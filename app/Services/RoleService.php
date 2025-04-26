@@ -63,7 +63,7 @@ class RoleService implements RoleServiceInterface
             $payload = $request->only($this->payload());
             $role = $this->RoleRepository->findById($id);
 
-            $updateBrand = $this->RoleRepository->update($role, $payload);
+            $updateBrand = $this->RoleRepository->update($id, $payload);
             DB::commit();
             return true;
         } catch (\Exception $e) {

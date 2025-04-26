@@ -30,7 +30,8 @@ class UserService extends BaseService implements UserServiceInterface
         $perPage = addslashes($request->integer('per_page'));
 
         $users = $this->userRepository->pagination(
-            ['*'],
+            
+            ['users.*'],
             $condition,
             $perPage,
             ['path' => 'admin/users/index'],
@@ -64,8 +65,8 @@ class UserService extends BaseService implements UserServiceInterface
         DB::beginTransaction();
         try {
 
-            $data['password'] = Hash::make($data['password']);
-            $data['birthday'] = $this->convertBirthdayDate($data['birthday']);
+            // $data['password'] = Hash::make($data['password']);
+            // $data['birthday'] = $this->convertBirthdayDate($data['birthday']);
             $updateUser = $this->userRepository->update($user, $data);
             DB::commit();
             return true;
@@ -81,7 +82,15 @@ class UserService extends BaseService implements UserServiceInterface
     {
         DB::beginTransaction();
         try {
-            $destroyUser = $this->userRepository->destroy($user);
+            // Kiểm tra nếu là Collection thì xóa từng User
+            if ($user instanceof \Illuminate\Database\Eloquent\Collection) {
+                foreach ($user as $singleUser) {
+                    $singleUser->delete();
+                }
+            } else {
+                $user->delete();
+            }
+    
             DB::commit();
             return true;
         } catch (\Exception $e) {
@@ -139,4 +148,8 @@ class UserService extends BaseService implements UserServiceInterface
 
         return $birthday;
     }
+    public function getLockedUsers($request)
+{
+    return User::where('status', 0)->paginate(10);
+}
 }

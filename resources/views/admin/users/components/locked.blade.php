@@ -75,12 +75,20 @@
                                     readonly="readonly" placeholder="Select Date">
                             </div>
                         </div><!--end col-->
-                        <div class="lg:col-span-2 ltr:lg:text-right rtl:lg:text-left xl:col-span-2 xl:col-start-11">
-                            <a href="{{ route('admin.brands.create') }}" type="button"
-                                class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20"><i
-                                    data-lucide="plus" class="inline-block size-4"></i> <span class="align-middle">Thêm
-                                    mới</span></a>
+                        <div class="flex justify-end gap-4 xl:col-span-2 xl:col-start-11">
+                            <a href="{{ route('admin.users.index') }}" type="button"
+                                class="inline-flex items-center gap-2 px-4 py-2 rounded text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">
+                                <i data-lucide="plus" class="size-4"></i>
+                                <span class="align-middle whitespace-nowrap">Danh sách tài khoản </span>
+                            </a>
+                        
+                            <a href="{{ route('admin.users.create') }}" type="button"
+                                class="inline-flex items-center gap-2 px-4 py-2 rounded text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">
+                                <i data-lucide="plus" class="size-4"></i>
+                                <span class="align-middle whitespace-nowrap">Thêm mới</span>
+                            </a>
                         </div>
+                        
                     </div><!--end grid-->
                 </div>
                 <div class="!pt-1 card-body">
@@ -89,19 +97,24 @@
                             <thead class="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600">
                                 <tr>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_code"
-                                        data-sort="product_code">Mã thương hiệu</th>
+                                        data-sort="product_code">ID </th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
-                                        data-sort="product_name">Tên thương hiệu</th>
-                                    {{-- <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
-                                        data-sort="status">Trạng thái</th> --}}
+                                        data-sort="product_name">Tên người dùng</th>
+                                        <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
+                                        data-sort="product_name">Email</th>
+                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
+                                        data-sort="product_name">Số điện thoại</th>
+                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
+                                        data-sort="status">Trạng thái</th>
                                     <th
                                         class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 action">
                                         Hành động</th>
                                 </tr>
                             </thead>
+                            {{-- @dd($users) --}}
                             <tbody class="list">
-                                @if (isset($brands) && is_object($brands))
-                                    @foreach ($brands as $item)
+                                @if (isset($users) && is_object($users))
+                                    @foreach ($users as $item)
                                         <tr>
                                             <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
                                                 <a href="#!"
@@ -111,16 +124,30 @@
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">
                                                 <a href="apps-ecommerce-product-overview.html"
                                                     class="flex items-center gap-2">
-                                                    <img src="{{ \Storage::url($item->image) }}" alt="Product images"
-                                                        class="h-6">
                                                     <h6 class="product_name">{{ $item->name }}</h6>
                                                 </a>
                                             </td>
-                                            {{-- <td
-                                                class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
-                                                <span
-                                                    class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Scheduled</span>
-                                            </td> --}}
+                                            <td
+                                                class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">
+                                                <a href="apps-ecommerce-product-overview.html"
+                                                    class="flex items-center gap-2">
+                                                    <h6 class="product_name">{{ $item->email }}</h6>
+                                                </a>
+                                            </td>
+                                            <td
+                                                class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">
+                                                <a href="apps-ecommerce-product-overview.html"
+                                                    class="flex items-center gap-2">
+                                                    <h6 class="product_name">{{ $item->phone }}</h6>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                @if($item->status == 1)
+                                                    <span class="badge badge-success">Hoạt động</span>
+                                                @else
+                                                    <span class="badge badge-danger">Đã khoá</span>
+                                                @endif
+                                            </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 action">
                                                 <div class="relative dropdown">
@@ -130,32 +157,24 @@
                                                             data-lucide="more-horizontal" class="size-3"></i></button>
                                                     <ul class="absolute z-50 hidden py-2 mt-1 ltr:text-left rtl:text-right list-none bg-white rounded-md shadow-md dropdown-menu min-w-[10rem] dark:bg-zink-600"
                                                         aria-labelledby="productAction1">
+                                                        <form action="{{ route('admin.users.destroy', ['user' => $item->id]) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="block w-full text-left px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200">
+                                                                <i data-lucide="trash-2" class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
+                                                                <span class="align-middle">Delete</span>
+                                                            </button>
+                                                        </form>
                                                         <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
-                                                                href="apps-ecommerce-product-overview.html"><i
-                                                                    data-lucide="eye"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Overview</span></a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
-                                                                href="{{ route('admin.brands.edit', $item->id) }}"><i
-                                                                    data-lucide="file-edit"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Edit</span></a>
-                                                        </li>
-                                                        <li>
-                                                            <form action="{{ route('admin.brands.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
+                                                            <form action="{{ route('admin.users.unlock', ['user' => $item->id]) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn mở khoá tài khoản không?')" style="display:inline;">
                                                                 @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit"
-                                                                    class="block w-full text-left px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200">
-                                                                    <i data-lucide="trash-2" class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                    <span class="align-middle">Delete</span>
+                                                                @method('PATCH')
+                                                                <button type="submit" class="block w-full text-left px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200">
+                                                                    <i data-lucide="unlock" class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
+                                                                    <span class="align-middle">Mở khoá tài khoản</span>
                                                                 </button>
                                                             </form>
                                                         </li>
-                                                        
                                                     </ul>
                                                 </div>
                                             </td>
@@ -174,13 +193,11 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="flex flex-col items-center gap-4 px-4 mt-4 md:flex-row" id="pagination-element">
                         <div class="grow">
                             <p class="text-slate-500 dark:text-zink-200">Showing <b class="showing">10</b> of <b
                                     class="total-records">38</b> Results</p>
                         </div>
-
                         <div class="col-sm-auto mt-sm-0">
                             <div class="flex gap-2 pagination-wrap justify-content-center">
                                 <a class="inline-flex items-center justify-center bg-white dark:bg-zink-700 h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 dark:border-zink-500 text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500 hover:bg-custom-50 dark:hover:bg-custom-500/10 focus:bg-custom-50 dark:focus:bg-custom-500/10 focus:text-custom-500 dark:focus:text-custom-500 [&.active]:text-custom-500 dark:[&.active]:text-custom-500 [&.active]:bg-custom-50 dark:[&.active]:bg-custom-500/10 [&.active]:border-custom-50 dark:[&.active]:border-custom-500/10 [&.active]:hover:text-custom-700 dark:[&.active]:hover:text-custom-700 [&.disabled]:text-slate-400 dark:[&.disabled]:text-zink-300 [&.disabled]:cursor-auto page-item pagination-prev "
@@ -196,10 +213,8 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div><!--end card-->
-
         </div>
         <!-- container-fluid -->
     </div>

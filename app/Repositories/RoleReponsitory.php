@@ -30,7 +30,7 @@ class RoleReponsitory extends BaseRepository implements RoleRepositoryInterface
         array $relations = [],
         array $whereRaw = [],
     ){
-        $query = $this->model->select($column)->where(function($query) use ($condition){
+        $query = $this->model->select($column)->distinct()->where(function($query) use ($condition){
             if(isset($condition['keyword']) && !empty($condition['keyword'])){
                 $query->where('name', 'LIKE', '%'.$condition['keyword'].'%');
             }
@@ -55,8 +55,22 @@ class RoleReponsitory extends BaseRepository implements RoleRepositoryInterface
         return $query->paginate($perPage)->withQueryString()->withPath(env('APP_URL').$extend['path']);
     }
 
-    public function getBrandById(int $id = 0){
-        return $this->model->find($id);
+    public function destroy($model)
+    {
+        if (!$model instanceof Model) {
+            $model = $this->model->find($model); // Nếu truyền ID, tìm Model
+        }
+    
+        if (!$model) {
+            return false; // Nếu không tìm thấy, trả về false
+        }
+    
+        return $model->delete();
     }
+// Đổi tên từ getBrandById -> getRoleById
+public function getRoleById(int $id = 0){
+    return $this->model->find($id);
+}
+
 
 }

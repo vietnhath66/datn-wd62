@@ -91,8 +91,8 @@
                                         data-sort="product_code">Mã danh mục</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
                                         data-sort="product_name">Tên danh mục</th>
-                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
-                                        data-sort="status">Trạng thái</th>
+                                    {{-- <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
+                                        data-sort="status">Trạng thái</th> --}}
                                     <th
                                         class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 action">
                                         Hành động</th>
@@ -117,11 +117,11 @@
                                                     <h6 class="product_name">{{ $productCatalogue->name }}</h6>
                                                 </a>
                                             </td>
-                                            <td
+                                            {{-- <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
                                                 <span
                                                     class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Scheduled</span>
-                                            </td>
+                                            </td> --}}
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 action">
                                                 <div class="relative dropdown">

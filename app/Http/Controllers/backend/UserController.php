@@ -11,7 +11,6 @@ use App\Repositories\Interfaces\RoleRepositoryInterface as roleRepository;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 
@@ -22,6 +21,7 @@ class UserController extends Controller
     protected $UserService;
     protected $provinceReponsitory;
     protected $roleRepository;
+    
 
     public function __construct(UserService $UserService, provinceReponsitory $provinceReponsitory, roleRepository $roleRepository)
     {
@@ -73,7 +73,7 @@ class UserController extends Controller
         $this->authorize('modules', 'admin.users.create');
 
         $provinces = $this->provinceReponsitory->all();
-        $user_catalogues = $this->userCatalogueReponsitory->all();
+        // $user_catalogues = $this->userCatalogueReponsitory->all();
         // dd($user_catalogues);
         $config = [
             'css' => [
@@ -92,7 +92,7 @@ class UserController extends Controller
             'template',
             'config',
             'provinces',
-            'user_catalogues'
+            // 'user_catalogues'
         ));
     }
 
@@ -113,34 +113,50 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $this->authorize('modules', 'admin.users.update');
+        // $this->authorize('modules', 'admin.users.update');
 
         $provinces = $this->provinceReponsitory->all();
-        $user_catalogues = $this->userCatalogueReponsitory->all();
+        // $user_catalogues = $this->userCatalogueReponsitory->all();
         // dd($provinces);
-        $config = [
-            'css' => [
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
-            ],
-            'js' => [
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
-                'admin/library/location.js'
-            ]
-        ];
+        // $config = [
+        //     'css' => [
+        //         'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+        //     ],
+        //     'js' => [
+        //         'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+        //         'admin/library/location.js'
+        //     ]
+        // ];
 
-        $config['seo'] = config('apps.user');
+        // $config['seo'] = config('apps.user');
+        $config = $this->config();
+        $config['seo'] =  [
+            'index' => [
+                'title' => 'Quản lý người dùng',
+                'table' => 'Danh sách người dùng'
+            ],
+            'create' => [
+                'title' => 'Thêm mới người dùng'
+            ],
+            'edit' => [
+                'title' => 'Cập nhật người dùng'
+            ],
+            'delete' => [
+                'title' => 'Xóa người dùng'
+            ],
+        ];
         $config['method'] = 'edit';
-        $template = 'admin.user.user.store';
+        $template = 'admin.users.store';
         return view('admin.dashboard.layout', compact(
             'template',
             'config',
             'provinces',
             'user',
-            'user_catalogues'
+            // 'user_catalogues'
         ));
     }
 
-    public function udpate(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
 
         $data = $request->except('_token', 'send', '_method');
@@ -158,6 +174,7 @@ class UserController extends Controller
             Storage::delete($currentImage);
         }
 
+        
         if ($this->UserService->update($data, $user)) {
             return redirect()->route('admin.users.index')->with('success', 'Cập nhật User thành công !');
         } else {
@@ -193,15 +210,56 @@ class UserController extends Controller
             return redirect()->route('admin.users.index')->with('error', 'Xóa User thất bại! Hãy thử lại');
         }
     }
+    // Khoá tài khoản
+public function lock(User $user)
+{
+    $user->status = 0;
+    $user->save();
 
-    // private function config(){
-    //     return [
-    //         'js' => [
-    //             'admin/js/plugins/switchery/switchery.js'
-    //         ],
-    //         'css' => [
-    //             'admin/css/plugins/switchery/switchery.css'
-    //         ]
-    //     ];
-    // }
+    return redirect()->route('admin.users.index')->with('success', 'Khóa tài khoản thành công!');
+}
+
+// Mở khóa tài khoản
+public function unlock(User $user)
+{
+    $user->status = 1;
+    $user->save();
+
+    return redirect()->route('admin.users.index')->with('success', 'Mở khóa tài khoản thành công!');
+}
+
+    private function config(){
+        return [
+            'js' => [
+                'admin/js/plugins/switchery/switchery.js'
+            ],
+            'css' => [
+                'admin/css/plugins/switchery/switchery.css'
+            ]
+        ];
+    }
+    public function locked(Request $request)
+{
+    $users = $this->UserService->getLockedUsers($request); // giả sử bạn có phương thức này trong service
+
+    $config = [
+        'js' => [
+            'admin/js/plugins/switchery/switchery.js',
+            'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
+        ],
+        'css' => [
+            'admin/css/plugins/switchery/switchery.css',
+            'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+        ],
+        'seo' => [
+            'index' => [
+                'title' => 'Danh sách tài khoản bị khóa',
+                'table' => 'Danh sách tài khoản bị khóa'
+            ],
+        ]
+    ];
+
+    $template = 'admin.users.components.locked'; // bạn cần tạo view tương ứng nếu chưa có
+    return view('admin.dashboard.layout', compact('template', 'config', 'users'));
+}
 }

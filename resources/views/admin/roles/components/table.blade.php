@@ -92,8 +92,8 @@
                                         data-sort="product_code">ID </th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
                                         data-sort="product_name">Tên vai trò</th>
-                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
-                                        data-sort="status">Trạng thái</th>
+                                    {{-- <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
+                                        data-sort="status">Trạng thái</th> --}}
                                     <th
                                         class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 action">
                                         Hành động</th>
@@ -114,11 +114,11 @@
                                                     <h6 class="product_name">{{ $item->name }}</h6>
                                                 </a>
                                             </td>
-                                            <td
+                                            {{-- <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
                                                 <span
                                                     class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Scheduled</span>
-                                            </td>
+                                            </td> --}}
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 action">
                                                 <div class="relative dropdown">
@@ -142,13 +142,15 @@
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
                                                                 <span class="align-middle">Edit</span></a>
                                                         </li>
-                                                        <li>
-                                                            <a data-modal-target="deleteModal"
-                                                                class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
-                                                                href="{{ route('admin.roles.destroy', $item->id) }}"><i data-lucide="trash-2"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Delete</span></a>
-                                                        </li>
+                                                        <form action="{{ route('admin.roles.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                class="block w-full text-left px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200">
+                                                                <i data-lucide="trash-2" class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
+                                                                <span class="align-middle">Delete</span>
+                                                            </button>
+                                                        </form>
                                                     </ul>
                                                 </div>
                                             </td>

@@ -16,14 +16,33 @@
 <!-- StarCode CSS -->
 <link rel="stylesheet" href="{{ asset('admin/css/starcode2.css') }}" />
 
+
 <link href="../backend/font-awesome/css/font-awesome.css" rel="stylesheet">
 
 {{-- <link href="../backend/css/animate.css" rel="stylesheet"> --}}
-{{-- <link href="../backend/css/style.css" rel="stylesheet"> --}}
+<link href="../backend/css/style.css" rel="stylesheet">
 {{-- <link href="../backend/css/customize.css" rel="stylesheet"> --}}
 <link href="../backend/css/customize.css" rel="stylesheet">
 <link rel="icon" href="../backend/img/logo.jpg" type="image/x-icon" />
 <link href="../backend/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+<style>
+    .badge {
+        display: inline-block;
+        padding: 0.35em 0.65em;
+        font-size: 0.75em;
+        font-weight: 600;
+        color: #fff;
+        text-align: center;
+        border-radius: 0.25rem;
+    }
+    .badge-success {
+        background-color: #28a745;
+    }
+    .badge-danger {
+        background-color: #dc3545;
+    }
+    </style>
+    
 
 @if (isset($config['css']))
     @foreach ($config['css'] as $css => $value)

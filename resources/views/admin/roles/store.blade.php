@@ -3,7 +3,7 @@
 ])
 @include('admin.dashboard.components.formError')
 @php
-    $url = $config['method'] == 'create' ? route('admin.roles.store') : route('admin.roles.udpate', $role);
+    $url = $config['method'] == 'create' ? route('admin.roles.store') : route('admin.roles.update', $role);
 @endphp
 
 

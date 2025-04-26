@@ -75,12 +75,20 @@
                                     readonly="readonly" placeholder="Select Date">
                             </div>
                         </div><!--end col-->
-                        <div class="lg:col-span-2 ltr:lg:text-right rtl:lg:text-left xl:col-span-2 xl:col-start-11">
+                        <div class="flex justify-end gap-4 xl:col-span-2 xl:col-start-11">
+                            <a href="{{ route('admin.users.locked') }}" type="button"
+                                class="inline-flex items-center gap-2 px-4 py-2 rounded text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">
+                                <i data-lucide="plus" class="size-4"></i>
+                                <span class="align-middle whitespace-nowrap">Danh sách khoá</span>
+                            </a>
+                        
                             <a href="{{ route('admin.users.create') }}" type="button"
-                                class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20"><i
-                                    data-lucide="plus" class="inline-block size-4"></i> <span class="align-middle">Thêm
-                                    mới</span></a>
+                                class="inline-flex items-center gap-2 px-4 py-2 rounded text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">
+                                <i data-lucide="plus" class="size-4"></i>
+                                <span class="align-middle whitespace-nowrap">Thêm mới</span>
+                            </a>
                         </div>
+                        
                     </div><!--end grid-->
                 </div>
                 <div class="!pt-1 card-body">
@@ -95,7 +103,7 @@
                                         <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
                                         data-sort="product_name">Email</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
-                                        data-sort="product_name">Vai trò</th>
+                                        data-sort="product_name">Số điện thoại</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
                                         data-sort="status">Trạng thái</th>
                                     <th
@@ -130,13 +138,15 @@
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">
                                                 <a href="apps-ecommerce-product-overview.html"
                                                     class="flex items-center gap-2">
-                                                    <h6 class="product_name">{{ $item->role_id }}</h6>
+                                                    <h6 class="product_name">{{ $item->phone }}</h6>
                                                 </a>
                                             </td>
-                                            <td
-                                                class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
-                                                <span
-                                                    class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Scheduled</span>
+                                            <td>
+                                                @if($item->status == 1)
+                                                    <span class="badge badge-success">Hoạt động</span>
+                                                @else
+                                                    <span class="badge badge-danger">Đã khoá</span>
+                                                @endif
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 action">
@@ -156,18 +166,39 @@
                                                         </li>
                                                         <li>
                                                             <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
-                                                                href="{{ route('admin.users.edit', $item->id) }}"><i
+                                                                href="{{ route('admin.users.edit', ['user' => $item->id]) }}"><i
                                                                     data-lucide="file-edit"
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
                                                                 <span class="align-middle">Edit</span></a>
                                                         </li>
+                                                        <form action="{{ route('admin.users.destroy', ['user' => $item->id]) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="block w-full text-left px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200">
+                                                                <i data-lucide="trash-2" class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
+                                                                <span class="align-middle">Delete</span>
+                                                            </button>
+                                                        </form>
                                                         <li>
-                                                            <a data-modal-target="deleteModal"
-                                                                class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
-                                                                href="{{ route('admin.users.destroy', $item->id) }}"><i
-                                                                    data-lucide="trash-2"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Delete</span></a>
+                                                            @if($item->status == 1)
+                                                            <form action="{{ route('admin.users.lock', ['user' => $item->id]) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn khoá tài khoản không?')" style="display:inline;">
+                                                                @csrf
+                                                                @method('PATCH')
+                                                                <button type="submit" class="block w-full text-left px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200">
+                                                                    <i data-lucide="lock" class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
+                                                                    <span class="align-middle">Khoá tài khoản</span>
+                                                                </button>
+                                                            </form>
+                                                        @else
+                                                            <form action="{{ route('admin.users.unlock', ['user' => $item->id]) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn mở khoá tài khoản không?')" style="display:inline;">
+                                                                @csrf
+                                                                @method('PATCH')
+                                                                <button type="submit" class="block w-full text-left px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200">
+                                                                    <i data-lucide="unlock" class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
+                                                                    <span class="align-middle">Mở khoá tài khoản</span>
+                                                                </button>
+                                                            </form>
+                                                        @endif
                                                         </li>
                                                     </ul>
                                                 </div>
