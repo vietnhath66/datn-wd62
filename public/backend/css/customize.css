@@ -2,6 +2,10 @@
     border-left: 6px solid #19aa8d;
 }
 
+.rotate-90 {
+    transform: rotate(90deg);
+}
+
 .mb20{
     margin-bottom: 20px;
 }

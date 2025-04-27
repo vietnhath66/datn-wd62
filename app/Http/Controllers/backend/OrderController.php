@@ -19,6 +19,7 @@ use App\Models\Brand;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Language;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -150,12 +151,43 @@ class OrderController extends Controller
         if (!$order) {
             return redirect()->route('admin.order.index')->with('error', 'Đơn hàng không tồn tại');
         }
+        // dd($request->all());
+        // Xác thực dữ liệu
+        $request->validate([
+            'status' => 'required|string|in:pending,processing,shipping,delivered,completed,cancelled,refunded,failed',
+            'payment_method' => 'required|string|in:pending,paid,failed,refunded',
+        ]);
+        // Kiểm tra và áp dụng điều kiện chuyển đổi trạng thái
+        if ($order->status == 'pending' && !in_array($request->status, ['processing', 'cancelled'])) {
+            return back()->with('error', 'Không thể chuyển trạng thái từ "Chờ xử lý" sang trạng thái này.');
+        }
 
+        if ($order->status == 'processing' && !in_array($request->status, ['shipping', 'cancelled'])) {
+            return back()->with('error', 'Không thể chuyển trạng thái từ "Đang xử lý" sang trạng thái này.');
+        }
+
+        if ($order->status == 'shipping' && !in_array($request->status, ['delivered', 'failed'])) {
+            return back()->with('error', 'Không thể chuyển trạng thái từ "Đang giao hàng" sang trạng thái này.');
+        }
+
+        if ($order->status == 'delivered' || $order->status == 'completed' || $order->status == 'cancelled' || $order->status == 'refunded' || $order->status == 'failed') {
+            return back()->with('error', 'Không thể thay đổi trạng thái của đơn hàng sau khi đã hoàn tất, hủy, hoàn tiền hoặc thất bại.');
+        }
+
+        // Kiểm tra điều kiện trạng thái thanh toán khi cập nhật
+        if ($request->status == 'delivered' && $request->payment_method != 'paid') {
+            return back()->with('error', 'Khi đơn hàng đã giao, trạng thái thanh toán phải là "Đã thanh toán".');
+        }
+
+        if ($request->status == 'shipping' && !in_array($request->payment_method, ['pending', 'paid'])) {
+            return back()->with('error', 'Khi đơn hàng đang giao, trạng thái thanh toán phải là "Chờ thanh toán" hoặc "Đã thanh toán".');
+        }
+
+        if ($request->status == 'completed' && $request->payment_method != 'paid' && $request->payment_method != 'refunded') {
+            return back()->with('error', 'Khi đơn hàng đã hoàn tất, trạng thái thanh toán phải là "Đã thanh toán" hoặc "Đã hoàn tiền".');
+        }
         // Cập nhật thông tin đơn hàng
-        $order->update($request->only([
-            'status',
-            'payment_status'
-        ]));
+        $order->update($request->only(['payment_method', 'status']));
 
         // Cập nhật sản phẩm trong đơn hàng nếu cần
         // if ($request->has('order_items')) {
@@ -186,6 +218,7 @@ class OrderController extends Controller
             'orders.total',
             'orders.status',
             'orders.payment_status',
+            'orders.payment_method',
             'orders.neighborhood',
             'orders.barcode',
             'orders.province',

@@ -25,7 +25,7 @@ class Order extends Model
         'shop_confirmed_at',
         'note',
         'payment_status',
-        'payment_status',
+        'payment_method',
         'accepted_at',
         'shipped_at',
         'delivered_at',
