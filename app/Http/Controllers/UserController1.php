@@ -15,13 +15,12 @@ class UserController1 extends Controller
     {
         $user = Auth::user();
 
-
         // Validate dữ liệu
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|min:2|regex:/^[\p{L}\s]+$/u',
             'phone' => 'required|string|min:10|regex:/^[0-9\s]+$/',
             'email' => 'required|email',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // optional but must be image
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -35,14 +34,13 @@ class UserController1 extends Controller
 
         // Xử lý avatar nếu có upload
         if ($request->hasFile('avatar')) {
-            // Xoá avatar cũ nếu có
-            if ($user->avt && Storage::disk('public')->exists('avatars/' . $user->avt)) {
-                Storage::disk('public')->delete('avatars/' . $user->avt);
+            $oldAvatarPath = $user->getOriginal('avt');
+            if ($oldAvatarPath && Storage::disk('public')->exists($oldAvatarPath)) {
+                Storage::disk('public')->delete($oldAvatarPath);
             }
 
-            // Lưu avatar mới
             $avatarPath = $request->file('avatar')->store('avatars', 'public');
-            $user->avt = basename($avatarPath);
+            $user->avt = $avatarPath;
         }
 
         $user->save();

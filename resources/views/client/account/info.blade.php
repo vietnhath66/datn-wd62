@@ -19,7 +19,7 @@
                 <label>Ảnh đại diện</label>
                 <input type="file" id="avatar" name="avatar" accept="image/*" />
                 @if (Auth::user()->avt)
-                    <img src="{{ asset('storage/avatars/' .  Auth::user()->avt) }}" alt="Avatar" width="100" />
+                    <img src="{{ asset('storage/' . Auth::user()->avt) }}" alt="Avatar" width="100" />
                 @endif
                 <div class="error" id="avatarError">
                     Vui lòng chọn một file ảnh.

@@ -189,10 +189,13 @@
                                     </h5>
 
                                     @forelse ($product->reviews()->latest()->paginate(5) as $review)
+
                                         <div class="flex-w flex-t p-b-40 {{ !$loop->last ? 'bor18' : '' }}">
                                             <div class="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
-                                                <img src="{{ optional($review->user)->avatar ? Storage::url($review->user->avatar) : asset('images/avatar-default.png') }}"
-                                                    alt="{{ optional($review->user)->name }}">
+
+                                                <img src="{{ optional($review->user)->avt ? Storage::url($review->user->avt) : asset('client/images/avatar-2.png') }}"
+                                                    alt="{{ optional($review->user)->name ?? 'Người dùng ẩn danh' }}">
+
                                             </div>
                                             <div class="size-207">
                                                 <div class="flex-w flex-sb-m p-b-17">

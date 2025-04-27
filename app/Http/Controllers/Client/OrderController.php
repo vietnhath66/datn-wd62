@@ -285,7 +285,7 @@ class OrderController extends Controller
                 $redirectUrl = route($returnRouteName);
                 // $ipnUrl = route($notifyRouteName);
                 // --- Thay đổi TẠM THỜI cho testing ---
-                $ngrokForwardingUrl = "https://b8c4-2001-ee0-40e1-b7bf-fce7-5306-f1f4-1a27.ngrok-free.app"; // <<-- DÁN URL NGROK HTTPS CỦA BẠN VÀO ĐÂY
+                $ngrokForwardingUrl = "https://1cd6-2001-ee0-40e1-7d37-8016-3c4b-e794-f318.ngrok-free.app"; // <<-- DÁN URL NGROK HTTPS CỦA BẠN VÀO ĐÂY
                 $ipnRouteUri = "/momo/payment/notify"; // <<-- Đảm bảo đây là URI bạn định nghĩa trong routes/web.php
                 $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
                 Log::info('Using temporary Ngrok IPN URL: ' . $ipnUrl); // Log để kiểm tra
@@ -543,7 +543,7 @@ class OrderController extends Controller
             $redirectUrl = route($returnRouteName);
             // $ipnUrl = route($notifyRouteName);
             // --- Thay đổi TẠM THỜI cho testing ---
-            $ngrokForwardingUrl = "https://b8c4-2001-ee0-40e1-b7bf-fce7-5306-f1f4-1a27.ngrok-free.app"; // <<-- DÁN URL NGROK HTTPS CỦA BẠN VÀO ĐÂY
+            $ngrokForwardingUrl = "https://1cd6-2001-ee0-40e1-7d37-8016-3c4b-e794-f318.ngrok-free.app"; // <<-- DÁN URL NGROK HTTPS CỦA BẠN VÀO ĐÂY
             $ipnRouteUri = "/momo/payment/notify"; // <<-- Đảm bảo đây là URI bạn định nghĩa trong routes/web.php
             $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
             Log::info('Using temporary Ngrok IPN URL: ' . $ipnUrl); // Log để kiểm tra

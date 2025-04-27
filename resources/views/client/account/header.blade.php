@@ -1,6 +1,6 @@
 <div class="user-info">
     <div class="avatar">
-        <img src="{{ asset('storage/avatars/' . Auth::user()->avt) }}" alt="" class="rounded-circle" width="90"
+        <img src="{{ asset('storage/' . Auth::user()->avt) }}" alt="" class="rounded-circle" width="90"
             height="90">
     </div>
     <div class="details">
