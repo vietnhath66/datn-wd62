@@ -268,6 +268,32 @@
     .address-section .form-actions .cancel-btn:hover {
         background: #dfe6e9;
     }
+
+    .select2-container--default .select2-selection--single {
+    height: 50px !important; /* CHÍNH chỗ để set chiều cao */
+    padding: 10px 12px;
+    border-radius: 4px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center; /* căn giữa văn bản theo chiều dọc */
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 1.2;
+    padding-left: 0; /* tránh padding đè lên text */
+    color: #495057;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 50px !important;
+}
+
+select:disabled {
+    background-color: #f0f0f0;
+    color: #999;
+    cursor: not-allowed;
+}
 </style>
 
 <div id="snackbar" class="snackbar"></div>
@@ -283,43 +309,36 @@
         @csrf
         <div class="form-group">
             <label>Địa chỉ cụ thể</label>
-            <input type="text" id="address" placeholder="Nhập địa chỉ cụ thể của bạn" name="address" required minlength="5" />
+            <input type="text" name="address" required placeholder="Nhập địa chỉ cụ thể" />
         </div>
-        <div class="form-group">
-            <label>Phường/Xã</label>
 
-            <select id="ward" name="neighborhood" required>
-                <option value="">Chọn phường/xã</option>
-                @foreach ($wards as $ward)
-                    <option value="{{ $ward->name }}">{{ $ward->name }}</option>
-                @endforeach
-
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Quận/Huyện</label>
-            <select id="district" name="district" required>
-                <option value="">Chọn quận/huyện</option>
-                @foreach ($districts as $district)
-                    <option value="{{ $district->name }}">{{ $district->name }}</option>
-                @endforeach
-            </select>
-        </div>
         <div class="form-group">
             <label>Tỉnh/Thành phố</label>
             <select id="city" name="city" required>
                 <option value="">Chọn tỉnh/thành phố</option>
                 @foreach ($provinces as $province)
-                    <option value="{{ $province->name }}">{{ $province->name }}</option>
+                    <option value="{{ $province->name }}" data-code="{{ $province->code }}">{{ $province->name }}</option>
                 @endforeach
             </select>
         </div>
 
-        <div class="form-actions">
-            <button type="button" class="cancel-btn">Hủy</button>
-            <button type="submit" class="save-btn">Lưu thay đổi</button>
+        <div class="form-group">
+            <label>Quận/Huyện</label>
+            <select id="district" name="district" required disabled>
+                <option value="">Chọn quận/huyện</option>
+            </select>
         </div>
 
+        <div class="form-group">
+            <label>Phường/Xã</label>
+            <select id="ward" name="neighborhood" required disabled>
+                <option value="">Chọn phường/xã</option>
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit">Lưu thay đổi</button>
+        </div>
     </form>
 </div>
 <script>
@@ -382,6 +401,166 @@
                 })
                 .catch(err => {
                     showToast('error-toast', 'Không thể gửi yêu cầu.');
+                });
+        });
+    });
+</script>
+{{-- <script>
+    $(document).ready(function() {
+        $('#city').select2({
+            placeholder: 'Chọn tỉnh/thành phố',
+            allowClear: true,
+            width: '100%' // rất quan trọng để giữ giao diện full như form-control
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('#district').select2({
+            placeholder: 'Chọn quận/huyện',
+            allowClear: true,
+            width: '100%' // rất quan trọng để giữ giao diện full như form-control
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#ward').select2({
+            placeholder: 'Chọn phường/xã',
+            allowClear: true,
+            width: '100%' // rất quan trọng để giữ giao diện full như form-control
+        });
+    });
+</script> --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('addressForm');
+
+        form.addEventListener('submit', function (e) {
+            // Đợi form submit thành công rồi reset form
+            // Nếu bạn redirect lại thì dùng đoạn này ở trang load lại
+
+            // Reset sau 500ms nếu form không redirect (AJAX hoặc không có lỗi)
+            setTimeout(() => {
+                form.reset();
+
+                // Nếu bạn dùng Select2 hoặc plugin khác thì cần reset thủ công
+                $('#city').val('').trigger('change');
+                $('#district').val('').trigger('change');
+                $('#ward').val('').trigger('change');
+            }, 500);
+        });
+    });
+</script>
+{{-- <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const citySelect = $('#city');
+        const districtSelect = $('#district');
+        const wardSelect = $('#ward');
+
+        // Khởi tạo select2
+        citySelect.select2();
+        districtSelect.select2();
+        wardSelect.select2();
+
+        // Kiểm tra xem có giá trị không (old value)
+        const hasCity = citySelect.val() !== '';
+        const hasDistrict = districtSelect.val() !== '';
+        const hasWard = wardSelect.val() !== '';
+
+        districtSelect.prop('disabled', !hasCity);
+        wardSelect.prop('disabled', !hasDistrict);
+
+        // Khi chọn Tỉnh
+        citySelect.on('change', function () {
+            districtSelect.val('').trigger('change');
+            wardSelect.val('').trigger('change');
+
+            districtSelect.prop('disabled', !this.value);
+            wardSelect.prop('disabled', true);
+        });
+
+        // Khi chọn Quận
+        districtSelect.on('change', function () {
+            wardSelect.val('').trigger('change');
+            wardSelect.prop('disabled', !this.value);
+        });
+    });
+</script> --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const citySelect = document.getElementById('city');
+        const districtSelect = document.getElementById('district');
+        const wardSelect = document.getElementById('ward');
+
+        // Khi thay đổi tỉnh (city)
+        citySelect.addEventListener('change', function() {
+            const cityCode = this.selectedOptions[0].dataset.code; // Lấy mã thành phố từ data-code
+
+            // Nếu chưa chọn thành phố, vô hiệu hóa quận huyện và phường xã
+            if (!cityCode) {
+                districtSelect.disabled = true;
+                districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+                wardSelect.disabled = true;
+                wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+                return;
+            }
+
+            // Bật quận huyện và gọi API lấy quận huyện theo mã thành phố
+            districtSelect.disabled = false;
+            fetch(`/get-districts/${cityCode}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        districtSelect.innerHTML = `<option value="">${data.message}</option>`;
+                        wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+                        wardSelect.disabled = true;
+                    } else {
+                        districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+                        data.forEach(item => {
+                            districtSelect.innerHTML += `<option value="${item.full_name}" data-code="${item.code}">${item.full_name}</option>`;
+                        });
+                        wardSelect.disabled = true;
+                        wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi khi lấy quận/huyện:', error);
+                    districtSelect.innerHTML = '<option value="">Lỗi khi tải quận/huyện</option>';
+                    wardSelect.disabled = true;
+                    wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+                });
+        });
+
+        // Khi thay đổi quận huyện
+        districtSelect.addEventListener('change', function() {
+            const districtCode = this.selectedOptions[0].dataset.code; // Lấy mã quận huyện từ data-code
+
+            // Nếu chưa chọn quận huyện, vô hiệu hóa phường xã
+            if (!districtCode) {
+                wardSelect.disabled = true;
+                wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+                return;
+            }
+
+            // Bật phường xã và gọi API lấy phường xã theo mã quận huyện
+            wardSelect.disabled = false;
+            fetch(`/get-wards/${districtCode}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        wardSelect.innerHTML = `<option value="">${data.message}</option>`;
+                    } else {
+                        wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+                        data.forEach(item => {
+                            wardSelect.innerHTML += `<option value="${item.full_name}" data-code="${item.code}">${item.full_name}</option>`;
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi khi lấy phường/xã:', error);
+                    wardSelect.innerHTML = '<option value="">Lỗi khi tải phường/xã</option>';
                 });
         });
     });

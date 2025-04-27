@@ -9,6 +9,7 @@ use Auth;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
+use App\Models\Attribute;
 use Log;
 use Validator;
 
@@ -63,13 +64,19 @@ class ProductsController extends Controller
 
         $products = $productsQuery->paginate(16)->withQueryString();
 
+
+        $products = Product::with('variants')->get(); // hoặc bạn có thể thay đổi query theo ý bạn
+
+        $colors = Attribute::where('attribute_catalogue_id', 10)->get();
+        $sizes = Attribute::where('attribute_catalogue_id', 11)->get();
+
         return view('client.productss.productss', [
             'products' => $products,
             'pageTitle' => $pageTitle,
             'categories' => $categories,
             'selectedCategory' => $selectedCategory,
             'selectedCategoryId' => $selectedCategoryId
-        ]);
+        ],compact('products', 'colors', 'sizes'));
     }
 
 
