@@ -22,10 +22,14 @@
                         {{-- @include('admin.products.product.components.filter') --}}
                         <div class="xl:col-span-2">
                             <div>
-                                <input type="text"
-                                    class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
-                                    data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true"
-                                    readonly="readonly" placeholder="Select Date">
+                                <form method="GET" action="{{ route('admin.order.index') }}" class="mb-4">
+                                    <div class="flex items-center space-x-2">
+                                        <input type="search" name="order_id" 
+                                            class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
+                                            data-provider="flatpickr" placeholder="Nhập mã đơn hàng" value="{{ request()->get('order_idid') }}">
+                                        
+                                    </div>
+                                </form>
                             </div>
                         </div><!--end col-->
                     </div><!--end grid-->
