@@ -28,55 +28,99 @@ class ProductsController extends Controller
             ->orderBy('name', 'asc')
             ->get();
 
-        $productsQuery = Product::query()->where('publish', 1);
+        $productsQuery = Product::query()
+            ->where('publish', 1)
+            ->with('variants');
 
-        $selectedCategoryId = $request->query('category');
-        $filterType = $request->query('type');
-        $selectedCategory = null;
+
         $pageTitle = 'Tất Cả Sản Phẩm';
+        $selectedCategory = null;
+        $selectedCategoryId = $request->query('category');
 
         if ($selectedCategoryId && is_numeric($selectedCategoryId)) {
             $selectedCategory = ProductCatalogue::find($selectedCategoryId);
             if ($selectedCategory) {
                 $pageTitle = $selectedCategory->name;
                 $productsQuery->where('product_catalogue_id', $selectedCategoryId);
-                $filterType = null;
             } else {
                 $selectedCategoryId = null;
             }
         }
 
+        $filterType = $request->query('type');
 
         if ($filterType === 'new') {
             $pageTitle = 'Sản Phẩm Mới';
             $productsQuery->where('is_new', 1);
             $productsQuery->orderBy('created_at', 'desc');
+
         } elseif ($filterType === 'sale') {
             $pageTitle = 'Sản Phẩm Sale';
             $productsQuery->where('is_sale', 1);
             $productsQuery->orderBy('updated_at', 'desc');
+
         } elseif ($filterType === 'trend') {
             $pageTitle = 'Sản Phẩm Hot Trend';
             $productsQuery->where('is_trending', 1);
             $productsQuery->orderBy('updated_at', 'desc');
+
         }
 
 
-        $products = $productsQuery->paginate(16)->withQueryString();
+        if ($request->has('sort')) {
+            $sortParam = explode('_', $request->query('sort'));
+            if (count($sortParam) == 2) {
+                $sortBy = $sortParam[0];
+                $sortDirection = $sortParam[1];
+
+                $allowedSortColumns = ['name', 'price', 'created_at', 'updated_at'];
+                if (in_array($sortBy, $allowedSortColumns)) {
+                    $sortDirection = strtolower($sortDirection) === 'asc' ? 'asc' : 'desc';
+                    $productsQuery->reorder($sortBy, $sortDirection);
+                }
+            }
+        } elseif (!$filterType) {
+
+            $productsQuery->orderBy('created_at', 'desc');
+        }
 
 
-        $products = Product::with('variants')->get(); // hoặc bạn có thể thay đổi query theo ý bạn
+        $selectedColors = $request->query('colors', []);
+        $selectedSizes = $request->query('sizes', []);
+
+        if (!empty($selectedColors) || !empty($selectedSizes)) {
+            $productsQuery->whereHas('variants', function ($query) use ($selectedColors, $selectedSizes) {
+
+                if (!empty($selectedColors)) {
+                    $query->whereIn('product_variants.name_variant_color', $selectedColors);
+                }
+
+                if (!empty($selectedSizes)) {
+                    $query->whereIn('product_variants.name_variant_size', $selectedSizes);
+                }
+            });
+        }
+
+
+        if ($filterType) {
+            $products = $productsQuery->get();
+        } else {
+            $products = $productsQuery->paginate(16)->withQueryString();
+        }
 
         $colors = Attribute::where('attribute_catalogue_id', 10)->get();
         $sizes = Attribute::where('attribute_catalogue_id', 11)->get();
 
-        return view('client.productss.productss', [
-            'products' => $products,
-            'pageTitle' => $pageTitle,
-            'categories' => $categories,
-            'selectedCategory' => $selectedCategory,
-            'selectedCategoryId' => $selectedCategoryId
-        ],compact('products', 'colors', 'sizes'));
+
+        return view('client.productss.productss', compact(
+            'products',
+            'pageTitle',
+            'categories',
+            'selectedCategory',
+            'selectedCategoryId',
+            'colors',
+            'sizes'
+        ));
     }
 
 

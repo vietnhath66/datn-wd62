@@ -2,31 +2,6 @@
 <div class="bg0 m-t-23 p-t-20 p-b-140">
     <div class="container">
         <div class="flex-w flex-sb-m">
-            {{-- <div class="flex-w flex-l-m filter-tope-group m-tb-10">
-                <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
-                    All Products
-                </button>
-
-                <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women">
-                    Áo
-                </button>
-
-                <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
-                    Quần
-                </button>
-
-                <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".bag">
-                    Bag
-                </button>
-
-                <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".shoes">
-                    Shoes
-                </button>
-
-                <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".watches">
-                    Watches
-                </button>
-            </div> --}}
             <div>
                 <h3 class="ltext-103 cl5">
                     {{ $pageTitle ?? 'Tất Cả Sản Phẩm' }}
@@ -103,7 +78,7 @@
                     <div class="filter-col1 p-r-15 p-b-27">
                         <div class="mtext-102 cl2 p-b-15">Size</div>
                         @foreach ($colors as $color)
-                            <label style="display: inline;">
+                            <label>
                                 <input type="checkbox" name="sizes[]" value="{{ Str::slug($color->name) }}">
                                 {{ $color->name }}
                             </label><br>
@@ -113,7 +88,7 @@
                     <div>
                         <div class="mtext-102 cl2 p-b-15">Màu sắc</div>
                         @foreach ($sizes as $size)
-                            <label style="display: inline;">
+                            <label>
                                 <input type="checkbox" name="colors[]" value="{{ Str::slug($size->name) }}">
                                 {{ $size->name }}
                             </label><br>
@@ -129,7 +104,7 @@
 
         <div class="row isotope-grid">
             @foreach ($products as $product)
-            @php
+                @php
                     $colorClasses = '';
                     $sizeClasses = '';
                     foreach ($product->variants as $variant) {
@@ -141,7 +116,8 @@
                         }
                     }
                 @endphp
-                <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women {{ $colorClasses }} {{ $sizeClasses }}">
+                <div
+                    class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women {{ $colorClasses }} {{ $sizeClasses }}">
                     <!-- Block2 -->
                     <div class="block2">
                         <div class="block2-pic hov-img0">

@@ -270,30 +270,33 @@
     }
 
     .select2-container--default .select2-selection--single {
-    height: 50px !important; /* CHÍNH chỗ để set chiều cao */
-    padding: 10px 12px;
-    border-radius: 4px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    display: flex;
-    align-items: center; /* căn giữa văn bản theo chiều dọc */
-}
+        height: 50px !important;
+        /* CHÍNH chỗ để set chiều cao */
+        padding: 10px 12px;
+        border-radius: 4px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        display: flex;
+        align-items: center;
+        /* căn giữa văn bản theo chiều dọc */
+    }
 
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 1.2;
-    padding-left: 0; /* tránh padding đè lên text */
-    color: #495057;
-}
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 1.2;
+        padding-left: 0;
+        /* tránh padding đè lên text */
+        color: #495057;
+    }
 
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 50px !important;
-}
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 50px !important;
+    }
 
-select:disabled {
-    background-color: #f0f0f0;
-    color: #999;
-    cursor: not-allowed;
-}
+    select:disabled {
+        background-color: #f0f0f0;
+        color: #999;
+        cursor: not-allowed;
+    }
 </style>
 
 <div id="snackbar" class="snackbar"></div>
@@ -317,7 +320,8 @@ select:disabled {
             <select id="city" name="city" required>
                 <option value="">Chọn tỉnh/thành phố</option>
                 @foreach ($provinces as $province)
-                    <option value="{{ $province->name }}" data-code="{{ $province->code }}">{{ $province->name }}</option>
+                    <option value="{{ $province->name }}" data-code="{{ $province->code }}">{{ $province->name }}
+                    </option>
                 @endforeach
             </select>
         </div>
@@ -337,7 +341,7 @@ select:disabled {
         </div>
 
         <div class="form-actions">
-            <button type="submit">Lưu thay đổi</button>
+            <button type="submit" class="save-btn">Lưu thay đổi</button>
         </div>
     </form>
 </div>
@@ -434,10 +438,10 @@ select:disabled {
     });
 </script> --}}
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('addressForm');
 
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', function(e) {
             // Đợi form submit thành công rồi reset form
             // Nếu bạn redirect lại thì dùng đoạn này ở trang load lại
 
@@ -519,7 +523,8 @@ select:disabled {
                     } else {
                         districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
                         data.forEach(item => {
-                            districtSelect.innerHTML += `<option value="${item.full_name}" data-code="${item.code}">${item.full_name}</option>`;
+                            districtSelect.innerHTML +=
+                                `<option value="${item.full_name}" data-code="${item.code}">${item.full_name}</option>`;
                         });
                         wardSelect.disabled = true;
                         wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
@@ -554,7 +559,8 @@ select:disabled {
                     } else {
                         wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
                         data.forEach(item => {
-                            wardSelect.innerHTML += `<option value="${item.full_name}" data-code="${item.code}">${item.full_name}</option>`;
+                            wardSelect.innerHTML +=
+                                `<option value="${item.full_name}" data-code="${item.code}">${item.full_name}</option>`;
                         });
                     }
                 })
