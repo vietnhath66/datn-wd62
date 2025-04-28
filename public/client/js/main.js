@@ -179,7 +179,10 @@
                 },
                 price: function (itemElem) {
                     return parseFloat(
-                        $(itemElem).find(".product-price").text().replace(/[^\d]/g, "")
+                        $(itemElem)
+                            .find(".product-price")
+                            .text()
+                            .replace(/[^\d]/g, "")
                     );
                 },
             },
@@ -201,49 +204,52 @@
         });
 
         // 👉 Toggle filter panel
-        $('.js-show-filter').on('click', function () {
-            $(this).toggleClass('show-filter');
-            $('.panel-filter').slideToggle(400);
+        $(".js-show-filter").on("click", function () {
+            $(this).toggleClass("show-filter");
+            $(".panel-filter").slideToggle(400);
         });
 
-        $('input[name="sizes[]"], input[name="colors[]"]').on('change', function () {
-            let selectedSizes = $('input[name="sizes[]"]:checked')
-                .map(function () {
-                    return '.size-' + $(this).val();
-                })
-                .get();
+        $('input[name="sizes[]"], input[name="colors[]"]').on(
+            "change",
+            function () {
+                let selectedSizes = $('input[name="sizes[]"]:checked')
+                    .map(function () {
+                        return ".size-" + $(this).val();
+                    })
+                    .get();
 
-            let selectedColors = $('input[name="colors[]"]:checked')
-                .map(function () {
-                    return '.color-' + $(this).val();
-                })
-                .get();
+                let selectedColors = $('input[name="colors[]"]:checked')
+                    .map(function () {
+                        return ".color-" + $(this).val();
+                    })
+                    .get();
 
-            // 👉 Kết hợp cả màu và size
-            let filters = [];
+                // 👉 Kết hợp cả màu và size
+                let filters = [];
 
-            // Nếu có cả màu và size thì ghép lại từng cặp
-            if (selectedSizes.length && selectedColors.length) {
-                selectedSizes.forEach(function (size) {
-                    selectedColors.forEach(function (color) {
-                        filters.push(size + color);
+                // Nếu có cả màu và size thì ghép lại từng cặp
+                if (selectedSizes.length && selectedColors.length) {
+                    selectedSizes.forEach(function (size) {
+                        selectedColors.forEach(function (color) {
+                            filters.push(size + color);
+                        });
                     });
-                });
-            } else if (selectedSizes.length) {
-                filters = selectedSizes;
-            } else if (selectedColors.length) {
-                filters = selectedColors;
+                } else if (selectedSizes.length) {
+                    filters = selectedSizes;
+                } else if (selectedColors.length) {
+                    filters = selectedColors;
+                }
+
+                let filterValue = filters.length ? filters.join(", ") : "*";
+
+                // 👉 Apply filter
+                $grid.isotope({ filter: filterValue });
+
+                // 👉 Hiện hoặc ẩn "Không có sản phẩm"
+                let visibleItems = $grid.data("isotope").filteredItems.length;
+                $("#no-products").toggle(visibleItems === 0);
             }
-
-            let filterValue = filters.length ? filters.join(', ') : '*';
-
-            // 👉 Apply filter
-            $grid.isotope({ filter: filterValue });
-
-            // 👉 Hiện hoặc ẩn "Không có sản phẩm"
-            let visibleItems = $grid.data('isotope').filteredItems.length;
-            $('#no-products').toggle(visibleItems === 0);
-        });
+        );
     });
 
     /*==================================================================

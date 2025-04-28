@@ -13,19 +13,18 @@ class ProductController extends Controller
 
     public function viewSearch(Request $request)
     {
-        $query = $request->input('search'); // Lấy từ khóa từ form
-        $products = Product::where('name', 'LIKE', "%{$query}%")->get(); // Tìm sản phẩm theo tên
+        $query = $request->input('search'); 
+        $products = Product::where('name', 'LIKE', "%{$query}%")->get(); 
 
-        return view('client.products.search', compact('products', 'query')); // Trả về view kết quả
+        return view('client.products.search', compact('products', 'query')); 
     }
 
 
     public function index()
-{
-    $products = Product::all(); // Lấy tất cả sản phẩm từ bảng products
+    {
+        $products = Product::all(); 
 
-    // Nếu bạn có thêm bảng size, color... có thể load thêm bằng with() nếu cần
-    return view('client.home.home', compact('products'));
-}
+        return view('client.home.home', compact('products'));
+    }
 
 }

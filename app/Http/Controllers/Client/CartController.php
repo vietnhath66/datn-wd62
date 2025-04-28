@@ -18,41 +18,36 @@ class CartController extends Controller
     public function viewCart()
     {
         if (!Auth::check()) {
-            return redirect()->route('login')->with('warning', 'Vui lòng đăng nhập để xem giỏ hàng.'); // CHECK NAME
+            return redirect()->route('login')->with('warning', 'Vui lòng đăng nhập để xem giỏ hàng.'); 
         }
 
         $userId = Auth::id();
-        // Lấy đối tượng Cart chính
         $cart = Cart::where('user_id', $userId)->first();
 
-        $activeCartItems = collect(); // Khởi tạo collection rỗng
+        $activeCartItems = collect(); 
         $cartTotal = 0;
 
         if ($cart) {
-            // --- TRUY VẤN RIÊNG CÁC ITEM CÓ STATUS = 'active' ---
             $activeCartItems = CartDetail::where('cart_id', $cart->id)
-                ->where('status', 'active') // <-- Lọc theo status
-                ->with([ // Load relationship cần thiết
+                ->where('status', 'active') 
+                ->with([ 
                     'productVariant' => function ($query) {
-                        $query->select(/*...*/);
-                    }, // Chọn cột cần thiết
+                        $query->select();
+                    }, 
                     'productVariant.products:id,name,image',
                     'product:id,name,image'
                 ])
                 ->get();
-            // --- KẾT THÚC TRUY VẤN RIÊNG ---
 
-            // Tính tổng tiền chỉ dựa trên các item active
             $cartTotal = $activeCartItems->sum(function ($item) {
                 return ($item->quantity ?? 0) * ($item->price ?? 0);
             });
         }
 
-        // Truyền cả $cart và danh sách item đã lọc $activeCartItems sang view
         return view('client.cart.cart', [
-            'cart' => $cart,                 // <-- Giữ lại biến $cart
-            'cartItems' => $activeCartItems, // <-- Truyền danh sách item đã lọc (dùng tên $cartItems trong view)
-            'cartTotal' => $cartTotal,       // <-- Tổng tiền đã lọc
+            'cart' => $cart,                 
+            'cartItems' => $activeCartItems, 
+            'cartTotal' => $cartTotal,       
         ]);
     }
 

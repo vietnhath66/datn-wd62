@@ -18,6 +18,11 @@ class ProductsController extends Controller
 {
     public function index(Request $request)
     {
+        $productsQuery = Product::query()
+            ->where('publish', 1)
+            ->with('variants') 
+            ->with('reviews');
+
         $categories = ProductCatalogue::where('publish', 1)
             ->where('parent_id', 0)
             ->with([
@@ -108,8 +113,8 @@ class ProductsController extends Controller
             $products = $productsQuery->paginate(16)->withQueryString();
         }
 
-        $colors = Attribute::where('attribute_catalogue_id', 10)->get();
-        $sizes = Attribute::where('attribute_catalogue_id', 11)->get();
+        $colors = Attribute::where('attribute_catalogue_id', 11)->get();
+        $sizes = Attribute::where('attribute_catalogue_id', 10)->get();
 
 
         return view('client.productss.productss', compact(
@@ -119,7 +124,8 @@ class ProductsController extends Controller
             'selectedCategory',
             'selectedCategoryId',
             'colors',
-            'sizes'
+            'sizes',
+            'request'
         ));
     }
 
@@ -128,16 +134,11 @@ class ProductsController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        // Lấy các biến thể của sản phẩm với color và size
         $variants = ProductVariant::where('product_id', $id)
-            ->whereNull('deleted_at')  // Lọc các bản không bị xóa
+            ->whereNull('deleted_at')  
             ->get();
-        // dd($variants);
-        // Lấy tất cả các màu có sẵn (unique)
         $colors = $variants->pluck('name_variant_color')->unique();
 
-        // Truyền dữ liệu vào view
-        // dd($variants);
         return view('client.productss.detailProducts', compact('product', 'variants', 'colors'));
 
     }
@@ -172,13 +173,6 @@ class ProductsController extends Controller
         }
 
 
-        // $existingReview = Review::where('user_id', Auth::id())
-        //     ->where('product_id', $product->id)
-        //     ->first();
-        // if ($existingReview) {
-        //     return redirect()->route('client.product.show', $product->id)
-        //         ->with('warning', 'Bạn đã đánh giá sản phẩm này rồi.');
-        // }
 
 
         try {

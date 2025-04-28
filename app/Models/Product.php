@@ -63,5 +63,10 @@ class Product extends Model
     {
         return $this->hasMany(Review::class, 'product_id');
     }
+
+    public function getAverageRatingAttribute()
+    {
+        return (float) $this->reviews()->avg('rating') ?? 0;
+    }
 }
 

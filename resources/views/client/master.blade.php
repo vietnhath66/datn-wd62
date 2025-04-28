@@ -108,6 +108,7 @@
 <script src="{{ asset('client/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
 <!--===============================================================================================-->
 <script src="{{ asset('client/vendor/select2/select2.min.js') }}"></script>
+<script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
 <script>
     $(".js-select2").each(function() {
         $(this).select2({
