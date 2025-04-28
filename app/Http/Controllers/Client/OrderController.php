@@ -266,6 +266,8 @@ class OrderController extends Controller
                     throw new \Exception('Lỗi cấu hình URL MoMo.');
                 }
                 $redirectUrl = route($returnRouteName);
+
+                // Sử dụng ngrok
                 $ngrokForwardingUrl = "https://1cd6-2001-ee0-40e1-7d37-8016-3c4b-e794-f318.ngrok-free.app";
                 $ipnRouteUri = "/momo/payment/notify";
                 $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
@@ -485,6 +487,7 @@ class OrderController extends Controller
                 throw new \Exception('Lỗi cấu hình URL MoMo.');
             }
             $redirectUrl = route($returnRouteName);
+            // Sử dụng ngrok
             $ngrokForwardingUrl = "https://1cd6-2001-ee0-40e1-7d37-8016-3c4b-e794-f318.ngrok-free.app";
             $ipnRouteUri = "/momo/payment/notify";
             $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;

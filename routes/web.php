@@ -252,7 +252,7 @@ Route::get('/account/password/view', function () {
 Route::post('/account/update', [UserController1::class, 'updateProfile'])->name('update.profile');
 Route::post('/address/store', [App\Http\Controllers\AddressController::class, 'store'])->name('address.store');
 Route::get('/coupons', [CouponController::class, 'index'])->name('coupons.index');
-Route::get('/get-districts/{province_code}', function($province_code) {
+Route::get('/get-districts/{province_code}', function ($province_code) {
     $districts = \App\Models\District::where('province_code', $province_code)
         ->orderBy('full_name')
         ->get(['code', 'full_name']);
@@ -265,7 +265,7 @@ Route::get('/get-districts/{province_code}', function($province_code) {
     return response()->json($districts);
 });
 
-Route::get('/get-wards/{district_code}', function($district_code) {
+Route::get('/get-wards/{district_code}', function ($district_code) {
     $wards = \App\Models\Ward::where('district_code', $district_code)
         ->orderBy('full_name')
         ->get(['code', 'full_name']);

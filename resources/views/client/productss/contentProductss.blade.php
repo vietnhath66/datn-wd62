@@ -672,6 +672,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="text-center p-t-30"> {{-- Container để căn giữa nút --}}
+                        {{-- Sử dụng class filter-clear-btn mà JS đang lắng nghe --}}
+                        {{-- Có thể dùng class custom-filter-button để kế thừa style nút --}}
+                        <button
+                            class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04 filter-clear-btn custom-filter-button"
+                            style="">
+                            Xóa bộ lọc
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -753,8 +762,8 @@
 
         var $grid = $('.isotope-grid');
         var $filterPanel = $('.panel-filter');
-        var $filterToggleBtn = $('.js-show-filter');
-
+        // var $filterToggleBtn = $('.js-show-filter');
+        var $clearFiltersBtn = $('.filter-clear-btn');
         var $categoryBtns = $('.filter-tope-group button');
 
         var $sortBtns = $('.custom-list-options .custom-filter-button');

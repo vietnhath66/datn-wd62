@@ -17,6 +17,12 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+            // Nếu bạn không muốn gửi email xác thực qua Registered event,
+            // bạn có thể bỏ SendEmailVerificationNotification::class ở đây
+            // và gọi $user->sendEmailVerificationNotification() thủ công trong RegisteredUserController.
+        ],
+        Verified::class => [ // Lắng nghe sự kiện Verified khi user xác thực email
+            UpdateUserStatusOnVerified::class, // THÊM DÒNG NÀY
         ],
     ];
 
