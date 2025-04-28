@@ -110,7 +110,7 @@
                             </div>
 
                             <input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product"
-                                value="0" min="0" max="100" disabled>
+    value="0" min="0" max="100" disabled readonly>
 
                             <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
                                 <i class="fs-16 zmdi zmdi-plus"></i>
@@ -247,111 +247,69 @@
 
 <!-- Lấy màu -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        console.log('JavaScript đã được tải');
-
-        // Kiểm tra lại các giá trị của variants để đảm bảo dữ liệu được truyền đúng
-        const variants = @json($variants);
-        console.log('Dữ liệu variants:', variants);
-
-        const colorSelectElement = document.getElementById('color-select');
-        const sizeSelect = document.getElementById('size-select');
-
-        if (!colorSelectElement || !sizeSelect) {
-            console.log('Không tìm thấy dropdown màu sắc hoặc size');
-            return;
-        }
-
-        // Lắng nghe sự kiện thay đổi màu
-        colorSelectElement.addEventListener('change', function () {
-            console.log('Sự kiện change đã được kích hoạt'); // Kiểm tra sự kiện có chạy không
-
-            const selectedColor = this.value.trim();
-            console.log('Màu đã chọn:', selectedColor); // Kiểm tra giá trị màu đã chọn
-
-            // Clear dropdown size trước khi thêm các size mới
-            sizeSelect.innerHTML = '<option value="">Choose a size</option>';
-
-            if (selectedColor) {
-                // Lọc các biến thể với màu đã chọn
-                const availableSizes = variants.filter(variant => variant.name_variant_color.trim() === selectedColor);
-                console.log('Các size có sẵn cho màu:', availableSizes);
-
-                // Lọc và lấy các size duy nhất
-                const uniqueSizes = [...new Set(availableSizes.map(variant => variant.name_variant_size))];
-                console.log('Các size duy nhất:', uniqueSizes);
-
-                if (uniqueSizes.length > 0) {
-                    // Thêm các size vào dropdown
-                    uniqueSizes.forEach(size => {
-                        const option = document.createElement('option');
-                        option.value = size;
-                        option.textContent = size;
-                        sizeSelect.appendChild(option);
-                    });
-                    sizeSelect.disabled = false; // Kích hoạt dropdown size
-                } else {
-                    sizeSelect.disabled = true; // Nếu không có size thì vô hiệu hóa dropdown size
-                }
-            } else {
-                sizeSelect.disabled = true; // Nếu không có màu thì vô hiệu hóa dropdown size
-            }
-        });
-    });
-</script>
-
-<script>
-
-document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function () {
     const variants = @json($variants);
-
-    const colorSelectElement = document.getElementById('color-select');
+    const colorSelect = document.getElementById('color-select');
     const sizeSelect = document.getElementById('size-select');
     const stockInfo = document.getElementById('stock-info');
     const numInput = document.querySelector('.num-product');
     const btnMinus = document.querySelector('.btn-num-product-down');
     const btnPlus = document.querySelector('.btn-num-product-up');
-    const addToCartBtn = document.querySelector('.js-addcart-detail');
+    const addToCartBtn = document.getElementById('add-to-cart-btn');
 
-    // Reset input
-    function resetQuantityInput() {
-        numInput.value = 0;
+    let currentVariant = null;
+
+    function resetControls() {
+        numInput.value = 1; // Đặt giá trị mặc định là 1
         numInput.disabled = true;
-        btnMinus.classList.add('disabled');
-        btnPlus.classList.add('disabled');
-        btnMinus.style.pointerEvents = 'none';
-        btnPlus.style.pointerEvents = 'none';
-        btnMinus.style.opacity = '0.5';
-        btnPlus.style.opacity = '0.5';
-    }
-
-    function enableQuantityInput(maxQty) {
-        numInput.disabled = false;
-        numInput.value = 1;
-        numInput.max = maxQty;
-        btnMinus.classList.remove('disabled');
-        btnPlus.classList.remove('disabled');
-        btnMinus.style.pointerEvents = 'auto';
-        btnPlus.style.pointerEvents = 'auto';
-        btnMinus.style.opacity = '1';
-        btnPlus.style.opacity = '1';
-    }
-    
-
-    // Khi chọn màu
-    colorSelectElement.addEventListener('change', function () {
-        const selectedColor = this.value.trim();
-        sizeSelect.innerHTML = '<option value="">Chọn 1 tuỳ chọn</option>';
-        sizeSelect.disabled = true;
+        numInput.setAttribute('min', 1); // Đặt thuộc tính min là 1
+        numInput.setAttribute('max', 100);
+        addToCartBtn.disabled = true;
         stockInfo.textContent = '';
-        resetQuantityInput();
+        stockInfo.style.color = 'black';
+    }
+
+    function updateStockInfo() {
+        if (!currentVariant) return;
+
+        const selectedQty = parseInt(numInput.value);
+        const maxQty = currentVariant.quantity;
+        const remaining = maxQty - selectedQty;
+
+        if (maxQty <= 0) {
+            stockInfo.textContent = `Hết hàng`;
+            stockInfo.style.color = 'red';
+            addToCartBtn.disabled = true;
+            numInput.disabled = true;
+        } else if (selectedQty < 1) { // Kiểm tra nếu số lượng nhỏ hơn 1
+            stockInfo.textContent = `Số lượng phải lớn hơn 0`;
+            stockInfo.style.color = 'orange';
+            addToCartBtn.disabled = true;
+            numInput.value = 1; // Đặt lại giá trị là 1 nếu người dùng cố giảm
+        } else if (remaining < 0) {
+            stockInfo.textContent = `Vượt quá tồn kho! Chỉ còn ${maxQty}`;
+            stockInfo.style.color = 'red';
+            addToCartBtn.disabled = true;
+        } else {
+            stockInfo.textContent = `Còn lại: ${remaining}`;
+            stockInfo.style.color = remaining === 0 ? 'red' : 'black';
+            addToCartBtn.disabled = false;
+        }
+    }
+
+    colorSelect.addEventListener('change', function () {
+        const selectedColor = this.value.trim();
+        sizeSelect.innerHTML = '<option value="">Choose a size</option>';
+        sizeSelect.disabled = true;
+        currentVariant = null;
+        resetControls(); // Gọi resetControls để đặt giá trị mặc định là 1
 
         if (selectedColor) {
             const availableVariants = variants.filter(v => v.name_variant_color.trim() === selectedColor);
-            const uniqueSizes = [...new Set(availableVariants.map(v => v.name_variant_size))];
+            const sizes = [...new Set(availableVariants.map(v => v.name_variant_size))];
 
-            if (uniqueSizes.length > 0) {
-                uniqueSizes.forEach(size => {
+            if (sizes.length > 0) {
+                sizes.forEach(size => {
                     const option = document.createElement('option');
                     option.value = size;
                     option.textContent = size;
@@ -360,182 +318,50 @@ document.addEventListener('DOMContentLoaded', function () {
                 sizeSelect.disabled = false;
             }
 
-            const totalQuantity = availableVariants.reduce((sum, v) => sum + v.quantity, 0);
-            stockInfo.textContent = `Số lượng còn lại của màu ${selectedColor}: ${totalQuantity}`;
+            const totalQty = availableVariants.reduce((sum, v) => sum + v.quantity, 0);
+          
         }
     });
 
-    // Khi chọn size
     sizeSelect.addEventListener('change', function () {
-        const selectedColor = colorSelectElement.value.trim();
+        const selectedColor = colorSelect.value.trim();
         const selectedSize = this.value.trim();
 
         if (selectedColor && selectedSize) {
-            const matchedVariant = variants.find(v =>
+            currentVariant = variants.find(v =>
                 v.name_variant_color.trim() === selectedColor &&
                 v.name_variant_size.trim() === selectedSize
             );
 
-            if (matchedVariant) {
-                const quantity = matchedVariant.quantity;
-                stockInfo.textContent = `Số lượng còn lại của màu ${selectedColor} và size ${selectedSize}: ${quantity}`;
-
-                if (quantity > 0) {
-                    enableQuantityInput(quantity);
-                } else {
-                    resetQuantityInput();
-                }
+            if (currentVariant) {
+                numInput.disabled = currentVariant.quantity > 0 ? false : true;
+                numInput.setAttribute('max', currentVariant.quantity);
+                numInput.value = 1; // Đặt giá trị là 1 khi chọn biến thể
+                updateStockInfo();
             } else {
                 stockInfo.textContent = 'Không có sản phẩm với lựa chọn này';
-                resetQuantityInput();
+                stockInfo.style.color = 'red';
+                addToCartBtn.disabled = true;
+                numInput.disabled = true;
             }
         }
     });
 
-    // Xử lý nút Add to cart
-    addToCartBtn.addEventListener('click', function (e) {
-        const selectedColor = colorSelectElement.value.trim();
-        const selectedSize = sizeSelect.value.trim();
-        const selectedQuantity = parseInt(numInput.value);
-
-        if (!selectedColor || !selectedSize) {
-            alert('Vui lòng chọn màu và size trước khi thêm vào giỏ hàng.');
-            e.preventDefault();
-            return;
-        }
-
-        const matchedVariant = variants.find(v =>
-            v.name_variant_color.trim() === selectedColor &&
-            v.name_variant_size.trim() === selectedSize
-        );
-
-        if (!matchedVariant || matchedVariant.quantity <= 0) {
-            alert('Sản phẩm này hiện đã hết hàng.');
-            e.preventDefault();
-            return;
-        }
-
-        if (selectedQuantity <= 0) {
-            alert('Số lượng phải lớn hơn 0.');
-            e.preventDefault();
-            return;
-        }
-
-        if (selectedQuantity > matchedVariant.quantity) {
-            alert(`Số lượng vượt quá số lượng trong kho. Chỉ còn ${matchedVariant.quantity} sản phẩm.`);
-            e.preventDefault();
-            return;
-        }
-
-        // Nếu mọi thứ hợp lệ, form sẽ tiếp tục
+    numInput.addEventListener('input', updateStockInfo);
+    btnPlus.addEventListener('click', () => {
+        const currentValue = parseInt(numInput.value) || 0;
+        numInput.value = Math.min(currentValue + 1, parseInt(numInput.getAttribute('max')) || 100);
+        setTimeout(updateStockInfo, 100);
+    });
+    btnMinus.addEventListener('click', () => {
+        const currentValue = parseInt(numInput.value) || 1;
+        numInput.value = Math.max(currentValue - 1, 1); // Ngăn giảm xuống dưới 1
+        setTimeout(updateStockInfo, 100);
     });
 });
 </script>
 
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const variants = @json($variants);
-        const colorSelect = document.getElementById('color-select');
-        const sizeSelect = document.getElementById('size-select');
-        const stockInfo = document.getElementById('stock-info');
-        const numInput = document.querySelector('.num-product');
-        const btnMinus = document.querySelector('.btn-num-product-down');
-        const btnPlus = document.querySelector('.btn-num-product-up');
-        const addToCartBtn = document.getElementById('add-to-cart-btn');
-
-        let currentVariant = null;
-
-        function resetControls() {
-            numInput.value = 0;
-            numInput.disabled = true;
-            numInput.setAttribute('max', 100);
-            addToCartBtn.disabled = true;
-            stockInfo.textContent = '';
-            stockInfo.style.color = 'black';
-        }
-
-        function updateStockInfo() {
-            if (!currentVariant) return;
-
-            const selectedQty = parseInt(numInput.value);
-            const maxQty = currentVariant.quantity;
-            const remaining = maxQty - selectedQty;
-
-            if (maxQty <= 0) {
-                stockInfo.textContent = `Hết hàng`;
-                stockInfo.style.color = 'red';
-                addToCartBtn.disabled = true;
-                numInput.disabled = true;
-            } else if (selectedQty <= 0) {
-                stockInfo.textContent = `Bạn chưa chọn số lượng`;
-                stockInfo.style.color = 'orange';
-                addToCartBtn.disabled = true;
-            } else if (remaining < 0) {
-                stockInfo.textContent = `Vượt quá tồn kho! Chỉ còn ${maxQty}`;
-                stockInfo.style.color = 'red';
-                addToCartBtn.disabled = true;
-            } else {
-                stockInfo.textContent = `Còn lại: ${remaining}`;
-                stockInfo.style.color = remaining === 0 ? 'red' : 'black';
-                addToCartBtn.disabled = false;
-            }
-        }
 
 
-        colorSelect.addEventListener('change', function () {
-            const selectedColor = this.value.trim();
-            sizeSelect.innerHTML = '<option value="">Choose a size</option>';
-            sizeSelect.disabled = true;
-            currentVariant = null;
-            resetControls();
 
-            if (selectedColor) {
-                const availableVariants = variants.filter(v => v.name_variant_color.trim() === selectedColor);
-                const sizes = [...new Set(availableVariants.map(v => v.name_variant_size))];
-
-                if (sizes.length > 0) {
-                    sizes.forEach(size => {
-                        const option = document.createElement('option');
-                        option.value = size;
-                        option.textContent = size;
-                        sizeSelect.appendChild(option);
-                    });
-                    sizeSelect.disabled = false;
-                }
-
-                const totalQty = availableVariants.reduce((sum, v) => sum + v.quantity, 0);
-                stockInfo.textContent = `Số lượng còn lại của màu ${selectedColor}: ${totalQty}`;
-                stockInfo.style.color = 'black';
-            }
-        });
-
-        sizeSelect.addEventListener('change', function () {
-            const selectedColor = colorSelect.value.trim();
-            const selectedSize = this.value.trim();
-
-            if (selectedColor && selectedSize) {
-                currentVariant = variants.find(v =>
-                    v.name_variant_color.trim() === selectedColor &&
-                    v.name_variant_size.trim() === selectedSize
-                );
-
-                if (currentVariant) {
-                    numInput.disabled = currentVariant.quantity > 0 ? false : true;
-                    numInput.setAttribute('max', currentVariant.quantity);
-                    numInput.value = 1;
-                    updateStockInfo();
-                } else {
-                    stockInfo.textContent = 'Không có sản phẩm với lựa chọn này';
-                    stockInfo.style.color = 'red';
-                    addToCartBtn.disabled = true;
-                    numInput.disabled = true;
-                }
-            }
-        });
-
-        numInput.addEventListener('input', updateStockInfo);
-        btnPlus.addEventListener('click', () => setTimeout(updateStockInfo, 100));
-        btnMinus.addEventListener('click', () => setTimeout(updateStockInfo, 100));
-    });
-</script>
