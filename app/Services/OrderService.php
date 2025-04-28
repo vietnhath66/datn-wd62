@@ -69,125 +69,7 @@ class OrderService extends BaseService implements OrderServiceInterface
         $this->controllerName = 'OrderController';
     }
 
-    //     public function paginates($request, $modelCatalogue = null, $page = 1, $extend = [])
-//     {
-//         if (!is_null($modelCatalogue)) {
-//             Paginator::currentPageResolver(function () use ($page) {
-//                 return $page;
-//             });
-//         }
-
-
-    //         $perPage = $request->integer('perpage');
-//         $perPage = 5;
-//         $condition = [
-//             'keyword' => addslashes($request->input('keyword')),
-//             'publish' => $request->integer('publish'),
-//             'where' => [],
-//         ];
-//         $paginationConfig = [
-//             'path' => ($extend['path']) ?? 'admin/orders/index',
-//             'groupBy' => $this->paginateSelects()
-//         ];
-//         $orderBy = ['orders.id', 'DESC'];
-//         $relations = ['users'];
-//             // ['products'],
-//             // ['product_variants'],
-//             // ['order_items']
-
-    //         $rawQuery = $this->whereRaw($request, $modelCatalogue);
-//         $joins = [
-//             ['users as tb2', 'orders.user_id', '=', 'tb2.id'],
-//             ['order_items', 'orders.id', '=', 'order_items.order_id'],
-//             ['products', 'order_items.product_id', '=', 'products.id'],
-//             ['product_variants', 'products.id', '=', 'product_variants.product_id']
-// //             INNER JOIN products ON order_items.product_id = products.id
-// // INNER JOIN product_variants ON products.id = product_variants.product_id
-// // INNER JOIN  ON orders.id = order_items.order_id
-//         ];
-//         $orders = $this->orderReponsitory->pagination(
-
-    //             $this->paginateSelect(),
-//             $condition,
-//             $perPage,
-//             $paginationConfig,
-//             $orderBy,
-//             $joins,
-//             $relations,
-//             $rawQuery
-//         );
-//         if (isset($condition['keyword'])) {
-//             $orders = Order::where('id', 'LIKE', '%' . $condition['keyword'] . '%')->get();
-//         }
-//         return $orders;
-//     }
-
-
-    // "data" => array:1 [▼
-//     0 => array:17 [▼
-//       "id" => 1
-//       "user_id" => 1
-//       "customer_name" => "admin"
-//       "email" => "sdgdsgs@gmail.com"
-//       "phone" => "141423424"
-//       "total" => 24222222.0
-//       "status" => "chờ xác nhận"
-//       "payment_status" => 1
-//       "total_discount" => "5555"
-//       "barcode" => "ff332"
-//       "province" => "hà nội"
-//       "district" => "cầu giấy"
-//       "ward" => "mai dịch"
-//       "address_detail" => "àwessddddddddddd"
-//       "created_at" => "2025-04-04T12:41:00.000000Z"
-//       "updated_at" => "2025-04-04T12:41:00.000000Z"
-//       "order_items" => array:2 [▼
-//         0 => array:9 [▼
-//           "id" => 1
-//           "order_id" => 1
-//           "product_id" => 40
-//           "product_variant_id" => 29
-//           "quantity" => 2
-//           "price" => 250000.0
-//           "created_at" => "2025-04-03T21:00:18.000000Z"
-//           "updated_at" => "2025-04-03T21:00:18.000000Z"
-//           "products" => array:20 [▶]
-//         ]
-//         1 => array:9 [▼
-//           "id" => 2
-//           "order_id" => 1
-//           "product_id" => 40
-//           "product_variant_id" => 30
-//           "quantity" => 1
-//           "price" => 200000.0
-//           "created_at" => "2025-04-03T21:00:18.000000Z"
-//           "updated_at" => "2025-04-03T21:00:18.000000Z"
-//           "products" => array:20 [▼
-//             "id" => 40
-//             "product_catalogue_id" => 58
-//             "brand_id" => 2
-//             "image" => "products/DuWMnwJ8cOvFy4bJv8ueZV3HtpTTuRDnk660l6Yr.jpg"
-//             "name" => "sssssdaaa"
-//             "price" => 8000.0
-//             "description" => "<p>sdasdasdasd</p>"
-//             "content" => "sdasdasdasd"
-//             "publish" => 1
-//             "is_sale" => 1
-//             "is_new" => 1
-//             "is_trending" => 1
-//             "is_show_home" => 1
-//             "deleted_at" => null
-//             "created_at" => "2025-04-02T12:49:06.000000Z"
-//             "updated_at" => "2025-04-02T12:49:06.000000Z"
-//             "attributeCatalogue" => "["10","11"]"
-//             "attribute" => array:2 [▶]
-//             "variant" => "{"quantity":["20","1","3","1"],"sku":["undefined-6-8","undefined-4-8","undefined-6-7","undefined-4-7"],"price":["8.000","8.000","8.000","8.000"],"barcode":[null ▶"
-//             "product_variants" => array:4 [▶]
-//           ]
-//         ]
-//       ]
-//     ]
-//   ]
+    
     public function paginates($request, $modelCatalogue = null, $page = 1, $extend = [])
     {
         if (!is_null($modelCatalogue)) {
@@ -199,6 +81,7 @@ class OrderService extends BaseService implements OrderServiceInterface
         $perPage = $request->integer('perpage') ?: 5;
         $keyword = addslashes($request->input('keyword'));
 
+        
 
         $orders = Order::selectRaw("
         orders.id,
@@ -209,6 +92,7 @@ class OrderService extends BaseService implements OrderServiceInterface
         MAX(orders.total) as total,
         MAX(orders.status) as status,
         MAX(orders.payment_status) as payment_status,
+        MAX(orders.payment_method) as payment_method,
         MAX(orders.neighborhood) as neighborhood,
         MAX(orders.barcode) as barcode,
         MAX(orders.province) as province,
@@ -245,6 +129,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             orders.total,
             orders.status,
             orders.payment_status,
+            orders.payment_method,
             orders.neighborhood,
             orders.barcode,
             orders.province,
@@ -779,6 +664,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'orders.total',
             'orders.status',
             'orders.payment_status',
+            'orders.payment_method',
             'orders.neighborhood',
             'orders.barcode',
             'orders.province',
@@ -812,6 +698,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'orders.total',
             'orders.status',
             'orders.payment_status',
+            'orders.payment_method',
             'orders.neighborhood',
             'orders.barcode',
             'orders.province',

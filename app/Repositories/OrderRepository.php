@@ -37,6 +37,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             'orders.total',
             'orders.status',
             'orders.payment_status',
+            'orders.payment_method',
             'orders.neighborhood',
             'orders.barcode',
             'orders.province',

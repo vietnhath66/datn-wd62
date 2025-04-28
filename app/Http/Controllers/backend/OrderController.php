@@ -19,6 +19,7 @@ use App\Models\Brand;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Language;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -61,46 +62,80 @@ class OrderController extends Controller
     }
 
     public function index(Request $request)
-    {
-        // $this->authorize('modules', 'admin.product.index');
-        $orders = $this->orderService->paginates($request);
-        // dd($orders->toArray());
+{
+    // Lấy giá trị tìm kiếm từ request
+    $order_id = $request->get('order_id'); // Lấy mã đơn hàng từ request
 
-        $config = [
-            'js' => [
-                'admin/js/plugins/switchery/switchery.js',
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
-            ],
-            'css' => [
-                'admin/css/plugins/switchery/switchery.css',
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
-            ],
-            'model' => 'Order'
-        ];
-        $config['seo'] = [
-            'index' => [
-                'title' => 'Quản lý đơn hàng',
-                'table' => 'Danh sách đơn hàng'
-            ],
-            'create' => [
-                'title' => 'Thêm mới đơn hàng'
-            ],
-            'edit' => [
-                'title' => 'Cập nhật đơn hàng'
-            ],
-            'delete' => [
-                'title' => 'Xóa đơn hàng'
-            ],
-        ];
-        $template = 'admin.orders.index';
-        $dropdowns = $this->nestedset->Dropdownss();
-        return view('admin.dashboard.layout', compact(
-            'template',
-            'config',
-            'dropdowns',
-            'orders'
-        ));
-    }
+    // Lọc đơn hàng theo mã đơn nếu có
+    $orders = Order::selectRaw("
+        orders.id,
+        MAX(orders.user_id) as user_id,
+        MAX(users.name) as customer_name,
+        MAX(orders.email) as email,
+        MAX(orders.phone) as phone,
+        MAX(orders.total) as total,
+        MAX(orders.status) as status,
+        MAX(orders.payment_status) as payment_status,
+        MAX(orders.payment_method) as payment_method,
+        MAX(orders.neighborhood) as neighborhood,
+        MAX(orders.barcode) as barcode,
+        MAX(orders.province) as province,
+        MAX(orders.district) as district,
+        MAX(orders.number_house) as number_house,
+        MAX(orders.address) as address,
+        MAX(orders.created_at) as created_at,
+        MAX(orders.updated_at) as updated_at
+    ")
+    ->leftJoin('users', 'users.id', '=', 'orders.user_id')
+    ->when($order_id, function ($query) use ($order_id) {
+        return $query->where('orders.barcode', 'like', "%{$order_id}%"); // Tìm kiếm theo mã đơn hàng
+    })
+    ->groupBy('orders.id')
+    ->orderBy('orders.id', 'DESC')
+    ->paginate(5); // Giới hạn kết quả trả về (5 đơn hàng mỗi trang)
+
+    // Tải quan hệ sau khi lấy dữ liệu (Order Items, Products và Product Variants)
+    $orders->load(['orderItems.products.product_variants']);
+
+    // Trả về view với các dữ liệu cần thiết
+    $template = 'admin.orders.index';
+    $config = [
+        'js' => [
+            'admin/js/plugins/switchery/switchery.js',
+            'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
+        ],
+        'css' => [
+            'admin/css/plugins/switchery/switchery.css',
+            'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+        ],
+        'model' => 'Order'
+    ];
+
+    $config['seo'] = [
+        'index' => [
+            'title' => 'Quản lý đơn hàng',
+            'table' => 'Danh sách đơn hàng'
+        ],
+        'create' => [
+            'title' => 'Thêm mới đơn hàng'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật đơn hàng'
+        ],
+        'delete' => [
+            'title' => 'Xóa đơn hàng'
+        ],
+    ];
+
+    $dropdowns = $this->nestedset->Dropdownss();
+
+    return view('admin.dashboard.layout', compact(
+        'template',
+        'config',
+        'dropdowns',
+        'orders'
+    ));
+}
 
     public function edit($id)
     {
@@ -150,12 +185,43 @@ class OrderController extends Controller
         if (!$order) {
             return redirect()->route('admin.order.index')->with('error', 'Đơn hàng không tồn tại');
         }
+        // dd($request->all());
+        // Xác thực dữ liệu
+        $request->validate([
+            'status' => 'required|string|in:pending,processing,shipping,delivered,completed,cancelled,refunded,failed',
+            'payment_method' => 'required|string|in:pending,paid,failed,refunded',
+        ]);
+        // Kiểm tra và áp dụng điều kiện chuyển đổi trạng thái
+        if ($order->status == 'pending' && !in_array($request->status, ['processing', 'cancelled'])) {
+            return back()->with('error', 'Không thể chuyển trạng thái từ "Chờ xử lý" sang trạng thái này.');
+        }
 
+        if ($order->status == 'processing' && !in_array($request->status, ['shipping', 'cancelled'])) {
+            return back()->with('error', 'Không thể chuyển trạng thái từ "Đang xử lý" sang trạng thái này.');
+        }
+
+        if ($order->status == 'shipping' && !in_array($request->status, ['delivered', 'failed'])) {
+            return back()->with('error', 'Không thể chuyển trạng thái từ "Đang giao hàng" sang trạng thái này.');
+        }
+
+        if ($order->status == 'delivered' || $order->status == 'completed' || $order->status == 'cancelled' || $order->status == 'refunded' || $order->status == 'failed') {
+            return back()->with('error', 'Không thể thay đổi trạng thái của đơn hàng sau khi đã hoàn tất, hủy, hoàn tiền hoặc thất bại.');
+        }
+
+        // Kiểm tra điều kiện trạng thái thanh toán khi cập nhật
+        if ($request->status == 'delivered' && $request->payment_method != 'paid') {
+            return back()->with('error', 'Khi đơn hàng đã giao, trạng thái thanh toán phải là "Đã thanh toán".');
+        }
+
+        if ($request->status == 'shipping' && !in_array($request->payment_method, ['pending', 'paid'])) {
+            return back()->with('error', 'Khi đơn hàng đang giao, trạng thái thanh toán phải là "Chờ thanh toán" hoặc "Đã thanh toán".');
+        }
+
+        if ($request->status == 'completed' && $request->payment_method != 'paid' && $request->payment_method != 'refunded') {
+            return back()->with('error', 'Khi đơn hàng đã hoàn tất, trạng thái thanh toán phải là "Đã thanh toán" hoặc "Đã hoàn tiền".');
+        }
         // Cập nhật thông tin đơn hàng
-        $order->update($request->only([
-            'status',
-            'payment_status'
-        ]));
+        $order->update($request->only(['payment_method', 'status']));
 
         // Cập nhật sản phẩm trong đơn hàng nếu cần
         // if ($request->has('order_items')) {
@@ -186,6 +252,7 @@ class OrderController extends Controller
             'orders.total',
             'orders.status',
             'orders.payment_status',
+            'orders.payment_method',
             'orders.neighborhood',
             'orders.barcode',
             'orders.province',
