@@ -12,4 +12,5 @@ class HomeController extends Controller
     {   $products = Product::all(); // Lấy tất cả sản phẩm
         return view('client.home.home', compact('products'));
     }
+    
 }

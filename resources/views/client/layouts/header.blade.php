@@ -1,4 +1,3 @@
-
 <header class="header-v4">
     <!-- Header desktop -->
     <div class="container-menu-desktop">
@@ -36,7 +35,7 @@
                         </li>
 
                         <li class="label1" data-label1="hot">
-                        <a href="{{ route('client.index') }}">Sản phẩm</a>
+                            <a href="{{ route('client.index') }}">Sản phẩm</a>
                         </li>
 
                         <li>
@@ -50,6 +49,9 @@
                         <li>
                             <a href="{{ route('client.viewContact') }}">Liên hệ</a>
                         </li>
+                       
+
+
                     </ul>
                 </div>
 
@@ -64,8 +66,7 @@
                         <i class="zmdi zmdi-shopping-cart"></i>
                     </div>
 
-                    <a href="#"
-                        class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
+                    <a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
                         data-notify="0">
                         <i class="zmdi zmdi-favorite-outline"></i>
                     </a>
