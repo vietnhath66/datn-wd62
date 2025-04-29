@@ -1,5 +1,60 @@
-<!-- breadcrumb -->
+<style>
+    /* Styling cho các dropdown tự định kiểu */
+    .select-form {
+        display: block;
+        /* Hiển thị là block element */
+        width: 100%;
+        /* Chiếm toàn bộ chiều rộng container */
+        padding: 12px 18px;
+        /* Tăng padding để trông đầy đặn hơn */
+        font-size: 1rem;
+        /* Kích thước chữ */
+        font-family: inherit;
+        /* Kế thừa font từ body */
+        line-height: 1.5;
+        /* Chiều cao dòng */
+        color: #333;
+        /* Màu chữ đậm hơn một chút */
+        background-color: #fff;
+        /* Nền trắng */
+        /* Icon mũi tên xuống (CSS-based) - Sử dụng màu đậm hơn cho dễ nhìn */
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        /* Không lặp lại nền */
+        background-position: right 12px center;
+        /* Vị trí icon mũi tên, điều chỉnh cho padding mới */
+        background-size: 14px 10px;
+        /* Kích thước icon mũi tên, điều chỉnh nhỏ lại chút */
+        border: 1px solid #ccc;
+        /* Viền xám */
+        border-radius: 5px;
+        /* Bo góc mềm mại hơn */
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+        /* Thêm đổ bóng mờ bên trong */
+        appearance: none;
+        /* Ẩn giao diện mặc định của trình duyệt */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        cursor: pointer;
+        /* Hiển thị con trỏ pointer khi hover */
+        transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        /* Hiệu ứng chuyển động nhẹ khi focus */
+    }
 
+    /* Style khi dropdown được focus (khi click vào) */
+    .select-form:focus {
+        border-color: #007bff;
+        /* Viền xanh khi focus */
+        outline: 0;
+        /* Bỏ outline mặc định */
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        /* Đổ bóng màu xanh khi focus */
+    }
+
+    /* Style khi dropdown bị disabled */
+</style>
+
+<!-- breadcrumb -->
 <section class="sec-product-detail bg0 p-t-65 p-b-60">
     <div class="container">
         <div class="row">
@@ -63,17 +118,15 @@
                         {{ $product->description }}
                     </p>
 
-                    <!--  -->
                     <div class="p-t-33">
+
                         <div class="flex-w flex-r-m p-b-10">
-                            <div class="size-203 flex-c-m respon6">
-                                Color
-                            </div>
+                            <div class="size-203 flex-c-m respon6">Màu</div>
 
                             <div class="size-204 respon6-next">
                                 <div class="rs1-select2 bor8 bg0">
-                                    <select id="color-select" class="form-control">
-                                        <option value="">Chọn 1 tuỳ chọn</option>
+                                    <select id="color-select" class="select-form">
+                                        <option>Chọn 1 tuỳ chọn</option>
                                         @foreach ($colors as $color)
                                             <option value="{{ $color }}">{{ $color }}</option>
                                         @endforeach
@@ -81,48 +134,47 @@
                                     <div class="dropDownSelect2"></div>
                                 </div>
                             </div>
-
-
                         </div>
+
                         <div class="flex-w flex-r-m p-b-10">
-                            <div class="size-203 flex-c-m respon6">
-                                Size
-                            </div>
-                        
+                            <div class="size-203 flex-c-m respon6">Kích thước</div>
+
                             <div class="size-204 respon6-next">
                                 <div class="rs1-select2 bor8 bg0">
-                                    <select id="size-select" class="form-control" disabled>
-                                        <option value="">Chọn 1 tuỳ chọn</option>
-                                        <!-- Các lựa chọn size sẽ được thêm vào bằng JavaScript -->
+                                    <select id="size-select" class="select-form" disabled>
+                                        <option>Chọn 1 tuỳ chọn</option>
                                     </select>
                                     <div class="dropDownSelect2"></div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Thông báo số lượng -->
-                        <div class="size-204 respon6-next">
-                            <p id="stock-info" class="mtext-106 cl2 p-t-10" style="color: red;"></p>
-                        </div>
-                        <div class="wrap-num-product flex-w m-r-20 m-tb-10">
-                            <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-                                <i class="fs-16 zmdi zmdi-minus"></i>
+                        <div class="flex-w flex-r-m p-b-10">
+                            <div class="size-204 flex-w flex-m respon6-next">
+                                <div class="size-204 respon6-next">
+                                    <p id="stock-info" class="mtext-106 cl2 p-t-10" style="color: red;"></p>
+                                </div>
+                                <div class="wrap-num-product flex-w m-r-20 m-tb-10">
+                                    <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                                        <i class="fs-16 zmdi zmdi-minus"></i>
+                                    </div>
+
+                                    <input class="mtext-104 cl3 txt-center num-product" type="number"
+                                        name="num-product" value="1" min="1" max="100" disabled
+                                        readonly>
+
+                                    <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                                        <i class="fs-16 zmdi zmdi-plus"></i>
+                                    </div>
+                                </div>
+
+                                <button id="add-to-cart-btn"
+                                    class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail"
+                                    disabled>
+                                    Thêm vào giỏ hàng
+                                </button>
                             </div>
-
-                            <input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product"
-    value="0" min="0" max="100" disabled readonly>
-
-                            <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-                                <i class="fs-16 zmdi zmdi-plus"></i>
-                            </div>
                         </div>
-
-                        <button id="add-to-cart-btn"
-                            class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail"
-                            disabled>
-                            Add to cart
-                        </button>
-
                     </div>
 
                     <!--icon  -->
@@ -159,11 +211,13 @@
             <div class="tab01">
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item p-b-10">
-                        <a class="nav-link active" data-toggle="tab" href="#description" role="tab">Description</a>
+                        <a class="nav-link active" data-toggle="tab" href="#description"
+                            role="tab">Description</a>
                     </li>
 
                     <li class="nav-item p-b-10">
-                        <a class="nav-link" data-toggle="tab" href="#information" role="tab">Additional information</a>
+                        <a class="nav-link" data-toggle="tab" href="#information" role="tab">Additional
+                            information</a>
                     </li>
 
                     <li class="nav-item p-b-10">
@@ -196,8 +250,8 @@
     </div>
 </section>
 
+
 <!-- Related Products -->
- 
 <section class="sec-relate-product bg0 p-t-45 p-b-105">
     <div class="container">
         <div class="p-b-45">
@@ -209,13 +263,13 @@
         <!-- Slide2 -->
         <div class="wrap-slick2">
             <div class="slick2">
-                @foreach($ab as $item)
+                @foreach ($ab as $item)
                     <div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
                         <!-- Block2 -->
                         <div class="block2">
                             <div class="block2-pic hov-img0">
                                 <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}">
-                                
+
                             </div>
 
                             <div class="block2-txt flex-w flex-t p-t-14">
@@ -232,8 +286,12 @@
 
                                 <div class="block2-txt-child2 flex-r p-t-3">
                                     <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                        <img class="icon-heart1 dis-block trans-04" src="{{ asset('client/images/icons/icon-heart-01.png') }}" alt="ICON">
-                                        <img class="icon-heart2 dis-block trans-04 ab-t-l" src="{{ asset('client/images/icons/icon-heart-02.png') }}" alt="ICON">
+                                        <img class="icon-heart1 dis-block trans-04"
+                                            src="{{ asset('client/images/icons/icon-heart-01.png') }}"
+                                            alt="ICON">
+                                        <img class="icon-heart2 dis-block trans-04 ab-t-l"
+                                            src="{{ asset('client/images/icons/icon-heart-02.png') }}"
+                                            alt="ICON">
                                     </a>
                                 </div>
                             </div>
@@ -245,123 +303,118 @@
     </div>
 </section>
 
-<!-- Lấy màu -->
+
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const variants = @json($variants);
-    const colorSelect = document.getElementById('color-select');
-    const sizeSelect = document.getElementById('size-select');
-    const stockInfo = document.getElementById('stock-info');
-    const numInput = document.querySelector('.num-product');
-    const btnMinus = document.querySelector('.btn-num-product-down');
-    const btnPlus = document.querySelector('.btn-num-product-up');
-    const addToCartBtn = document.getElementById('add-to-cart-btn');
+    document.addEventListener('DOMContentLoaded', function() {
+        const variants = @json($variants);
+        const colorSelect = document.getElementById('color-select');
+        const sizeSelect = document.getElementById('size-select');
+        const stockInfo = document.getElementById('stock-info');
+        const numInput = document.querySelector('.num-product');
+        const btnMinus = document.querySelector('.btn-num-product-down');
+        const btnPlus = document.querySelector('.btn-num-product-up');
+        const addToCartBtn = document.getElementById('add-to-cart-btn');
 
-    let currentVariant = null;
+        let currentVariant = null;
 
-    function resetControls() {
-        numInput.value = 1; // Đặt giá trị mặc định là 1
-        numInput.disabled = true;
-        numInput.setAttribute('min', 1); // Đặt thuộc tính min là 1
-        numInput.setAttribute('max', 100);
-        addToCartBtn.disabled = true;
-        stockInfo.textContent = '';
-        stockInfo.style.color = 'black';
-    }
-
-    function updateStockInfo() {
-        if (!currentVariant) return;
-
-        const selectedQty = parseInt(numInput.value);
-        const maxQty = currentVariant.quantity;
-        const remaining = maxQty - selectedQty;
-
-        if (maxQty <= 0) {
-            stockInfo.textContent = `Hết hàng`;
-            stockInfo.style.color = 'red';
-            addToCartBtn.disabled = true;
+        function resetControls() {
+            numInput.value = 1; // Đặt giá trị mặc định là 1
             numInput.disabled = true;
-        } else if (selectedQty < 1) { // Kiểm tra nếu số lượng nhỏ hơn 1
-            stockInfo.textContent = `Số lượng phải lớn hơn 0`;
-            stockInfo.style.color = 'orange';
+            numInput.setAttribute('min', 1); // Đặt thuộc tính min là 1
+            numInput.setAttribute('max', 100);
             addToCartBtn.disabled = true;
-            numInput.value = 1; // Đặt lại giá trị là 1 nếu người dùng cố giảm
-        } else if (remaining < 0) {
-            stockInfo.textContent = `Vượt quá tồn kho! Chỉ còn ${maxQty}`;
-            stockInfo.style.color = 'red';
-            addToCartBtn.disabled = true;
-        } else {
-            stockInfo.textContent = `Còn lại: ${remaining}`;
-            stockInfo.style.color = remaining === 0 ? 'red' : 'black';
-            addToCartBtn.disabled = false;
+            stockInfo.textContent = '';
+            stockInfo.style.color = 'black';
         }
-    }
 
-    colorSelect.addEventListener('change', function () {
-        const selectedColor = this.value.trim();
-        sizeSelect.innerHTML = '<option value="">Choose a size</option>';
-        sizeSelect.disabled = true;
-        currentVariant = null;
-        resetControls(); // Gọi resetControls để đặt giá trị mặc định là 1
+        function updateStockInfo() {
+            if (!currentVariant) return;
 
-        if (selectedColor) {
-            const availableVariants = variants.filter(v => v.name_variant_color.trim() === selectedColor);
-            const sizes = [...new Set(availableVariants.map(v => v.name_variant_size))];
+            const selectedQty = parseInt(numInput.value);
+            const maxQty = currentVariant.quantity;
+            const remaining = maxQty - selectedQty;
 
-            if (sizes.length > 0) {
-                sizes.forEach(size => {
-                    const option = document.createElement('option');
-                    option.value = size;
-                    option.textContent = size;
-                    sizeSelect.appendChild(option);
-                });
-                sizeSelect.disabled = false;
-            }
-
-            const totalQty = availableVariants.reduce((sum, v) => sum + v.quantity, 0);
-          
-        }
-    });
-
-    sizeSelect.addEventListener('change', function () {
-        const selectedColor = colorSelect.value.trim();
-        const selectedSize = this.value.trim();
-
-        if (selectedColor && selectedSize) {
-            currentVariant = variants.find(v =>
-                v.name_variant_color.trim() === selectedColor &&
-                v.name_variant_size.trim() === selectedSize
-            );
-
-            if (currentVariant) {
-                numInput.disabled = currentVariant.quantity > 0 ? false : true;
-                numInput.setAttribute('max', currentVariant.quantity);
-                numInput.value = 1; // Đặt giá trị là 1 khi chọn biến thể
-                updateStockInfo();
-            } else {
-                stockInfo.textContent = 'Không có sản phẩm với lựa chọn này';
+            if (maxQty <= 0) {
+                stockInfo.textContent = `Hết hàng`;
                 stockInfo.style.color = 'red';
                 addToCartBtn.disabled = true;
                 numInput.disabled = true;
+            } else if (selectedQty < 1) { // Kiểm tra nếu số lượng nhỏ hơn 1
+                stockInfo.textContent = `Số lượng phải lớn hơn 0`;
+                stockInfo.style.color = 'orange';
+                addToCartBtn.disabled = true;
+                numInput.value = 1; // Đặt lại giá trị là 1 nếu người dùng cố giảm
+            } else if (remaining < 0) {
+                stockInfo.textContent = `Vượt quá tồn kho! Chỉ còn ${maxQty}`;
+                stockInfo.style.color = 'red';
+                addToCartBtn.disabled = true;
+            } else {
+                stockInfo.textContent = `Còn lại: ${remaining}`;
+                stockInfo.style.color = remaining === 0 ? 'red' : 'red';
+                addToCartBtn.disabled = false;
             }
         }
-    });
 
-    numInput.addEventListener('input', updateStockInfo);
-    btnPlus.addEventListener('click', () => {
-        const currentValue = parseInt(numInput.value) || 0;
-        numInput.value = Math.min(currentValue + 1, parseInt(numInput.getAttribute('max')) || 100);
-        setTimeout(updateStockInfo, 100);
+        colorSelect.addEventListener('change', function() {
+            const selectedColor = this.value.trim();
+            sizeSelect.disabled = true;
+            currentVariant = null;
+            resetControls(); // Gọi resetControls để đặt giá trị mặc định là 1
+
+            if (selectedColor) {
+                const availableVariants = variants.filter(v => v.name_variant_color.trim() ===
+                    selectedColor);
+                const sizes = [...new Set(availableVariants.map(v => v.name_variant_size))];
+
+                if (sizes.length > 0) {
+                    sizes.forEach(size => {
+                        const option = document.createElement('option');
+                        option.value = size;
+                        option.textContent = size;
+                        sizeSelect.appendChild(option);
+                    });
+                    sizeSelect.disabled = false;
+                }
+
+                const totalQty = availableVariants.reduce((sum, v) => sum + v.quantity, 0);
+
+            }
+        });
+
+        sizeSelect.addEventListener('change', function() {
+            const selectedColor = colorSelect.value.trim();
+            const selectedSize = this.value.trim();
+
+            if (selectedColor && selectedSize) {
+                currentVariant = variants.find(v =>
+                    v.name_variant_color.trim() === selectedColor &&
+                    v.name_variant_size.trim() === selectedSize
+                );
+
+                if (currentVariant) {
+                    numInput.disabled = currentVariant.quantity > 0 ? false : true;
+                    numInput.setAttribute('max', currentVariant.quantity);
+                    numInput.value = 1; // Đặt giá trị là 1 khi chọn biến thể
+                    updateStockInfo();
+                } else {
+                    stockInfo.textContent = 'Không có sản phẩm với lựa chọn này';
+                    stockInfo.style.color = 'red';
+                    addToCartBtn.disabled = true;
+                    numInput.disabled = true;
+                }
+            }
+        });
+
+        numInput.addEventListener('input', updateStockInfo);
+        btnPlus.addEventListener('click', () => {
+            const currentValue = parseInt(numInput.value) || 0;
+            numInput.value = Math.min(currentValue + 1, parseInt(numInput.getAttribute('max')) || 100);
+            setTimeout(updateStockInfo, 100);
+        });
+        btnMinus.addEventListener('click', () => {
+            const currentValue = parseInt(numInput.value) || 1;
+            numInput.value = Math.max(currentValue - 1, 1); // Ngăn giảm xuống dưới 1
+            setTimeout(updateStockInfo, 100);
+        });
     });
-    btnMinus.addEventListener('click', () => {
-        const currentValue = parseInt(numInput.value) || 1;
-        numInput.value = Math.max(currentValue - 1, 1); // Ngăn giảm xuống dưới 1
-        setTimeout(updateStockInfo, 100);
-    });
-});
 </script>
-
-
-
-
-
