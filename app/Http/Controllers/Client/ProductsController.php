@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\ProductVariant;
 use App\Http\Controllers\Controller;
 
-
 class ProductsController extends Controller
 {
     public function index()
@@ -49,6 +48,7 @@ class ProductsController extends Controller
 
         // Truyền dữ liệu vào view
         // dd($variants);
+        
         return view('client.productss.detailProducts', compact('product', 'variants', 'colors'));
 
     }

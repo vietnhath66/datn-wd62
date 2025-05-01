@@ -184,7 +184,6 @@
                             </p>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -194,11 +193,12 @@
         <span class="stext-107 cl6 p-lr-25">
             SKU: {{ $product->product_catalogue_id }}
         </span>
-
         <span class="stext-107 cl6 p-lr-25">
             Categories: {{ $product->category }}
         </span>
     </div>
+
+
 </section>
 
 <script>

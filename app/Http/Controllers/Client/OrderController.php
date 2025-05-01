@@ -56,7 +56,6 @@ class OrderController extends Controller
         }
         $userId = Auth::id();
         $user = Auth::user(); // Lấy thông tin user đang đăng nhập
-
         // 2. Validate input chứa ID sản phẩm được chọn từ giỏ hàng
         $validator = Validator::make($request->all(), [
             // Giả sử input tên là 'selected_products' chứa chuỗi ID cách nhau bởi dấu phẩy
@@ -79,7 +78,7 @@ class OrderController extends Controller
         ], [
             'selected_products.required' => 'Vui lòng chọn sản phẩm từ giỏ hàng để tiếp tục.',
         ]);
-
+        // dd($validator);
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
@@ -113,7 +112,7 @@ class OrderController extends Controller
             $order = Order::create([
                 'user_id' => $userId,
                 // Lấy thông tin cơ bản từ user đăng nhập, không lấy từ request ở bước này
-                'name' => $user->name, // Giả sử User model có 'name'
+                // 'name' => $user->name, // Giả sử User model có 'name'
                 'email' => $user->email, // Giả sử User model có 'email'
                 'phone' => $user->phone, // Giả sử User model có 'phone'
                 // Địa chỉ chi tiết sẽ được cập nhật ở bước 'completeOrder'
@@ -130,7 +129,6 @@ class OrderController extends Controller
                 'barcode' => $barcode,
             ]);
             Log::info("Created new pending order ID: {$order->id} for user ID: {$userId}");
-
             $totalPrice = 0;
 
             // 6. Thêm lại OrderDetail chỉ từ các sản phẩm đã được chọn trong giỏ hàng
@@ -140,7 +138,7 @@ class OrderController extends Controller
                     DB::rollBack(); // Hoàn tác transaction
                     $productName = $item->productVariant->products->name ?? 'Sản phẩm'; // Lấy tên SP nếu có
                     $availableQty = $item->productVariant->quantity ?? 0;
-                    return redirect()->route('cart.viewCart') // Quay về giỏ hàng
+                    return redirect()->route('client.cart.viewCart') // Quay về giỏ hàng
                         ->with('error', "Sản phẩm '{$productName}' không đủ số lượng tồn kho (chỉ còn {$availableQty}). Vui lòng cập nhật giỏ hàng.");
                 }
 
@@ -155,6 +153,7 @@ class OrderController extends Controller
                 // Tính tổng tiền dựa trên giá ĐÃ LƯU trong CartDetail
                 $totalPrice += $item->quantity * $item->price;
             }
+
             Log::info("Added new OrderDetails for order ID: {$order->id}. Calculated total: {$totalPrice}");
 
             // 7. Cập nhật tổng tiền cuối cùng cho đơn hàng

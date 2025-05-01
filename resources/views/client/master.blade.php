@@ -9,7 +9,6 @@
     <link rel="icon" type="image/png" href="{{ asset('client/images/icons/favicon.png') }}" />
     {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('client/vendor/bootstrap/css/bootstrap.min.css') }}" />
     <!--===============================================================================================-->
@@ -37,6 +36,8 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('client/vendor/slick/slick.css') }}" />
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('client/vendor/MagnificPopup/magnific-popup.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('client/uikit/css/uikit.modify.css') }}" />
+
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css"
         href="{{ asset('client/vendor/perfect-scrollbar/perfect-scrollbar.css') }}" />
@@ -45,6 +46,11 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('client/css/main.css') }}" />
     <!--===============================================================================================-->
     <link rel="stylesheet" href="{{ asset('style.css') }}">
+    <link rel="stylesheet" href="{{ asset('scss.css') }}">
+    <link rel="stylesheet" href="{{ asset('library.css') }}">
+
+
+
 
     {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" /> --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -106,6 +112,7 @@
 <script src="{{ asset('client/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
 <!--===============================================================================================-->
 <script src="{{ asset('client/vendor/select2/select2.min.js') }}"></script>
+
 <script>
     $(".js-select2").each(function() {
         $(this).select2({
@@ -144,6 +151,14 @@
 <script src="{{ asset('client/vendor/isotope/isotope.pkgd.min.js') }}"></script>
 <!--===============================================================================================-->
 <script src="{{ asset('client/vendor/sweetalert/sweetalert.min.js') }}"></script>
+
+
+<script src="{{ asset('client/uikit/js/uikit.min.js') }}"></script>
+<!--===============================================================================================-->
+<script src="{{ asset('client/uikit/js/components/sticky.min.js') }}"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.15.18/js/uikit.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.15.18/js/uikit-icons.min.js"></script>
 <script>
     $(".js-addwish-b2").on("click", function(e) {
         e.preventDefault();

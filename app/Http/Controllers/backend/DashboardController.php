@@ -23,12 +23,22 @@ class DashboardController extends Controller
         $orderStatistic = $this->OrderService->orderStatistic();
         // dd($orderStatistic);
         // $customerStatistic = $this->CustomerService->customerStatistic();
+
+        $config = [
+           'js' => [
+                'backend/js/plugins/chartJs/Chart.min.js',
+                'backend/library/dashboard.js',
+            ],
+        ];
         $template = 'admin.dashboard.home.index';
 
         return view('admin.dashboard.layout', compact(
             'template',
-            'orderStatistic'
+            'orderStatistic',
+            'config'
         ));
+
+        
     }
 
 }

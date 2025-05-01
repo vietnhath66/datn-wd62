@@ -11,16 +11,16 @@ use App\Services\Interfaces\ProductServiceInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\ProductCatalogueServiceInterface as ProductCatalogueService;
 use App\Repositories\Interfaces\ProductRepositoryInterface as ProductReponsitory;
-use App\Repositories\Interfaces\OrderRepositoryInterface as OrderReponsitory;
+use App\Repositories\Interfaces\OrderRepositoryInterface as orderReponsitory;
 use App\Repositories\Interfaces\RouterRepositoryInterface as RouterReponsitory;
 use App\Repositories\Interfaces\ProductVariantLanguageReponsitoryInterface as ProductVariantLanguageReponsitory;
 use App\Repositories\Interfaces\ProductVariantAttributeReponsitoryInterface as ProductVariantAttributeReponsitory;
 use App\Repositories\Interfaces\PromotionReponsitoryInterface as PromotionReponsitory;
 use App\Repositories\Interfaces\AttributeReponsitoryInterface as AttributeReponsitory;
 use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface as AttributeCatalogueReponsitory;
-// use App\Repositories\Interfaces\OrderReponsitoryInterface as OrderReponsitory;
+// use App\Repositories\Interfaces\OrderReponsitoryInterface as orderReponsitory;
 
-
+use Illuminate\Support\Carbon;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -762,11 +762,29 @@ class OrderService extends BaseService implements OrderServiceInterface
             'totalOrders' => $this->orderReponsitory->getTotalOrders(),
             'totalCancelOrders' => $this->orderReponsitory->getCancelOrders(),
             'revenueOrders' => $this->orderReponsitory->revenueOrders(),
-            // 'revenueChart' => $this->convaertRevenueChartData($this->orderReponsitory->revenueByYear($year))
+            'revenueChartYear' => $this->convaertRevenueChartData($this->orderReponsitory->revenueByYear($year)),
+            // 'revenueChartMonth' => $this->convaertRevenueChartData($this->orderReponsitory->revenueCurrentMonth($month,$year)),
+            'revenueChartWeek' => $this->convertChartDataDay($this->orderReponsitory->revenue7Day($year)),
+            // 'revenueChartWeek' => $this->orderReponsitory->revenue7Day($year),
+
+
         ];
     }
 
     private function convaertRevenueChartData($chartData, $data = 'monthly_revenue', $label = 'month', $text= 'Tháng ')
+    {
+        $newArray = [];
+        if(!is_null($chartData)) {
+            foreach ($chartData as $key => $val) {
+                $newArray['data'][] = $val->{$data};
+                $newArray['label'][] = $text.' '.$val->{$label};
+
+            }
+        }
+        return $newArray;
+    }
+
+    private function convertChartDataDay($chartData, $data = 'daily_revenue', $label = 'date', $text= 'Ngày')
     {
         $newArray = [];
         if(!is_null($chartData)) {
@@ -811,6 +829,49 @@ class OrderService extends BaseService implements OrderServiceInterface
         // }
 
         return $query;
+    }
+
+
+    public function ajaxOrderChart($request)
+    {
+        $type = $request->input('chartType');
+        switch ($type) {
+            case 1:
+                $year = now()->year;
+                $response = $this->convaertRevenueChartData($this->orderReponsitory->revenueByYear($year));
+                break;
+            case 7:
+                $response = $this->convaertRevenueChartData($this->orderReponsitory->revenue7Day(), 'daily_revenue', 'date', 'Ngày ');
+                break;
+            case 30:
+                $currentMonth = now()->month;
+                $currentYear = now()->year;
+
+                $dayInMonth = Carbon::createFromDate($currentYear, $currentMonth, 1)->daysInMonth;
+
+                $allDays = range(1, $dayInMonth);
+
+                $temp = $this->orderReponsitory->revenueCurrentMonth($currentMonth, $currentYear);
+
+                $label = [];
+                $data = [];
+
+                $temp2 = array_map(function ($day) use ($temp, &$label, &$data) {
+                    $found = collect($temp)->first(function ($record) use ($day) {
+                        return $record['day'] == $day;
+                    });
+
+                    $label[] = 'Ngày ' . $day;
+                    $data[] = $found ? $found['daily_revenue'] : 0;
+                }, $allDays);
+                $response = [
+                    'label' => $label,
+                    'data' => $data,
+                ];
+                break;
+        }
+
+        return $response;
     }
 
 

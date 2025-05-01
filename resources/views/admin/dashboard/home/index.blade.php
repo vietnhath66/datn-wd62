@@ -310,7 +310,7 @@
                     </div>
                 </div>
                 <!--end col-->
-                <div class="col-span-12 card 2xl:col-span-4 2xl:row-span-2">
+                {{-- <div class="col-span-12 card 2xl:col-span-4 2xl:row-span-2">
                     <div class="card-body">
                         <div class="flex items-center mb-3">
                             <h6 class="grow text-15">Order Statistics</h6>
@@ -325,7 +325,7 @@
                         <div id="orderStatisticsChart" class="apex-charts"
                             data-chart-colors='["bg-purple-500", "bg-sky-500"]' dir="ltr"></div>
                     </div>
-                </div>
+                </div> --}}
                 <!--end col-->
                 <div class="col-span-12 card md:col-span-6 lg:col-span-3 2xl:col-span-2">
                     <div class="text-center card-body">
@@ -334,7 +334,8 @@
                             <i data-lucide="wallet-2"></i>
                         </div>
                         <h5 class="mt-4 mb-2">
-                            <span class="counter-value" data-target="{{ $orderStatistic['revenueOrders'] }}"></span> vnđ
+                            <span class="counter-value" data-target="{{ $orderStatistic['revenueOrders'] }}"></span>
+                            vnđ
                         </h5>
                         <p class="text-slate-500 dark:text-zink-200">Tổng Doanh Thu</p>
                     </div>
@@ -373,7 +374,8 @@
                             <i data-lucide="package-x"></i>
                         </div>
                         <h5 class="mt-4 mb-2">
-                            <span class="counter-value" data-target="{{ $orderStatistic['totalCancelOrders'] }}">0</span>
+                            <span class="counter-value"
+                                data-target="{{ $orderStatistic['totalCancelOrders'] }}">0</span>
                         </h5>
                         <p class="text-slate-500 dark:text-zink-200">Đơn hàng đã hủy</p>
                     </div>
@@ -381,7 +383,8 @@
                 <!--end col-->
                 <div class="col-span-12 card 2xl:col-span-8">
                     <div class="card-body">
-                        <div class="flex flex-col gap-4 mb-4 md:mb-3 md:items-center md:flex-row">
+                        <canvas id="barChart" height="100"></canvas>
+                        {{-- <div class="flex flex-col gap-4 mb-4 md:mb-3 md:items-center md:flex-row">
                             <h6 class="grow text-15">Sales Revenue Overview</h6>
                             <div class="relative">
                                 <i data-lucide="calendar-range"
@@ -428,7 +431,7 @@
                         </div>
                         <div id="salesRevenueOverview" class="apex-charts"
                             data-chart-colors='["bg-custom-500", "bg-custom-400", "bg-custom-300"]' dir="ltr">
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <!--end col-->
@@ -436,37 +439,29 @@
                     <div class="grid grid-cols-12 gap-x-5">
                         <div class="col-span-12 card lg:col-span-6 2xl:col-span-12">
                             <div class="card-body">
-                                <div class="flex items-center mb-3">
-                                    <h6 class="grow text-15">Traffic Resources</h6>
-                                    <div class="relative">
-                                        <a href="#!"
-                                            class="transition-all duration-300 ease-linear text-custom-500 hover:text-custom-700">View
-                                            Status
-                                            <i data-lucide="move-right"
-                                                class="inline-block align-middle size-4 ltr:ml-1 rtl:mr-1"></i></a>
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-12">
-                                    <div class="col-span-12 md:col-span-6 2xl:col-span-7">
-                                        <div id="trafficResourcesChart" class="apex-charts"
-                                            data-chart-colors='["bg-sky-500", "bg-purple-500", "bg-green-500", "bg-yellow-500"]'
-                                            dir="ltr"></div>
-                                    </div>
-                                    <div class="col-span-12 md:col-span-6 2xl:col-span-5">
-                                        <ul class="flex flex-col gap-3">
-                                            <li class="flex items-center gap-2">
-                                                <div class="bg-green-500 size-3 shrink-0 clip-triangle"></div>
-                                                <p class="text-green-500">Search Engine (22%)</p>
+                                <div class="grid grid-cols-1 gap-5 xl:grid-cols-12">
+                                    <div class="xl:col-span-4">
+                                        {{-- <ul class="flex flex-wrap w-full gap-2 text-sm font-medium text-center filter-btns grow"
+                                            data-filter-target="notes-list">
+                                            <li>
+                                                <button type="button" class="chartButton" data-chart="1">
+                                                    <a href="javascript:void(0);" data-filter="all"
+                                                    class="inline-block px-4 py-2 text-base transition-all duration-300 ease-linear  rounded-md text-slate-500 dark:text-zink-200 border border-transparent [&.active]:bg-custom-500 dar:[&.active]:bg-custom-500 [&.active]:text-white dark:[&.active]:text-white hover:text-custom-500 dark:hover:text-custom-500 active:text-custom-500 dark:active:text-custom-500 -mb-[1px]">All</a>
+                                                </button>
+                                                
                                             </li>
-                                            <li class="flex items-center gap-2">
-                                                <div class="bg-purple-500 size-3 shrink-0 clip-triangle"></div>
-                                                <p class="text-purple-500">Referral (34%)</p>
+                                            <li>
+                                                <a href="javascript:void(0);" data-filter="business"
+                                                    class="inline-block px-4 py-2 text-base transition-all duration-300 ease-linear rounded-md text-slate-500 dark:text-zink-200 border border-transparent [&.active]:bg-custom-500 dar:[&.active]:bg-custom-500 [&.active]:text-white dark:[&.active]:text-white hover:text-custom-500 dark:hover:text-custom-500 active:text-custom-500 dark:active:text-custom-500 -mb-[1px]">Business</a>
                                             </li>
-                                            <li class="flex items-center gap-2">
-                                                <div class="size-3 bg-sky-500 shrink-0 clip-triangle"></div>
-                                                <p class="text-sky-500">Direct (44%)</p>
+                                            <li>
+                                                <a href="javascript:void(0);" data-filter="social"
+                                                    class="inline-block px-4 py-2 text-base transition-all duration-300 ease-linear rounded-md text-slate-500 dark:text-zink-200 border border-transparent [&.active]:bg-custom-500 dar:[&.active]:bg-custom-500 [&.active]:text-white dark:[&.active]:text-white hover:text-custom-500 dark:hover:text-custom-500 active:text-custom-500 dark:active:text-custom-500 -mb-[1px]">Social</a>
                                             </li>
-                                        </ul>
+                                        </ul> --}}
+                                            <button type="button" class="inline-block px-4 py-2 text-base transition-all duration-300 ease-linear  rounded-md text-slate-500 dark:text-zink-200 border border-transparent [&.active]:bg-custom-500 dar:[&.active]:bg-custom-500 [&.active]:text-white dark:[&.active]:text-white hover:text-custom-500 dark:hover:text-custom-500 active:text-custom-500 dark:active:text-custom-500 -mb-[1px] chartButton" data-chart="1">Biểu đồ năm</button>
+                                            <button type="button" class="inline-block px-4 py-2 text-base transition-all duration-300 ease-linear rounded-md text-slate-500 dark:text-zink-200 border border-transparent [&.active]:bg-custom-500 dar:[&.active]:bg-custom-500 [&.active]:text-white dark:[&.active]:text-white hover:text-custom-500 dark:hover:text-custom-500 active:text-custom-500 dark:active:text-custom-500 -mb-[1px] chartButton" data-chart="30">Tháng hiện tại</button>
+                                            <button type="button" class="inline-block px-4 py-2 text-base transition-all duration-300 ease-linear rounded-md text-slate-500 dark:text-zink-200 border border-transparent [&.active]:bg-custom-500 dar:[&.active]:bg-custom-500 [&.active]:text-white dark:[&.active]:text-white hover:text-custom-500 dark:hover:text-custom-500 active:text-custom-500 dark:active:text-custom-500 -mb-[1px] chartButton" data-chart="7">7 ngày gần nhất</button>
                                     </div>
                                 </div>
                             </div>
@@ -502,7 +497,7 @@
                     </div>
                     <!--end grid-->
                 </div>
-               
+
                 <div class="col-span-12 card lg:col-span-6 2xl:col-span-3">
                     <div class="card-body">
                         <div class="flex items-center mb-3">
