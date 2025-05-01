@@ -274,31 +274,113 @@
     <div class="section-desc">
         Cập nhật mật khẩu mới để bảo mật tài khoản của bạn.
     </div>
-    <form id="passwordForm" novalidate>
+
+    <!-- Hiển thị thông báo thành công khi mật khẩu được cập nhật -->
+    <div id="success-toast" class="alert alert-success" style="display: none; margin-bottom: 20px;">
+        Mật khẩu đã được cập nhật thành công!
+    </div>
+
+    <div id="error-toast" class="alert alert-danger" style="display: none; margin-bottom: 20px;">
+        Đã có lỗi xảy ra. Vui lòng kiểm tra lại các trường thông tin.
+    </div>
+
+    <form id="password-form" method="POST" action="{{ route('password.update') }}">
+        @csrf
+        @method('PUT')
+
+        <!-- Mật khẩu hiện tại -->
         <div class="form-group">
-            <label>Mật khẩu hiện tại</label>
-            <input type="password" id="currentPassword" name="currentPassword" required minlength="6" />
-            <div class="error" id="currentPasswordError">
-                Mật khẩu hiện tại phải có ít nhất 6 ký tự.
-            </div>
+            <label for="currentPassword">Mật khẩu hiện tại</label>
+            <input type="password" placeholder="Nhập mật khẩu hiện tại của bạn vào đây" id="password"
+                name="current_password" required minlength="6" />
+            <div class="error"></div>
         </div>
+
+        <!-- Mật khẩu mới -->
         <div class="form-group">
-            <label>Mật khẩu mới</label>
-            <input type="password" id="newPassword" name="newPassword" required minlength="6" />
-            <div class="error" id="newPasswordError">
-                Mật khẩu mới phải có ít nhất 6 ký tự.
-            </div>
+            <label for="newPassword">Mật khẩu mới</label>
+            <input type="password" id="newPassword" placeholder="Nhập mật khẩu mới của bạn" name="password" required
+                minlength="8" />
+            @error('password')
+                <div class="error">{{ $message }}</div>
+            @enderror
         </div>
+
+        <!-- Xác nhận mật khẩu mới -->
         <div class="form-group">
-            <label>Xác nhận mật khẩu mới</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" required />
-            <div class="error" id="confirmPasswordError">
-                Mật khẩu xác nhận không khớp.
-            </div>
+            <label for="confirmPassword">Xác nhận mật khẩu mới</label>
+            <input type="password" id="password_confirmation" placeholder="Nhập mật khẩu mới của bạn"
+                name="password_confirmation" required />
+            @error('password_confirmation')
+                <div class="error">{{ $message }}</div>
+            @enderror
         </div>
+
+        <!-- Các nút hành động -->
         <div class="form-actions">
-            <button type="button" class="cancel-btn">Hủy</button>
+            <button type="button" class="cancel-btn"
+                onclick="window.location.href='{{ url()->previous() }}'">Hủy</button>
             <button type="submit" class="save-btn">Lưu thay đổi</button>
         </div>
     </form>
 </div>
+
+<script>
+    document.getElementById('password-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        // Xóa lỗi cũ trước khi gửi
+        form.querySelectorAll('.error').forEach(el => {
+            el.style.display = 'none';
+            el.textContent = '';
+        });
+
+        fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                },
+                body: formData
+            })
+            .then(async response => {
+                if (response.ok) {
+                    showToast('success-toast', 'Mật khẩu đã được cập nhật!');
+                    form.reset();
+                } else if (response.status === 422) {
+                    const data = await response.json();
+                    if (data.errors) {
+                        Object.keys(data.errors).forEach(key => {
+                            const errorEl = form.querySelector(`[name="${key}"]`)?.parentElement
+                                .querySelector('.error');
+                            if (errorEl) {
+                                errorEl.textContent = data.errors[key][0];
+                                errorEl.style.display = 'block';
+                            }
+                        });
+                    }
+                } else {
+                    console.error('Lỗi không xác định:', await response.text());
+                    showToast('error-toast', 'Đã xảy ra lỗi. Vui lòng thử lại.');
+                }
+            })
+            .catch(err => {
+                console.error('Lỗi fetch:', err);
+                showToast('error-toast', 'Không thể gửi yêu cầu. Vui lòng kiểm tra kết nối.');
+            });
+
+        function showToast(id, message) {
+            const toast = document.getElementById(id);
+            if (toast) {
+                toast.textContent = message;
+                toast.style.display = 'block';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 3000);
+            }
+        }
+    });
+</script>

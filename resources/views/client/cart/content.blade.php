@@ -9,7 +9,8 @@
                         {{-- 1. Container chứa bảng sản phẩm (Chỉ hiển thị khi có hàng) --}}
                         {{-- Thêm class cart-items-container --}}
                         <div class="cart-items-container"
-                            style="{{ $cart && $cart->items->count() > 0 ? '' : 'display: none;' }}">
+                            style="{{ $cartItems && $cartItems->count() > 0 ? '' : 'display: none;' }}">
+                            {{-- Dùng $cartItems --}}
                             <table class="cart-table">
                                 <thead> {{-- Giữ nguyên thead --}}
                                     <tr>
@@ -25,61 +26,56 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {{-- Sử dụng @forelse để lặp qua $cartItems (biến đã lọc từ Controller) --}}
+                                    @forelse ($cartItems as $item)
+                                        {{-- Giữ nguyên cấu trúc <tr> cho mỗi item như bạn đã làm --}}
+                                        <tr data-unit-price="{{ $item->price }}">
+                                            <td><input type="checkbox" style="cursor: pointer" class="product-checkbox"
+                                                    data-id="{{ $item->id }}" style="..."></td>
 
-                                    @if ($cart && $cart->items->count() > 0)
-                                        @foreach ($cart->items as $item)
-                                            <tr data-unit-price="{{ $item->price }}">
-                                                <td><input type="checkbox" style="cursor: pointer"
-                                                        class="product-checkbox" data-id="{{ $item->id }}"
-                                                        style="..."></td>
-                                                <td><img src="{{ Storage::url(optional(optional($item->productVariant)->products)->image ?? (optional($item->product)->image ?? '')) }}"
-                                                        alt="IMG" class="product-img"></td>
-                                                <td class="kanit-thin product-name">
-                                                    {{ optional(optional($item->productVariant)->products)->name ?? optional($item->product)->name }}
-                                                </td>
-                                                <td class="kanit-thin">
-                                                    {{ number_format(optional($item->productVariant)->price ?? ($item->price ?? 0)) }}
-                                                    VND</td>
-                                                <td class="kanit-thin">
-                                                    {{ optional($item->productVariant)->name_variant_color ?? '-' }}
-                                                </td>
-                                                <td class="kanit-thin">
-                                                    {{ optional($item->productVariant)->name_variant_size ?? '-' }}</td>
-                                                <td>
-                                                    <input type="hidden" name="product_id" value="{{ $item->id }}">
-                                                    <div class="quantity-control">
-                                                        <button type="button"
-                                                            class="quantity-btn btn-num-product-down">
-                                                            <i class="fs-16 zmdi zmdi-minus"></i>
-                                                        </button>
-                                                        <input class="quantity-input kanit-thin" type="number"
-                                                            name="quantity" value="{{ $item->quantity }}"
-                                                            min="1">
-                                                        <button type="button" class="quantity-btn btn-num-product-up">
-                                                            <i class="fs-16 zmdi zmdi-plus"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                                <td class="kanit-thin" data-id="{{ $item->id }}">
-                                                    {{ number_format($item->quantity * $item->price) }} VND</td>
-                                                <td>
-                                                    <button type="button" class="btn-delete-cart-item"
-                                                        data-cart-item-id="{{ $item->id }}">
-                                                        <svg width="14" height="14" viewBox="0 0 24 24"
-                                                            fill="none" stroke="#721c24" stroke-width="2"
-                                                            stroke-linecap="round" stroke-linejoin="round">
-                                                            <path d="M3 6h18"></path>
-                                                            <path
-                                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                                            </path>
-                                                            <path d="M10 11v6"></path>
-                                                            <path d="M14 11v6"></path>
-                                                        </svg>
+                                            <td><img src="{{ Storage::url($item->product->image) }}" ...></td>
+                                            <td>{{ optional($item->product)->name }}</td>
+                                            <td>{{ number_format(optional($item->productVariant)->price ?? ($item->price ?? 0)) }}
+                                                VND</td>
+                                            <td>{{ optional($item->productVariant)->name_variant_color ?? '-' }}</td>
+                                            <td>{{ optional($item->productVariant)->name_variant_size ?? '-' }}</td>
+                                            <td>
+                                                <input type="hidden" name="product_id" value="{{ $item->id }}">
+                                                <div class="quantity-control">
+                                                    <button type="button" class="quantity-btn btn-num-product-down">
+                                                        <i class="fs-16 zmdi zmdi-minus"></i>
                                                     </button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endif
+                                                    <input class="quantity-input kanit-thin" type="number"
+                                                        name="quantity" value="{{ $item->quantity }}" min="1">
+                                                    <button type="button" class="quantity-btn btn-num-product-up">
+                                                        <i class="fs-16 zmdi zmdi-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td class="kanit-thin" data-id="{{ $item->id }}">
+                                                {{ number_format($item->quantity * $item->price) }} VND</td>
+                                            <td>
+                                                <button type="button" class="btn-delete-cart-item"
+                                                    data-cart-item-id="{{ $item->id }}">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24"
+                                                        fill="none" stroke="#721c24" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M3 6h18"></path>
+                                                        <path
+                                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                                        </path>
+                                                        <path d="M10 11v6"></path>
+                                                        <path d="M14 11v6"></path>
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        {{-- @empty sẽ tự động chạy nếu $cartItems rỗng --}}
+                                    @empty
+                                        {{-- Để trống tbody ở đây vì thông báo trống đã có ở div.cart-empty-message bên ngoài --}}
+                                        {{-- Hoặc bạn có thể thêm một dòng báo lỗi ngay trong bảng nếu muốn --}}
+                                        {{-- <tr><td colspan="9" class="text-center p-5">Giỏ hàng của bạn hiện không có sản phẩm nào.</td></tr> --}}
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -87,7 +83,8 @@
                         {{-- 2. Container chứa thông báo giỏ hàng trống --}}
                         {{-- Thêm class cart-empty-message, ẩn ban đầu nếu có hàng --}}
                         <div class="cart-empty-message"
-                            style="{{ $cart && $cart->items->count() > 0 ? 'display: none;' : 'text-align: center; padding: 40px;' }}">
+                            style="{{ $cartItems && $cartItems->count() > 0 ? 'display: none;' : 'text-align: center; padding: 40px;' }}">
+                            {{-- Dùng $cartItems --}}
                             <span class="empty-cart kanit-thin">Giỏ hàng trống</span>
                             <div class="kanit-thin" style="padding-top: 20px;">
                                 {{-- Dùng url('/') hoặc route('trang-chu') nếu có --}}

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Validation\Rule;
 use App\Traits\QueryScopes;
@@ -28,7 +29,8 @@ class Product extends Model
         'is_show_home',
         'attributeCatalogue',
         'attribute',
-        'variant'
+        'variant',
+        'view',
     ];
 
     protected $table = 'products';
@@ -59,6 +61,16 @@ class Product extends Model
 
     public function reviews() {
         return $this->morphMany(Review::class, 'reviewable');
+    }
+    
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class, 'product_id');
+    }
+
+    public function getAverageRatingAttribute()
+    {
+        return (float) $this->reviews()->avg('rating') ?? 0;
     }
 }
 

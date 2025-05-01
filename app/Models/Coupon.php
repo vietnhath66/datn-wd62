@@ -12,13 +12,8 @@ class Coupon extends Model
     protected $table = 'coupons';
 
     protected $fillable = [
-        'name',
-        'code',
-        'discount_type',
-        'discount_value',
-        'number',
-        'minimum_order_amount',
-        'start_date',
-        'end_date',
+        'name', 'code', 'discount_type', 'discount_value', 'number',
+        'minimum_order_amount', 'start_date', 'end_date'
     ];
+    protected $dates = ['start_date', 'end_date'];
 }

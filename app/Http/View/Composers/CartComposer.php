@@ -14,20 +14,22 @@ class CartComposer
         $cartItemCount = 0;
         if (Auth::check()) {
             $userId = Auth::id();
-            $cart = Cart::where('user_id', $userId)->first();
-            if ($cart) {
-                // Đảm bảo bạn đang dùng sum()
-                $cartItemCount = CartDetail::where('cart_id', $cart->id)->count('quantity');
+            $cartId = Cart::where('user_id', $userId)->value('id'); // Lấy cart ID
 
-                // Thêm log để kiểm tra
-                \Illuminate\Support\Facades\Log::info("CartComposer - Cart ID: {$cart->id}, Calculated Count (sum): {$cartItemCount}");
-            } else {
-                \Illuminate\Support\Facades\Log::info("CartComposer - No cart found for user ID: {$userId}");
+            if ($cartId) {
+                // --- THÊM ĐIỀU KIỆN LỌC STATUS ---
+                // Tính tổng số lượng của các item CÓ status = 'active'
+                $cartItemCount = CartDetail::where('cart_id', $cartId)
+                    ->where('status', 'active') // <-- Lọc ở đây
+                    ->count('quantity');
+                // Hoặc dùng count() nếu bạn đếm số dòng:
+                // $cartItemCount = CartDetail::where('cart_id', $cartId)
+                //                          ->where('status', 'active')
+                //                          ->count();
+                // --- KẾT THÚC LỌC ---
             }
-        } else {
-            \Illuminate\Support\Facades\Log::info("CartComposer - User not authenticated.");
         }
-
+        // Truyền số lượng (chỉ active items) sang view header
         $view->with('cartItemCount', (int) $cartItemCount);
     }
 }

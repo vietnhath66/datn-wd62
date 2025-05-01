@@ -259,22 +259,19 @@
     <div class="section-desc">
         Danh sách các phiếu giảm giá bạn có thể sử dụng.
     </div>
+
     <div class="coupon-list">
-        <div class="coupon-item">
-            <div class="code">GIAM10</div>
-            <div class="discount">Giảm 10% cho đơn hàng trên 200.000 VNĐ</div>
-            <div class="expiry">Hết hạn: 31/12/2025</div>
-            <div class="status active">Còn hiệu lực</div>
-        </div>
-        <div class="coupon-item">
-            <div class="code">FREESHIP</div>
-            <div class="discount">
-                Miễn phí vận chuyển cho đơn hàng trên 100.000 VNĐ
+        @forelse($coupons as $coupon)
+            <div class="coupon-item">
+                <div class="code">{{ $coupon->code }}</div>
+                <div class="discount">{{ $coupon->discount_type }}: {{ $coupon->discount_value }}%</div>
+                <div class="expiry">Hết hạn: {{ \Carbon\Carbon::parse($coupon->end_date)->format('d/m/Y') }}</div>
+                <div class="status {{ $coupon->end_date >= now() ? 'active' : 'expired' }}">
+                    {{ $coupon->end_date >= now() ? 'Còn hiệu lực' : 'Hết hạn' }}
+                </div>
             </div>
-            <div class="expiry">Hết hạn: 15/10/2024</div>
-            <div class="status expired">Hết hạn</div>
-        </div>
-        <!-- Nếu không có phiếu giảm giá -->
-        <!-- <div class="no-coupons">Bạn chưa có phiếu giảm giá nào.</div> -->
+        @empty
+            <div class="no-coupons">Bạn chưa có phiếu giảm giá nào.</div>
+        @endforelse
     </div>
 </div>

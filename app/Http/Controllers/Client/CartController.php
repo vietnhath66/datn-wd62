@@ -18,36 +18,36 @@ class CartController extends Controller
     public function viewCart()
     {
         if (!Auth::check()) {
-            return redirect()->route('login')->with('warning', 'Vui lòng đăng nhập để xem giỏ hàng.');
+            return redirect()->route('login')->with('warning', 'Vui lòng đăng nhập để xem giỏ hàng.'); 
         }
 
-        $cart = null;
+        $userId = Auth::id();
+        $cart = Cart::where('user_id', $userId)->first();
+
+        $activeCartItems = collect(); 
         $cartTotal = 0;
 
-
-        if (Auth::check()) {
-            $userId = Auth::id();
-            $cart = Cart::where('user_id', $userId)
-                ->with([
-                    'items.productVariant' => function ($query) {
-                        // $query->select('id', 'product_id', 'price', ...);
-                    },
-                    'items.productVariant.products' => function ($query) {
-                        // $query->select('id', 'name', 'image', ...);
-                    }
+        if ($cart) {
+            $activeCartItems = CartDetail::where('cart_id', $cart->id)
+                ->where('status', 'active') 
+                ->with([ 
+                    'productVariant' => function ($query) {
+                        $query->select();
+                    }, 
+                    'productVariant.products:id,name,image',
+                    'product:id,name,image'
                 ])
-                ->first();
+                ->get();
 
-            if ($cart) {
-                foreach ($cart->items as $item) {
-                    $cartTotal += $item->quantity * $item->price;
-                }
-            }
+            $cartTotal = $activeCartItems->sum(function ($item) {
+                return ($item->quantity ?? 0) * ($item->price ?? 0);
+            });
         }
 
         return view('client.cart.cart', [
-            'cart' => $cart,
-            'cartTotal' => $cartTotal,
+            'cart' => $cart,                 
+            'cartItems' => $activeCartItems, 
+            'cartTotal' => $cartTotal,       
         ]);
     }
 

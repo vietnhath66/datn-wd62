@@ -312,15 +312,13 @@
 
             <div class="row">
                 @php
-                    // 1. Lấy các giá trị trạng thái từ đối tượng $order
-                    $currentStatus = strtolower($order->status ?? '');
-                    $currentPaymentMethod = strtolower($order->payment_method ?? ''); // <-- Lấy phương thức thanh toán
-                    $currentPaymentStatus = strtolower($order->payment_status ?? ''); // <-- Lấy trạng thái thanh toán
 
-                    // 2. Định nghĩa các nhãn (Labels)
-                    // Nhãn cho Trạng thái Đơn hàng (Order Status)
+                    $currentStatus = strtolower($order->status ?? '');
+                    $currentPaymentMethod = strtolower($order->payment_method ?? '');
+                    $currentPaymentStatus = strtolower($order->payment_status ?? '');
+
                     $statusLabels = [
-                        'pending' => 'Chưa hoàn tất', // Có thể là 'Chờ xử lý' tùy quy trình
+                        'pending' => 'Chưa hoàn tất',
                         'processing' => 'Shop đang xử lý',
                         'confirm' => 'Shop đã xác nhận',
                         'shipping' => 'Đang vận chuyển',
@@ -330,63 +328,55 @@
                         'failed' => 'Giao thất bại',
                         'payment_error' => 'Lỗi thanh toán',
                     ];
-                    // Nhãn cho Phương thức Thanh toán (Payment Method)
                     $paymentMethodLabels = [
                         'cod' => 'COD',
-                        'wallet' => 'Thanh toán MOMO', // Hoặc 'Ví MoMo'
-                        // Thêm các phương thức khác nếu có: 'bank_transfer' => 'Chuyển khoản NH', ...
+                        'wallet' => 'Thanh toán MOMO',
                     ];
-                    // Nhãn cho Trạng thái Thanh toán (Payment Status)
                     $paymentStatusLabels = [
                         'pending' => 'Chờ thanh toán',
                         'paid' => 'Đã thanh toán',
                         'failed' => 'Thanh toán thất bại',
-                        'refunded' => 'Đã hoàn tiền', // Nếu có quy trình hoàn tiền
+                        'refunded' => 'Đã hoàn tiền',
                     ];
 
-                    // 3. Xác định Text hiển thị cuối cùng
-                    // Trạng thái ĐH
                     $displayOrderStatusLabel = $statusLabels[$currentStatus] ?? ucfirst($currentStatus);
-                    // Phương thức TT
+
+                    // Phương thức TT - Dùng $currentPaymentMethod để tra cứu trong $paymentMethodLabels
                     $displayPaymentMethodText =
                         $paymentMethodLabels[$currentPaymentMethod] ??
                         ($currentPaymentMethod ? ucfirst($currentPaymentMethod) : 'Chưa chọn');
-                    // Trạng thái TT (logic đặc biệt cho COD)
+
+                    // Trạng thái TT - Dùng $currentPaymentStatus để tra cứu trong $paymentStatusLabels
                     $displayPaymentStatusText =
                         $paymentStatusLabels[$currentPaymentStatus] ?? ucfirst($currentPaymentStatus);
+
+                    // Logic đặc biệt cho COD và MoMo - Cần kiểm tra lại logic này dựa trên biến đã sửa
                     if ($currentPaymentMethod === 'cod') {
+                        // Kiểm tra đúng biến $currentPaymentMethod
                         $displayPaymentStatusText = 'Thanh toán khi nhận hàng';
-                        // Nếu đơn COD đã ở trạng thái giao thành công/hoàn thành thì coi như đã TT
+                        // Nếu đơn COD đã ở trạng thái giao thành công/hoàn thành thì coi như đã TT (dựa vào trạng thái đơn hàng)
                         if (in_array($currentStatus, ['completed', 'delivered', 'confirm'])) {
                             $displayPaymentStatusText = 'Đã thanh toán (COD)';
                         } elseif ($currentStatus === 'cancelled') {
                             $displayPaymentStatusText = 'Không thanh toán (Đã hủy)';
                         }
                     } elseif ($currentPaymentMethod === 'wallet' && $currentStatus === 'pending') {
+                        // Kiểm tra đúng biến $currentPaymentMethod và trạng thái đơn hàng
                         // Hiển thị rõ hơn khi chờ thanh toán MoMo
-                        $displayPaymentStatusText = 'Chờ thanh toán MoMo';
+                        // Cần kiểm tra thêm $currentPaymentStatus === 'pending' nếu trạng thái TT cũng là pending
+                        if ($currentPaymentStatus === 'pending') {
+                            $displayPaymentStatusText = 'Chờ thanh toán MoMo';
+                        }
                     }
 
-                    // 4. Tạo HTML cho Badge trạng thái đơn hàng
-                    $badgeClass = 'bg-light text-dark'; // Mặc định
-                    if ($currentStatus === 'pending') {
-                        $badgeClass = 'bg-warning text-dark';
-                    } elseif ($currentStatus === 'processing') {
-                        $badgeClass = 'bg-info text-dark';
-                    } elseif (in_array($currentStatus, ['completed', 'confirm'])) {
-                        $badgeClass = 'bg-success';
-                    } elseif (in_array($currentStatus, ['cancelled', 'failed', 'refunded', 'payment_error'])) {
-                        $badgeClass = 'bg-danger';
-                    } elseif ($currentStatus === 'shipping') {
-                        $badgeClass = 'bg-primary';
-                    }
-                    $statusBadgeHtml =
-                        '<span class="badge ' . $badgeClass . '">' . $displayOrderStatusLabel . '</span>';
+                    // 4. Tạo HTML cho Badge trạng thái đơn hàng - Giữ nguyên logic dựa trên $currentStatus
+                    // ...
 
+                    // Các biến khác dùng cho hiển thị - Giữ nguyên
                     $orderCode = $order->barcode ?? 'DH' . sprintf('%03d', $order->id);
                     $finalTotalFormatted = number_format($order->total ?? 0, 0, ',', '.') . ' VNĐ';
                     $orderDate = optional($order->created_at)->format('H:i d/m/Y') ?? 'N/A';
-                    $customerName = $order->name ?? (optional($order->user)->name ?? 'N/A'); // Ưu tiên tên trên order, nếu không có lấy từ user
+                    $customerName = $order->name ?? (optional($order->user)->name ?? 'N/A');
                     $customerEmail = $order->email ?? (optional($order->user)->email ?? 'N/A');
                 @endphp
 

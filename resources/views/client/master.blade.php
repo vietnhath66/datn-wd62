@@ -7,8 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!--===============================================================================================-->
     <link rel="icon" type="image/png" href="{{ asset('client/images/icons/favicon.png') }}" />
-    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/isotope-layout@3.0.6/dist/isotope.pkgd.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- FontAwesome 4.7.0 for star icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('client/vendor/bootstrap/css/bootstrap.min.css') }}" />
     <!--===============================================================================================-->
@@ -113,6 +116,7 @@
 <!--===============================================================================================-->
 <script src="{{ asset('client/vendor/select2/select2.min.js') }}"></script>
 
+<script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
 <script>
     $(".js-select2").each(function() {
         $(this).select2({

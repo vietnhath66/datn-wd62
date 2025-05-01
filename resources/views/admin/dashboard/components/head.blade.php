@@ -1,3 +1,4 @@
+
 <base href="{{ env('APP_URL') }}">
 <meta charset="utf-8" />
 <title>Ecommerce | StarCode - Admin & Dashboard Template</title>
@@ -32,7 +33,6 @@
 <link href="../backend/css/customize.css" rel="stylesheet">
 <link rel="icon" href="../backend/img/logo.jpg" type="image/x-icon" />
 <link href="../backend/css/plugins/toastr/toastr.min.css" rel="stylesheet">
-
 
 @if (isset($config['css']))
     @foreach ($config['css'] as $css => $value)

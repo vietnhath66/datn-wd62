@@ -408,6 +408,64 @@
                 }); // Kết thúc $.ajax
             }); // Kết thúc .on('click')
 
+            $('#checkoutForm').on('submit', function(event) {
+                let isValid = true;
+                let missingFieldLabels = []; // Mảng lưu tên các trường bị thiếu
+
+                // Xóa trạng thái lỗi cũ
+                $(this).find('.form-control').removeClass('is-invalid');
+
+                // Danh sách các trường BẮT BUỘC và Nhãn tương ứng
+                const requiredFieldsMap = {
+                    '#fullName': 'Họ và Tên',
+                    '#phone': 'Số Điện Thoại',
+                    '#email': 'Email',
+                    '#address': 'Địa chỉ cụ thể',
+                    '#neighborhood': 'Phường/Xã',
+                    '#district': 'Quận/Huyện',
+                    '#province': 'Tỉnh/Thành phố'
+                };
+
+                // Kiểm tra từng trường bắt buộc
+                $.each(requiredFieldsMap, function(fieldSelector, fieldLabel) {
+                    const field = $(fieldSelector);
+                    if (!field.length || field.val().trim() === '') {
+                        isValid = false;
+                        missingFieldLabels.push(fieldLabel);
+                        field.addClass('is-invalid'); // Vẫn nên giữ lại highlight ô lỗi
+                    }
+                });
+
+                // --- Xử lý nếu form KHÔNG hợp lệ ---
+                if (!isValid) {
+                    event.preventDefault(); // Ngăn chặn submit form
+
+                    // Tạo nội dung thông báo lỗi
+                    let errorMessage = "Vui lòng điền đầy đủ thông tin cho các trường sau:\n\n";
+                    missingFieldLabels.forEach(function(label) {
+                        errorMessage += "- " + label + "\n";
+                    });
+
+                    // --- THAY ĐỔI Ở ĐÂY: Chỉ dùng alert() ---
+                    alert(errorMessage);
+                    // --- KẾT THÚC THAY ĐỔI ---
+
+                    // Tùy chọn: Focus vào ô lỗi đầu tiên
+                    if (missingFieldLabels.length > 0) {
+                        let firstErrorSelector = Object.keys(requiredFieldsMap).find(selector =>
+                            requiredFieldsMap[selector] === missingFieldLabels[0]);
+                        if (firstErrorSelector) {
+                            $(firstErrorSelector).focus();
+                        }
+                    }
+
+                } else {
+                    // Form hợp lệ, cho phép submit
+                    $(this).find('button[type="submit"]').prop('disabled', true).html('Đang xử lý...');
+                    console.log('Client validation passed. Submitting form...');
+                }
+            }); // Kết thúc on submit
+
         }); // Kết thúc $(document).ready
     </script>
 @endpush
