@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Backend\CounponController;
 use App\Http\Controllers\Client\AboutController;
 use App\Http\Controllers\Client\AccountController;
@@ -18,6 +20,7 @@ use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\Client\PaymentController;
 use App\Http\Controllers\Client\PolicyController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\HomeAuthController;
 use App\Http\Controllers\Shipper\ShipperController;
 use App\Http\Controllers\UserController1;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +30,8 @@ use App\Http\Controllers\Client\ProductController as ClientProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Client\ProductsController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Auth\EmailVerificationPromptController;
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -68,6 +73,19 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     Route::get('product/{id}', [ProductController::class, 'viewShow'])->name('viewShow');
     Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
     Route::get('products', [ProductController::class, 'index'])->name('client.products.index');
+
+
+    // Auth
+    Route::get('login', [HomeAuthController::class, 'viewLogin'])->name('viewLogin');
+    Route::post('login', [HomeAuthController::class, 'postLogin'])->name('postLogin');
+    Route::post('register', [HomeAuthController::class, 'postRegister'])->name('postRegister');
+    Route::get('confirm', [HomeAuthController::class, 'viewConfirmPass'])->name('viewConfirmPass');
+    Route::get('forgot', [HomeAuthController::class, 'viewForgot'])->name('viewForgot');
+    Route::post('forgot', [HomeAuthController::class, 'resetMail'])->name('postForgot');
+    Route::get('verify-email', EmailVerificationPromptController::class)->name('verification.notice');
+    Route::get('verify-email/{id}/{hash}', [HomeAuthController::class, 'verifyEmail'])->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+    Route::get('change-password', [HomeAuthController::class, 'postChangePass'])->name('postChangePass');
 
 
     // Account
@@ -244,7 +262,7 @@ Route::post('login', [AuthController::class, 'login'])->name('auth.login');
 
 Route::get('admin/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
-require __DIR__ . '/auth.php';
+// require __DIR__ . '/auth.php';
 
 Route::get('/account/password/view', function () {
     return view('client.account.pass');

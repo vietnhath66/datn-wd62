@@ -182,7 +182,7 @@
                     },
                     error: function(xhr, status, error) {
                         console.error("AJAX Error:", status, error);
-                        alert("Đã xảy ra lỗi kết nối, vui lòng thử lại.");
+                        alert("Số lượng của đơn hàng này đã hết.");
                     }
                 });
             }

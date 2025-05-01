@@ -184,20 +184,21 @@
                                     <i class="fa fa-shopping-cart"></i> <span class="ml-2">Đơn hàng của bạn</span>
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-danger" href="{{ route('logout') }}"
+                                <a class="dropdown-item text-danger" href="{{ route('client.logout') }}"
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     <i class="fa fa-sign-out"></i> <span class="ml-2">Đăng xuất</span>
                                 </a>
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                <form id="logout-form" action="{{ route('client.logout') }}" method="POST"
+                                    class="d-none">
                                     @csrf
                                 </form>
                             </div>
                         </div>
                     @else
-                        <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25"> Đăng nhập </a>
+                        <a href="{{ route('client.viewLogin') }}" class="flex-c-m trans-04 p-lr-25"> Đăng nhập </a>
 
 
-                        <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25"> Đăng ký </a>
+                        {{-- <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25"> Đăng ký </a> --}}
                     @endif
 
 
