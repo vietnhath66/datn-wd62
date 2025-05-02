@@ -49,7 +49,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('client/css/main.css') }}" />
     <!--===============================================================================================-->
     <link rel="stylesheet" href="{{ asset('style.css') }}">
-    <link rel="stylesheet" href="{{ asset('scss.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('scss.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('library.css') }}">
 
 
