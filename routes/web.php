@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Backend\CounponController;
 use App\Http\Controllers\Client\AboutController;
@@ -259,7 +260,6 @@ Route::prefix('admin')
 
 Route::get('admin/login', [AuthController::class, 'index'])->name('auth.admin')->middleware('login');
 Route::post('login', [AuthController::class, 'login'])->name('auth.login');
-
 Route::get('admin/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
 // require __DIR__ . '/auth.php';
@@ -270,6 +270,7 @@ Route::get('/account/password/view', function () {
 Route::post('/account/update', [UserController1::class, 'updateProfile'])->name('update.profile');
 Route::post('/address/store', [App\Http\Controllers\AddressController::class, 'store'])->name('address.store');
 Route::get('/coupons', [CouponController::class, 'index'])->name('coupons.index');
+Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 Route::get('/get-districts/{province_code}', function ($province_code) {
     $districts = \App\Models\District::where('province_code', $province_code)
         ->orderBy('full_name')

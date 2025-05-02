@@ -345,6 +345,132 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const citySelectNative = document.getElementById('city');
+        const districtSelectNative = document.getElementById('district');
+        const wardSelectNative = document.getElementById('ward');
+
+        // Lấy đối tượng jQuery cho các select để dùng Select2
+        const $citySelect = $(citySelectNative);
+        const $districtSelect = $(districtSelectNative);
+        const $wardSelect = $(wardSelectNative);
+
+
+        // --- 1. Khởi tạo Select2 cho các dropdown ---
+        // Sử dụng placeholder và cho phép xóa (allowClear)
+        $citySelect.select2({
+            placeholder: 'Chọn tỉnh/thành phố',
+            width: '100%'
+        });
+        $districtSelect.select2({
+            placeholder: 'Chọn quận/huyện',
+            width: '100%'
+        });
+        $wardSelect.select2({
+            placeholder: 'Chọn phường/xã',
+            width: '100%'
+        });
+
+        // Ban đầu disable district và ward (Select2 cũng sẽ hiển thị trạng thái disabled)
+        $districtSelect.prop('disabled', true);
+        $wardSelect.prop('disabled', true);
+
+
+        // --- 2. Logic Load dữ liệu động khi thay đổi dropdown cha ---
+
+        // Khi thay đổi tỉnh (city)
+        $citySelect.on('change', function() { // Sử dụng listener của jQuery cho Select2
+            const cityCode = $(this).find(':selected').data('code'); // Lấy mã thành phố từ data-code
+
+            // Reset và disable các dropdown con
+            $districtSelect.html('<option value="">Chọn quận/huyện</option>');
+            $districtSelect.prop('disabled', true);
+            $districtSelect.trigger('change'); // Thông báo cho Select2 biết options đã thay đổi
+
+            $wardSelect.html('<option value="">Chọn phường/xã</option>');
+            $wardSelect.prop('disabled', true);
+            $wardSelect.trigger('change'); // Thông báo cho Select2 biết options đã thay đổi
+
+            // Nếu có chọn thành phố
+            if (cityCode) {
+                // Gọi API lấy quận huyện theo mã thành phố
+                fetch(`/get-districts/${cityCode}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message) {
+                            // Xử lý trường hợp không có dữ liệu hoặc lỗi trả về message
+                            $districtSelect.html(`<option value="">${data.message}</option>`);
+                            $districtSelect.prop('disabled',
+                                true); // Vô hiệu hóa nếu không có dữ liệu
+                        } else {
+                            // Thêm options mới và enable dropdown
+                            let optionsHtml = '<option value="">Chọn quận/huyện</option>';
+                            data.forEach(item => {
+                                optionsHtml +=
+                                    `<option value="${item.full_name}" data-code="${item.code}">${item.full_name}</option>`;
+                            });
+                            $districtSelect.html(optionsHtml);
+                            $districtSelect.prop('disabled', false); // Enable nếu có dữ liệu
+                        }
+                        // Trigger change để Select2 cập nhật giao diện sau khi thêm options
+                        $districtSelect.trigger('change');
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi lấy quận/huyện:', error);
+                        $districtSelect.html('<option value="">Lỗi khi tải quận/huyện</option>');
+                        $districtSelect.prop('disabled', true);
+                        $districtSelect.trigger('change');
+                        $wardSelect.prop('disabled', true);
+                        $wardSelect.trigger('change');
+                    });
+            }
+        });
+
+        // Khi thay đổi quận huyện (district)
+        $districtSelect.on('change', function() { // Sử dụng listener của jQuery cho Select2
+            const districtCode = $(this).find(':selected').data(
+                'code'); // Lấy mã quận huyện từ data-code
+
+            // Reset và disable dropdown con
+            $wardSelect.html('<option value="">Chọn phường/xã</option>');
+            $wardSelect.prop('disabled', true);
+            $wardSelect.trigger('change'); // Thông báo cho Select2 biết options đã thay đổi
+
+            // Nếu có chọn quận huyện
+            if (districtCode) {
+                // Gọi API lấy phường xã theo mã quận huyện
+                fetch(`/get-wards/${districtCode}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message) {
+                            // Xử lý trường hợp không có dữ liệu hoặc lỗi trả về message
+                            $wardSelect.html(`<option value="">${data.message}</option>`);
+                            $wardSelect.prop('disabled', true); // Vô hiệu hóa nếu không có dữ liệu
+                        } else {
+                            // Thêm options mới và enable dropdown
+                            let optionsHtml = '<option value="">Chọn phường/xã</option>';
+                            data.forEach(item => {
+                                optionsHtml +=
+                                    `<option value="${item.full_name}" data-code="${item.code}">${item.full_name}</option>`;
+                            });
+                            $wardSelect.html(optionsHtml);
+                            $wardSelect.prop('disabled', false); // Enable nếu có dữ liệu
+                        }
+                        // Trigger change để Select2 cập nhật giao diện sau khi thêm options
+                        $wardSelect.trigger('change');
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi lấy phường/xã:', error);
+                        $wardSelect.html('<option value="">Lỗi khi tải phường/xã</option>');
+                        $wardSelect.prop('disabled', true);
+                        $wardSelect.trigger('change');
+                    });
+            }
+        });
+    });
+</script>
 <script>
     // Hàm hiển thị toast
     function showToast(id, message) {
