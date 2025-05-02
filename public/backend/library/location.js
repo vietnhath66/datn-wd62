@@ -19,7 +19,7 @@
 
     HT.sendDataTogetLocation = (option) => {
         $.ajax({
-            url: "http://shopprojectt.test/admin/ajax/location/getlocation",
+            url: "http://127.0.0.1:8000/admin/ajax/location/getlocation",
             type: "GET",
             data: option,
             dataType: "json",

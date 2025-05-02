@@ -8,6 +8,7 @@ use App\Http\Controllers\Client\AboutController;
 use App\Http\Controllers\Client\AccountController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
+use App\Http\Controllers\Ajax\OrderController as AjaxOrderController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\BrandController;
@@ -32,7 +33,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Client\ProductsController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
-
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -158,7 +158,6 @@ Route::prefix('admin')
                 Route::put('update/{product_catalogue}', [ProductCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
                 Route::get('delete/{product_catalogue}', [ProductCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
                 Route::delete('destroy/{product_catalogue}', [ProductCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
-
             });
 
         Route::prefix('product')
@@ -171,7 +170,6 @@ Route::prefix('admin')
                 Route::put('update/{product}', [ProductController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
                 Route::get('delete/{product}', [ProductController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
                 Route::delete('destroy/{product}', [ProductController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
-
             });
 
         Route::prefix('roles')
@@ -185,7 +183,6 @@ Route::prefix('admin')
                 Route::put('update/{roles}', [RoleController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
                 Route::get('delete/{roles}', [RoleController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
                 Route::delete('destroy/{roles}', [RoleController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
-
             });
 
         Route::prefix('users')
@@ -198,7 +195,6 @@ Route::prefix('admin')
                 Route::put('update/{users}', [UserController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
                 Route::get('delete/{users}', [UserController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
                 Route::delete('destroy/{users}', [UserController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
-
             });
 
         Route::prefix('attribute_catalogue')
@@ -212,7 +208,6 @@ Route::prefix('admin')
                 Route::put('update/{attribute_catalogue}', [AttributeCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
                 Route::get('delete/{attribute_catalogue}', [AttributeCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
                 Route::delete('destroy/{attribute_catalogue}', [AttributeCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
-
             });
 
         Route::prefix('attribute')
@@ -248,20 +243,21 @@ Route::prefix('admin')
                 Route::get('edit/{order}', [App\Http\Controllers\Backend\OrderController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
                 Route::put('update/{order}', [App\Http\Controllers\Backend\OrderController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
                 Route::get('show/{order}', [App\Http\Controllers\Backend\OrderController::class, 'show'])->where(['id' => '[0-9]+'])->name('show');
-
             });
 
 
         Route::get('ajax/attribute/getAttribute', [AjaxAttributeController::class, 'getAttribute'])->name('ajax.attribute.getAttribute');
         Route::get('ajax/attribute/loadAttribute', [AjaxAttributeController::class, 'loadAttribute'])->name('ajax.attribute.loadAttribute');
-
+        Route::get('ajax/order/chart',             [AjaxOrderController::class, 'chart'])->name('ajax.order.chart');
     });
+
 
 
 Route::get('admin/login', [AuthController::class, 'index'])->name('auth.admin')->middleware('login');
 Route::post('login', [AuthController::class, 'login'])->name('auth.login');
 Route::get('admin/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
+require __DIR__ . '/auth.php';
 // require __DIR__ . '/auth.php';
 
 Route::get('/account/password/view', function () {

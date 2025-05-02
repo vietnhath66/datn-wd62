@@ -68,8 +68,8 @@ class CartController extends Controller
             'quantity.required' => 'Vui lòng nhập số lượng.',
             'quantity.min' => 'Số lượng phải ít nhất là 1.',
         ]);
-
         if ($validator->fails()) {
+
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -82,6 +82,7 @@ class CartController extends Controller
         DB::beginTransaction();
         try {
             $variant = ProductVariant::find($productVariantId);
+
             if (!$variant) {
                 DB::rollBack();
                 Log::error("addToCart failed: Variant ID {$productVariantId} not found.");
@@ -103,6 +104,7 @@ class CartController extends Controller
 
             if ($existingItem) {
                 $newQuantityInCart = $existingItem->quantity + $quantity;
+                dd(123);
 
                 if ($variant->quantity < $newQuantityInCart) {
                     DB::rollBack();
@@ -125,16 +127,17 @@ class CartController extends Controller
                 if ($variant->quantity < $quantity) {
                     DB::rollBack();
                     return redirect()->back()->with('error', "Sản phẩm '{$productName}' không đủ số lượng tồn kho (chỉ còn {$variant->quantity}).")->withInput();
-                }
+                }             
 
                 $newItem = CartDetail::create([
                     'cart_id' => $cart->id,
-                    'product_variant_id' => $variant->id,
                     'product_id' => $variant->product_id,
+                    'product_variant_id' => $variant->id,
                     'quantity' => $quantity,
                     'price' => $variant->price,
                 ]);
 
+                // dd($newItem);
                 $variant->quantity -= $quantity;
                 $variant->save();
 

@@ -14,7 +14,7 @@
             };
 
             $.ajax({
-                url: "http://shopprojectt.test/admin/ajax/menu/createCatalogue",
+                url: "http://127.0.0.1:8000/admin/ajax/menu/createCatalogue",
                 type: "POST",
                 data: option,
                 dataType: "json",
@@ -164,7 +164,7 @@
     };
     HT.sendAjaxToGetMenu = (options, target, menuRowClass) => {
         $.ajax({
-            url: "http://shopprojectt.test/admin/ajax/dashboard/getMenu",
+            url: "http://127.0.0.1:8000/admin/ajax/dashboard/getMenu",
             type: "GET",
             data: options,
             dataType: "json",
@@ -341,7 +341,7 @@
             }
 
             $.ajax({
-                url: "http://shopprojectt.test/admin/ajax/menu/drag",
+                url: "http://127.0.0.1:8000/admin/ajax/menu/drag",
                 type: "POST",
                 data: option,
                 dataType: "json",

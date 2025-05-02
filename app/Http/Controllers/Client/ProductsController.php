@@ -13,7 +13,6 @@ use App\Models\Attribute;
 use Log;
 use Validator;
 
-
 class ProductsController extends Controller
 {
     public function index(Request $request)
@@ -139,6 +138,8 @@ class ProductsController extends Controller
             ->get();
         $colors = $variants->pluck('name_variant_color')->unique();
 
+        // Truyền dữ liệu vào view
+        // dd($variants);
         return view('client.productss.detailProducts', compact('product', 'variants', 'colors'));
 
     }

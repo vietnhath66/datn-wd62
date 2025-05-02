@@ -347,10 +347,10 @@
         };
 
         $(object).select2({
-            minimumInputLength: 2,
-            placeholder: "Nhập tối thiểu 2 kí tự để tìm kiếm",
+            minimumInputLength: 1,
+            placeholder: "Nhập tối thiểu 1 kí tự để tìm kiếm",
             ajax: {
-                url: "http://admindatn.test/admin/ajax/attribute/getAttribute",
+                url: "http://127.0.0.1:8000/admin/ajax/attribute/getAttribute",
                 type: "GET",
                 dataType: "json",
                 deley: 250,
@@ -786,7 +786,7 @@
                     // console.log(attribute);
 
                     $.get(
-                        "http://admindatn.test/admin/ajax/attribute/loadAttribute",
+                        "http://127.0.0.1:8000/admin/ajax/attribute/loadAttribute",
                         {
                             attribute: attribute,
                             attributeCatalogueId: attributeCatalogueId,
