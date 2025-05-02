@@ -131,7 +131,11 @@
                                                 @elseif($order->status == 'shipping')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đang
-                                                        vận chuyển</span>
+                                                        giao hàng</span>
+                                                @elseif($order->status == 'confirm')
+                                                    <span
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Giao
+                                                        hàng thành công</span>
                                                 @elseif($order->status == 'completed')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Đã

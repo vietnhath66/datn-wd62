@@ -312,10 +312,10 @@
 
             <div class="row">
                 @php
-
+                    // 1. Lấy các giá trị trạng thái từ đối tượng $order
                     $currentStatus = strtolower($order->status ?? '');
-                    $currentPaymentMethod = strtolower($order->payment_method ?? '');
-                    $currentPaymentStatus = strtolower($order->payment_status ?? '');
+                    $currentPaymentMethod = strtolower($order->payment_method ?? ''); // <-- Lấy phương thức thanh toán
+                    $currentPaymentStatus = strtolower($order->payment_status ?? ''); // <-- Lấy trạng thái thanh toán
 
                     $statusLabels = [
                         'pending' => 'Chưa hoàn tất',
