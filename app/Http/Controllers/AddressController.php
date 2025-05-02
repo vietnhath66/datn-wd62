@@ -40,7 +40,7 @@ class AddressController extends Controller
             'is_default' => $isDefault,
         ]);
 
-        // Trả JSON rõ ràng hơn, luôn luôn trả response JSON cho frontend xử lý
+        
         return response()->json([
             'status' => 'success',
             'message' => 'Địa chỉ đã được lưu thành công!'
