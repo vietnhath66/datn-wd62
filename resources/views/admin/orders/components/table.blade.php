@@ -81,10 +81,10 @@
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
-                                                @if ($order->payment_status == 'cod')
+                                                @if ($order->payment_method == 'cod')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">COD</span>
-                                                @elseif($order->payment_status == 'wallet')
+                                                @elseif($order->payment_method == 'wallet')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Thanh
                                                         toán MOMO</span>
@@ -95,19 +95,19 @@
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
-                                                @if ($order->payment_method == 'pending')
+                                                @if ($order->payment_status == 'pending')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Chờ
                                                         thanh toán</span>
-                                                @elseif($order->payment_method == 'paid')
+                                                @elseif($order->payment_status == 'paid')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đã
                                                         thanh toán</span>
-                                                @elseif($order->payment_method == 'failed')
+                                                @elseif($order->payment_status == 'failed')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Thanh
                                                         toán thất bại</span>
-                                                @elseif($order->payment_method == 'refunded')
+                                                @elseif($order->payment_status == 'refunded')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đã
                                                         hoàn tiền</span>
@@ -127,7 +127,7 @@
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đang
                                                         giao hàng</span>
-                                                @elseif($order->status == 'delivered')
+                                                @elseif($order->status == 'confirm')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đã
                                                         giao</span>

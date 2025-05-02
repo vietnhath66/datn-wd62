@@ -38,8 +38,8 @@
                                     @php
                                         // 1. Lấy các giá trị trạng thái từ đối tượng $order
                                         $currentStatus = strtolower($order->status ?? '');
-                                        $currentPaymentMethod = strtolower($order->payment_status ?? ''); // <-- Lấy phương thức thanh toán
-                                        $currentPaymentStatus = strtolower($order->payment_method ?? ''); // <-- Lấy trạng thái thanh toán
+                                        $currentPaymentMethod = strtolower($order->payment_method ?? ''); // <-- Lấy phương thức thanh toán
+                                        $currentPaymentStatus = strtolower($order->payment_status ?? ''); // <-- Lấy trạng thái thanh toán
 
                                         // 2. Định nghĩa các nhãn (Labels)
                                         // Nhãn cho Trạng thái Đơn hàng (Order Status)
