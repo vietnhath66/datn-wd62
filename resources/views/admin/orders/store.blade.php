@@ -31,14 +31,16 @@
                         <div class="card-body">
                             <h6 class="mb-4 text-15">{{ $config['seo'][$config['method']]['title'] }}</h6>
 
-                            <form action="{{ $url }}" method="POST" class="box" enctype="multipart/form-data" id="my-dropzone">
+                            <form action="{{ $url }}" method="POST" class="box"
+                                enctype="multipart/form-data" id="my-dropzone">
                                 @csrf
                                 @if ($config['method'] == 'edit')
                                     @method('PUT')
                                 @endif
                                 <div class="grid grid-cols-1 gap-5 lg:grid-cols-2 xl:grid-cols-12">
                                     <div class="xl:col-span-3">
-                                        <label for="productCodeInput" class="inline-block mb-2 text-base font-medium">Trạng thái đơn hàng</label>
+                                        <label for="productCodeInput"
+                                            class="inline-block mb-2 text-base font-medium">Trạng thái đơn hàng</label>
                                         <select id="status" name="status"
                                             class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200">
                                             <option value="pending" {{ old('status', $order->status) == 'pending' ? 'selected' : '' }}>Chờ xử lý</option>
@@ -68,7 +70,7 @@
                                         @enderror
                                     </div>
                                 </div>
-                            
+
                                 <div class="flex justify-end gap-2 mt-4">
                                     <button type="submit"
                                         class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">

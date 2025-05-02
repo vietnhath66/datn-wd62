@@ -26,7 +26,7 @@ class UpdateUserStatusOnVerified
         // Cập nhật trường status
         // Kiểm tra xem user có trường status không để tránh lỗi nếu cấu trúc DB thay đổi
         if (isset($user->status)) {
-            $user->status = 'verified'; // Gán giá trị mới
+            $user->status = '1'; // Gán giá trị mới
             $user->save(); // Lưu lại vào database
         }
     }

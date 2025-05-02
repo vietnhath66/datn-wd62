@@ -24,10 +24,11 @@
                             <div>
                                 <form method="GET" action="{{ route('admin.order.index') }}" class="mb-4">
                                     <div class="flex items-center space-x-2">
-                                        <input type="search" name="order_id" 
+                                        <input type="search" name="order_id"
                                             class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
-                                            data-provider="flatpickr" placeholder="Nhập mã đơn hàng" value="{{ request()->get('order_idid') }}">
-                                        
+                                            data-provider="flatpickr" placeholder="Nhập mã đơn hàng"
+                                            value="{{ request()->get('order_idid') }}">
+
                                     </div>
                                 </form>
                             </div>
@@ -118,23 +119,27 @@
                                                 @if ($order->status == 'pending')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Chưa
-                                                        hoàn tất</span>
+                                                        hoàn tất đơn hàng</span>
                                                 @elseif($order->status == 'processing')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đang
                                                         xử lý</span>
+                                                @elseif($order->status == 'confirm')
+                                                    <span
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đã
+                                                        xác nhận</span>
                                                 @elseif($order->status == 'shipping')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đang
                                                         giao hàng</span>
                                                 @elseif($order->status == 'confirm')
                                                     <span
-                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đã
-                                                        giao</span>
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Giao
+                                                        hàng thành công</span>
                                                 @elseif($order->status == 'completed')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Đã
-                                                        hoàn tất</span>
+                                                        hoàn thành</span>
                                                 @elseif($order->status == 'cancelled')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Đã
@@ -146,7 +151,7 @@
                                                 @elseif ($order->status == 'failed')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Giao
-                                                        hàng thất bại</span>
+                                                        thất bại</span>
                                                 @endif
                                             </td>
                                             <td

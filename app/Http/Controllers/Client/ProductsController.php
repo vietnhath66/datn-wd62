@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Models\Brand;
 use App\Models\Product;
 use App\Models\ProductCatalogue;
 use App\Models\Review;
@@ -13,15 +14,15 @@ use App\Models\Attribute;
 use Log;
 use Validator;
 
-
 class ProductsController extends Controller
 {
     public function index(Request $request)
     {
         $productsQuery = Product::query()
             ->where('publish', 1)
-            ->with('variants') 
-            ->with('reviews');
+            ->with('variants')
+            ->with('reviews')
+            ->with('brands');
 
         $categories = ProductCatalogue::where('publish', 1)
             ->where('parent_id', 0)
@@ -106,11 +107,12 @@ class ProductsController extends Controller
             });
         }
 
+        $brands = Brand::orderBy('name', 'asc')->get();
 
         if ($filterType) {
             $products = $productsQuery->get();
         } else {
-            $products = $productsQuery->paginate(16)->withQueryString();
+            $products = $productsQuery->paginate(12)->withQueryString();
         }
 
         $colors = Attribute::where('attribute_catalogue_id', 11)->get();
@@ -125,7 +127,8 @@ class ProductsController extends Controller
             'selectedCategoryId',
             'colors',
             'sizes',
-            'request'
+            'request',
+            'brands'
         ));
     }
 
@@ -135,10 +138,12 @@ class ProductsController extends Controller
         $product = Product::findOrFail($id);
 
         $variants = ProductVariant::where('product_id', $id)
-            ->whereNull('deleted_at')  
+            ->whereNull('deleted_at')
             ->get();
         $colors = $variants->pluck('name_variant_color')->unique();
 
+        // Truyền dữ liệu vào view
+        // dd($variants);
         return view('client.productss.detailProducts', compact('product', 'variants', 'colors'));
 
     }

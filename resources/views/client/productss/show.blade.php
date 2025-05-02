@@ -178,7 +178,6 @@
                             <p class="stext-102 cl6">{!! $product->content ?? 'Chưa có mô tả cho sản phẩm này.' !!}</p>
                         </div>
                     </div>
-
                     <div class="tab-pane fade" id="reviews" role="tabpanel">
                         <div class="row">
                             <div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
@@ -302,11 +301,12 @@
         <span class="stext-107 cl6 p-lr-25">
             SKU: {{ $product->product_catalogue_id }}
         </span>
-
         <span class="stext-107 cl6 p-lr-25">
             Categories: {{ $product->category }}
         </span>
     </div>
+
+
 </section>
 
 <script>

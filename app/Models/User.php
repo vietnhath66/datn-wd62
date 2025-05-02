@@ -3,12 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Mail\VerifyUserEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -31,6 +33,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'active_status',
         'dark_mode',
         'messenger_color',
+        'email_verified_at',
+        'status'
     ];
 
     /**
@@ -79,4 +83,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Attribute::class, 'user_id');
     }
 
+
+    public function sendEmailVerificationNotification()
+    {
+        // Thay vì gửi Notification mặc định, chúng ta gửi Mailable tùy chỉnh
+        Mail::to($this->email)->send(new VerifyUserEmail($this));
+    }
 }

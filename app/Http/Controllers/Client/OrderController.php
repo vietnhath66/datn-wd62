@@ -57,9 +57,9 @@ class OrderController extends Controller
             return redirect()->route('login')->with('warning', 'Vui lòng đăng nhập để đặt hàng.');
         }
         $userId = Auth::id();
+        $user = Auth::user(); // Lấy thông tin user đang đăng nhập
+        // 2. Validate input chứa ID sản phẩm được chọn từ giỏ hàng
         $user = Auth::user();
-
-
         $validator = Validator::make($request->all(), [
             'selected_products' => [
                 'required',
@@ -79,7 +79,7 @@ class OrderController extends Controller
         ], [
             'selected_products.required' => 'Vui lòng chọn sản phẩm từ giỏ hàng để tiếp tục.',
         ]);
-
+        // dd($validator);
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
@@ -110,6 +110,11 @@ class OrderController extends Controller
 
             $order = Order::create([
                 'user_id' => $userId,
+                // Lấy thông tin cơ bản từ user đăng nhập, không lấy từ request ở bước này
+                // 'name' => $user->name, // Giả sử User model có 'name'
+                'email' => $user->email, // Giả sử User model có 'email'
+                'phone' => $user->phone, // Giả sử User model có 'phone'
+                // Địa chỉ chi tiết sẽ được cập nhật ở bước 'completeOrder'
                 'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone,
@@ -126,7 +131,6 @@ class OrderController extends Controller
                 'barcode' => $barcode,
             ]);
             Log::info("Created new pending order ID: {$order->id} for user ID: {$userId}");
-
             $totalPrice = 0;
 
             foreach ($selectedItems as $item) {
@@ -134,6 +138,7 @@ class OrderController extends Controller
                     DB::rollBack();
                     $productName = $item->productVariant->products->name ?? 'Sản phẩm';
                     $availableQty = $item->productVariant->quantity ?? 0;
+                    return redirect()->route('client.cart.viewCart'); // Quay về giỏ hàng
                     return redirect()->route('cart.viewCart')
                         ->with('error', "Sản phẩm '{$productName}' không đủ số lượng tồn kho (chỉ còn {$availableQty}). Vui lòng cập nhật giỏ hàng.");
                 }
@@ -148,6 +153,7 @@ class OrderController extends Controller
 
                 $totalPrice += $item->quantity * $item->price;
             }
+
             Log::info("Added new OrderDetails for order ID: {$order->id}. Calculated total: {$totalPrice}");
 
             $order->update(['total' => $totalPrice]);
@@ -268,7 +274,7 @@ class OrderController extends Controller
                 $redirectUrl = route($returnRouteName);
 
                 // Sử dụng ngrok
-                $ngrokForwardingUrl = "https://c50f-2001-ee0-40e1-7d37-787b-6211-5cb-d25c.ngrok-free.app";
+                $ngrokForwardingUrl = "https://bfd3-2001-ee0-40e1-7d37-5c6f-2c39-3e6a-5533.ngrok-free.app";
                 $ipnRouteUri = "/momo/payment/notify";
                 $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
                 Log::info('Using temporary Ngrok IPN URL: ' . $ipnUrl);
@@ -488,7 +494,7 @@ class OrderController extends Controller
             }
             $redirectUrl = route($returnRouteName);
             // Sử dụng ngrok
-            $ngrokForwardingUrl = "https://c50f-2001-ee0-40e1-7d37-787b-6211-5cb-d25c.ngrok-free.app";
+            $ngrokForwardingUrl = "https://bfd3-2001-ee0-40e1-7d37-5c6f-2c39-3e6a-5533.ngrok-free.app";
             $ipnRouteUri = "/momo/payment/notify";
             $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
             Log::info('Using temporary Ngrok IPN URL: ' . $ipnUrl);

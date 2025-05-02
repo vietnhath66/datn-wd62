@@ -487,7 +487,7 @@
 
 
 <!-- Product -->
-<div class="bg0 m-t-23 p-t-20 p-b-140">
+<div class="bg0 p-t-20 p-b-140">
     <div class="container">
         <div class="flex-w flex-sb-m">
             <div>
@@ -615,6 +615,23 @@
                                 </div>
                             </div>
 
+                            <div class="custom-filter-col custom-filter-col-brand">
+                                <div class="mtext-102 cl2 p-b-15 custom-filter-title">
+                                    Thương hiệu</div>
+                                <div class="custom-options-list"> {{-- Hoặc custom-options-grid tùy layout mong muốn --}}
+                                    @foreach ($brands as $brand)
+                                        <label class="custom-checkbox-label">
+                                            {{-- Sử dụng name="brands[]" và value là ID hoặc slug của brand --}}
+                                            {{-- Sử dụng ID là cách đơn giản nhất để khớp với class brand-ID --}}
+                                            <input type="checkbox" name="brands[]" value="{{ $brand->id }}"
+                                                class="custom-filter-checkbox">
+                                            <span class="custom-visible-checkbox"></span>
+                                            <span class="custom-label-text">{{ $brand->name }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+
                             <div class="custom-filter-col custom-filter-col-rating">
                                 <div class="mtext-102 cl2 p-b-15 custom-filter-title">Đánh giá</div>
                                 <div class="custom-options-list"> {{-- Sử dụng danh sách đơn giản --}}
@@ -711,10 +728,10 @@
                         ->unique()
                         ->implode(' ');
                     $categoryClass = $product->product_catalogue_id ? 'category-' . $product->product_catalogue_id : '';
-
+                    $brandClass = $product->brand_id ? 'brand-' . $product->brand_id : '';
                 @endphp
 
-                <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women {{ $categoryClass }} {{ $productSizeSlugs }} {{ $productColorSlugs }}"
+                <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women {{ $categoryClass }} {{ $productSizeSlugs }} {{ $productColorSlugs }} {{ $brandClass }}"
                     data-created-at="{{ $product->created_at->timestamp ?? 0 }}"
                     data-updated-at="{{ $product->updated_at->timestamp ?? 0 }}"
                     data-price="{{ $product->price ?? 0 }}" data-rating="{{ $averageRating }}"
@@ -747,12 +764,11 @@
                     </div>
                 </div>
             @endforeach
-
         </div>
         <div id="no-products" style="display: none;">
             <p>Không có sản phẩm nào trong mục này.</p>
         </div>
-
+        {{ $products->links('client.pagination.custom-pagination') }}
     </div>
 </div>
 
@@ -773,7 +789,7 @@
         var $sizeCheckboxes = $('input[name="sizes[]"]');
         var $colorCheckboxes = $('input[name="colors[]"]');
         var $ratingCheckboxes = $('input[name="ratings[]"]');
-
+        var $brandCheckboxes = $('input[name="brands[]"]');
         var $minPriceInput = $('input[name="min_price"]');
         var $maxPriceInput = $('input[name="max_price"]');
 
@@ -823,8 +839,13 @@
 
                 var minPrice = parseFloat($minPriceInput.val()) ||
                     0;
+
                 var maxPrice = parseFloat($maxPriceInput.val()) ||
                     Infinity;
+
+                var selectedBrandFilters = $brandCheckboxes.filter(':checked').map(function() {
+                    return '.brand-' + $(this).val();
+                }).get();
 
                 var selectedRatings = $ratingCheckboxes.filter(':checked').map(function() {
                     return parseFloat($(this).val());
@@ -870,6 +891,16 @@
                         ); // Kiểm tra item có class của BẤT KỲ màu nào được chọn không
                     }
 
+                    var isBrandMatch =
+                        true; // Mặc định là true nếu không checkbox Brand nào được check
+                    if (selectedBrandFilters.length > 0) {
+                        var brandORSelector = selectedBrandFilters.join(
+                            ','); // Chuỗi selector OR: ".brand-1, .brand-5"
+                        isBrandMatch = $item.is(
+                            brandORSelector
+                        ); // Kiểm tra item có class của BẤT KỲ brand nào được chọn không
+                    }
+
                     // d. Lọc theo Khoảng giá
                     var isPriceMatch = (itemPrice >= minPrice && itemPrice <= maxPrice);
 
@@ -898,7 +929,7 @@
                     // --- Kết hợp tất cả điều kiện bằng logic AND ---
                     // Item chỉ hiển thị nếu khớp TẤT CẢ các tiêu chí đã chọn từ MỌI nhóm lọc
                     return isCategoryMatch && isSizeMatch && isColorMatch && isPriceMatch &&
-                        isRatingMatch;
+                        isRatingMatch && isBrandMatch;
                 };
 
 
@@ -929,7 +960,8 @@
 
                 // 6. Cập nhật URL trình duyệt bằng History API
                 updateUrlWithFiltersAndSort(activeCategorySelector, selectedSizeFilters,
-                    selectedColorFilters, minPrice, maxPrice, selectedRatings, sortValue);
+                    selectedColorFilters, minPrice, maxPrice, selectedRatings, sortValue,
+                    selectedBrandFilters);
             }
 
             // --- Helper Function: Cập nhật URL ---
@@ -980,6 +1012,14 @@
                     }
                 });
 
+                selectedBrandFilters.forEach(function(filter) {
+                    // Filter có dạng ".brand-ID". Lấy ID.
+                    var idMatch = filter.match(/\.brand-(\d+)/);
+                    if (idMatch && idMatch[1]) {
+                        searchParams.append('brands[]', idMatch[1]);
+                    }
+                });
+
                 // Rating (dạng mảng: ratings[]=5&ratings[]=4)
                 ratingValues.forEach(function(value) {
                     searchParams.append('ratings[]', value);
@@ -996,7 +1036,9 @@
                 } else {
                     searchParams.delete('max_price');
                 }
-
+                if (newUrl.toString() !== window.location.toString()) {
+                    history.pushState(null, '', newUrl.toString());
+                }
 
                 // Cập nhật URL chỉ khi nó khác với URL hiện tại
                 if (newUrl.toString() !== window.location.toString()) {
@@ -1024,7 +1066,19 @@
                 // Tìm button có data-sort tương ứng.
                 $sortBtns.filter('[data-sort="' + urlSort + '"]').addClass('active');
 
+                var urlBrands = urlParams.getAll('brands'); // Lấy tất cả giá trị 'brands' từ URL
 
+                $brandCheckboxes.each(function() {
+                    var $this = $(this);
+                    var value = $this.val(); // Lấy value của checkbox (ID brand)
+
+                    if (urlBrands.includes(
+                            value)) { // Kiểm tra nếu ID brand có trong URL params
+                        $this.prop('checked', true);
+                    } else {
+                        $this.prop('checked', false);
+                    }
+                });
                 // Set checkbox checked state for Size, Color, Rating
                 $attributeCheckboxes.each(function() {
                     var $this = $(this);
@@ -1058,7 +1112,6 @@
                 setTimeout(function() {
                     // Trigger change trên checkbox sẽ cập nhật style label VÀ gọi updateIsotopeFilterAndSort
                     $attributeCheckboxes.trigger('change');
-
                     // Trigger input trên price inputs sẽ gọi updateIsotopeFilterAndSort (nếu listener đã được gắn)
                     // Cần đảm bảo listeners cho input giá đã được gắn trước khi gọi trigger
                     // (EventListeners được gắn ở phần 2 ngay bên dưới)

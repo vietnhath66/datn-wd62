@@ -1,4 +1,8 @@
-<div class="lg:col-span-2 xl:col-span-12">
+
+
+{{-- <iframe src="form-add-product.blade.php" width="100%" height="800px" style="border:none;"></iframe> --}}
+
+<div class="lg:col-span-2 xl:col-span-12 bootstrap-scope">
     <div class="ibox variant-box">
         <div class="ibox-title">
             <div>
