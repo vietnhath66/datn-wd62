@@ -16,6 +16,7 @@ use App\Models\AttributeCatalogue;
 use App\Models\AttributeCatalogueLanguage;
 use App\Models\Brand;
 use App\Models\Language;
+use App\Models\Product;
 
 class ProductController extends Controller
 {
@@ -55,10 +56,15 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         // $this->authorize('modules', 'admin.product.index');
-        $products = $this->productService->paginate($request);
-        // dd($products);
+        $products = Product::paginate(10);
 
+        if(isset($_GET['keyword'])){
+            $products = $this->productService->paginate($request);
+        }
+        if ($_GET['keyword'] == '') {
+            $products = Product::paginate(10);
 
+        }
         $config = [
             'js' => [
                 'admin/js/plugins/switchery/switchery.js',
@@ -131,13 +137,11 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request)
     {
-        // dd($request);
-
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('products', 'public');
             $request->merge(['image' => $path]);
         }
-
+        // dd(123);
         if ($this->productService->create($request)) {
             return redirect()->route('admin.product.index')->with('success', 'Thêm mới bản ghi thành công');
         }
@@ -232,7 +236,9 @@ class ProductController extends Controller
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
                 'backend/plugins/nice-select/css/nice-select.css',
                 'backend/css/plugins/switchery/switchery.css',
-                'backend/css/bootstrap.min.css'
+                'backend/css/bootstrap.min.css',
+                'backend/css/customize.css',
+                // C:\laragon\www\admindatn\public\backend\css\customize.css
             ]
 
         ];
