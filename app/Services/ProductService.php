@@ -69,7 +69,6 @@ class ProductService extends BaseService implements ProductServiceInterface
             });
         }
 
-
         $perPage = $request->integer('perpage');
         $perPage = 5;
         $condition = [
@@ -110,7 +109,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         DB::beginTransaction();
         try {
             $product = $this->createProduct($request);
-            // dd($product);
             if ($product->id > 0) {
 
                 if ($request->input('attribute')) {
@@ -185,20 +183,32 @@ class ProductService extends BaseService implements ProductServiceInterface
         if ($request->hasFile('image')) {
             $payload['image'] = Storage::put(self::PATH_UPLOAD, $request->file('image'));
         }
+        // dd($payload);
 
         $payload['price'] = (float) $payload['price'];
         $payload['attributeCatalogue'] = $this->formatJson($request, 'attributeCatalogue');
         $payload['attribute'] = $request->input('attribute');
         $payload['variant'] = $this->formatJson($request, 'variant');
-        $payload['publish'] == "on" ? $payload['publish'] = 1 : $payload['publish'] = 0;
-        // $payload['is_active'] == "on" ? $payload['publish'] = 1 : $payload['publish'] = 0;
-        $payload['is_sale'] == "on" ? $payload['is_sale'] = 1 : $payload['is_sale'] = 0;
+        if(isset($payload['publish'])){
+            $payload['publish'] == "on" ? $payload['publish'] = 1 : $payload['publish'] = 0;
+        }
+        if(isset($payload['is_sale'])){
+            $payload['is_sale'] == "on" ? $payload['is_sale'] = 1 : $payload['is_sale'] = 0;
+
+        }
+        if(isset($payload['is_new'])){
         $payload['is_new'] == "on" ? $payload['is_new'] = 1 : $payload['is_new'] = 0;
+            
+        }
+        if(isset($payload['is_trending'])){
         $payload['is_trending'] == "on" ? $payload['is_trending'] = 1 : $payload['is_trending'] = 0;
+            
+        }
+        if(isset($payload['is_show_home'])){
         $payload['is_show_home'] == "on" ? $payload['is_show_home'] = 1 : $payload['is_show_home'] = 0;
-
+            
+        }
         // dd($payload);
-
         $product = $this->productReponsitory->create($payload);
         // $this->createProductGallery($product->id, $request);
         return $product;
@@ -370,7 +380,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         $varriants = $product->product_variants()->createMany($variant);
         $variantId = $varriants->pluck('id');
 
-
         $variantAttribute = [];
         $attributeCombines = $this->combineAttributes(array_values($payload['attribute']));
         if (count($variantId)) {
@@ -386,7 +395,6 @@ class ProductService extends BaseService implements ProductServiceInterface
                 }
             }
         }
-        // dd($variantAttribute);
 
         $variantAttributes = $this->productVariantAttributeReponsitory->createBatch($variantAttribute);
     }
@@ -410,39 +418,69 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     private function createVariantArray(array $payload = [], $product): array
     {
-        // dd($payload);
+        // dd(count($payload['productVariant']));
+        // dd(count(explode(",", $payload['productVariant']['name'][1])));
+        $variant_details = explode(",", $payload['productVariant']['name'][0]);
+
+        // dd($variant_details[0]);
+
+
 
 
         $variant = [];
         if (isset($payload['variant']['sku']) && count($payload['variant']['sku'])) {
             foreach ($payload['variant']['sku'] as $key => $val) {
-
-                // $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $payload['productVariant']['id'][$key]);
                 $vId = ($payload['productVariant']['id'][$key]) ?? '';
                 $productVariantId = $this->sortString($vId);
                 $variant_details = explode(",", $payload['productVariant']['name'][$key]);
-                // $array = explode(",", $str);
-                $variant[] = [
-                    // 'name' => $product->name . " " . $payload['productVariant']['name'][$key],
-                    'name' => $product->name,
-                    'name_variant_size' => $variant_details[0],
-                    'name_variant_color' => $variant_details[1],
-
-                    'code' => $productVariantId,
-                    'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
-                    'sku' => $val,
-                    'price' => ($payload['variant']['price'][$key]) ? $this->convert_price($payload['variant']['price'][$key]) : '',
-                    'publish' => 1,
-                    // 'file_name' => ($payload['variant']['file_name'][$key]) ?? '',
-                    // 'file_url' => ($payload['variant']['file_url'][$key]) ?? '',
-                    // 'album' => ($payload['variant']['album'][$key]) ?? '',
-                    // 'user_id' => Auth::user()->id
-                ];
+                if(count($variant_details) != 2){
+                    if(mb_strlen($variant_details[0]) > 1 || $variant_details[0] != 'xl' || $variant_details[0] != 'xxl') {
+                        $variant[] = [
+                            'name' => $product->name,
+                            'name_variant_size' => '',
+                            'name_variant_color' => $variant_details[0],
+                            'code' => $productVariantId,
+                            'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
+                            'price' => ($payload['variant']['price'][$key]) ? $this->convert_price($payload['variant']['price'][$key]) : '',
+                            'publish' => 1,
+                        ];
+                    }else {
+                        $variant[] = [
+                            'name' => $product->name,
+                            'name_variant_size' => $variant_details[0],
+                            'name_variant_color' => '',
+                            'code' => $productVariantId,
+                            'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
+                            'price' => ($payload['variant']['price'][$key]) ? $this->convert_price($payload['variant']['price'][$key]) : '',
+                            'publish' => 1,
+                        ];
+                    }    
+                }else {
+                    if(mb_strlen($variant_details[0]) == 1 || $variant_details[0] == 'xl' || $variant_details[0] == 'xxl') {
+                        $variant[] = [
+                            'name' => $product->name,
+                            'name_variant_size' => $variant_details[0],
+                            'name_variant_color' => $variant_details[1],
+                            'code' => $productVariantId,
+                            'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
+                            'price' => ($payload['variant']['price'][$key]) ? $this->convert_price($payload['variant']['price'][$key]) : '',
+                            'publish' => 1,
+                        ];
+                    }else {
+                        $variant[] = [
+                            'name' => $product->name,
+                            'name_variant_size' => $variant_details[1],
+                            'name_variant_color' => $variant_details[0],
+                            'code' => $productVariantId,
+                            'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
+                            'price' => ($payload['variant']['price'][$key]) ? $this->convert_price($payload['variant']['price'][$key]) : '',
+                            'publish' => 1,
+                        ];
+                    }                 
+                }
             }
         }
-
         // dd($payload['productVariant']);
-
         // dd($variant);
         return $variant;
     }

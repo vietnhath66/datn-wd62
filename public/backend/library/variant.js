@@ -108,7 +108,7 @@
         let attributes = [];
         let variants = [];
         let attributeTitle = [];
-
+        
         $(".variant-item").each(function () {
             let _this = $(this);
             let attr = [];

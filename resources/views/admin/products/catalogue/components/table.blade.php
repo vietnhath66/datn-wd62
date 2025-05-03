@@ -93,10 +93,9 @@
                             <tbody class="list">
                                 @if (isset($productCatalogues) && is_object($productCatalogues))
                                     @foreach ($productCatalogues as $productCatalogue)
-                                    
                                         <tr>
                                             <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
-                                                {{ str_repeat('|----', (($productCatalogue->level > 0)?($productCatalogue->level - 1):0))}}
+                                                {{ str_repeat('|----', $productCatalogue->level > 0 ? $productCatalogue->level - 1 : 0) }}
                                                 <a href="#!"
                                                     class="transition-all duration-150 ease-linear product_code text-custom-500 hover:text-custom-600">{{ $productCatalogue->id }}</a>
                                             </td>
@@ -104,8 +103,8 @@
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">
                                                 <a href="apps-ecommerce-product-overview.html"
                                                     class="flex items-center gap-2">
-                                                    <img src="{{ \Storage::url($productCatalogue->image) }}" alt="Product images"
-                                                        class="h-6">
+                                                    <img src="{{ \Storage::url($productCatalogue->image) }}"
+                                                        alt="Product images" class="h-6">
                                                     <h6 class="product_name">{{ $productCatalogue->name }}</h6>
                                                 </a>
                                             </td>
@@ -140,7 +139,8 @@
                                                         <li>
                                                             <a data-modal-target="deleteModal"
                                                                 class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-productCatalogue hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
-                                                                href="{{ route('admin.product_catalogue.delete', $productCatalogue->id) }}"><i data-lucide="trash-2"
+                                                                href="{{ route('admin.product_catalogue.delete', $productCatalogue->id) }}"><i
+                                                                    data-lucide="trash-2"
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
                                                                 <span class="align-middle">Delete</span></a>
                                                         </li>
@@ -152,6 +152,7 @@
                                 @endif
                             </tbody>
                         </table>
+
                         <div class="noresult" style="display: none">
                             <div class="py-6 text-center">
                                 <i data-lucide="search"

@@ -127,18 +127,14 @@
                                 @endif
                             </tbody>
                         </table>
-                        <div class="noresult" style="display: none">
-                            <div class="py-6 text-center">
-                                <i data-lucide="search"
-                                    class="w-6 h-6 mx-auto mb-3 text-sky-500 fill-sky-100 dark:fill-sky-500/20"></i>
-                                <h5 class="mt-2 mb-1">Sorry! No Result Found</h5>
-                                <p class="mb-0 text-slate-500 dark:text-zink-200">We've searched more than 199+ product
-                                    We did not find any product for you search.</p>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="flex flex-col items-center gap-4 px-4 mt-4 md:flex-row" id="pagination-element">
+                    </div>
+                    @if (!isset($_GET['keyword']) || isset($_GET['keyword']) == '')
+                        <div class="" style="padding-top:30px">
+                            {{ $products->links() }}
+                        </div>
+                    @endif
+                    {{-- <div class="flex flex-col items-center gap-4 px-4 mt-4 md:flex-row" id="pagination-element">
                         <div class="grow">
                             <p class="text-slate-500 dark:text-zink-200">Showing <b class="showing">10</b> of <b
                                     class="total-records">38</b> Results</p>
@@ -158,7 +154,7 @@
                                 </a>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                 </div>
             </div><!--end card-->

@@ -12,7 +12,6 @@
 {{-- <script src="{{ asset('admin/js/setup.js') }}"></script> --}}
 
 <!-- Icons CSS -->
-
 <!-- StarCode CSS -->
 <link rel="stylesheet" href="{{ asset('admin/css/starcode2.css') }}" />
 
@@ -33,16 +32,43 @@
 <link rel="icon" href="../backend/img/logo.jpg" type="image/x-icon" />
 <link href="../backend/css/plugins/toastr/toastr.min.css" rel="stylesheet">
 
-
+{{-- @dd($config['css']) --}}
 @if (isset($config['css']))
     @foreach ($config['css'] as $css => $value)
-        <link href="{{ $value }}" rel="stylesheet">
+    {{-- @section('css')
+    <link rel="stylesheet" href="{{ asset($value) }}">
+        @endsection --}}
+        @if ($value == 'backend/css/plugins/switchery/switchery.css')
+            <link rel="stylesheet" href="{{ asset($value) }}">
+        @endif
+        {{-- @if ($value == 'backend/plugins/nice-select/css/nice-select.css')
+            <link rel="stylesheet" href="{{ asset($value) }}">
+        @endif --}}
+        @if ($value != 'backend/css/bootstrap.min.css')
+            @section('css')
+                <link href="{{ asset($value) }}" rel="stylesheet">
+            @endsection
+        @endif
+        @if ($value == 'backend/css/bootstrap.min.css')
+            @section('css')
+                <link rel="stylesheet" href="{{ asset($value) }}">
+            @endsection
+        @else
+            @section('css')
+                <link href="{{ asset($value) }}" rel="stylesheet">
+            @endsection
+        @endif
+        {{-- @if ($value != 'backend/css/bootstrap.min.css')
+            @section('css')
+                <link href="{{ $value }}" rel="stylesheet">
+            @endsection
+        @endif --}}
     @endforeach
 @endif
 
 
 <script src="{{ asset('backend/js/jquery-3.1.1.min.js') }}"></script>
-
+@stack('styles') <!-- Thêm dòng này nếu chưa có -->
 <!-- CSS -->
 {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css">
 
