@@ -154,8 +154,19 @@
                     dataType: 'json',
                     success: function(response) {
                         if (response.success) {
-                            alert("Thao tác thành công!");
+                            console.log('AJAX Success Response:', response);
                             quantityInput.val(response.newQuantity);
+
+                            let stockDisplayElement = quantityInput.closest('td').find(
+                                '.stock-quantity-display');
+
+                            if (stockDisplayElement.length && response.newStockQuantity !== undefined &&
+                                response.newQuantity !== undefined) {
+                                let remainingStockForUser = response.newStockQuantity - response
+                                    .newQuantity;
+                                remainingStockForUser = Math.max(0, remainingStockForUser);
+                                stockDisplayElement.text('Còn: ' + remainingStockForUser);
+                            }
 
                             let lineTotalCell = $(`.cart-table td[data-id='${cartItemId}']`);
                             if (lineTotalCell.length) {

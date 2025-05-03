@@ -63,7 +63,7 @@
                         {{ $product->description }}
                     </p>
 
-                    <form action="{{ route('client.cart.addToCart') }}" method="POST"> {{-- Đảm bảo route name đúng --}}
+                    <form action="{{ route('client.cart.addToCart') }}" method="POST">
                         @csrf
 
                         <div class="p-t-33">
@@ -284,7 +284,8 @@
                                         </form>
                                     @else
                                         {{-- Thông báo nếu chưa đăng nhập --}}
-                                        <p class="p-t-40"><a href="{{ route('login') }}">Đăng nhập</a> để gửi đánh giá
+                                        <p class="p-t-40"><a href="{{ route('client.viewLogin') }}">Đăng nhập</a> để gửi
+                                            đánh giá
                                             của bạn.</p>
                                     @endauth
 

@@ -18,22 +18,22 @@ class CartController extends Controller
     public function viewCart()
     {
         if (!Auth::check()) {
-            return redirect()->route('login')->with('warning', 'Vui lòng đăng nhập để xem giỏ hàng.'); 
+            return redirect()->route('client.viewLogin')->with('warning', 'Vui lòng đăng nhập để xem giỏ hàng.');
         }
 
         $userId = Auth::id();
         $cart = Cart::where('user_id', $userId)->first();
 
-        $activeCartItems = collect(); 
+        $activeCartItems = collect();
         $cartTotal = 0;
 
         if ($cart) {
             $activeCartItems = CartDetail::where('cart_id', $cart->id)
-                ->where('status', 'active') 
-                ->with([ 
+                ->where('status', 'active')
+                ->with([
                     'productVariant' => function ($query) {
                         $query->select();
-                    }, 
+                    },
                     'productVariant.products:id,name,image',
                     'product:id,name,image'
                 ])
@@ -45,16 +45,15 @@ class CartController extends Controller
         }
 
         return view('client.cart.cart', [
-            'cart' => $cart,                 
-            'cartItems' => $activeCartItems, 
-            'cartTotal' => $cartTotal,       
+            'cart' => $cart,
+            'cartItems' => $activeCartItems,
+            'cartTotal' => $cartTotal,
         ]);
     }
 
 
     public function addToCart(Request $request)
     {
-
         if (!Auth::check()) {
             return redirect()->route('login')->with('warning', 'Vui lòng đăng nhập để thêm sản phẩm.');
         }
@@ -69,7 +68,6 @@ class CartController extends Controller
             'quantity.min' => 'Số lượng phải ít nhất là 1.',
         ]);
         if ($validator->fails()) {
-
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -91,9 +89,15 @@ class CartController extends Controller
 
             $productName = optional(optional($variant)->products)->name ?? 'Sản phẩm';
 
-            if ($variant->quantity < 1 && $quantity > 0) {
+            // KIỂM TRA TỒN KHO ĐƠN GIẢN: Chỉ kiểm tra xem còn TỒN KHO TỔNG hay không
+            // Không kiểm tra reserved_quantity nữa
+            if ($variant->quantity < 1) { // Hoặc kiểm tra $variant->quantity <= 0 nếu bạn cho phép quantity=0
                 DB::rollBack();
-                return redirect()->back()->with('error', "Sản phẩm '{$productName}' đã hết hàng.")->withInput();
+                // Có thể cho phép thêm vào giỏ nếu quantity > 0, ngay cả khi số lượng muốn thêm > quantity
+                // Tùy thuộc vào bạn có muốn báo hết hàng sớm hay không.
+                // Nếu muốn cho phép thêm vào giỏ kể cả khi hết hàng, bỏ check này.
+                // Tuy nhiên, nên kiểm tra ít nhất là Quantity > 0.
+                return redirect()->back()->with('error', "Sản phẩm '{$productName}' tạm thời hết hàng.")->withInput();
             }
 
             $cart = Cart::firstOrCreate(['user_id' => $userId]);
@@ -104,44 +108,45 @@ class CartController extends Controller
 
             if ($existingItem) {
                 $newQuantityInCart = $existingItem->quantity + $quantity;
-                dd(123);
 
-                if ($variant->quantity < $newQuantityInCart) {
+                // KHÔNG CẦN KIỂM TRA effectiveStock HOẶC TRỪ TỒN KHO TỔNG Ở ĐÂY
+                // Kiểm tra số lượng user thêm vào giỏ có quá lớn so với tổng tồn kho không (tùy chọn, tránh user thêm 1 triệu sản phẩm)
+                if ($newQuantityInCart > $variant->quantity) { // Ví dụ kiểm tra user không thể thêm quá 2 lần tổng tồn kho
                     DB::rollBack();
-                    $allowedToAdd = max(0, $variant->quantity - $existingItem->quantity);
-                    $message = "Sản phẩm '{$productName}' không đủ số lượng tồn kho. ";
-                    $message .= ($allowedToAdd > 0) ? "Chỉ có thể thêm tối đa {$allowedToAdd} sản phẩm nữa." : "Số lượng trong giỏ đã tối đa.";
-                    return redirect()->back()->with('error', $message)->withInput();
+                    return redirect()->back()->with('error', "Số lượng yêu cầu quá lớn so với tồn kho. Chỉ còn {$variant->quantity} sản phẩm.")->withInput();
                 }
+
 
                 $existingItem->quantity = $newQuantityInCart;
                 $existingItem->save();
 
-                $variant->quantity -= $quantity;
-                $variant->save();
+                // BỎ DÒNG TRỪ TỒN KHO NÀY: $variant->quantity -= $quantity;
+                // BỎ DÒNG LƯU TỒN KHO NÀY: $variant->save();
 
-                Log::info("Cart updated: CartDetail ID {$existingItem->id}. New quantity: {$newQuantityInCart}. Variant ID {$variant->id} stock reduced by {$quantity}. New stock: {$variant->quantity}");
+                Log::info("Cart updated (quantity increased): CartDetail ID {$existingItem->id}. New quantity: {$newQuantityInCart}.");
+
 
             } else {
-
-                if ($variant->quantity < $quantity) {
+                // KIỂM TRA TỒN KHO ĐƠN GIẢN KHI THÊM MỚI: Đảm bảo user không thêm số lượng lớn hơn tổng tồn kho ban đầu
+                if ($quantity > $variant->quantity && $variant->quantity > 0) {
                     DB::rollBack();
                     return redirect()->back()->with('error', "Sản phẩm '{$productName}' không đủ số lượng tồn kho (chỉ còn {$variant->quantity}).")->withInput();
-                }             
+                }
+                // Nếu quantity = 0 và user cố thêm > 0, check ở trên $variant->quantity < 1 (nếu bạn giữ) sẽ chặn
 
                 $newItem = CartDetail::create([
                     'cart_id' => $cart->id,
                     'product_id' => $variant->product_id,
                     'product_variant_id' => $variant->id,
                     'quantity' => $quantity,
-                    'price' => $variant->price,
+                    'price' => $variant->price, // Lưu giá tại thời điểm thêm vào giỏ
+                    'status' => 'active', // Giả định bạn có cột status trong cart_details
                 ]);
 
-                // dd($newItem);
-                $variant->quantity -= $quantity;
-                $variant->save();
+                // BỎ DÒNG TRỪ TỒN KHO NÀY: $variant->quantity -= $quantity;
+                // BỎ DÒNG LƯU TỒN KHO NÀY: $variant->save();
 
-                Log::info("Cart added: New CartDetail ID {$newItem->id}. Variant ID {$variant->id} stock reduced by {$quantity}. New stock: {$variant->quantity}");
+                Log::info("Cart added: New CartDetail ID {$newItem->id}. Quantity: {$quantity}.");
             }
 
             DB::commit();
@@ -149,7 +154,7 @@ class CartController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("Lỗi addToCart Exception: " . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
+            Log::error("Lỗi addToCart Exception (Overselling Model): " . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
             return redirect()->back()
                 ->with('error', 'Đã xảy ra lỗi hệ thống khi thêm sản phẩm. Vui lòng thử lại.')
                 ->withInput();
@@ -159,10 +164,10 @@ class CartController extends Controller
 
     public function updateCart(Request $request)
     {
-
+        // Validate dữ liệu đầu vào (kiểm tra exists:cart_items,id cần sửa nếu tên bảng là cart_details)
         $validatedData = $request->validate([
-            'cart_item_id' => 'required|integer|exists:cart_items,id',
-            'quantity' => 'required|integer|min:1',
+            'cart_item_id' => 'required|integer|exists:cart_items,id', // <<< Sửa tên bảng nếu cần (cart_details)
+            'quantity' => 'required|integer|min:1', // min:1 đã đảm bảo số lượng >= 1
         ]);
 
         $cartItemId = $validatedData['cart_item_id'];
@@ -171,7 +176,8 @@ class CartController extends Controller
 
         DB::beginTransaction();
         try {
-            $cartDetail = CartDetail::with(['cart', 'productVariant', 'productVariant.products'])
+            // Eager load productVariant
+            $cartDetail = CartDetail::with(['cart', 'productVariant'])
                 ->where('id', $cartItemId)
                 ->whereHas('cart', function ($query) use ($userId) {
                     $query->where('user_id', $userId);
@@ -180,54 +186,71 @@ class CartController extends Controller
 
             if (!$cartDetail) {
                 DB::rollBack();
+                // Sử dụng response code 404 nếu item không tìm thấy
                 return response()->json(['success' => false, 'message' => 'Sản phẩm không tồn tại trong giỏ hàng.'], 404);
             }
 
             $variant = $cartDetail->productVariant;
             $cart = $cartDetail->cart;
-            $oldQuantity = $cartDetail->quantity;
+            $oldQuantity = $cartDetail->quantity; // Số lượng cũ trong giỏ
 
             if (!$variant) {
                 DB::rollBack();
                 Log::error("updateCart failed: ProductVariant not found for CartDetail ID {$cartItemId}.");
+                // Sử dụng response code 500 cho lỗi server
                 return response()->json(['success' => false, 'message' => 'Lỗi: Không tìm thấy thông tin sản phẩm gốc.'], 500);
             }
 
             $productName = optional(optional($variant)->products)->name ?? 'Sản phẩm';
 
-            $effectiveStock = $variant->quantity + $oldQuantity;
-            if ($newQuantity > $effectiveStock) {
-                DB::rollBack();
-                $message = "Sản phẩm '{$productName}' không đủ số lượng tồn kho. ";
-                if ($effectiveStock > 0) {
-                    $message .= "Số lượng tối đa bạn có thể đặt là {$effectiveStock}.";
-                } else {
-                    $message .= "Sản phẩm này đã hết hàng.";
-                }
+            // === LOGIC KIỂM TRA SỐ LƯỢNG MỚI ===
+            // Trong mô hình overselling, KHÔNG kiểm tra với tồn kho trực tiếp ở đây.
+            // Chỉ kiểm tra số lượng mới có hợp lý không (ví dụ: không âm, không quá lớn)
 
+            // Đảm bảo số lượng mới không nhỏ hơn min (đã có trong validate)
+            if ($newQuantity < 1) {
+                DB::rollBack();
                 return response()->json([
                     'success' => false,
-                    'message' => $message,
+                    'message' => "Số lượng ít nhất phải là 1.",
+                    'originalQuantity' => $oldQuantity // Trả về số lượng cũ
+                ], 400); // Sử dụng 400 Bad Request cho lỗi logic
+            }
+
+            // Tùy chọn: Kiểm tra sanity check để ngăn số lượng quá lớn so với tổng tồn kho ban đầu
+            // Nếu bạn muốn ngăn user đặt 1 triệu sản phẩm vào giỏ khi tồn kho chỉ có 100.
+            // Bỏ dòng này nếu bạn hoàn toàn không muốn kiểm tra tồn kho ở updateCart.
+            if ($newQuantity > $variant->quantity) { // Ví dụ: max 2 lần tổng tồn kho
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => "Số lượng yêu cầu ({$newQuantity}) vượt quá tổng tồn kho ban đầu ({$variant->quantity}).",
                     'originalQuantity' => $oldQuantity
                 ], 400);
             }
 
+
+            // Cập nhật số lượng trong bảng cart_details
             $cartDetail->quantity = $newQuantity;
             $cartDetail->save();
 
-            $quantityChange = $newQuantity - $oldQuantity;
-            $variant->quantity -= $quantityChange;
-            $variant->save();
-            Log::info("Cart updated: CartDetail ID {$cartDetail->id} quantity changed from {$oldQuantity} to {$newQuantity}. Variant ID {$variant->id} stock changed by " . (-$quantityChange) . ". New stock: {$variant->quantity}");
+            // BỎ HOÀN TOÀN LOGIC CẬP NHẬT TỒN KHO (quantity) VÀ reserved_quantity Ở ĐÂY
+            // Việc này chỉ diễn ra ở checkout cuối cùng.
+            // $quantityChange = $newQuantity - $oldQuantity;
+            // $variant->quantity -= $quantityChange;
+            // $variant->save();
 
-            $newLineTotal = $newQuantity * $cartDetail->price;
-            $cart->load('items');
-            $totalCartAmount = 0;
-            $cartItemCount = 0;
-            foreach ($cart->items as $item) {
-                $totalCartAmount += $item->quantity * $item->price;
-                $cartItemCount += $item->quantity;
-            }
+
+            Log::info("Cart quantity updated: CartDetail ID {$cartDetail->id} quantity changed from {$oldQuantity} to {$newQuantity}.");
+
+            $newLineTotal = $newQuantity * $cartDetail->price; // Tính lại tổng tiền dòng (dựa trên giá lưu trong cart_details)
+
+            // Tính lại tổng tiền giỏ hàng và số lượng item sau khi cập nhật
+            $cart->load('items'); // Tải lại mối quan hệ items sau khi cập nhật
+            $totalCartAmount = $cart->items->sum(function ($item) { // Tính tổng tiền từ items
+                return $item->quantity * $item->price;
+            });
+            $cartItemCount = $cart->items->sum('quantity'); // Tính tổng số lượng item trong giỏ
 
             DB::commit();
 
@@ -237,12 +260,13 @@ class CartController extends Controller
                 'newQuantity' => $cartDetail->quantity,
                 'newLineTotal' => $newLineTotal,
                 'newCartTotal' => $totalCartAmount,
-                'cartItemCount' => $cartItemCount
+                'cartItemCount' => $cartItemCount,
+                'newStockQuantity' => optional($variant)->quantity ?? '-'
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Lỗi updateCart Exception: ' . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
+            Log::error('Lỗi updateCart Exception (Overselling Model): ' . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
             return response()->json(['success' => false, 'message' => 'Đã xảy ra lỗi khi cập nhật giỏ hàng.'], 500);
         }
     }
@@ -257,7 +281,9 @@ class CartController extends Controller
 
         DB::beginTransaction();
         try {
-            $cartDetail = CartDetail::where('id', $id)
+            // Eager load cart để tính tổng sau khi xóa
+            $cartDetail = CartDetail::with(['cart'])
+                ->where('id', $id)
                 ->whereHas('cart', function ($query) use ($userId) {
                     $query->where('user_id', $userId);
                 })
@@ -272,46 +298,47 @@ class CartController extends Controller
             }
 
             $cart = $cartDetail->cart;
-            $variantId = $cartDetail->product_variant_id;
-            $quantityToRestore = $cartDetail->quantity;
+            // BỎ DÒNG NÀY: $variantId = $cartDetail->product_variant_id;
+            // BỎ DÒNG NÀY: $quantityToRestore = $cartDetail->quantity;
+
 
             $cartDetail->delete();
             Log::info("Deleted CartDetail ID {$id}");
 
-            if ($variantId && $quantityToRestore > 0) {
-                $variant = ProductVariant::find($variantId);
-                if ($variant) {
-                    $variant->quantity += $quantityToRestore;
-                    $variant->save();
-                    Log::info("Stock restored for Variant ID {$variantId} by {$quantityToRestore}. New stock: {$variant->quantity}");
+            // BỎ HOÀN TOÀN LOGIC HOÀN TỒN KHO Ở ĐÂY (vì chưa trừ ở addToCart)
+            // if ($variantId && $quantityToRestore > 0) {
+            //     $variant = ProductVariant::find($variantId);
+            //     if ($variant) {
+            //         $variant->quantity += $quantityToRestore;
+            //         $variant->save();
+            //         Log::info("Stock restored for Variant ID {$variantId} by {$quantityToRestore}. New stock: {$variant->quantity}");
+            //     } else {
+            //         Log::warning("Could not find ProductVariant ID {$variantId} to restore stock for deleted CartDetail ID {$id}.");
+            //     }
+            // }
 
-                } else {
-                    Log::warning("Could not find ProductVariant ID {$variantId} to restore stock for deleted CartDetail ID {$id}.");
-                }
-            }
+            // Tính lại tổng tiền giỏ hàng và số lượng item
+            $cart->load('items'); // Tải lại mối quan hệ items sau khi xóa
+            $totalCartAmount = $cart->items->sum(function ($item) { // Tính tổng tiền từ items
+                return $item->quantity * $item->price;
+            });
+            $cartItemCount = $cart->items->sum('quantity'); // Tính tổng số lượng item trong giỏ
 
-            $totalCartAmount = 0;
-            $remainingItems = CartDetail::where('cart_id', $cart->id)->get();
-            foreach ($remainingItems as $item) {
-                $totalCartAmount += $item->quantity * $item->price;
-            }
-
-            $cartIsEmpty = $remainingItems->isEmpty();
-            $cartItemCount = $remainingItems->sum('quantity');
+            $cartIsEmpty = $cart->items->isEmpty(); // Kiểm tra giỏ hàng rỗng
 
             DB::commit();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Đã xóa sản phẩm khỏi giỏ hàng.',
-                'newCartTotal' => $totalCartAmount,
-                'cartIsEmpty' => $cartIsEmpty,
-                'cartItemCount' => $cartItemCount
+                'newCartTotal' => $totalCartAmount, // Tổng tiền giỏ hàng mới
+                'cartIsEmpty' => $cartIsEmpty, // Trạng thái rỗng
+                'cartItemCount' => $cartItemCount // Tổng số lượng item trong giỏ (dùng cho icon giỏ hàng)
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("Lỗi deleteCart Exception: " . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
+            Log::error("Lỗi deleteCart Exception (Overselling Model): " . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
             return response()->json(['success' => false, 'message' => 'Đã xảy ra lỗi khi xóa sản phẩm.'], 500);
         }
     }

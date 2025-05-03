@@ -34,7 +34,9 @@
                                                     data-id="{{ $item->id }}" style="..."></td>
 
                                             <td><img src="{{ Storage::url($item->product->image) }}" ...></td>
-                                            <td>{{ optional($item->product)->name }}</td>
+                                            <td><a
+                                                    href="{{ Route('client.product.show', $item->product->id) }}">{{ optional($item->product)->name }}</a>
+                                            </td>
                                             <td>{{ number_format(optional($item->productVariant)->price ?? ($item->price ?? 0)) }}
                                                 VND</td>
                                             <td>{{ optional($item->productVariant)->name_variant_color ?? '-' }}</td>
@@ -51,6 +53,9 @@
                                                         <i class="fs-16 zmdi zmdi-plus"></i>
                                                     </button>
                                                 </div>
+                                                <p style="color: red; padding-top: 5px;" class="stock-quantity-display">
+                                                      Còn: {{ (optional($item->productVariant)->quantity ?? 0) - ($item->quantity ?? 0) }}
+                                                </p>
                                             </td>
                                             <td class="kanit-thin" data-id="{{ $item->id }}">
                                                 {{ number_format($item->quantity * $item->price) }} VND</td>

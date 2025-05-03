@@ -248,7 +248,7 @@ Route::prefix('admin')
 
         Route::get('ajax/attribute/getAttribute', [AjaxAttributeController::class, 'getAttribute'])->name('ajax.attribute.getAttribute');
         Route::get('ajax/attribute/loadAttribute', [AjaxAttributeController::class, 'loadAttribute'])->name('ajax.attribute.loadAttribute');
-        Route::get('ajax/order/chart',             [AjaxOrderController::class, 'chart'])->name('ajax.order.chart');
+        Route::get('ajax/order/chart', [AjaxOrderController::class, 'chart'])->name('ajax.order.chart');
     });
 
 
@@ -257,7 +257,7 @@ Route::get('admin/login', [AuthController::class, 'index'])->name('auth.admin')-
 Route::post('login', [AuthController::class, 'login'])->name('auth.login');
 Route::get('admin/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
-require __DIR__ . '/auth.php';
+// require __DIR__ . '/auth.php';
 // require __DIR__ . '/auth.php';
 
 Route::get('/account/password/view', function () {
