@@ -9,6 +9,7 @@ use App\Models\CartDetail;
 use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Province;
 use Auth;
 use Carbon\Carbon;
 use DB;
@@ -26,26 +27,50 @@ class OrderController extends Controller
     public function viewOrder()
     {
         if (!Auth::check()) {
-            return redirect()->route('login')->with('warning', 'Vui lòng đăng nhập để đặt hàng.');
+            // Chuyển hướng về trang đăng nhập nếu chưa login
+            return redirect()->route('client.viewLogin')->with('warning', 'Vui lòng đăng nhập để đặt hàng.');
         }
 
+        $user = Auth::user(); // Lấy user hiện tại
+
+        // Lấy orderId từ session (như code bạn đã có)
         $orderId = Session::get('order_id');
-        if (!$orderId) {
-            return redirect()->route('client.cart.viewCart')->with('error', 'Không tìm thấy đơn hàng.');
-        }
 
+        // Lấy đơn hàng (như code bạn đã có)
         $order = Order::with('items.product')->find($orderId);
-        $totalPrice = $order ? $order->total : 0;
-        $user = Auth::user();
 
+        // Kiểm tra order có tồn tại không (như code bạn đã có)
         if (!$order) {
+            Session::forget('order_id'); // Xóa order_id cũ nếu không tìm thấy order
             return redirect()->route('client.cart.viewCart')->with('error', 'Không tìm thấy đơn hàng.');
         }
+
+        // <<< BẮT ĐẦU: Lấy dữ liệu địa chỉ và các items/tổng tiền cho view >>>
+
+        // Lấy thông tin địa chỉ đã lưu của người dùng
+        // Điều chỉnh dựa trên cách bạn lưu địa chỉ user
+        // Giả định các cột địa chỉ (province_code, district_code, ward_code, address) lưu trên model User
+        // Nếu lưu ở model UserAddress, cần fetch userAddress = UserAddress::where('user_id', $user->id)->first();
+        $userAddress = $user; // Giả định các cột địa chỉ lưu trực tiếp trên model User
+
+        // Lấy danh sách tất cả tỉnh/thành phố từ database bạn đã cung cấp
+        $provinces = Province::orderBy('full_name', 'asc')->get();
+
+        // Lấy cart items và tổng tiền tương tự như trong CartController@viewCart
+        // (Bạn có thể đã có các biến này nếu chuyển hướng từ cart checkout POST)
+        // Nếu không có, cần fetch lại dựa trên order items:
+        $cartItems = $order->items; // Lấy items từ order đã load
+        // Tính lại tổng tiền dựa trên order->total đã lưu hoặc từ items
+        $totalPrice = $order->total ?? $cartItems->sum(function ($item) {
+            return ($item->quantity ?? 0) * ($item->price ?? 0);
+        });
 
         return view('client.order.order')->with([
             'order' => $order,
             'totalPrice' => $totalPrice,
-            'user' => $user
+            'user' => $user,
+            'userAddress' => $userAddress,
+            'provinces' => $provinces
         ]);
     }
 
@@ -116,13 +141,10 @@ class OrderController extends Controller
                 'phone' => $user->phone, // Giả sử User model có 'phone'
                 // Địa chỉ chi tiết sẽ được cập nhật ở bước 'completeOrder'
                 'name' => $user->name,
-                'email' => $user->email,
-                'phone' => $user->phone,
                 'address' => null,
-                'number_house' => null,
-                'neighborhood' => null,
-                'district' => null,
-                'province' => null,
+                'ward_code' => null,
+                'district_code' => null,
+                'province_code' => null,
                 'total' => 0,
                 'status' => 'pending',
                 'payment_status' => 'pending',
@@ -217,12 +239,49 @@ class OrderController extends Controller
             $order->phone = $request->input('phone');
             $order->email = $request->input('email');
             $order->address = $request->input('address');
-            $order->number_house = $request->input('number_house');
-            $order->neighborhood = $request->input('neighborhood');
-            $order->district = $request->input('district');
-            $order->province = $request->input('province');
+            $order->ward_code = $request->input('ward_code');
+            $order->district_code = $request->input('district_code');
+            $order->province_code = $request->input('province_code');
             $order->payment_method = $request->input('payment_method');
             $order->save();
+
+            foreach ($order->items as $item) {
+                // Lấy biến thể sản phẩm TỪ DATABASE VỚI LOCK
+                // Lock đảm bảo không có user khác trừ tồn kho cùng lúc cho biến thể này
+                $variant = \App\Models\ProductVariant::find($item->product_variant_id); // Find lại variant
+                if (!$variant) {
+                    // Xử lý nếu biến thể không tồn tại (rất hiếm nếu data đúng)
+                    DB::rollBack();
+                    Log::error("Checkout failed: ProductVariant ID {$item->product_variant_id} not found for Order Item {$item->id} in Order {$order->id}.");
+                    return redirect()->route('client.order.viewOrder')->with('error', 'Đã xảy ra lỗi với một số sản phẩm trong đơn hàng.');
+                }
+
+                // >>> KIỂM TRA LẠI TỒN KHO CUỐI CÙNG NGAY TRƯỚC KHI TRỪ <<<
+                // Kiểm tra xem số lượng tồn kho hiện tại có đủ cho số lượng user muốn mua không
+                if ($variant->quantity < $item->quantity) {
+                    DB::rollBack(); // Rollback toàn bộ transaction
+                    Log::warning("Checkout failed: Insufficient stock for Variant ID {$variant->id}. Required: {$item->quantity}, Available: {$variant->quantity}. Order ID: {$order->id}");
+
+                    // Cần xóa item này khỏi order hoặc đánh dấu nó không hợp lệ
+                    // hoặc chuyển hướng user về giỏ hàng với thông báo lỗi sản phẩm hết hàng
+                    // Ví dụ: Xóa item khỏi order và thông báo lỗi
+                    $item->delete(); // Xóa item khỏi order (hoặc đánh dấu invalid)
+                    // Tải lại order để tổng tiền hiển thị đúng sau khi xóa item lỗi (tùy chọn)
+                    // $order->load('items');
+                    // Session::put('order_id', $order->id); // Có thể cần cập nhật session order_id nếu item bị xóa/thay đổi
+
+                    return redirect()->route('client.order.viewOrder')
+                        ->with('error', "Sản phẩm \"{$variant->name}\" (Màu: {$variant->name_variant_color}, Size: {$variant->name_variant_size}) trong đơn hàng không đủ số lượng tồn kho ({$variant->quantity}).")
+                        ->with('order_id', $order->id); // Pass order_id lại session để user xem lại giỏ/checkout mới
+
+                }
+
+                // >>> TRỪ SỐ LƯỢNG TỒN KHO THỰC TẾ <<<
+                $variant->quantity -= $item->quantity; // Trừ số lượng đã mua khỏi tồn kho chính
+                $variant->save(); // Lưu thay đổi tồn kho
+                Log::info("Stock deducted: Variant ID {$variant->id} stock reduced by {$item->quantity}. New stock: {$variant->quantity}. Order ID: {$order->id}");
+
+            }
 
             if ($order->payment_method === 'cod') {
                 $order->status = 'processing';

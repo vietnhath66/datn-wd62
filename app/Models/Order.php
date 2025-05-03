@@ -33,10 +33,9 @@ class Order extends Model
         'refunded_at',
         'failed_at',
         'address',
-        'number_house',
-        'neighborhood',
-        'district',
-        'province',
+        'ward_code',
+        'district_code',
+        'province_code',
     ];
 
     public function user()
@@ -69,6 +68,21 @@ class Order extends Model
         return $this->belongsTo(User::class, 'admin_confirmer_id');
     }
 
+
+    public function province()
+    {
+        return $this->belongsTo(\App\Models\Province::class, 'province_code', 'code');
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(\App\Models\District::class, 'district_code', 'code');
+    }
+
+    public function ward()
+    {
+        return $this->belongsTo(\App\Models\Ward::class, 'ward_code', 'code');
+    }
 
     protected $casts = [
         'created_at' => 'datetime',

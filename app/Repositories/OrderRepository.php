@@ -26,42 +26,41 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
     public function getOrderById(int $id = 0)
     {
-        
+
         return $this->model
-        ->select([
-            'orders.id',
-            'orders.user_id',
-            'users.name as customer_name',
-            'orders.email',
-            'orders.phone',
-            'orders.total',
-            'orders.status',
-            'orders.payment_status',
-            'orders.payment_method',
-            'orders.neighborhood',
-            'orders.barcode',
-            'orders.province',
-            'orders.district',
-            'orders.number_house',
-            'orders.address',
-            'orders.created_at',
-            'orders.updated_at',
-            'order_items.product_id',
-            'products.name as product_name',
-            'order_items.quantity',
-            'order_items.price as product_price',
-            'product_variants.name as variant_name',
-            'product_variants.sku',
-            'product_variants.name_variant_size',
-            'product_variants.name_variant_color',
-            'product_variants.price'
-        ])
-        ->join('users', 'users.id', '=', 'orders.user_id')
-        ->join('order_items', 'order_items.order_id', '=', 'orders.id')
-        ->join('products', 'products.id', '=', 'order_items.product_id')
-        ->join('product_variants', 'product_variants.id', '=', 'order_items.product_variant_id') 
-        ->where('orders.id', $id)
-        ->first();
+            ->select([
+                'orders.id',
+                'orders.user_id',
+                'users.name as customer_name',
+                'orders.email',
+                'orders.phone',
+                'orders.total',
+                'orders.status',
+                'orders.payment_status',
+                'orders.payment_method',
+                'orders.ward_code',
+                'orders.barcode',
+                'orders.province_code',
+                'orders.district_code',
+                'orders.address',
+                'orders.created_at',
+                'orders.updated_at',
+                'order_items.product_id',
+                'products.name as product_name',
+                'order_items.quantity',
+                'order_items.price as product_price',
+                'product_variants.name as variant_name',
+                'product_variants.sku',
+                'product_variants.name_variant_size',
+                'product_variants.name_variant_color',
+                'product_variants.price'
+            ])
+            ->join('users', 'users.id', '=', 'orders.user_id')
+            ->join('order_items', 'order_items.order_id', '=', 'orders.id')
+            ->join('products', 'products.id', '=', 'order_items.product_id')
+            ->join('product_variants', 'product_variants.id', '=', 'order_items.product_variant_id')
+            ->where('orders.id', $id)
+            ->first();
     }
 
     public function getOrderByUser(int $productCatalogueId = 0, $language_id = 0)
@@ -136,7 +135,8 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
         if (isset($param['join']) && count($param['join'])) {
             foreach ($param['join'] as $key => $val) {
-                if (is_null($val)) continue;
+                if (is_null($val))
+                    continue;
                 $query->leftJoin($val[0], $val[1], $val[2], $val[3]);
             }
         }
@@ -151,9 +151,10 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
         if (isset($param['having']) && count($param['having'])) {
             foreach ($param['having'] as $key => $val) {
-                if (is_null($val)) continue;
+                if (is_null($val))
+                    continue;
                 $query->having($val);
-            
+
             }
         }
         if (isset($param['groupBy']) && count($param['groupBy'])) {
@@ -171,7 +172,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
     private function convertAttributeFilter($attribute, $languageId, $catId)
     {
-        $rawCondition['whereRaw'] =  [
+        $rawCondition['whereRaw'] = [
             [
                 'tb3.id IN (
                     SELECT id
@@ -194,7 +195,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             ->count();
     }
 
-    
+
     public function revenueOrders()
     {
         return $this->model
@@ -280,29 +281,30 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
                 SELECT 9
             ) as c
         ) as dates'))
-        ->leftJoin('orders', function ($join) {
-            $join->on(DB::raw('DATE(orders.created_at)'), '=', DB::raw('dates.date'))
-            ->where('orders.payment_status', '=', 'paid');
-        })
-        ->where(DB::raw('dates.date'), '>=', DB::raw('CURDATE() - INTERVAL 6 DAY'))
-        ->groupBy(DB::raw('dates.date'))
-        ->orderBy(DB::raw('dates.date'), 'ASC')
-        ->get();
+            ->leftJoin('orders', function ($join) {
+                $join->on(DB::raw('DATE(orders.created_at)'), '=', DB::raw('dates.date'))
+                    ->where('orders.payment_status', '=', 'paid');
+            })
+            ->where(DB::raw('dates.date'), '>=', DB::raw('CURDATE() - INTERVAL 6 DAY'))
+            ->groupBy(DB::raw('dates.date'))
+            ->orderBy(DB::raw('dates.date'), 'ASC')
+            ->get();
     }
 
-    public function revenueCurrentMonth($currentMonth, $currentYear) {
+    public function revenueCurrentMonth($currentMonth, $currentYear)
+    {
         return $this->model->select(
             DB::raw('DAY(created_at) as day'),
             // DB::raw('COALESCE(SUM(JSON_UNQUOTE(JSON_EXTRACT(orders.cart, "$.cartTotal"))),0) as daily_revenue')
             DB::raw('COALESCE(SUM(orders.total),0) as daily_revenue')
 
         )
-        ->whereMonth('created_at', $currentMonth)
-        ->whereYear('created_at', $currentYear)
-        ->where('orders.payment_status', '=', 'paid')
-        ->groupBy('day')
-        ->orderBy('day')
-        ->get()->toArray();
+            ->whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->where('orders.payment_status', '=', 'paid')
+            ->groupBy('day')
+            ->orderBy('day')
+            ->get()->toArray();
     }
 
     public function getTotalOrders()
@@ -315,7 +317,11 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         return $this->model->where('status', '=', 'cancel')->count();
     }
 
-    private function convertPriceFilter($price) {}
+    private function convertPriceFilter($price)
+    {
+    }
 
-    private function convertRateFilter($rate) {}
+    private function convertRateFilter($rate)
+    {
+    }
 }

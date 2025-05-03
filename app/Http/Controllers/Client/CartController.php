@@ -55,7 +55,7 @@ class CartController extends Controller
     public function addToCart(Request $request)
     {
         if (!Auth::check()) {
-            return redirect()->route('login')->with('warning', 'Vui lòng đăng nhập để thêm sản phẩm.');
+            return redirect()->route('client.viewLogin')->with('warning', 'Vui lòng đăng nhập để thêm sản phẩm.');
         }
 
         $validator = Validator::make($request->all(), [

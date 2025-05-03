@@ -209,6 +209,232 @@
             font-size: 1.1em;
             transition: transform 0.3s ease;
         }
+
+        /* === Bắt đầu: CSS để tùy chỉnh giao diện Select2 cho giống style form của bạn === */
+
+        /* Container chính của Select2 - Áp dụng các style chung của form group */
+        .select2-container {
+            width: 100% !important;
+            /* Đảm bảo Select2 chiếm đủ chiều rộng */
+            box-sizing: border-box;
+            /* Quan trọng để padding không làm tràn */
+            /* Kế thừa hoặc điều chỉnh font và màu chữ cho khớp với input/select của bạn */
+            font-family: inherit;
+            font-size: 1rem;
+            color: #495057;
+            /* Màu chữ mặc định */
+        }
+
+        /* Khi Select2 được ẩn đi (original select) */
+        .select2-container .select2-selection--single {
+            /* Ẩn mũi tên mặc định của trình duyệt */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+
+        /* Phần hiển thị lựa chọn hiện tại (khung input giả của Select2) */
+        .select2-container--default .select2-selection--single {
+            /* Áp dụng các style từ .select-form hoặc input của bạn */
+            height: auto;
+            /* Chiều cao tự động dựa trên nội dung */
+            min-height: 44px;
+            /* Đặt chiều cao tối thiểu cho khớp với input khác */
+            padding: 10px 15px;
+            /* Kế thừa padding từ input/select-form */
+            border: 1px solid #ced4da;
+            /* Kế thừa viền */
+            border-radius: 0.5rem;
+            /* Kế thừa bo góc */
+            background-color: #fff;
+            /* Nền trắng */
+            /* Các style khác để loại bỏ border/outline mặc định của Select2 */
+            outline: none;
+            box-shadow: none;
+            /* Transition giống input */
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            /* Căn chỉnh nội dung bên trong */
+            display: flex;
+            align-items: center;
+        }
+
+        /* Khi Select2 được focus (khung input giả sáng lên) */
+        .select2-container--default.select2-container--focus .select2-selection--single,
+        .select2-container--default.select2-container--open .select2-selection--single {
+            border-color: #80bdff;
+            /* Màu viền khi focus (giống style form-control focus) */
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            /* Đổ bóng khi focus */
+        }
+
+
+        /* Phần hiển thị text lựa chọn hiện tại bên trong khung Select2 */
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #495057;
+            /* Màu chữ của bạn */
+            line-height: 1.5;
+            /* Kế thừa line-height */
+            padding-left: 0 !important;
+            /* Bỏ padding-left mặc định của Select2 nếu có */
+            padding-right: 20px;
+            /* Đảm bảo có chỗ cho mũi tên */
+            /* Ngăn tràn text nếu quá dài */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Placeholder text trong Select2 */
+        .select2-container--default .select2-selection--single .select2-selection__placeholder {
+            color: #6c757d;
+            /* Màu placeholder của bạn */
+        }
+
+
+        /* Mũi tên của Select2 */
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            /* Điều chỉnh vị trí và kích thước nếu cần */
+            height: 100%;
+            /* Chiều cao bằng selection */
+            right: 8px;
+            /* Vị trí từ phải sang */
+            width: 20px;
+            /* Chiều rộng mũi tên */
+            display: flex;
+            /* Căn giữa icon */
+            align-items: center;
+            justify-content: center;
+            /* Tùy chỉnh màu mũi tên */
+            color: #888;
+            /* Màu mũi tên */
+        }
+
+        /* Tùy chỉnh icon mũi tên */
+        .select2-container--default .select2-selection__arrow b {
+            border-color: #888 transparent transparent transparent;
+            /* Màu mũi tên */
+            border-style: solid;
+            border-width: 5px 4px 0 4px;
+            height: 0;
+            left: 50%;
+            margin-left: -4px;
+            margin-top: -2px;
+            position: absolute;
+            top: 50%;
+            width: 0;
+        }
+
+        /* Giao diện mũi tên khi dropdown mở */
+        .select2-container--default.select2-container--open .select2-selection__arrow b {
+            border-color: transparent transparent #888 transparent !important;
+            border-width: 0 4px 5px 4px !important;
+        }
+
+
+        /* Trạng thái Disabled */
+        /* Select2 áp dụng class select2-container--disabled và select2-selection--disabled khi disabled */
+        .select2-container--default.select2-container--disabled .select2-selection--single,
+        .select2-container--default .select2-selection--single[aria-disabled=true] {
+            background-color: #e9ecef;
+            /* Nền nhạt hơn cho disabled */
+            color: #6c757d;
+            /* Màu chữ mờ hơn */
+            opacity: 1;
+            /* Đảm bảo không bị mờ quá */
+            cursor: not-allowed;
+            /* Con trỏ không cho phép */
+            box-shadow: none;
+            /* Bỏ đổ bóng khi disabled */
+        }
+
+
+        /* === Styling cho dropdown box và ô tìm kiếm bên trong === */
+
+        /* Container chứa dropdown box mở ra */
+        .select2-container--open .select2-dropdown {
+            border: 1px solid #ccc;
+            /* Viền dropdown box */
+            border-radius: 4px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+            /* Đổ bóng cho dropdown box */
+            margin-top: 1px;
+            /* Khoảng cách với selection */
+            overflow: hidden;
+            /* Đảm bảo bo góc hoạt động */
+            z-index: 1050;
+            /* Đảm bảo hiển thị trên các modal/popup khác */
+            background-color: #fff;
+            /* Nền trắng */
+        }
+
+        /* Ô tìm kiếm trong dropdown */
+        .select2-container--default .select2-search--dropdown .select2-search__field {
+            /* Áp dụng style input của bạn */
+            width: 100%;
+            padding: 8px 12px;
+            /* Padding cho ô tìm kiếm */
+            font-size: 1rem;
+            /* Kích thước font */
+            color: #333;
+            /* Màu chữ */
+            border: 1px solid #ccc;
+            /* Viền */
+            border-radius: 4px;
+            /* Bo góc */
+            outline: none;
+            /* Bỏ outline mặc định */
+            /* Bỏ style background hoặc box-shadow mặc định của Select2 nếu có */
+            background-color: #fff;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+        }
+
+        /* Khi ô tìm kiếm focus */
+        .select2-container--default .select2-search--dropdown .select2-search__field:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+
+        /* Danh sách các tùy chọn trong dropdown */
+        .select2-container--default .select2-results__options {
+            max-height: 200px;
+            /* Chiều cao tối đa trước khi scroll */
+            overflow-y: auto;
+            padding: 0;
+            /* Bỏ padding mặc định */
+        }
+
+        /* Từng tùy chọn trong danh sách */
+        .select2-container--default .select2-results__option {
+            padding: 8px 12px;
+            /* Padding cho mỗi dòng option */
+            cursor: pointer;
+            list-style: none;
+            /* Bỏ bullet points */
+            /* Màu chữ mặc định */
+            color: #495057;
+        }
+
+        /* Tùy chọn khi hover hoặc active */
+        .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+            background-color: #007bff;
+            /* Màu nền khi hover */
+            color: #fff;
+            /* Màu chữ khi hover */
+        }
+
+        /* Tùy chọn đã chọn trong danh sách */
+        .select2-container--default .select2-results__option[aria-selected=true] {
+            background-color: #f8f9fa;
+            /* Nền xám nhẹ cho tùy chọn đã chọn */
+            color: #495057;
+        }
+
+        /* === Kết thúc: CSS tùy chỉnh Select2 === */
+
+        /* Bạn vẫn giữ style .select-form ban đầu cho các select không dùng Select2 */
+        /* .select-form { ... style ban đầu ... } */
     </style>
 @endpush
 
@@ -221,68 +447,201 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        const apiKey = "0RrqS6ilxPu2hdpgvOQScXvGjycxiUwDaVnHMfkG"; // https://account.goong.io/keys
-        const addressInput = document.getElementById("address");
-        const suggestionsContainer = document.getElementById("suggestions");
-        const provinceInput = document.getElementById("province");
-        const districtInput = document.getElementById("district");
-        const neighborhoodInput = document.getElementById("neighborhood");
-        let sessionToken = crypto.randomUUID();
+        document.addEventListener('DOMContentLoaded', function() {
 
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
+            // Lấy các select element (sử dụng ID mới)
+            const provinceSelectNative = document.getElementById('province');
+            const districtSelectNative = document.getElementById('district');
+            const wardSelectNative = document.getElementById('ward');
 
-        const debouncedSearch = debounce((query) => {
-            if (query.length < 2) {
-                suggestionsContainer.style.display = "none";
-                return;
-            }
+            // Lấy đối tượng jQuery cho các select để dùng Select2
+            const $provinceSelect = $(provinceSelectNative);
+            const $districtSelect = $(districtSelectNative);
+            const $wardSelect = $(wardSelectNative);
 
-            fetch(
-                    `https://rsapi.goong.io/Place/AutoComplete?api_key=${apiKey}&input=${encodeURIComponent(query)}&sessiontoken=${sessionToken}`
-                )
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.status === "OK") {
-                        suggestionsContainer.innerHTML = "";
-                        suggestionsContainer.style.display = "block";
+            // --- 1. Khởi tạo Select2 cho các dropdown ---
+            $provinceSelect.select2({
+                placeholder: 'Chọn tỉnh/thành phố',
+                width: '100%'
+            });
+            $districtSelect.select2({
+                placeholder: 'Chọn quận/huyện',
+                width: '100%'
+            });
+            $wardSelect.select2({
+                placeholder: 'Chọn phường/xã',
+                width: '100%'
+            });
 
-                        data.predictions.forEach((prediction) => {
-                            const div = document.createElement("div");
-                            div.className = "suggestion-item";
-                            div.textContent = prediction.description;
-                            div.addEventListener("click", () => {
-                                addressInput.value = prediction.description;
-                                suggestionsContainer.style.display = "none";
+            // Ban đầu disable district và ward (Select2 cũng sẽ hiển thị trạng thái disabled)
+            $districtSelect.prop('disabled', true);
+            $wardSelect.prop('disabled', true);
 
-                                if (prediction.compound) {
-                                    provinceInput.value = prediction.compound.province || "";
-                                    districtInput.value = prediction.compound.district || "";
-                                    neighborhoodInput.value = prediction.compound.commune || "";
-                                }
-                            });
-                            suggestionsContainer.appendChild(div);
+
+            // --- 2. Logic Load dữ liệu động khi thay đổi dropdown cha ---
+
+            // Khi thay đổi tỉnh (province)
+            $provinceSelect.on('change', function() { // Sử dụng listener của jQuery cho Select2
+                // Lấy mã tỉnh từ value
+                const provinceCode = $(this).val();
+
+
+                // Reset và disable các dropdown con
+                $districtSelect.html('<option value="">Chọn quận/huyện</option>');
+                $districtSelect.prop('disabled', true);
+                $districtSelect.trigger('change'); // Thông báo cho Select2 biết options đã thay đổi
+
+                $wardSelect.html('<option value="">Chọn phường/xã</option>');
+                $wardSelect.prop('disabled', true);
+                $wardSelect.trigger('change'); // Thông báo cho Select2 biết options đã thay đổi
+
+                // Nếu có chọn tỉnh
+                if (provinceCode) {
+                    // Gọi API lấy quận huyện theo mã tỉnh
+                    fetch(`/get-districts/${provinceCode}`) // Route đã định nghĩa trong web.php
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.message) {
+                                $districtSelect.html(`<option value="">${data.message}</option>`);
+                                $districtSelect.prop('disabled', true);
+                            } else {
+                                let optionsHtml = '<option value="">Chọn quận/huyện</option>';
+                                data.forEach(item => {
+                                    optionsHtml +=
+                                        `<option value="${item.code}" data-code="${item.code}">${item.full_name}</option>`;
+                                });
+                                $districtSelect.html(optionsHtml);
+                                $districtSelect.prop('disabled', false);
+                            }
+                            $districtSelect.trigger('change'); // Trigger change để Select2 cập nhật
+                        })
+                        .catch(error => {
+                            console.error('Lỗi khi lấy quận/huyện:', error);
+                            $districtSelect.html('<option value="">Lỗi khi tải quận/huyện</option>');
+                            $districtSelect.prop('disabled', true);
+                            $districtSelect.trigger('change');
+                            $wardSelect.prop('disabled', true);
+                            $wardSelect.trigger('change');
                         });
-                    }
-                })
-                .catch((error) => console.error("Lỗi:", error));
-        }, 300);
+                }
+            });
 
-        addressInput.addEventListener("input", (e) => debouncedSearch(e.target.value));
+            // Khi thay đổi quận huyện (district)
+            $districtSelect.on('change', function() { // Sử dụng listener của jQuery cho Select2
+                // Lấy mã quận huyện từ value
+                const districtCode = $(this).val();
 
-        document.addEventListener("click", function(e) {
-            if (!suggestionsContainer.contains(e.target) && e.target !== addressInput) {
-                suggestionsContainer.style.display = "none";
-            }
+                // Reset và disable dropdown con
+                $wardSelect.html('<option value="">Chọn phường/xã</option>');
+                $wardSelect.prop('disabled', true);
+                $wardSelect.trigger('change'); // Thông báo cho Select2 biết options đã thay đổi
+
+                // Nếu có chọn quận huyện
+                if (districtCode) {
+                    // Gọi API lấy phường xã theo mã quận huyện
+                    fetch(`/get-wards/${districtCode}`) // Route đã định nghĩa trong web.php
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.message) {
+                                $wardSelect.html(`<option value="">${data.message}</option>`);
+                                $wardSelect.prop('disabled', true);
+                            } else {
+                                let optionsHtml = '<option value="">Chọn phường/xã</option>';
+                                data.forEach(item => {
+                                    optionsHtml +=
+                                        `<option value="${item.code}" data-code="${item.code}">${item.full_name}</option>`;
+                                });
+                                $wardSelect.html(optionsHtml);
+                                $wardSelect.prop('disabled', false);
+                            }
+                            $wardSelect.trigger('change'); // Trigger change để Select2 cập nhật
+                        })
+                        .catch(error => {
+                            console.error('Lỗi khi lấy phường/xã:', error);
+                            $wardSelect.html('<option value="">Lỗi khi tải phường/xã</option>');
+                            $wardSelect.prop('disabled', true);
+                            $wardSelect.trigger('change');
+                        });
+                }
+            });
+
+
+            // --- 3. Xử lý giá trị cũ khi load trang (nếu có) ---
+            // Nếu bạn có truyền old values từ server khi validate thất bại
+            // hoặc load dữ liệu địa chỉ đã lưu của user, bạn cần set lại giá trị cho Select2
+            // và trigger change để nó load dropdown con tương ứng.
+            // Biến $userAddress được truyền từ Controller OrderController@viewOrder
+            const oldProvinceCode =
+                '{{ old('province_code', $userAddress->province_code ?? '') }}'; // Lấy code tỉnh đã lưu/old
+            const oldDistrictCode =
+                '{{ old('district_code', $userAddress->district_code ?? '') }}'; // Lấy code huyện đã lưu/old
+            const oldWardCode = '{{ old('ward_code', $userAddress->ward_code ?? '') }}'; // Lấy code xã đã lưu/old
+
+            if (oldProvinceCode) {
+                // Set giá trị cho provinceSelect
+                $provinceSelect.val(oldProvinceCode); // Set giá trị
+
+                // Lắng nghe sự kiện change của district chỉ 1 lần
+                $districtSelect.one('change',
+                    function() { // Dùng .one() để listener chỉ chạy 1 lần sau load dữ liệu tỉnh
+                        if (oldDistrictCode) {
+                            // Set giá trị cho districtSelect và trigger change để load ward
+                            $districtSelect.val(oldDistrictCode); // Set giá trị
+                            $districtSelect.trigger('change'); // Trigger change để load ward
+
+                            // Lắng nghe sự kiện change của ward chỉ 1 lần
+                            $wardSelect.one('change',
+                                function() { // Dùng .one() để listener chỉ chạy 1 lần sau load dữ liệu huyện
+                                    if (oldWardCode) {
+                                        $wardSelect.val(oldWardCode); // Set giá trị
+                                        // Không cần trigger change cho ward cuối cùng trừ khi có logic khác phụ thuộc
+                                    }
+                                });
+                        } else {
+                            // Nếu có province nhưng không có district (trường hợp user chỉ lưu province)
+                            // Cần đảm bảo trigger change để load districts
+                            $provinceSelect.trigger('change');
+                        }
+                    });
+                // Quan trọng: Trigger change cho provinceSelect để bắt đầu chuỗi load dữ liệu con
+                // Điều này cần xảy ra SAU KHI Select2 đã được khởi tạo
+                // Sử dụng timeout nhỏ để đảm bảo Select2 đã sẵn sàng
+                setTimeout(() => {
+                    $provinceSelect.trigger('change');
+                }, 100); // 100ms hoặc nhỏ hơn
+
+
+                // Việc xử lý old values này cần cẩn thận để đảm bảo các dropdown con được load tuần tự.
+                // Đoạn code mẫu trên giả định bạn lưu code tỉnh/huyện/xã, nếu lưu tên thì cần điều chỉnh.
+                // Bạn cần điều chỉnh dựa trên cách bạn truyền old values hoặc dữ liệu địa chỉ đã lưu.
+
+
+                // ... các hàm khác cho toast, updateSelectedTotal, showEmptyCartMessage, v.v.
+                // ... logic xử lý quantity buttons và checkout form submission ...
+            };
+        }); // End DOMContentLoaded
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('addressForm');
+
+            form.addEventListener('submit', function(e) {
+                // Đợi form submit thành công rồi reset form
+                // Nếu bạn redirect lại thì dùng đoạn này ở trang load lại
+
+                // Reset sau 500ms nếu form không redirect (AJAX hoặc không có lỗi)
+                setTimeout(() => {
+                    form.reset();
+
+                    // Nếu bạn dùng Select2 hoặc plugin khác thì cần reset thủ công
+                    // Reset Select2 dropdowns
+                    $('#city').val('').trigger(
+                        'change'); // Reset city và trigger change để reset con
+                    // district và ward sẽ được reset bởi listener change của city
+                }, 500); // Có thể cần điều chỉnh thời gian timeout
+
+            });
         });
     </script>
 
@@ -421,7 +780,7 @@
                     '#phone': 'Số Điện Thoại',
                     '#email': 'Email',
                     '#address': 'Địa chỉ cụ thể',
-                    '#neighborhood': 'Phường/Xã',
+                    '#ward': 'Phường/Xã',
                     '#district': 'Quận/Huyện',
                     '#province': 'Tỉnh/Thành phố'
                 };

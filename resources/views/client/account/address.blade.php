@@ -273,7 +273,7 @@
         height: 50px !important;
         /* CHÍNH chỗ để set chiều cao */
         padding: 10px 12px;
-        border-radius: 4px;
+        border-radius: 0.5rem;
         font-size: 16px;
         border: 1px solid #ccc;
         display: flex;

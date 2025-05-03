@@ -788,7 +788,15 @@
                                 <span class="info-label">Địa chỉ</span>
                                 {{-- Ghép các phần địa chỉ lại --}}
                                 @php
-                                    $fullAddress = implode(', ', array_filter([$order->number_house, $order->address]));
+                                    $fullAddress = implode(
+                                        ', ',
+                                        array_filter([
+                                            $order->address,
+                                            $order->ward->full_name,
+                                            $order->district->full_name,
+                                            $order->province->full_name,
+                                        ]),
+                                    );
                                 @endphp
                                 <span class="info-value">{{ $fullAddress ?: 'Chưa cập nhật' }}</span>
                             </div>

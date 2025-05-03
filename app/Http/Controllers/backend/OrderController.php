@@ -62,12 +62,12 @@ class OrderController extends Controller
     }
 
     public function index(Request $request)
-{
-    // Lấy giá trị tìm kiếm từ request
-    $order_id = $request->get('order_id'); // Lấy mã đơn hàng từ request
+    {
+        // Lấy giá trị tìm kiếm từ request
+        $order_id = $request->get('order_id'); // Lấy mã đơn hàng từ request
 
-    // Lọc đơn hàng theo mã đơn nếu có
-    $orders = Order::selectRaw("
+        // Lọc đơn hàng theo mã đơn nếu có
+        $orders = Order::selectRaw("
         orders.id,
         MAX(orders.user_id) as user_id,
         MAX(users.name) as customer_name,
@@ -77,65 +77,64 @@ class OrderController extends Controller
         MAX(orders.status) as status,
         MAX(orders.payment_status) as payment_status,
         MAX(orders.payment_method) as payment_method,
-        MAX(orders.neighborhood) as neighborhood,
+        MAX(orders.ward_code) as ward_code,
         MAX(orders.barcode) as barcode,
-        MAX(orders.province) as province,
-        MAX(orders.district) as district,
-        MAX(orders.number_house) as number_house,
+        MAX(orders.province_code) as province_code,
+        MAX(orders.district_code) as district_code,
         MAX(orders.address) as address,
         MAX(orders.created_at) as created_at,
         MAX(orders.updated_at) as updated_at
     ")
-    ->leftJoin('users', 'users.id', '=', 'orders.user_id')
-    ->when($order_id, function ($query) use ($order_id) {
-        return $query->where('orders.barcode', 'like', "%{$order_id}%"); // Tìm kiếm theo mã đơn hàng
-    })
-    ->groupBy('orders.id')
-    ->orderBy('orders.id', 'DESC')
-    ->paginate(5); // Giới hạn kết quả trả về (5 đơn hàng mỗi trang)
+            ->leftJoin('users', 'users.id', '=', 'orders.user_id')
+            ->when($order_id, function ($query) use ($order_id) {
+                return $query->where('orders.barcode', 'like', "%{$order_id}%"); // Tìm kiếm theo mã đơn hàng
+            })
+            ->groupBy('orders.id')
+            ->orderBy('orders.id', 'DESC')
+            ->paginate(5); // Giới hạn kết quả trả về (5 đơn hàng mỗi trang)
 
-    // Tải quan hệ sau khi lấy dữ liệu (Order Items, Products và Product Variants)
-    $orders->load(['orderItems.products.product_variants']);
+        // Tải quan hệ sau khi lấy dữ liệu (Order Items, Products và Product Variants)
+        $orders->load(['orderItems.products.product_variants']);
 
-    // Trả về view với các dữ liệu cần thiết
-    $template = 'admin.orders.index';
-    $config = [
-        'js' => [
-            'admin/js/plugins/switchery/switchery.js',
-            'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
-        ],
-        'css' => [
-            'admin/css/plugins/switchery/switchery.css',
-            'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
-        ],
-        'model' => 'Order'
-    ];
+        // Trả về view với các dữ liệu cần thiết
+        $template = 'admin.orders.index';
+        $config = [
+            'js' => [
+                'admin/js/plugins/switchery/switchery.js',
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
+            ],
+            'css' => [
+                'admin/css/plugins/switchery/switchery.css',
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+            ],
+            'model' => 'Order'
+        ];
 
-    $config['seo'] = [
-        'index' => [
-            'title' => 'Quản lý đơn hàng',
-            'table' => 'Danh sách đơn hàng'
-        ],
-        'create' => [
-            'title' => 'Thêm mới đơn hàng'
-        ],
-        'edit' => [
-            'title' => 'Cập nhật đơn hàng'
-        ],
-        'delete' => [
-            'title' => 'Xóa đơn hàng'
-        ],
-    ];
+        $config['seo'] = [
+            'index' => [
+                'title' => 'Quản lý đơn hàng',
+                'table' => 'Danh sách đơn hàng'
+            ],
+            'create' => [
+                'title' => 'Thêm mới đơn hàng'
+            ],
+            'edit' => [
+                'title' => 'Cập nhật đơn hàng'
+            ],
+            'delete' => [
+                'title' => 'Xóa đơn hàng'
+            ],
+        ];
 
-    $dropdowns = $this->nestedset->Dropdownss();
+        $dropdowns = $this->nestedset->Dropdownss();
 
-    return view('admin.dashboard.layout', compact(
-        'template',
-        'config',
-        'dropdowns',
-        'orders'
-    ));
-}
+        return view('admin.dashboard.layout', compact(
+            'template',
+            'config',
+            'dropdowns',
+            'orders'
+        ));
+    }
 
     public function edit($id)
     {
@@ -192,7 +191,7 @@ class OrderController extends Controller
             'payment_status' => 'required|string|in:pending,paid,failed,refunded',
         ]);
         // Kiểm tra và áp dụng điều kiện chuyển đổi trạng thái
-        if ($order->status == 'pending' && !in_array($request->status, ['processing', 'cancelled' ,'pending'])) {
+        if ($order->status == 'pending' && !in_array($request->status, ['processing', 'cancelled', 'pending'])) {
             return back()->with('error', 'Không thể chuyển trạng thái từ "Chờ xử lý" sang trạng thái này.');
         }
 
@@ -253,11 +252,10 @@ class OrderController extends Controller
             'orders.status',
             'orders.payment_status',
             'orders.payment_method',
-            'orders.neighborhood',
+            'orders.ward_code',
             'orders.barcode',
-            'orders.province',
-            'orders.district',
-            'orders.number_house',
+            'orders.province_code',
+            'orders.district_code',
             'orders.address',
             'orders.created_at',
             'orders.updated_at'

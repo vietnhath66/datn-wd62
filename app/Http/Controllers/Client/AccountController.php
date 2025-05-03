@@ -48,6 +48,9 @@ class AccountController extends Controller
 
         $order->load([
             'items',
+            'ward',
+            'district',
+            'province',
             'items.product:id,name,image',
             'items.productVariant' => function ($query) {
                 $query->select(['id', 'product_id',])
