@@ -5,7 +5,7 @@
             <!-- Phần thông tin vận chuyển (bên trái) -->
             <div class="col-md-7">
                 <div class="title">
-                    
+
                     <a href="{{ route('client.cart.viewCart') }}" class="text-primary mb-3">Quay Lại Giỏ Hàng</a>
                     <h4>Thông Tin Vận Chuyển</h4>
                 </div>
@@ -33,22 +33,17 @@
                             <div id="suggestions" class="suggestions"></div>
                         </div>
                         <div class="row">
-                            <div class="col-md-3 mb-3">
-                                <label for="number_house" class="form-label">Số nhà</label>
-                                <input type="text" class="form-control" name="number_house" id="number_house"
-                                    placeholder="Nhập số nhà" />
-                            </div>
-                            <div class="col-md-3 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label for="neighborhood" class="form-label">Phường/Xã</label>
                                 <input type="text" class="form-control" name="neighborhood" id="neighborhood"
                                     placeholder="Nhập Phường/Xã" />
                             </div>
-                            <div class="col-md-3 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label for="district" class="form-label">Quận/Huyện</label>
                                 <input type="text" class="form-control" name="district" id="district"
                                     placeholder="Nhập Quận/Huyện" />
                             </div>
-                            <div class="col-md-3 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label for="province" class="form-label">Tỉnh/Thành phố</label>
                                 <input type="text" class="form-control" name="province" id="province"
                                     placeholder="Nhập Tỉnh/Thành phố" />
