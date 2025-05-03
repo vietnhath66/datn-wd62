@@ -12,7 +12,8 @@ use App\Traits\QueryScopes;
 
 class ProductCatalogue extends Model
 {
-    use HasFactory, SoftDeletes, QueryScopes;
+    // protected $fillable = ['title', 'parent_id', 'image'];
+
 
     protected $fillable = [
         'image',
@@ -62,6 +63,12 @@ class ProductCatalogue extends Model
     {
         return $this->belongsTo(ProductCatalogue::class, 'parent_id', 'id');
     }
+
+
+    // public function children()
+    // {
+    //     return $this->hasMany(ProductCatalogue::class, 'parent_id')->with('children');
+    // }
 
 
 }

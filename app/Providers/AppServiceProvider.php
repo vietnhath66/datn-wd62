@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Coupon;
+use App\Models\ProductCatalogue;
 use App\Repositories\AttributeCatalogueReponsitory;
 use App\Repositories\AttributeReponsitory;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
@@ -50,6 +51,7 @@ use App\Services\RoleService;
 use App\Services\UserService;
 use Illuminate\Support\Facades\View;
 
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -94,8 +96,12 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot()
     {
-        //
+        $catalogues = ProductCatalogue::whereNull('parent_id')
+            ->with('children')
+            ->get();
+
+        View::share('catalogues', $catalogues);
     }
 }

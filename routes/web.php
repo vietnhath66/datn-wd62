@@ -123,6 +123,9 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
         Route::get('product-detail/{id}', [ProductsController::class, 'show'])->name('show');
         Route::post('product-detail/{product}/reviews', [ProductsController::class, 'reviewProduct'])->name('reviewProduct')->middleware('auth');
     });
+
+    // Route::get('products/{id}', [ProductsController::class, 'lienquan'])->name('productss.show');
+
 });
 
 

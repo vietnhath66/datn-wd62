@@ -152,7 +152,25 @@ class ProductsController extends Controller
     public function quickView($id)
     {
         $product = Product::findOrFail($id);
-        return view('client.productss.modal', compact('product'));
+
+        // Lấy các biến thể của sản phẩm với color và size
+        $variants = ProductVariant::where('product_id', $id)
+            ->whereNull('deleted_at')  // Lọc các bản không bị xóa
+            ->get();
+        // dd($variants);
+        $ab = Product::where('product_catalogue_id', $product->product_catalogue_id)
+            ->where('id', '!=', $product->id)
+            ->latest()
+            ->take(2)
+            ->get();
+
+        // Lấy tất cả các màu có sẵn (unique)
+        $colors = $variants->pluck('name_variant_color')->unique();
+
+        // Truyền dữ liệu vào view
+        // dd($variants);
+        return view('client.productss.detailProducts', compact('product', 'variants', 'colors', 'ab'));
+
     }
 
 
@@ -200,6 +218,8 @@ class ProductsController extends Controller
                 ->with('error_scroll', '#reviews');
         }
     }
+
+
 
 }
 
