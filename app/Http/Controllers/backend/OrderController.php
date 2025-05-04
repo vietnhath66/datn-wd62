@@ -195,6 +195,7 @@ class OrderController extends Controller
             return back()->with('error', 'Không thể chuyển trạng thái từ "Chờ xử lý" sang trạng thái này.');
         }
 
+
         if ($order->status == 'processing' && !in_array($request->status, ['shipping', 'confirm', 'cancelled', 'processing'])) {
             return back()->with('error', 'Không thể chuyển trạng thái từ "Đang xử lý" sang trạng thái này.');
         }
