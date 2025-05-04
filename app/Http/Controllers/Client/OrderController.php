@@ -333,7 +333,7 @@ class OrderController extends Controller
                 $redirectUrl = route($returnRouteName);
 
                 // Sử dụng ngrok
-                $ngrokForwardingUrl = "https://e049-2001-ee0-40e1-7d37-61dd-fac7-76fb-f2a1.ngrok-free.app";
+                $ngrokForwardingUrl = "https://7919-2001-ee0-40e1-4949-69a4-8f45-1357-7e62.ngrok-free.app";
                 $ipnRouteUri = "/momo/payment/notify";
                 $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
                 Log::info('Using temporary Ngrok IPN URL: ' . $ipnUrl);
@@ -553,7 +553,7 @@ class OrderController extends Controller
             }
             $redirectUrl = route($returnRouteName);
             // Sử dụng ngrok
-            $ngrokForwardingUrl = "https://e049-2001-ee0-40e1-7d37-61dd-fac7-76fb-f2a1.ngrok-free.app";
+            $ngrokForwardingUrl = "https://7919-2001-ee0-40e1-4949-69a4-8f45-1357-7e62.ngrok-free.app";
             $ipnRouteUri = "/momo/payment/notify";
             $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
             Log::info('Using temporary Ngrok IPN URL: ' . $ipnUrl);

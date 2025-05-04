@@ -18,7 +18,15 @@
                                 $recipientName = $order->user->name ?? 'N/A';
                                 $recipientPhone = $order->phone ?? 'N/A';
                                 $fullAddress =
-                                    implode(', ', array_filter([$order->number_house, $order->address])) ?:
+                                    implode(
+                                        ', ',
+                                        array_filter([
+                                            $order->address,
+                                            $order->ward->full_name,
+                                            $order->district->full_name,
+                                            $order->province->full_name,
+                                        ]),
+                                    ) ?:
                                     'Chưa có địa chỉ';
 
                                 // Xác định trạng thái (trên trang này thường chỉ là 'shipping')
