@@ -1,21 +1,22 @@
 <?php
 
-use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
-use App\Http\Controllers\Backend\DashboardController;
-use App\Http\Controllers\Backend\AuthController;
-use App\Http\Controllers\Backend\BrandController;
-use App\Http\Controllers\Backend\ProductCatalogueController;
-use App\Http\Controllers\Backend\ProductController;
-use App\Http\Controllers\Backend\RoleController;
-use App\Http\Controllers\Backend\UserController;
-use App\Http\Controllers\Backend\AttributeCatalogueController;
-use App\Http\Controllers\Backend\AttributeController;
-use App\Http\Controllers\Client\AboutController;
-use App\Http\Controllers\Client\PolicyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\Backend\AuthController;
+use App\Http\Controllers\Backend\RoleController;
+use App\Http\Controllers\Backend\UserController;
+use App\Http\Controllers\Client\AboutController;
+use App\Http\Controllers\Backend\BrandController;
+use App\Http\Controllers\Client\PolicyController;
 use App\Http\Controllers\Client\ContactController;
+use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Client\ProductsController;
+use App\Http\Controllers\Client\FavoritesController;
+use App\Http\Controllers\Backend\AttributeController;
+use App\Http\Controllers\Backend\DashboardController;
+use App\Http\Controllers\Backend\ProductCatalogueController;
+use App\Http\Controllers\Backend\AttributeCatalogueController;
+use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
 
 // Client
 Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
@@ -34,11 +35,14 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
 
     Route::get('products/{id}', [ProductsController::class, 'show'])->name('productss.show');
 
-    // Route::get('products/{id}', [ProductsController::class, 'lienquan'])->name('productss.show');
+
+Route::middleware('auth')->group(function () {
+    Route::post('/favorite/add', [FavoritesController::class, 'add'])->name('favorite.add');
+});
 
 
-    //Quick view
-    Route::get('/products/{id}/quick-view', [ProductsController::class, 'quickview'])->name('products.quickView');
+
+   
 
 
 

@@ -88,7 +88,7 @@
                             <div class="size-203 flex-c-m respon6">
                                 Size
                             </div>
-                        
+
                             <div class="size-204 respon6-next">
                                 <div class="rs1-select2 bor8 bg0">
                                     <select id="size-select" class="form-control" disabled>
@@ -110,7 +110,7 @@
                             </div>
 
                             <input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product"
-    value="0" min="0" max="100" disabled readonly>
+                                value="0" min="0" max="100" disabled readonly>
 
                             <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
                                 <i class="fs-16 zmdi zmdi-plus"></i>
@@ -145,10 +145,7 @@
                             <i class="fa fa-twitter"></i>
                         </a>
 
-                        <a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
-                            data-tooltip="Google Plus">
-                            <i class="fa fa-google-plus"></i>
-                        </a>
+                        
                     </div>
                 </div>
             </div>
@@ -210,105 +207,13 @@
         <!-- Slide2 -->
         <div class="wrap-slick2">
             <div class="slick2">
-            <div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
-						<!-- Block2 -->
-						<div class="block2">
-							<div class="block2-pic hov-img0">
-								<img src="images/product-01.jpg" alt="IMG-PRODUCT">
-
-								<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-									Quick View
-								</a>
-							</div>
-
-							<div class="block2-txt flex-w flex-t p-t-14">
-								<div class="block2-txt-child1 flex-col-l ">
-									<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-										Esprit Ruffle Shirt
-									</a>
-
-									<span class="stext-105 cl3">
-										$16.64
-									</span>
-								</div>
-
-								<div class="block2-txt-child2 flex-r p-t-3">
-									<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-										<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-										<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-									</a>
-								</div>
-							</div>
-						</div>
-					</div><div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
-						<!-- Block2 -->
-						<div class="block2">
-							<div class="block2-pic hov-img0">
-								<img src="images/product-01.jpg" alt="IMG-PRODUCT">
-
-								<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-									Quick View
-								</a>
-							</div>
-
-							<div class="block2-txt flex-w flex-t p-t-14">
-								<div class="block2-txt-child1 flex-col-l ">
-									<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-										Esprit Ruffle Shirt
-									</a>
-
-									<span class="stext-105 cl3">
-										$16.64
-									</span>
-								</div>
-
-								<div class="block2-txt-child2 flex-r p-t-3">
-									<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-										<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-										<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-            <div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
-						<!-- Block2 -->
-						<div class="block2">
-							<div class="block2-pic hov-img0">
-								<img src="images/product-01.jpg" alt="IMG-PRODUCT">
-
-								<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-									Quick View
-								</a>
-							</div>
-
-							<div class="block2-txt flex-w flex-t p-t-14">
-								<div class="block2-txt-child1 flex-col-l ">
-									<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-										Esprit Ruffle Shirt
-									</a>
-
-									<span class="stext-105 cl3">
-										$16.64
-									</span>
-								</div>
-
-								<div class="block2-txt-child2 flex-r p-t-3">
-									<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-										<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-										<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
                 @foreach($ab as $item)
                     <div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
                         <!-- Block2 -->
                         <div class="block2">
                             <div class="block2-pic hov-img0">
                                 <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}">
-                                
+
                             </div>
 
                             <div class="block2-txt flex-w flex-t p-t-14">
@@ -325,14 +230,16 @@
 
                                 <div class="block2-txt-child2 flex-r p-t-3">
                                     <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                                        <img class="icon-heart1 dis-block trans-04" src="{{ asset('client/images/icons/icon-heart-01.png') }}" alt="ICON">
-                                        <img class="icon-heart2 dis-block trans-04 ab-t-l" src="{{ asset('client/images/icons/icon-heart-02.png') }}" alt="ICON">
+                                        <img class="icon-heart1 dis-block trans-04"
+                                            src="{{ asset('client/images/icons/icon-heart-01.png') }}" alt="ICON">
+                                        <img class="icon-heart2 dis-block trans-04 ab-t-l"
+                                            src="{{ asset('client/images/icons/icon-heart-02.png') }}" alt="ICON">
                                     </a>
                                 </div>
                             </div>
 
                             <!-- lll -->
-                             
+
                         </div>
                     </div>
                 @endforeach
@@ -343,121 +250,116 @@
 
 <!-- Lấy màu -->
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const variants = @json($variants);
-    const colorSelect = document.getElementById('color-select');
-    const sizeSelect = document.getElementById('size-select');
-    const stockInfo = document.getElementById('stock-info');
-    const numInput = document.querySelector('.num-product');
-    const btnMinus = document.querySelector('.btn-num-product-down');
-    const btnPlus = document.querySelector('.btn-num-product-up');
-    const addToCartBtn = document.getElementById('add-to-cart-btn');
+    document.addEventListener('DOMContentLoaded', function () {
+        const variants = @json($variants);
+        const colorSelect = document.getElementById('color-select');
+        const sizeSelect = document.getElementById('size-select');
+        const stockInfo = document.getElementById('stock-info');
+        const numInput = document.querySelector('.num-product');
+        const btnMinus = document.querySelector('.btn-num-product-down');
+        const btnPlus = document.querySelector('.btn-num-product-up');
+        const addToCartBtn = document.getElementById('add-to-cart-btn');
 
-    let currentVariant = null;
+        let currentVariant = null;
 
-    function resetControls() {
-        numInput.value = 1; // Đặt giá trị mặc định là 1
-        numInput.disabled = true;
-        numInput.setAttribute('min', 1); // Đặt thuộc tính min là 1
-        numInput.setAttribute('max', 100);
-        addToCartBtn.disabled = true;
-        stockInfo.textContent = '';
-        stockInfo.style.color = 'black';
-    }
-
-    function updateStockInfo() {
-        if (!currentVariant) return;
-
-        const selectedQty = parseInt(numInput.value);
-        const maxQty = currentVariant.quantity;
-        const remaining = maxQty - selectedQty;
-
-        if (maxQty <= 0) {
-            stockInfo.textContent = `Hết hàng`;
-            stockInfo.style.color = 'red';
-            addToCartBtn.disabled = true;
+        function resetControls() {
+            numInput.value = 1; // Đặt giá trị mặc định là 1
             numInput.disabled = true;
-        } else if (selectedQty < 1) { // Kiểm tra nếu số lượng nhỏ hơn 1
-            stockInfo.textContent = `Số lượng phải lớn hơn 0`;
-            stockInfo.style.color = 'orange';
+            numInput.setAttribute('min', 1); // Đặt thuộc tính min là 1
+            numInput.setAttribute('max', 100);
             addToCartBtn.disabled = true;
-            numInput.value = 1; // Đặt lại giá trị là 1 nếu người dùng cố giảm
-        } else if (remaining < 0) {
-            stockInfo.textContent = `Vượt quá tồn kho! Chỉ còn ${maxQty}`;
-            stockInfo.style.color = 'red';
-            addToCartBtn.disabled = true;
-        } else {
-            stockInfo.textContent = `Còn lại: ${remaining}`;
-            stockInfo.style.color = remaining === 0 ? 'red' : 'black';
-            addToCartBtn.disabled = false;
+            stockInfo.textContent = '';
+            stockInfo.style.color = 'black';
         }
-    }
 
-    colorSelect.addEventListener('change', function () {
-        const selectedColor = this.value.trim();
-        sizeSelect.innerHTML = '<option value="">Choose a size</option>';
-        sizeSelect.disabled = true;
-        currentVariant = null;
-        resetControls(); // Gọi resetControls để đặt giá trị mặc định là 1
+        function updateStockInfo() {
+            if (!currentVariant) return;
 
-        if (selectedColor) {
-            const availableVariants = variants.filter(v => v.name_variant_color.trim() === selectedColor);
-            const sizes = [...new Set(availableVariants.map(v => v.name_variant_size))];
+            const selectedQty = parseInt(numInput.value);
+            const maxQty = currentVariant.quantity;
+            const remaining = maxQty - selectedQty;
 
-            if (sizes.length > 0) {
-                sizes.forEach(size => {
-                    const option = document.createElement('option');
-                    option.value = size;
-                    option.textContent = size;
-                    sizeSelect.appendChild(option);
-                });
-                sizeSelect.disabled = false;
-            }
-
-            const totalQty = availableVariants.reduce((sum, v) => sum + v.quantity, 0);
-          
-        }
-    });
-
-    sizeSelect.addEventListener('change', function () {
-        const selectedColor = colorSelect.value.trim();
-        const selectedSize = this.value.trim();
-
-        if (selectedColor && selectedSize) {
-            currentVariant = variants.find(v =>
-                v.name_variant_color.trim() === selectedColor &&
-                v.name_variant_size.trim() === selectedSize
-            );
-
-            if (currentVariant) {
-                numInput.disabled = currentVariant.quantity > 0 ? false : true;
-                numInput.setAttribute('max', currentVariant.quantity);
-                numInput.value = 1; // Đặt giá trị là 1 khi chọn biến thể
-                updateStockInfo();
-            } else {
-                stockInfo.textContent = 'Không có sản phẩm với lựa chọn này';
+            if (maxQty <= 0) {
+                stockInfo.textContent = `Hết hàng`;
                 stockInfo.style.color = 'red';
                 addToCartBtn.disabled = true;
                 numInput.disabled = true;
+            } else if (selectedQty < 1) { // Kiểm tra nếu số lượng nhỏ hơn 1
+                stockInfo.textContent = `Số lượng phải lớn hơn 0`;
+                stockInfo.style.color = 'orange';
+                addToCartBtn.disabled = true;
+                numInput.value = 1; // Đặt lại giá trị là 1 nếu người dùng cố giảm
+            } else if (remaining < 0) {
+                stockInfo.textContent = `Vượt quá tồn kho! Chỉ còn ${maxQty}`;
+                stockInfo.style.color = 'red';
+                addToCartBtn.disabled = true;
+            } else {
+                stockInfo.textContent = `Còn lại: ${remaining}`;
+                stockInfo.style.color = remaining === 0 ? 'red' : 'black';
+                addToCartBtn.disabled = false;
             }
         }
-    });
 
-    numInput.addEventListener('input', updateStockInfo);
-    btnPlus.addEventListener('click', () => {
-        const currentValue = parseInt(numInput.value) || 0;
-        numInput.value = Math.min(currentValue + 1, parseInt(numInput.getAttribute('max')) || 100);
-        setTimeout(updateStockInfo, 100);
+        colorSelect.addEventListener('change', function () {
+            const selectedColor = this.value.trim();
+            sizeSelect.innerHTML = '<option value="">Choose a size</option>';
+            sizeSelect.disabled = true;
+            currentVariant = null;
+            resetControls(); // Gọi resetControls để đặt giá trị mặc định là 1
+
+            if (selectedColor) {
+                const availableVariants = variants.filter(v => v.name_variant_color.trim() === selectedColor);
+                const sizes = [...new Set(availableVariants.map(v => v.name_variant_size))];
+
+                if (sizes.length > 0) {
+                    sizes.forEach(size => {
+                        const option = document.createElement('option');
+                        option.value = size;
+                        option.textContent = size;
+                        sizeSelect.appendChild(option);
+                    });
+                    sizeSelect.disabled = false;
+                }
+
+                const totalQty = availableVariants.reduce((sum, v) => sum + v.quantity, 0);
+
+            }
+        });
+
+        sizeSelect.addEventListener('change', function () {
+            const selectedColor = colorSelect.value.trim();
+            const selectedSize = this.value.trim();
+
+            if (selectedColor && selectedSize) {
+                currentVariant = variants.find(v =>
+                    v.name_variant_color.trim() === selectedColor &&
+                    v.name_variant_size.trim() === selectedSize
+                );
+
+                if (currentVariant) {
+                    numInput.disabled = currentVariant.quantity > 0 ? false : true;
+                    numInput.setAttribute('max', currentVariant.quantity);
+                    numInput.value = 1; // Đặt giá trị là 1 khi chọn biến thể
+                    updateStockInfo();
+                } else {
+                    stockInfo.textContent = 'Không có sản phẩm với lựa chọn này';
+                    stockInfo.style.color = 'red';
+                    addToCartBtn.disabled = true;
+                    numInput.disabled = true;
+                }
+            }
+        });
+
+        numInput.addEventListener('input', updateStockInfo);
+        btnPlus.addEventListener('click', () => {
+            const currentValue = parseInt(numInput.value) || 0;
+            numInput.value = Math.min(currentValue + 1, parseInt(numInput.getAttribute('max')) || 100);
+            setTimeout(updateStockInfo, 100);
+        });
+        btnMinus.addEventListener('click', () => {
+            const currentValue = parseInt(numInput.value) || 1;
+            numInput.value = Math.max(currentValue - 1, 1); // Ngăn giảm xuống dưới 1
+            setTimeout(updateStockInfo, 100);
+        });
     });
-    btnMinus.addEventListener('click', () => {
-        const currentValue = parseInt(numInput.value) || 1;
-        numInput.value = Math.max(currentValue - 1, 1); // Ngăn giảm xuống dưới 1
-        setTimeout(updateStockInfo, 100);
-    });
-});
 </script>
-
-
-
-
-
