@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Kalnoy\Nestedset\NodeTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,7 +13,7 @@ use App\Traits\QueryScopes;
 
 class ProductCatalogue extends Model
 {
-    // protected $fillable = ['title', 'parent_id', 'image'];
+    use HasFactory, QueryScopes, NodeTrait;
 
 
     protected $fillable = [
@@ -24,22 +25,14 @@ class ProductCatalogue extends Model
         'lft',
         'rgt',
         'level',
+        'publish'
     ];
 
     protected $table = 'product_catalogues';
     protected $casts = [
         'attribute' => 'json'
     ];
-    // public function products(){
-    //     return $this->belongsToMany(Product::class, 'product_catalogue_product' , 'product_catalogue_id', 'product_id')->withPivot(
-    //         'product_catalogue_id',
-    //         'product_id',
-    //     );
-    // }
 
-    // public function product_catalogue_language(){
-    //     return $this->hasMany(ProductCatalogueLanguage::class, 'product_catalogue_id', 'id')->where('language_id','=',1);
-    // }
 
     public static function isNodeCheck($id = 0)
     {
@@ -65,10 +58,21 @@ class ProductCatalogue extends Model
     }
 
 
-    // public function children()
-    // {
-    //     return $this->hasMany(ProductCatalogue::class, 'parent_id')->with('children');
-    // }
+    public function getParentIdName()
+    {
+        return 'parent_id';
+    }
+
+    public function getLftName()
+    {
+        return 'lft';
+    }
+
+    public function getRgtName()
+    {
+        return 'rgt';
+    }
+
 
 
 }
