@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\backend\BannerController;
 use App\Http\Controllers\Backend\CounponController;
 use App\Http\Controllers\Client\AboutController;
 use App\Http\Controllers\Client\AccountController;
@@ -248,6 +249,16 @@ Route::prefix('admin')
                 Route::get('show/{order}', [App\Http\Controllers\Backend\OrderController::class, 'show'])->where(['id' => '[0-9]+'])->name('show');
             });
 
+        Route::prefix('banner')
+            ->as('banner.')
+            ->group(function () {
+                Route::get('index', [BannerController::class, 'index'])->name('index');
+                Route::get('create', [BannerController::class, 'create'])->name('create');
+                Route::post('store', [BannerController::class, 'store'])->name('store');
+                Route::get('edit/{banner}', [BannerController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
+                Route::put('update/{banner}', [BannerController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
+                Route::delete('destroy/{banner}', [BannerController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
+            });
 
         Route::get('ajax/attribute/getAttribute', [AjaxAttributeController::class, 'getAttribute'])->name('ajax.attribute.getAttribute');
         Route::get('ajax/attribute/loadAttribute', [AjaxAttributeController::class, 'loadAttribute'])->name('ajax.attribute.loadAttribute');

@@ -118,7 +118,15 @@
                         @php
                             $customerName = $order->name ?? (optional($order->user)->name ?? 'N/A');
                             $customerPhone = $order->phone ?? 'N/A';
-                            $fullAddress = implode(', ', array_filter([$order->number_house, $order->address]));
+                            $fullAddress = implode(
+                                ', ',
+                                array_filter([
+                                    $order->address,
+                                    $order->ward->full_name,
+                                    $order->district->full_name,
+                                    $order->province->full_name,
+                                ]),
+                            );
                         @endphp
                         <p class="mb-2"><strong class="text-muted">Người Nhận:</strong> <span
                                 class="shipping-name">{{ $customerName }}</span></p>

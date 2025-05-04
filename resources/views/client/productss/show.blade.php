@@ -60,7 +60,7 @@
                     </span>
 
                     <p class="stext-102 cl3 p-t-23">
-                        {{ $product->description }}
+                        {{ $product->content }}
                     </p>
 
                     <form action="{{ route('client.cart.addToCart') }}" method="POST"> {{-- Đảm bảo route name đúng --}}
@@ -175,7 +175,7 @@
                 <div class="tab-content p-t-43">
                     <div class="tab-pane fade show active" id="description" role="tabpanel">
                         <div class="how-pos2 p-lr-15-md">
-                            <p class="stext-102 cl6">{!! $product->content ?? 'Chưa có mô tả cho sản phẩm này.' !!}</p>
+                            <p class="stext-102 cl6">{!! $product->description ?? 'Chưa có mô tả cho sản phẩm này.' !!}</p>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="reviews" role="tabpanel">

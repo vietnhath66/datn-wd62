@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attribute;
+use App\Models\Banner;
 use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Http\Request;
@@ -11,6 +12,8 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+
+
 
     public function viewHome()
     {
@@ -33,12 +36,18 @@ class HomeController extends Controller
         $hotProducts = $hotProductsQuery->limit(10)->get();
         $comment = Review::limit(5)->get();
 
+        $banners = Banner::where('is_active', true)->where('position', 'home_top')->orderBy('position')->get();
+
+        // Lấy banner dưới cùng ('home_bottom')
+        $bannerslide = Banner::where('is_active', true)->where('position', 'slide')->orderBy('position')->get();
 
         return view('client.home.home')->with([
             'newProducts' => $newProducts,
             'saleProducts' => $saleProducts,
             'hotProducts' => $hotProducts,
-            'comment' => $comment
+            'comment' => $comment,
+            'banners' => $banners,
+            'bannerslide' => $bannerslide
         ]);
     }
 }

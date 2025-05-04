@@ -251,7 +251,9 @@ class ShipperController extends Controller
                 // Chỉ lấy các cột cần thiết của OrderDetail nếu muốn tối ưu
                 // $query->select('id', 'order_id', 'product_id', 'product_variant_id', 'quantity', 'price');
             },
-            // Lấy thông tin sản phẩm chính, chỉ lấy cột id, name, image
+            'ward',
+            'district',
+            'province',
             'items.product:id,name,image',
             // Lấy thông tin biến thể
             'items.productVariant' => function ($query) {

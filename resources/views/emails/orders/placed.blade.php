@@ -22,7 +22,7 @@ Cảm ơn bạn đã đặt hàng tại ChicWear!
 
 * **Người nhận:** {{ $order->user->name }}
 * **Điện thoại:** {{ $order->phone }}
-* **Địa chỉ:** {{ implode(', ', array_filter([$order->number_house, $order->address, $order->neighborhood, $order->district, $order->province])) }}
+* **Địa chỉ:** {{ implode(', ', array_filter([$order->address, $order->ward->full_name, $order->district->full_name, $order->province->full_name])) }}
 
 **Phương thức thanh toán:** {{ $order->payment_method == 'cod' ? 'Thanh toán khi nhận hàng (COD)' : 'Thanh toán MOMO' }}
 

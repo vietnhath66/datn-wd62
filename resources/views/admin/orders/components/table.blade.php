@@ -27,7 +27,7 @@
                                         <input type="search" name="order_id"
                                             class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
                                             data-provider="flatpickr" placeholder="Nhập mã đơn hàng"
-                                            value="{{ request()->get('order_idid') }}">
+                                            value="{{ request()->get('order_id') }}">
 
                                     </div>
                                 </form>
@@ -119,7 +119,7 @@
                                                 @if ($order->status == 'pending')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Chưa
-                                                        hoàn tất đơn hàng</span>
+                                                        hoàn tất</span>
                                                 @elseif($order->status == 'processing')
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/2000 dark:border-transparent">Đang
@@ -231,3 +231,74 @@
     </div>
     <!-- End Page-content -->
 </div>
+{{-- <script>
+    const totalRecords = 38;
+    const perPage = 10;
+    let currentPage = 1;
+    const totalPages = Math.ceil(totalRecords / perPage);
+
+    const showingEl = document.querySelector(".showing");
+    const totalRecordsEl = document.querySelector(".total-records");
+    const paginationList = document.querySelector(".pagination");
+    const prevBtn = document.querySelector(".pagination-prev");
+    const nextBtn = document.querySelector(".pagination-next");
+
+    function updatePaginationUI() {
+        // Cập nhật số lượng hiển thị
+        const start = (currentPage - 1) * perPage + 1;
+        let end = start + perPage - 1;
+        if (end > totalRecords) end = totalRecords;
+
+        showingEl.textContent = `${end - start + 1}`;
+        totalRecordsEl.textContent = totalRecords;
+
+        // Tạo danh sách trang
+        paginationList.innerHTML = "";
+        for (let i = 1; i <= totalPages; i++) {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            a.href = "javascript:void(0)";
+            a.textContent = i;
+            a.className = `inline-flex items-center justify-center h-8 w-8 rounded border border-slate-200 dark:border-zink-500 ${
+                i === currentPage ? "bg-custom-50 text-custom-500 border-custom-50" : "bg-white text-slate-500"
+            } hover:bg-custom-50 hover:text-custom-500`;
+
+            a.addEventListener("click", () => {
+                currentPage = i;
+                updatePaginationUI();
+                loadPageData(currentPage); // Nếu cần gọi AJAX hoặc hiển thị lại dữ liệu
+            });
+
+            li.appendChild(a);
+            paginationList.appendChild(li);
+        }
+
+        // Vô hiệu hóa nút Prev/Next nếu cần
+        prevBtn.classList.toggle("disabled", currentPage === 1);
+        nextBtn.classList.toggle("disabled", currentPage === totalPages);
+    }
+
+    prevBtn.addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            updatePaginationUI();
+            loadPageData(currentPage);
+        }
+    });
+
+    nextBtn.addEventListener("click", () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            updatePaginationUI();
+            loadPageData(currentPage);
+        }
+    });
+
+    function loadPageData(page) {
+        console.log(`Tải dữ liệu cho trang ${page}`);
+        // Gọi API hoặc hiển thị dữ liệu tương ứng ở đây
+    }
+
+    // Gọi lần đầu
+    updatePaginationUI();
+</script> --}}

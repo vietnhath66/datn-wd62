@@ -47,7 +47,28 @@ class ProductsController extends Controller
             $selectedCategory = ProductCatalogue::find($selectedCategoryId);
             if ($selectedCategory) {
                 $pageTitle = $selectedCategory->name;
-                $productsQuery->where('product_catalogue_id', $selectedCategoryId);
+
+                Log::info('Dữ liệu $selectedCategory trước khi vào try: ' . print_r($selectedCategory->toArray(), true));
+                try {
+                    $parentId = $selectedCategory->getKey();
+
+                    $descendantIds = ProductCatalogue::descendantsOf($parentId)
+                        ->pluck('id')
+                        ->toArray();
+
+                    $categoryIds = array_merge([$parentId], $descendantIds);
+                    $categoryIds = array_unique($categoryIds);
+
+                    \Log::info("Danh sách ID danh mục (cha+con) cho {$selectedCategoryId} (dùng descendantsOf): " . print_r($categoryIds, true));
+
+                } catch (\Throwable $e) {
+                    Log::error("Không thể lấy danh mục con cho ID: {$selectedCategoryId} (dùng descendantsOf). Lỗi: " . $e->getMessage());
+                    $categoryIds = [$selectedCategoryId];
+                }
+
+
+                $productsQuery->whereIn('product_catalogue_id', $categoryIds);
+
             } else {
                 $selectedCategoryId = null;
             }
@@ -137,50 +158,36 @@ class ProductsController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        // <<< BẮT ĐẦU: Lấy sản phẩm liên quan >>>
-        // Lấy ID thương hiệu và danh mục của sản phẩm hiện tại
-        $brandId = $product->brand_id; // Giả định có cột brand_id
-        $categoryId = $product->product_catalogue_id; // Giả định có cột product_catalogue_id
+        $brandId = $product->brand_id;
+        $categoryId = $product->product_catalogue_id;
 
-        // Query lấy sản phẩm liên quan
         $relatedProductsQuery = Product::query()
-            ->where('publish', 1) // Chỉ lấy sản phẩm đang publish
-            ->where('id', '!=', $product->id); // Loại trừ sản phẩm hiện tại
+            ->where('publish', 1)
+            ->where('id', '!=', $product->id);
 
-        // Thêm điều kiện lấy sản phẩm cùng thương hiệu HOẶC cùng danh mục
         $relatedProductsQuery->where(function ($query) use ($brandId, $categoryId) {
             if ($brandId) {
-                $query->where('brand_id', $brandId); // Sản phẩm cùng thương hiệu
+                $query->where('brand_id', $brandId);
             }
             if ($categoryId) {
-                // Nếu sản phẩm thuộc nhiều danh mục (many-to-many), cần kiểm tra mối quan hệ
-                // Giả định đơn giản là sản phẩm thuộc 1 danh mục chính (product_catalogue_id)
                 if ($brandId) {
-                    // Nếu đã có điều kiện brand, dùng orWhere cho category
                     $query->orWhere('product_catalogue_id', $categoryId);
                 } else {
-                    // Nếu không có điều kiện brand, dùng where cho category
                     $query->where('product_catalogue_id', $categoryId);
                 }
             }
         });
 
-        // Giới hạn số lượng sản phẩm liên quan và sắp xếp (ví dụ: ngẫu nhiên hoặc theo ngày tạo)
-        $relatedProducts = $relatedProductsQuery->inRandomOrder()->limit(8)->get(); // Lấy tối đa 8 sản phẩm ngẫu nhiên
-        // Hoặc theo ngày tạo: ->orderBy('created_at', 'desc')->limit(8)->get();
-
-        // <<< KẾT THÚC: Lấy sản phẩm liên quan >>>
+        $relatedProducts = $relatedProductsQuery->inRandomOrder()->limit(8)->get();
 
 
-        // Lấy các biến thể của sản phẩm với color và size (Giữ nguyên)
+
         $variants = ProductVariant::where('product_id', $id)
             ->whereNull('deleted_at')
             ->get();
 
-        // Lấy tất cả các màu có sẵn (unique) (Giữ nguyên)
         $colors = $variants->pluck('name_variant_color')->unique();
 
-        // Truyền dữ liệu vào view (Thêm relatedProducts)
         return view('client.productss.detailProducts', compact('product', 'variants', 'colors', 'relatedProducts'));
 
 
@@ -191,22 +198,17 @@ class ProductsController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        // Lấy các biến thể của sản phẩm với color và size
         $variants = ProductVariant::where('product_id', $id)
-            ->whereNull('deleted_at')  // Lọc các bản không bị xóa
+            ->whereNull('deleted_at')
             ->get();
-        // dd($variants);
         $ab = Product::where('product_catalogue_id', $product->product_catalogue_id)
             ->where('id', '!=', $product->id)
             ->latest()
             ->take(2)
             ->get();
 
-        // Lấy tất cả các màu có sẵn (unique)
         $colors = $variants->pluck('name_variant_color')->unique();
 
-        // Truyền dữ liệu vào view
-        // dd($variants);
         return view('client.productss.detailProducts', compact('product', 'variants', 'colors', 'ab'));
 
     }

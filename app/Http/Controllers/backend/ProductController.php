@@ -42,7 +42,6 @@ class ProductController extends Controller
         $this->productReponsitory = $productReponsitory;
         $this->attributeCatalogue = $attributeCatalogue;
         $this->initialize();
-
     }
 
     private function initialize()
@@ -59,10 +58,11 @@ class ProductController extends Controller
         // $this->authorize('modules', 'admin.product.index');
         $products = Product::paginate(10);
 
-        if(isset($_GET['keyword'])){
+        if (isset($_GET['keyword']) && $_GET['keyword'] != '') {
             $products = $this->productService->paginate($request);
+        } else {
+            $products = Product::paginate(10);
         }
-        //  
         $config = [
             'js' => [
                 'admin/js/plugins/switchery/switchery.js',
@@ -154,7 +154,7 @@ class ProductController extends Controller
         $brands = Brand::get();
 
         $product = $this->productReponsitory->getProductById($id);
-        $product_galleries = ProductGallery::where('product_id','=',$id)->get();
+        $product_galleries = ProductGallery::where('product_id', '=', $id)->get();
         // dd($product_galleries);
         $config = $this->configData();
         $config['seo'] = [
@@ -255,7 +255,4 @@ class ProductController extends Controller
 
         ];
     }
-
-
-
 }
