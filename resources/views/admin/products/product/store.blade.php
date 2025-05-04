@@ -6,7 +6,55 @@
     $url = $config['method'] == 'create' ? route('admin.product.store') : route('admin.product.update', $product->id);
 @endphp
 {{-- @dd($product) --}}
+<style>
+    .switch {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: sans-serif;
+        font-size: 16px;
+    }
 
+    .switch input {
+        display: none;
+    }
+
+    .slider {
+        position: relative;
+        width: 40px;
+        height: 20px;
+        background-color: #ccc;
+        /* màu khi chưa check */
+        border-radius: 34px;
+        cursor: pointer;
+        transition: 0.4s;
+    }
+
+    .slider::before {
+        content: "";
+        position: absolute;
+        height: 16px;
+        width: 16px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        border-radius: 50%;
+        transition: 0.4s;
+    }
+
+    input:checked+.slider {
+        background-color: #2f3c80;
+        /* màu khi đã check */
+    }
+
+    input:checked+.slider::before {
+        transform: translateX(20px);
+    }
+
+    .label-text {
+        font-weight: 500;
+    }
+</style>
 <div class="relative min-h-screen group-data-[sidebar-size=sm]:min-h-sm">
     <div
         class="group-data-[sidebar-size=lg]:ltr:md:ml-vertical-menu group-data-[sidebar-size=lg]:rtl:md:mr-vertical-menu group-data-[sidebar-size=md]:ltr:ml-vertical-menu-md group-data-[sidebar-size=md]:rtl:mr-vertical-menu-md group-data-[sidebar-size=sm]:ltr:ml-vertical-menu-sm group-data-[sidebar-size=sm]:rtl:mr-vertical-menu-sm pt-[calc(theme('spacing.header')_*_1)] pb-[calc(theme('spacing.header')_*_0.8)] px-4 group-data-[navbar=bordered]:pt-[calc(theme('spacing.header')_*_1.3)] group-data-[navbar=hidden]:pt-0 group-data-[layout=horizontal]:mx-auto group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:px-0 group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
@@ -39,8 +87,8 @@
                                 <div class="grid grid-cols-1 gap-5 lg:grid-cols-2 xl:grid-cols-12">
                                     <div class="xl:col-span-4">
                                         <label for="productNameInput"
-
-                                            class="inline-block mb-2 text-base font-medium">Tên sản phẩm <a class="text-danger">(*)</a></label>
+                                            class="inline-block mb-2 text-base font-medium">Tên sản phẩm <a
+                                                class="text-danger">(*)</a></label>
 
                                         <input type="text" id="productNameInput"
                                             class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
@@ -52,12 +100,11 @@
                                     </div>
                                     <div class="xl:col-span-3">
                                         <label for="productNameInput"
-
-                                            class="inline-block mb-2 text-base font-medium">Giá sản phẩm <a class="text-danger">(*)</a></label>
+                                            class="inline-block mb-2 text-base font-medium">Giá sản phẩm <a
+                                                class="text-danger">(*)</a></label>
                                         <input type="text" id="productNameInput"
                                             class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
-                                            placeholder="giá sản phẩm"  name="price"
-
+                                            placeholder="giá sản phẩm" name="price"
                                             value="{{ old('price', $product->price ?? '') }}" />
                                     </div>
                                     <!--end col-->
@@ -100,55 +147,44 @@
                                     {{-- <div class="grid grid-cols-10 gap-7 lg:grid-cols-2 xl:grid-cols-12"> --}}
                                     <div class="xl:col-span-1">
                                         <p>Trạng thái</p>
-                                        <td class="text-danger text-center js-switch">
-
-                                            <input type="checkbox" class="js-switch status" name="publish" @if (isset($product) && $product->publish == 1)
-                                                checked
-                                            @endif />
-
-                                        </td>
+                                        <label class="switch">
+                                            <input type="checkbox" name="publish"
+                                                @if (isset($product) && $product->publish == 1) checked @endif>
+                                            <span class="slider"></span>
+                                        </label>
                                     </div>
                                     <div class="xl:col-span-1">
-                                        <p>is_sale</p>
-                                        <td class="text-navy text-center js-switch">
-
-                                            <input type="checkbox" class="js-switch status" name="is_sale" @if (isset($product) && $product->is_sale == 1)
-                                            checked
-                                        @endif />
-
-                                        </td>
+                                        <p>Sale</p>
+                                        <label class="switch">
+                                            <input type="checkbox" name="is_sale"
+                                                @if (isset($product) && $product->is_sale == 1) checked @endif>
+                                            <span class="slider"></span>
+                                        </label>
                                     </div>
                                     <div class="xl:col-span-1">
-                                        <p>is_new</p>
-                                        <td class="text-navy text-center js-switch">
-
-                                            <input type="checkbox" class="js-switch status" name="is_new" @if (isset($product) && $product->is_new == 1)
-                                            checked
-                                        @endif />
-
-                                        </td>
+                                        <p>New</p>
+                                        <label class="switch">
+                                            <input type="checkbox" name="is_new"
+                                                @if (isset($product) && $product->is_new == 1) checked @endif>
+                                            <span class="slider"></span>
+                                        </label>
                                     </div>
                                     <div class="xl:col-span-1">
-                                        <p>Is show home</p>
-                                        <td class="text-navy text-center js-switch">
-
-                                            <input type="checkbox" class="js-switch status" name="is_show_home" @if (isset($product) && $product->is_show_home == 1)
-                                            checked
-                                        @endif />
-
-                                        </td>
+                                        <p>Show home</p>
+                                        <label class="switch">
+                                            <input type="checkbox" name="is_show_home"
+                                                @if (isset($product) && $product->is_show_home == 1) checked @endif>
+                                            <span class="slider"></span>
+                                        </label>
                                     </div>
                                     <div class="xl:col-span-1">
-                                        <p>is_trending</p>
-                                        <td class="text-navy text-center js-switch">
-
-                                            <input type="checkbox" class="js-switch status" name="is_trending" @if (isset($product) && $product->is_trending == 1)
-                                            checked
-                                        @endif />
-
-                                        </td>
+                                        <p>Trending</p>
+                                        <label class="switch">
+                                            <input type="checkbox" name="is_trending"
+                                                @if (isset($product) && $product->is_trending == 1) checked @endif>
+                                            <span class="slider"></span>
+                                        </label>
                                     </div>
-                                    {{-- </div> --}}
                                     <div class="lg:col-span-2 xl:col-span-12">
                                         <label for="genderSelect" class="inline-block mb-2 text-base font-medium">Ảnh
                                             sản phẩm</label>
@@ -157,17 +193,6 @@
                                             <div class="fallback">
                                                 <input name="image" type="file" multiple="multiple" />
                                             </div>
-                                            <div class="w-full py-5 text-lg text-center dz-message needsclick">
-                                                <div class="mb-3">
-                                                    <i data-lucide="upload-cloud"
-                                                        class="block mx-auto size-12 text-slate-500 fill-slate-200 dark:text-zink-200 dark:fill-zink-500"></i>
-                                                </div>
-
-                                                <h5 class="mb-0 font-normal text-slate-500 dark:text-zink-200 text-15">
-                                                    Drag and drop your product images or
-                                                    <a href="#!">browse</a> your product images
-                                                </h5>
-                                            </div>
                                         </div>
                                         @if (isset($product->image))
                                             <img src="{{ \Storage::url($product->image) }}" alt=""
@@ -175,6 +200,7 @@
                                         @endif
                                     </div>
                                     @include('admin.products.product.components.variant')
+                                    @include('admin.products.product.components.galleries')
                                     <div class="lg:col-span-2 xl:col-span-12">
                                         <div>
                                             <label for="productDescription"
@@ -218,4 +244,3 @@
 
     @include('admin.dashboard.components.footer')
 </div>
-

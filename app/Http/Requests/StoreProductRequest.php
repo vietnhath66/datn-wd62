@@ -29,7 +29,7 @@ class StoreProductRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Bạn chưa nhập vào ô tiêu đề sản phẩm',
+            'name.required' => 'Bạn chưa nhập vào ô tên sản phẩm',
         ];
     }
 }

@@ -62,7 +62,7 @@ class Product extends Model
     // public function reviews() {
     //     return $this->morphMany(Review::class, 'reviewable');
     // }
-    
+
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class, 'product_id');
@@ -72,5 +72,9 @@ class Product extends Model
     {
         return (float) $this->reviews()->avg('rating') ?? 0;
     }
+    public function galleries()
+    {
+        //Product belong to catalogues
+        return $this->hasMany(ProductGallery::class);
+    }
 }
-

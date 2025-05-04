@@ -439,61 +439,84 @@
                                                     d="M2 14a1 1 0 001 1h9a1 1 0 001-1V6H2v8zM13 2h-3a1 1 0 01-1-1H6a1 1 0 01-1 1H1v2h13V2h-1z">
                                                 </path>
                                             </svg></button>
+                                        <div class="variant-body">
+                                            @if ($variantCatalogue && count($variantCatalogue))
+                                                @foreach ($variantCatalogue as $keyAttr => $valAttr)
+                                                    {{-- @dd($valAttr) --}}
+                                                    <div class="row mb20 variant-item">
+                                                        <div class="col-lg-3">
+                                                            <div class="attribute-catalogue">
+                                                                <select name="attributeCatalogue[]" id=""
+                                                                    class="choose-attribute niceSelect">
+                                                                    <option value="">Chọn Nhóm thuộc tính</option>
+                                                                    @foreach ($attributeCatalogue as $key => $val)
+                                                                        <option
+                                                                            {{ $valAttr == $val->id ? 'selected' : '' }}
+                                                                            value="{{ $val->id }}">
+                                                                            {{ $val->name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                        <div class="variant-foot mt10">
+                                            <button type="button" class="add-variant">Thêm phiên bản mới</button>
+                                        </div>
                                     </div>
                                 </div>
-                            @endforeach
-                        @endif
                     </div>
-                    <div class="variant-foot mt10">
-                        <button type="button" class="add-variant">Thêm phiên bản mới</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="ibox product-variant">
-            <div class="ibox-title">
-                <h5>Danh sách phiên bản</h5>
-            </div>
-            <div class="ibox-content">
-                <div class="table-responsive">
-                    <table class="table table-striped variantTable">
-                        <thead></thead>
-                        <tbody></tbody>
-                    </table>
+                    <div class="ibox product-variant">
+                        <div class="ibox-title">
+                            <h5>Danh sách phiên bản</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="table-responsive">
+                                <table class="table table-striped variantTable">
+                                    <thead></thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        var attributeCatalogue = @json(
-            $attributeCatalogue->map(function ($item) {
-                    $name = $item->name;
-                    return [
-                        'id' => $item->id,
-                        'name' => $name,
-                    ];
-                })->values());
+</div>
 
-        var attribute =
-            '{{ base64_encode(json_encode(old('attribute', isset($product->attribute) ? $product->attribute : []))) }}';
-        var variant =
-            '{{ base64_encode(json_encode(old('variant', isset($product->variant) ? json_decode($product->variant, true) : []))) }}';
-    </script>
+<script>
+    var attributeCatalogue = @json(
+        $attributeCatalogue->map(function ($item) {
+                $name = $item->name;
+                return [
+                    'id' => $item->id,
+                    'name' => $name,
+                ];
+            })->values());
+
+    var attribute =
+        '{{ base64_encode(json_encode(old('attribute', isset($product->attribute) ? $product->attribute : []))) }}';
+    var variant =
+        '{{ base64_encode(json_encode(old('variant', isset($product->variant) ? json_decode($product->variant, true) : []))) }}';
+</script>
 
 
 
-    {{-- JS --}}
-    <script src="{{ asset('plugins/nice-select/jquery.nice-select.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+{{-- JS --}}
+<script src="{{ asset('plugins/nice-select/jquery.nice-select.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            $('select.niceSelect').niceSelect();
-            $('.selectVariant').select2({
-                placeholder: 'Nhập để tìm...',
-                width: '100%'
-            });
+<script>
+    $(document).ready(function() {
+        $('select.niceSelect').niceSelect();
+        $('.selectVariant').select2({
+            placeholder: 'Nhập để tìm...',
+            width: '100%'
         });
-    </script>
+    });
+</script>

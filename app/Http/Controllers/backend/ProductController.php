@@ -17,6 +17,7 @@ use App\Models\AttributeCatalogueLanguage;
 use App\Models\Brand;
 use App\Models\Language;
 use App\Models\Product;
+use App\Models\ProductGallery;
 
 class ProductController extends Controller
 {
@@ -61,10 +62,7 @@ class ProductController extends Controller
         if(isset($_GET['keyword'])){
             $products = $this->productService->paginate($request);
         }
-        if ($_GET['keyword'] == '') {
-            $products = Product::paginate(10);
-
-        }
+        //  
         $config = [
             'js' => [
                 'admin/js/plugins/switchery/switchery.js',
@@ -156,9 +154,8 @@ class ProductController extends Controller
         $brands = Brand::get();
 
         $product = $this->productReponsitory->getProductById($id);
-        // dd($product);
-
-
+        $product_galleries = ProductGallery::where('product_id','=',$id)->get();
+        // dd($product_galleries);
         $config = $this->configData();
         $config['seo'] = [
             'index' => [
@@ -186,6 +183,7 @@ class ProductController extends Controller
             'attributeCatalogue',
             'product',
             'brands',
+            'product_galleries'
         ));
     }
 
@@ -199,10 +197,24 @@ class ProductController extends Controller
 
     public function delete($id)
     {
-        $this->authorize('modules', 'admin.product.destroy');
-        $config['seo'] = __('messages.product');
-        $product = $this->productReponsitory->getProductById($id, $this->language);
-        $template = 'admin.product.product.delete';
+        // $this->authorize('modules', 'admin.product.destroy');
+        $config['seo'] = [
+            'index' => [
+                'title' => 'Quản lý sản phẩm',
+                'table' => 'Danh sách sản phẩm'
+            ],
+            'create' => [
+                'title' => 'Thêm mới sản phẩm'
+            ],
+            'edit' => [
+                'title' => 'Cập nhật sản phẩm'
+            ],
+            'delete' => [
+                'title' => 'Xóa sản phẩm'
+            ],
+        ];
+        $product = $this->productReponsitory->getProductById($id);
+        $template = 'admin.products.product.delete';
         return view('admin.dashboard.layout', compact(
             'template',
             'product',
@@ -212,10 +224,10 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        if ($this->productService->destroy($id, $this->language)) {
-            return redirect()->route('admin.product.index')->with('success', 'Xóa bản ghi thành công');
+        if ($this->productService->destroy($id)) {
+            return redirect()->route('admin.product.index')->with('success', 'Xóa sản phẩm thành công');
         }
-        return redirect()->route('admin.product.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('admin.product.index')->with('error', 'Xóa sản phẩm không thành công. Hãy thử lại');
     }
 
     private function configData()
