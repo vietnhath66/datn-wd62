@@ -58,12 +58,10 @@ class ProductController extends Controller
         // $this->authorize('modules', 'admin.product.index');
         $products = Product::paginate(10);
 
-        if(isset($_GET['keyword'])){
+        if (isset($_GET['keyword']) && $_GET['keyword'] != '') {
             $products = $this->productService->paginate($request);
-        }
-        if ($_GET['keyword'] == '') {
+        } else {
             $products = Product::paginate(10);
-
         }
         $config = [
             'js' => [

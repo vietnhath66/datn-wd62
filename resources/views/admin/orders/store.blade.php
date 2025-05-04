@@ -43,11 +43,11 @@
                                             class="inline-block mb-2 text-base font-medium">Trạng thái đơn hàng</label>
                                         <select id="status" name="status"
                                             class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200">
-                                            <option value="pending" {{ old('status', $order->status) == 'pending' ? 'selected' : '' }}>Chờ xử lý</option>
+                                            <option value="pending" {{ old('status', $order->status) == 'pending' ? 'selected' : '' }}>Chờ hoàn tất</option>
                                             <option value="processing" {{ old('status', $order->status) == 'processing' ? 'selected' : '' }}>Đang xử lý</option>
+                                            <option value="confirm" {{ old('status', $order->status) == 'confirm' ? 'selected' : '' }}>Đã xác nhận</option>
                                             <option value="shipping" {{ old('status', $order->status) == 'shipping' ? 'selected' : '' }}>Đang giao hàng</option>
-                                            <option value="confirm" {{ old('status', $order->status) == 'confirm' ? 'selected' : '' }}>Giao hàng thành công</option>
-                                            <option value="completed" {{ old('status', $order->status) == 'completed' ? 'selected' : '' }}>Đã hoàn tất</option>
+                                            <option value="completed" {{ old('status', $order->status) == 'completed' ? 'selected' : '' }}>Giao hàng thành công</option>
                                             <option value="cancelled" {{ old('status', $order->status) == 'cancelled' ? 'selected' : '' }}>Đã hủy</option>
                                             <option value="refunded" {{ old('status', $order->status) == 'refunded' ? 'selected' : '' }}>Đã hoàn lại</option>
                                             <option value="failed" {{ old('status', $order->status) == 'failed' ? 'selected' : '' }}>Giao hàng thất bại</option>

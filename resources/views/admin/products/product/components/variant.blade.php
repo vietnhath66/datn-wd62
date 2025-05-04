@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-
-
 {{-- <iframe src="form-add-product.blade.php" width="100%" height="800px" style="border:none;"></iframe> --}}
-
 <div class="lg:col-span-2 xl:col-span-12 bootstrap-scope">
-=======
 @yield('css')
 <link rel="stylesheet" href="{{ asset('plugins/nice-select/nice-select.css') }}">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -354,7 +349,6 @@ select.selectVariant option {
 }
 </style>
 <div class="lg:col-span-2 xl:col-span-12">
->>>>>>> truongpcph43675
     <div class="ibox variant-box">
         <div class="ibox-title">
             <div>
