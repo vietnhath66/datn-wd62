@@ -195,7 +195,7 @@ class OrderController extends Controller
             return back()->with('error', 'Không thể chuyển trạng thái từ "Chờ xử lý" sang trạng thái này.');
         }
 
-        if ($order->status == 'processing' && !in_array($request->status, ['shipping', 'cancelled', 'processing'])) {
+        if ($order->status == 'processing' && !in_array($request->status, ['shipping', 'confirm', 'cancelled', 'processing'])) {
             return back()->with('error', 'Không thể chuyển trạng thái từ "Đang xử lý" sang trạng thái này.');
         }
 
@@ -216,13 +216,13 @@ class OrderController extends Controller
         }
 
         // Kiểm tra điều kiện trạng thái thanh toán khi cập nhật
-        if ($request->status == 'completed' && $request->payment_status != 'paid') {
-            return back()->with('error', 'Khi đơn hàng đã giao, trạng thái thanh toán phải là "Đã thanh toán".');
-        }
+        // if ($request->status == 'completed' && $request->payment_status != 'paid') {
+        //     return back()->with('error', 'Khi đơn hàng đã giao, trạng thái thanh toán phải là "Đã thanh toán".');
+        // }
 
-        if ($request->status == 'shipping' && !in_array($request->payment_status, ['pending', 'paid'])) {
-            return back()->with('error', 'Khi đơn hàng đang giao, trạng thái thanh toán phải là "Chờ thanh toán" hoặc "Đã thanh toán".');
-        }
+        // if ($request->status == 'shipping' && !in_array($request->payment_status, ['pending', 'paid'])) {
+        //     return back()->with('error', 'Khi đơn hàng đang giao, trạng thái thanh toán phải là "Chờ thanh toán" hoặc "Đã thanh toán".');
+        // }
 
         // if ($request->status == 'completed' && $request->payment_status != 'paid' && $request->payment_status != 'refunded') {
         //     return back()->with('error', 'Khi đơn hàng đã hoàn tất, trạng thái thanh toán phải là "Đã thanh toán" hoặc "Đã hoàn tiền".');
