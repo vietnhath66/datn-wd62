@@ -70,7 +70,7 @@
 
                             <div class="flex items-center">
                                 <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
-                                    <i data-lucide="image" class="h-4 w-4"></i>
+                                    <i data-lucide="image" class="h-4"></i>
                                 </span>
                                 <span class="pl-3">QL Banner</span>
                             </div>
@@ -371,7 +371,7 @@
 
                             <div class="flex items-center">
                                 <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
-                                    <i data-lucide="calendar-days" class="h-4"></i>
+                                    <i data-lucide="shopping-cart" class="h-4"></i>
                                 </span>
                                 <span class="pl-3">QL Dơn Hàng</span>
                             </div>
