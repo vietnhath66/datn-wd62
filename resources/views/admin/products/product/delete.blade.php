@@ -22,11 +22,11 @@
                     <div class="card">
                         <div class="card-body">
                             <h6 class="mb-4 text-15">{{ $config['seo']['delete']['title'] }}</h6>
-
-                            <form action="{{ route('admin.product_catalogue.destroy', $productCatalogue) }}"
+                            <form action="{{ route('admin.product.destroy', $product) }}"
                                 method="POST" class="box" enctype="multipart/form-data">
                                 @include('admin.dashboard.components.destroy', [
-                                    'model' => $productCatalogue ?? null,
+                                    'model' => $product ?? null,
+                                    'title' => 'sản phẩm'
                                 ])
                             </form>
                         </div>

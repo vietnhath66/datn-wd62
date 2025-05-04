@@ -56,5 +56,11 @@ class Product extends Model
     {
         return $this->hasMany(ProductVariant::class, 'product_id');
     }
+
+    public function galleries()
+    {
+        //Product belong to catalogues
+        return $this->hasMany(ProductGallery::class);
+    }
 }
 

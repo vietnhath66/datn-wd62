@@ -388,7 +388,6 @@ select.selectVariant option {
                     </div>
                 </div>
                 <div class="variant-body">
-
                     @if ($variantCatalogue && count($variantCatalogue))
                         @foreach ($variantCatalogue as $keyAttr => $valAttr)
                             {{-- @dd($valAttr) --}}
