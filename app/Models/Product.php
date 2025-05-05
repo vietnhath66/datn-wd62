@@ -59,6 +59,7 @@ class Product extends Model
         return $this->hasMany(ProductVariant::class, 'product_id');
     }
 
+
     // public function reviews() {
     //     return $this->morphMany(Review::class, 'reviewable');
     // }
@@ -90,3 +91,4 @@ class Product extends Model
         return $this->belongsToMany(User::class, 'wishlists', 'product_id', 'user_id')->withTimestamps();
     }
 }
+

@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
@@ -29,9 +30,10 @@ use App\Http\Controllers\UserController1;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\ContactController;
+use App\Http\Controllers\Client\ProductsController;
+use App\Http\Controllers\Client\FavoritesController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Client\ProductsController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 
@@ -131,7 +133,11 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
         Route::post('product-detail/{product}/reviews', [ProductsController::class, 'reviewProduct'])->name('reviewProduct')->middleware('auth');
     });
 
-    // Route::get('products/{id}', [ProductsController::class, 'lienquan'])->name('productss.show');
+
+    Route::middleware('auth')->group(function () {
+        Route::post('/favorite/add', [FavoritesController::class, 'add'])->name('favorite.add');
+    });
+
 
 });
 
