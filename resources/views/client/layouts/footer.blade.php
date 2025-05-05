@@ -1,50 +1,24 @@
 <footer class="bg3 p-t-75 p-b-32">
     <div class="container">
-        <div class="row">
+        <div class="row justify-content-center">
             <div class="col-sm-6 col-lg-3 p-b-50">
-                <h4 class="stext-301 cl0 p-b-30">Danh mục</h4>
-
+                <h4 class="stext-301 cl0 p-b-30">Chic Wear</h4>
                 <ul>
-                    <li class="p-b-10">
-                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04"> Women </a>
+                    <li class="black">
+                        <a href="#">a</a>
                     </li>
-
+                    <style>
+                        .black a {
+                            color: #222222;
+                            /* Màu HEX */
+                        }
+                    </style>
                     <li class="p-b-10">
-                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04"> Men </a>
+                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">"Chất riêng trong từng lớp vải"</a>
                     </li>
-
                     <li class="p-b-10">
-                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04"> Shoes </a>
-                    </li>
-
-                    <li class="p-b-10">
-                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04"> Watches </a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="col-sm-6 col-lg-3 p-b-50">
-                <h4 class="stext-301 cl0 p-b-30">Hỗ trợ</h4>
-
-                <ul>
-                    <li class="p-b-10">
-                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-                            Track Order
-                        </a>
-                    </li>
-
-                    <li class="p-b-10">
-                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04"> Returns </a>
-                    </li>
-
-                    <li class="p-b-10">
-                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-                            Shipping
-                        </a>
-                    </li>
-
-                    <li class="p-b-10">
-                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04"> FAQs </a>
+                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">"Mặc đẹp mỗi ngày – Tự tin mỗi bước
+                            đi"</a>
                     </li>
                 </ul>
             </div>
@@ -57,40 +31,31 @@
                 <p class="stext-115 cl1 size-213 p-t-18">
                     Email: chicwear68@gmail.com
                 </p>
-
                 <div class="p-t-27">
-                    <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-                        <i class="fa fa-facebook"></i>
-                    </a>
 
-                    <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-                        <i class="fa fa-instagram"></i>
-                    </a>
-
-                    <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-                        <i class="fa fa-pinterest-p"></i>
-                    </a>
                 </div>
             </div>
 
             <div class="col-sm-6 col-lg-3 p-b-50">
-                <h4 class="stext-301 cl0 p-b-30">Đăng ký nhận tin tức</h4>
-
-                <form>
-                    <div class="wrap-input1 w-full p-b-4">
-                        <input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email"
-                            placeholder="email@gmail.com" />
-                        <div class="focus-input1 trans-04"></div>
-                    </div>
-
-                    <div class="p-t-18">
-                        <button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
-                            Đăng ký
-                        </button>
-                    </div>
-                </form>
+                <h4 class="stext-301 cl0 p-b-30">HỖ TRỢ ĐƠN HÀNG</h4>
+                <p class="stext-115 cl1 size-213 p-t-18">
+                    Zalo: 0968343848
+                </p>
+                <p class="stext-115 cl1 size-213 p-t-18">
+                    Zalo: 0968123668
+                </p>
             </div>
         </div>
+
+        <style>
+            .row {
+                display: flex;
+                justify-content: center;
+                /* Căn các phần tử con theo chiều ngang ở giữa */
+                flex-wrap: wrap;
+                /* Cho phép các cột xuống dòng khi không đủ không gian */
+            }
+        </style>
 
         <div class="p-t-40">
             <div class="flex-c-m flex-w p-b-18">

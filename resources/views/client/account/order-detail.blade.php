@@ -798,10 +798,11 @@
                                     $fullAddress = implode(
                                         ', ',
                                         array_filter([
-                                            $order->address,
-                                            $order->ward->full_name,
-                                            $order->district->full_name,
-                                            $order->province->full_name,
+                                            // array_filter sẽ tự động loại bỏ các giá trị null
+                                            $order->address, // Địa chỉ cụ thể
+                                            optional($order->ward)->full_name, // <<< Dùng optional()
+                                            optional($order->district)->full_name, // <<< Dùng optional()
+                                            optional($order->province)->full_name, // <<< Dùng optional()
                                         ]),
                                     );
                                 @endphp
