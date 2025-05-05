@@ -77,4 +77,16 @@ class Product extends Model
         //Product belong to catalogues
         return $this->hasMany(ProductGallery::class);
     }
+
+
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
+
+    public function wishingUsers()
+    {
+        return $this->belongsToMany(User::class, 'wishlists', 'product_id', 'user_id')->withTimestamps();
+    }
 }

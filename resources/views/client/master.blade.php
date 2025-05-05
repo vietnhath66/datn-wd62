@@ -163,36 +163,124 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.15.18/js/uikit.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.15.18/js/uikit-icons.min.js"></script>
+
 <script>
-    $(".js-addwish-b2").on("click", function(e) {
-        e.preventDefault();
-    });
+    $(document).ready(function() {
+        // --- Cấu hình CSRF Token cho mọi request AJAX của jQuery ---
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
-    $(".js-addwish-b2").each(function() {
-        var nameProduct = $(this).parent().parent().find(".js-name-b2").html();
-        $(this).on("click", function() {
-            swal(nameProduct, "is added to wishlist !", "success");
+        // --- Hàm xử lý chung cho việc thêm vào Wishlist ---
+        function handleAddToWishlist(buttonElement) {
+            var $button = $(buttonElement);
+            var productId = $button.data('product-id'); // Lấy product ID từ data attribute
+            var productName = $button.closest('.block2, .p-r-50').find('.js-name-b2, .js-name-detail').first()
+                .text().trim(); // Lấy tên SP (cải thiện cách lấy)
 
-            $(this).addClass("js-addedwish-b2");
-            $(this).off("click");
+            if (!productId) {
+                console.error('Không tìm thấy Product ID cho nút Wishlist.');
+                swal("Lỗi", "Không thể xác định sản phẩm.", "error");
+                return;
+            }
+
+            // Vô hiệu hóa nút tạm thời để tránh click nhiều lần
+            $button.css('pointer-events', 'none').css('opacity', '0.5');
+
+            // Gửi yêu cầu AJAX lên server
+            $.ajax({
+                url: "{{ route('client.addWishlists') }}", // Route đã định nghĩa
+                method: "POST",
+                data: {
+                    product_id: productId
+                    // _token đã được setup ở $.ajaxSetup
+                },
+                dataType: "json", // Mong muốn nhận về JSON
+                success: function(response) {
+                    if (response.success) {
+                        swal(productName, response.message,
+                            "success"); // Hiển thị thông báo thành công từ server
+                        $button.addClass(
+                            "js-addedwish-b2 js-addedwish-detail"
+                        ); // Thêm class để đổi style (có thể dùng 1 class chung)
+                        $button.off('click'); // Gỡ bỏ sự kiện click sau khi thành công
+                        // Không cần bật lại nút vì đã off('click')
+                        // $button.css('pointer-events', '').css('opacity', '1'); // Bật lại nút nếu không off('click')
+                    } else {
+                        // Hiển thị lỗi từ server (ví dụ: đã tồn tại, lỗi khác)
+                        swal("Thông báo", response.message || "Có lỗi xảy ra.", "warning");
+                        $button.css('pointer-events', '').css('opacity',
+                            '1'); // Bật lại nút nếu lỗi
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX Error:", textStatus, errorThrown, jqXHR.responseJSON);
+                    var errorMsg = "Đã xảy ra lỗi khi thêm vào danh sách yêu thích.";
+                    if (jqXHR.status === 401) { // Unauthorized
+                        errorMsg = "Vui lòng đăng nhập để thêm sản phẩm yêu thích.";
+                        // (Tùy chọn) Chuyển hướng đến trang đăng nhập
+                        // window.location.href = "{{ route('client.viewLogin') }}";
+                    } else if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                        errorMsg = jqXHR.responseJSON.message;
+                    }
+                    swal("Lỗi", errorMsg, "error");
+                    $button.css('pointer-events', '').css('opacity', '1'); // Bật lại nút
+                }
+            });
+        }
+
+        // --- Gắn sự kiện click cho các nút Wishlist ---
+        // Sử dụng event delegation để xử lý cả các nút được tải sau này (nếu có)
+        // Hoặc gắn trực tiếp nếu các nút luôn có sẵn khi trang tải
+        $(document).on("click", ".js-addwish-b2", function(e) {
+            e.preventDefault();
+            handleAddToWishlist(this);
+        });
+
+        $(document).on("click", ".js-addwish-detail", function(e) {
+            e.preventDefault();
+            handleAddToWishlist(this);
+        });
+
+        // --- Code Swiper và các code khác của bạn ---
+        var swiper = new Swiper(".mySwiper", {
+            /* ... cấu hình swiper ... */
         });
     });
+</script>
 
-    $(".js-addwish-detail").each(function() {
-        var nameProduct = $(this)
-            .parent()
-            .parent()
-            .parent()
-            .find(".js-name-detail")
-            .html();
+<script>
+    // $(".js-addwish-b2").on("click", function(e) {
+    //     e.preventDefault();
+    // });
 
-        $(this).on("click", function() {
-            swal(nameProduct, "is added to wishlist !", "success");
+    // $(".js-addwish-b2").each(function() {
+    //     var nameProduct = $(this).parent().parent().find(".js-name-b2").html();
+    //     $(this).on("click", function() {
+    //         swal(nameProduct, "is added to wishlist !", "success");
 
-            $(this).addClass("js-addedwish-detail");
-            $(this).off("click");
-        });
-    });
+    //         $(this).addClass("js-addedwish-b2");
+    //         $(this).off("click");
+    //     });
+    // });
+
+    // $(".js-addwish-detail").each(function() {
+    //     var nameProduct = $(this)
+    //         .parent()
+    //         .parent()
+    //         .parent()
+    //         .find(".js-name-detail")
+    //         .html();
+
+    //     $(this).on("click", function() {
+    //         swal(nameProduct, "is added to wishlist !", "success");
+
+    //         $(this).addClass("js-addedwish-detail");
+    //         $(this).off("click");
+    //     });
+    // });
 
     /*---------------------------------------------*/
 

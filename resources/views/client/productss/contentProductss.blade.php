@@ -492,7 +492,7 @@
         <div class="flex-w flex-sb-m">
             <div>
                 <h3 class="ltext-103 cl5">
-                    {{ $pageTitle ?? 'Tất Cả Sản Phẩm' }}
+                    Danh mục: {{ $pageTitle ?? 'Tất Cả Sản Phẩm' }}
                 </h3>
             </div>
             <div class="flex-w flex-l-m filter-tope-group m-tb-10">
@@ -753,7 +753,8 @@
                                 </span>
                             </div>
                             <div class="block2-txt-child2 flex-r p-t-3">
-                                <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+                                <a href="#" data-product-id="{{ $product->id }}"
+                                    class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
                                     <img class="icon-heart1 dis-block trans-04"
                                         src="{{ asset('client/images/icons/icon-heart-01.png') }}" alt="ICON">
                                     <img class="icon-heart2 dis-block trans-04 ab-t-l"
@@ -768,7 +769,12 @@
         <div id="no-products" style="display: none;">
             <p>Không có sản phẩm nào trong mục này.</p>
         </div>
-        {{ $products->links('client.pagination.custom-pagination') }}
+        @if (
+            $products instanceof \Illuminate\Pagination\LengthAwarePaginator ||
+                $products instanceof \Illuminate\Pagination\Paginator)
+            {{-- Chỉ hiển thị links() nếu $products là Paginator --}}
+            {{ $products->withQueryString()->links('client.pagination.custom-pagination') }} {{-- Giữ lại withQueryString() để giữ các filter khác khi chuyển trang --}}
+        @endif
     </div>
 </div>
 

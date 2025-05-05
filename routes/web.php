@@ -77,6 +77,12 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     Route::get('products', [ProductController::class, 'index'])->name('client.products.index');
 
 
+    // Wishlists
+    Route::get('wishlists', [HomeAuthController::class, 'viewWishlists'])->name('viewWishlists');
+    Route::post('wishlist', [HomeAuthController::class, 'addWishlists'])->name('addWishlists');
+    Route::delete('wishlist/{product}', [HomeAuthController::class, 'removeWishlist'])->name('removeWishlist');
+
+
     // Auth
     Route::get('login', [HomeAuthController::class, 'viewLogin'])->name('viewLogin');
     Route::post('login', [HomeAuthController::class, 'postLogin'])->name('postLogin');
