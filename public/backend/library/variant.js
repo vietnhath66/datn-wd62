@@ -108,7 +108,7 @@
         let attributes = [];
         let variants = [];
         let attributeTitle = [];
-        
+
         $(".variant-item").each(function () {
             let _this = $(this);
             let attr = [];
@@ -196,7 +196,7 @@
                     $("<img>")
                         .attr(
                             "src",
-                            "https://daks2k3a4ib2z.cloudfront.net/6343da4ea0e69336d8375527/6343da5f04a965c89988b149_1665391198377-image16-p-500.jpg"
+                            "https://aothun24h.vn/UserFile/editor/ao-thun-co-do-sao-vang-A0028.jpg"
                         )
                         .addClass("imageSrc")
                 )
@@ -245,11 +245,11 @@
 
         $row.append($("<td>").addClass("td-quantity").text("-"))
             .append($("<td>").addClass("td-price").text(mainPrice))
-            .append(
-                $("<td>")
-                    .addClass("td-sku")
-                    .text(mainSku + "_" + classModified)
-            )
+            // .append(
+            //     $("<td>")
+            //         .addClass("td-sku")
+            //         .text(mainSku + "_" + classModified)
+            // )
             .append($td);
         return $row;
     };
@@ -264,7 +264,7 @@
 
         $row.append($("<td>").text("Số lượng"));
         $row.append($("<td>").text("Giá tiền"));
-        $row.append($("<td>").text("SKU"));
+        // $row.append($("<td>").text("SKU"));
 
         $thead.html($row);
         return $thead;
@@ -282,16 +282,13 @@
 
         html = html + "<td>Số lượng</td>";
         html = html + "<td>Giá tiền</td>";
-        html = html + "<td>SKU</td>";
+        // html = html + "<td>SKU</td>";
         html = html + "</tr>";
         html = html + "</thead>";
         html = html + "<tbody>";
 
         for (let j = 0; j < attributes.length; j++) {
             html = html + '<tr class="variant-row">';
-            // html = html + '<td>'
-            //     html = html + '<span class="image img-cover"><img src="https://daks2k3a4ib2z.cloudfront.net/6343da4ea0e69336d8375527/6343da5f04a965c89988b149_1665391198377-image16-p-500.jpg" alt="" class="imageSrc"></span>'
-            // html = html + '</td>'
             let attributeArray = [];
             let attributeIdArray = [];
             $.each(attributes[j], function (index, value) {
@@ -308,21 +305,17 @@
 
             html = html + '<td class="td-quantity">-</td>';
             html = html + '<td class="td-price">-</td>';
-            html = html + '<td class="td-sku">-</td>';
+            // html = html + '<td class="td-sku">-</td>';
             html = html + '<td class="hidden td-variant">';
             html =
                 html +
                 '<input type="text" name="variant[quantity][]" class="variant_quantity">';
             html =
                 html +
-                '<input type="text" name="variant[sku][]" class="variant_sku">';
+                '<input type="hidden" name="variant[sku][]" class="variant_sku">';
             html =
                 html +
                 '<input type="text" name="variant[price][]" class="variant_price">';
-            // html = html + '<input type="text" name="variant[barcode][]" class="variant_barcode">'
-            // html = html + '<input type="text" name="variant[file_name][]" class="variant_filename">'
-            // html = html + '<input type="text" name="variant[file_url][]" class="variant_fileurl">'
-            // html = html + '<input type="text" name="variant[album][]" class="variant_album">'
             html =
                 html +
                 '<input type="text" name="attribute[name][]" value="' +
@@ -516,8 +509,10 @@
                     let className = $(this).attr("class");
                     variantData[className] = $(this).val();
                 });
-
+                console.log(variantData);
+                
             let updateVariantBox = HT.updateVariantHtml(variantData);
+
             if ($(".updateVariantTr").length == 0) {
                 _this.after(updateVariantBox);
                 HT.switchery();
@@ -567,6 +562,8 @@
     };
 
     HT.updateVariantHtml = (variantData) => {
+        console.log(variantData);
+        
         let variantAlbum = variantData.variant_album.split(",");
         let variantAlbumItem = HT.variantAlbumList(variantAlbum);
         let html = "";
@@ -590,27 +587,6 @@
         html = html + "</div>";
         html = html + "</div>";
         html = html + '<div class="ibox-content">';
-        // html = html + '<div class="click-to-upload-variant '+ ( (variantAlbum.length > 0 && variantAlbum[0] !== '') ? 'hidden' : '' )  +'">'
-        //     html = html + '<div class="icon">'
-        //         html = html + '<a type="button" class="upload-variant-picture">'
-        //             html = html + '<svg style="width:80px;height:80px;fill: #d3dbe2;margin-bottom: 10px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><path d="M80 57.6l-4-18.7v-23.9c0-1.1-.9-2-2-2h-3.5l-1.1-5.4c-.3-1.1-1.4-1.8-2.4-1.6l-32.6 7h-27.4c-1.1 0-2 .9-2 2v4.3l-3.4.7c-1.1.2-1.8 1.3-1.5 2.4l5 23.4v20.2c0 1.1.9 2 2 2h2.7l.9 4.4c.2.9 1 1.6 2 1.6h.4l27.9-6h33c1.1 0 2-.9 2-2v-5.5l2.4-.5c1.1-.2 1.8-1.3 1.6-2.4zm-75-21.5l-3-14.1 3-.6v14.7zm62.4-28.1l1.1 5h-24.5l23.4-5zm-54.8 64l-.8-4h19.6l-18.8 4zm37.7-6h-43.3v-51h67v51h-23.7zm25.7-7.5v-9.9l2 9.4-2 .5zm-52-21.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3zm-13-10v43h59v-43h-59zm57 2v24.1l-12.8-12.8c-3-3-7.9-3-11 0l-13.3 13.2-.1-.1c-1.1-1.1-2.5-1.7-4.1-1.7-1.5 0-3 .6-4.1 1.7l-9.6 9.8v-34.2h55zm-55 39v-2l11.1-11.2c1.4-1.4 3.9-1.4 5.3 0l9.7 9.7c-5.2 1.3-9 2.4-9.4 2.5l-3.7 1h-13zm55 0h-34.2c7.1-2 23.2-5.9 33-5.9l1.2-.1v6zm-1.3-7.9c-7.2 0-17.4 2-25.3 3.9l-9.1-9.1 13.3-13.3c2.2-2.2 5.9-2.2 8.1 0l14.3 14.3v4.1l-1.3.1z"></path></svg>'
-        //         html = html + '</a>'
-        //     html = html + '</div>'
-        //     html = html + '<div class="small-text">Sử dụng nút chọn hình để thêm mới hình ảnh</div>'
-        // html = html + '</div>'
-        //     html = html + '<div class="image-variant">'
-        //     html = html + '<label for="file-upload">'
-        //     html = html +  '<div class="icon" style="cursor: pointer;">'
-        //     html = html + '<a type="button" class="upload-variant-picture">'
-        //     html = html + '<svg style="width:80px;height:80px;fill: #d3dbe2;margin-bottom: 10px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"> <path d="M80 57.6l-4-18.7v-23.9c0-1.1-.9-2-2-2h-3.5l-1.1-5.4c-.3-1.1-1.4-1.8-2.4-1.6l-32.6 7h-27.4c-1.1 0-2 .9-2 2v4.3l-3.4.7c-1.1.2-1.8 1.3-1.5 2.4l5 23.4v20.2c0 1.1.9 2 2 2h2.7l.9 4.4c.2.9 1 1.6 2 1.6h.4l27.9-6h33c1.1 0 2-.9 2-2v-5.5l2.4-.5c1.1-.2 1.8-1.3 1.6-2.4zm-75-21.5l-3-14.1 3-.6v14.7zm62.4-28.1l1.1 5h-24.5l23.4-5zm-54.8 64l-.8-4h19.6l-18.8 4zm37.7-6h-43.3v-51h67v51h-23.7zm25.7-7.5v-9.9l2 9.4-2 .5zm-52-21.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3zm-13-10v43h59v-43h-59zm57 2v24.1l-12.8-12.8c-3-3-7.9-3-11 0l-13.3 13.2-.1-.1c-1.1-1.1-2.5-1.7-4.1-1.7-1.5 0-3 .6-4.1 1.7l-9.6 9.8v-34.2h55zm-55 39v-2l11.1-11.2c1.4-1.4 3.9-1.4 5.3 0l9.7 9.7c-5.2 1.3-9 2.4-9.4 2.5l-3.7 1h-13zm55 0h-34.2c7.1-2 23.2-5.9 33-5.9l1.2-.1v6zm-1.3-7.9c-7.2 0-17.4 2-25.3 3.9l-9.1-9.1 13.3-13.3c2.2-2.2 5.9-2.2 8.1 0l14.3 14.3v4.1l-1.3.1z"></path>'
-        //     html = html + '</svg>'
-        //     html = html +'</a>'
-        //     html = html +'</div>'
-        //     html = html + '</label>'
-        //     html = html + '<input id="file-upload" type="file" style="display:none" name="variant_album"/>'
-        //     html = html + '<div class="small-text">Sử dụng nút chọn hình để thêm mới hình ảnh</div>'
-        //     html = html +'</div>'
-        //    html = html + ' <ul class="upload-variant-list '+ ( (variantAlbumItem.length) ? '' : 'hidden' ) +' sortui ui-sortable clearfix " id="sortable2">'+variantAlbumItem+'</ul>'
         html = html + '<div class="row mt20 uk-flex uk-flex-middle">';
         html = html + '<div class="col-lg-2 uk-flex uk-flex-middle">';
         html = html + '<label for="" class="mr10">Tồn kho</label>';
@@ -638,7 +614,7 @@
         html = html + '<label for="" class="control-label">SKU</label>';
         html =
             html +
-            '<input type="text" name="variant_sku" value="' +
+            '<input type="hidden" name="variant_sku" value="' +
             variantData.variant_sku +
             '" class="form-control text-right">';
         html = html + "</div>";
@@ -651,34 +627,16 @@
             '" class="form-control int">';
         html = html + "</div>";
         html = html + '<div class="col-lg-3">';
-        html = html + '<label for="" class="control-label">Barcode</label>';
-        html =
-            html +
-            '<input type="text" name="variant_barcode" value="' +
-            variantData.variant_barcode +
-            '" class="form-control text-right">';
+        // html = html + '<label for="" class="control-label">Barcode</label>';
+        // html =
+        //     html +
+        //     '<input type="text" name="variant_barcode" value="' +
+        //     variantData.variant_barcode +
+        //     '" class="form-control text-right">';
         html = html + "</div>";
         html = html + "</div>";
         html = html + "</div>";
         html = html + "</div>";
-        // html = html + '<div class="row mt20 uk-flex uk-flex-middle">'
-        //     html = html + '<div class="col-lg-2 uk-flex uk-flex-middle">'
-        //         html = html + '<label for="" class="mr10">QL File</label>'
-        //         html = html + '<input type="checkbox" class="js-switch" data-target="disabled" '+( (variantData.variant_filename !== '') ? 'checked' : '' )+'>'
-        //     html = html + '</div>'
-        //     html = html + '<div class="col-lg-10">'
-        //         html = html + '<div class="row">'
-        //             html = html + '<div class="col-lg-6">'
-        //                 html = html + '<label for="" class="control-label">Tên File</label>'
-        //                 html = html + '<input type="text" '+ ( (variantData.variant_filename == '') ? 'disabled' : '' ) +' name="variant_file_name" value="'+ variantData.variant_filename +'" class="form-control '+ ( (variantData.variant_filename == '') ? 'disabled' : '' ) +'">'
-        //             html = html + '</div>'
-        //             html = html + '<div class="col-lg-6">'
-        //                 html = html + '<label for="" class="control-label">Đường dẫn</label>'
-        //                 html = html + '<input type="text" '+ ( (variantData.variant_filename == '') ? 'disabled' : '' ) +' name="variant_file_url" value="'+ variantData.variant_fileurl +'" class="form-control '+ ( (variantData.variant_filename == '') ? 'disabled' : '' ) +'">'
-        //             html = html + '</div>'
-        //        html = html + ' </div>'
-        //     html = html + '</div>'
-        // html = html + '</div>'
         html = html + "</div>";
         html = html + "</div>";
         html = html + "</td>";
@@ -730,12 +688,7 @@
                     })
                     .get(),
             };
-
-            console.log(variant);
-
             $.each(variant, function (index, value) {
-                console.log(index);
-
                 $(".updateVariantTr")
                     .prev()
                     .find(".variant_" + index)
@@ -749,12 +702,9 @@
 
     HT.addAlbum = (album) => {
         finalAlbum.push(album[0]);
-        console.log(finalAlbum);
     };
 
     HT.previewVariantTr = (variant) => {
-        console.log(variant.album[0]);
-
         let option = {
             quantity: variant.quantity,
             price: variant.price,
@@ -824,11 +774,13 @@
         // const findIndexVariantBySku = (sku) => variant.sku.findIndex((item) => item === sku)
 
         $(".variant-row").each(function (index, value) {
+            console.log(123);
+
             let _this = $(this);
             let variantKey = _this
                 .attr("class")
                 .match(/tr-variant-(\d+-\d+)/)[1];
-            let dataIndex = variantt.sku.findIndex((sku) =>
+            let dataIndex = variant.sku.findIndex((sku) =>
                 sku.includes(variantKey)
             );
 
@@ -850,27 +802,7 @@
                         name: "variant[price][]",
                         class: "variant_price",
                         value: variant.price[dataIndex],
-                    },
-                    {
-                        name: "variant[barcode][]",
-                        class: "variant_barcode",
-                        value: variant.barcode[dataIndex],
-                    },
-                    {
-                        name: "variant[file_name][]",
-                        class: "variant_filename",
-                        value: variant.file_name[dataIndex],
-                    },
-                    {
-                        name: "variant[file_url][]",
-                        class: "variant_fileurl",
-                        value: variant.file_url[dataIndex],
-                    },
-                    {
-                        name: "variant[album][]",
-                        class: "variant_album",
-                        value: variant.album[dataIndex],
-                    },
+                    },                
                 ];
 
                 for (let i = 0; i < inputHiddenFields.length; i++) {

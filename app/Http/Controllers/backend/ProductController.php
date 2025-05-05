@@ -148,14 +148,11 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        // $this->authorize('modules', 'admin.product.update');
-        // $attributeCatalogue = AttributeCatalogue::with('attribute_catalogue_language')->get();
         $attributeCatalogue = AttributeCatalogue::get();
         $brands = Brand::get();
-
         $product = $this->productReponsitory->getProductById($id);
         $product_galleries = ProductGallery::where('product_id', '=', $id)->get();
-        // dd($product_galleries);
+        // dd($product);
         $config = $this->configData();
         $config['seo'] = [
             'index' => [

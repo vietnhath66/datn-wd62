@@ -18,6 +18,7 @@ class ProductVariant extends Model
         'product_id ',
         'code',
         'quantity',
+        'sku',
         'price',
         'publish',
         'deleted_at',

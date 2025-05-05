@@ -20,7 +20,12 @@ class DashboardController extends Controller
 
     public function index()
     {
-        $orderStatistic = $this->OrderService->orderStatistic();
+        if(isset($_GET['month'])){
+            $month = $_GET['month'];
+        }else {
+            $month = now()->format('m');
+        }
+        $orderStatistic = $this->OrderService->orderStatistic($month);
         // dd($orderStatistic);
         // $customerStatistic = $this->CustomerService->customerStatistic();
 
