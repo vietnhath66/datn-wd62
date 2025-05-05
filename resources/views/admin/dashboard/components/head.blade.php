@@ -42,15 +42,9 @@
 
 @if (isset($config['css']))
     @foreach ($config['css'] as $css => $value)
-        {{-- @section('css')
-    <link rel="stylesheet" href="{{ asset($value) }}">
-        @endsection --}}
         @if ($value == 'backend/css/plugins/switchery/switchery.css')
             <link rel="stylesheet" href="{{ asset($value) }}">
         @endif
-        {{-- @if ($value == 'backend/plugins/nice-select/css/nice-select.css')
-            <link rel="stylesheet" href="{{ asset($value) }}">
-        @endif --}}
         @if ($value != 'backend/css/bootstrap.min.css')
             @section('css')
                 <link href="{{ asset($value) }}" rel="stylesheet">
@@ -65,11 +59,7 @@
                 <link href="{{ asset($value) }}" rel="stylesheet">
             @endsection
         @endif
-        {{-- @if ($value != 'backend/css/bootstrap.min.css')
-            @section('css')
-                <link href="{{ $value }}" rel="stylesheet">
-            @endsection
-        @endif --}}
+       
     @endforeach
 @endif
 
