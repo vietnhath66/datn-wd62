@@ -188,7 +188,7 @@ class OrderController extends Controller
         // Xác thực dữ liệu
         $request->validate([
             'status' => 'required|string|in:pending,processing,shipping,confirm,completed,cancelled,refunded,failed',
-            'payment_status' => 'required|string|in:pending,paid,failed,refunded',
+            // 'payment_status' => 'required|string|in:pending,paid,failed,refunded',
         ]);
         // Kiểm tra và áp dụng điều kiện chuyển đổi trạng thái
         if ($order->status == 'pending' && !in_array($request->status, ['processing', 'confirm', 'cancelled', 'pending'])) {

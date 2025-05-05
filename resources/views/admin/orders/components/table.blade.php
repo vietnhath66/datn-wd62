@@ -157,7 +157,7 @@
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
                                                 <span
-                                                    class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">{{ $order->created_at }}</span>
+                                                    class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">{{ $order->created_at->format('H:i d/m/Y') }}</span>
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 action">
