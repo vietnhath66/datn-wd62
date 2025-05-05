@@ -709,6 +709,7 @@
 
                             // 3. (Tùy chọn) Hiển thị mã coupon đã áp dụng
                             $('#applied-coupon-code').text(response.coupon_code);
+                            $('#applied-coupon-discount_value').text(response.discount_value);
                             $('#applied-coupon-div').show();
 
                             // 4. Vô hiệu hóa ô nhập và nút bấm

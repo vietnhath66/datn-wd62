@@ -142,7 +142,7 @@
                         {{-- (Tùy chọn) Hiển thị thông tin coupon đã áp dụng --}}
                         <div id="applied-coupon-div" class="text-success p-t-10"
                             style="display: none; font-size: 0.9em;">
-                            Đã áp dụng mã: <strong id="applied-coupon-code"></strong>
+                            Đã áp dụng mã: <strong id="applied-coupon-code"></strong>  (<strong id="applied-coupon-discount_value"></strong>%)
                             {{-- <span id="discount-amount-display" class="text-danger"></span> --}} {{-- Không có số tiền giảm cụ thể nếu không lưu --}}
                         </div>
                     </div>
