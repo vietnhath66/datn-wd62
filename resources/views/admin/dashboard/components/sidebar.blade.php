@@ -51,7 +51,7 @@
                             <span class="min-w-[1.75rem] text-[16px] inline-block text-start">
                                 <i data-lucide="monitor-dot" class="h-4 w-4"></i>
                             </span>
-                            <span class="pl-3">Dashboards</span>
+                            <span class="pl-3">Thống kê</span>
                         </a>
                     </li>
                     <li
