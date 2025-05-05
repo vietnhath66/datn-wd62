@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Counpon;
+
 use App\Models\User;
 use App\Repositories\Interfaces\CounponRepositoryInterface as CounponRepository;
 use App\Services\Interfaces\CounponServiceInterface;
@@ -30,7 +30,8 @@ class CounponService implements CounponServiceInterface
         $perPage = addslashes($request->integer('per_page'));
 
 
-        $counpons = $this->CounponRepository->pagination(
+        $brands = $this->CounponRepository->pagination(
+
             ['*'],
             $condition,
             $perPage,
@@ -39,10 +40,9 @@ class CounponService implements CounponServiceInterface
             [],
             [],
         );
-        if(isset($_GET) && isset($condition['keyword'])){
-            $counpons = Counpon::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->get();
-        }
-        return $counpons;
+
+        return $brands;
+
     }
 
     public function create($request)
@@ -50,7 +50,9 @@ class CounponService implements CounponServiceInterface
         DB::beginTransaction();
         try {
             $payload = $request->only($this->payload());
-            $payload['number'] = 1;
+            // $payload['number'] = 1;
+
+
             $counpon = $this->CounponRepository->create($payload);
             DB::commit();
             return true;
@@ -79,7 +81,12 @@ class CounponService implements CounponServiceInterface
                 Storage::delete($currentImage);
             }
 
-            $updateBrand = $this->CounponRepository->update($counpon, $payload);
+
+            $updateCounpon = $this->CounponRepository->update($id, $payload);
+            if (!$updateCounpon) {
+                throw new \Exception("Cập nhật khuyến mãi thất bại");
+            }
+
             DB::commit();
             return true;
         } catch (\Exception $e) {
@@ -94,7 +101,8 @@ class CounponService implements CounponServiceInterface
     {
         DB::beginTransaction();
         try {
-            $destroyBrand = $this->CounponRepository->destroy($counpon);
+            $destroyCounpon = $this->CounponRepository->destroy($counpon);
+
             DB::commit();
             return true;
         } catch (\Exception $e) {

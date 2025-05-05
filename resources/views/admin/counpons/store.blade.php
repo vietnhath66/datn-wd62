@@ -57,7 +57,9 @@
                                             placeholder="Product title" required="" name="code"
                                             value="{{ old('code', $counpon->code ?? '') }}" />
                                         <p class="mt-1 text-sm text-slate-400 dark:text-zink-200">
-                                            Tên khuyến mãi không được quá 20 ký tự
+
+                                            Mã khuyến mãi không được quá 20 ký tự
+
                                         </p>
                                     </div>
                                     <div class="xl:col-span-2">
@@ -68,7 +70,9 @@
                                             placeholder="Product title" required="" name="start_date"
                                             value="{{ old('start_date', $counpon->start_date ?? '') }}" />
                                         <p class="mt-1 text-sm text-slate-400 dark:text-zink-200">
-                                            Tên khuyến mãi không được quá 20 ký tự
+
+                                            Vui lòng chọn thời gian bắt đầu
+
                                         </p>
                                     </div>
                                     <div class="xl:col-span-2">
@@ -79,7 +83,9 @@
                                             placeholder="Product title" required="" name="end_date"
                                             value="{{ old('end_date', $counpon->end_date ?? '') }}" />
                                         <p class="mt-1 text-sm text-slate-400 dark:text-zink-200">
-                                            Tên khuyến mãi không được quá 20 ký tự
+
+                                            Thời gian kết thúc không được nhỏ hơn thời gian bắt đầu
+
                                         </p>
                                     </div>
                                     <div class="lg:col-span-2 xl:col-span-4">
@@ -113,6 +119,17 @@
                                             Giá đơn hàng tối thiểu không được bằng 0 hoặc số âm
                                         </p>
                                     </div>
+
+                                    <div class="lg:col-span-2 xl:col-span-4">
+                                        <label for="genderSelect" class="inline-block mb-2 text-base font-medium">Số lượng tài khoản</label>
+                                        <input type="text" id="productNameInput"
+                                            class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
+                                            placeholder="Số lượng tài khoản" required="" name="number"
+                                            value="{{ old('number', $counpon->number ?? '') }}" />
+                                        <p class="mt-1 text-sm text-slate-400 dark:text-zink-200">
+                                            Vui lòng nhập số lượng tài khoản sử dụng
+                                        </p>
+
                                 </div>
                         </div>
                         <!--end grid-->

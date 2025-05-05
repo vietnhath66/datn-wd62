@@ -57,7 +57,17 @@
             <div class="card" id="productListTable">
                 <div class="card-body">
                     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-12">
-                        @include('admin.counpons.components.filter')
+
+                        <div class="xl:col-span-3">
+                            <div class="relative">
+                                <input type="text"
+                                    class="ltr:pl-8 rtl:pr-8 search form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
+                                    placeholder="Tìm kiếm..." autocomplete="off">
+                                <i data-lucide="search"
+                                    class="inline-block size-4 absolute ltr:left-2.5 rtl:right-2.5 top-2.5 text-slate-500 dark:text-zink-200 fill-slate-100 dark:fill-zink-600"></i>
+                            </div>
+                        </div><!--end col-->
+
                         <div class="xl:col-span-2">
                             <div>
                                 <input type="text"
@@ -84,11 +94,17 @@
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
                                         data-sort="product_name">Tên Khuyến mãi</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
-                                        data-sort="status">Loại</th>
+
+                                        data-sort="status">Loại khuyến mãi</th>
+
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
                                         data-sort="status">Giá trị khuyến mãi</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
                                         data-sort="status">Đơn hàng tối thiểu</th>
+
+                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
+                                        data-sort="status">Số lượng</th>
+
                                     <th
                                         class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 action">
                                         Hành động</th>
@@ -144,6 +160,15 @@
                                                 </a>
                                             </td>
                                             <td
+
+                                                class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">
+                                                <a href="apps-ecommerce-product-overview.html"
+                                                    class="flex items-center gap-2">
+                                                    <h6 class="product_name">{{ $counpon->number }}</h6>
+                                                </a>
+                                            </td>
+                                            <td
+
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 action">
                                                 <div class="relative dropdown">
                                                     <button
@@ -167,12 +192,17 @@
                                                                 <span class="align-middle">Edit</span></a>
                                                         </li>
                                                         <li>
-                                                            <a data-modal-target="deleteModal"
-                                                                class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-counpon hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
-                                                                href="{{ route('admin.counpon.delete', $counpon->id) }}"><i
-                                                                    data-lucide="trash-2"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Delete</span></a>
+
+                                                            <form action="{{ route('admin.counpon.destroy', $counpon->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit"
+                                                                    class="block w-full text-left px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200">
+                                                                    <i data-lucide="trash-2" class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
+                                                                    <span class="align-middle">Delete</span>
+                                                                </button>
+                                                            </form>
+
                                                         </li>
                                                     </ul>
                                                 </div>
