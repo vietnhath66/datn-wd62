@@ -492,7 +492,7 @@
         <div class="flex-w flex-sb-m">
             <div>
                 <h3 class="ltext-103 cl5">
-                    {{ $pageTitle ?? 'Tất Cả Sản Phẩm' }}
+                    Danh mục: {{ $pageTitle ?? 'Tất Cả Sản Phẩm' }}
                 </h3>
             </div>
             <div class="flex-w flex-l-m filter-tope-group m-tb-10">
@@ -769,7 +769,12 @@
         <div id="no-products" style="display: none;">
             <p>Không có sản phẩm nào trong mục này.</p>
         </div>
-        {{ $products->links('client.pagination.custom-pagination') }}
+        @if (
+            $products instanceof \Illuminate\Pagination\LengthAwarePaginator ||
+                $products instanceof \Illuminate\Pagination\Paginator)
+            {{-- Chỉ hiển thị links() nếu $products là Paginator --}}
+            {{ $products->withQueryString()->links('client.pagination.custom-pagination') }} {{-- Giữ lại withQueryString() để giữ các filter khác khi chuyển trang --}}
+        @endif
     </div>
 </div>
 
