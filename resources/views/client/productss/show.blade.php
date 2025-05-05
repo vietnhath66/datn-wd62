@@ -112,7 +112,7 @@
                     <!--  -->
                     <div class="flex-w flex-m p-l-100 p-t-40 respon7">
                         <div class="flex-m bor9 p-r-10 m-r-11">
-                            <a href="#"
+                            <a href="#" data-product-id="{{ $product->id }}"
                                 class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100"
                                 data-tooltip="Add to Wishlist">
                                 <i class="zmdi zmdi-favorite"></i>
@@ -425,7 +425,8 @@
                                     <span class="stext-105 cl3">
                                         {{ number_format($relatedProduct->price, 0, ',', '.') }} VNĐ
                                     </span>
-                                    <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
+                                    <a href="#" data-product-id="{{ $relatedProduct->id }}"
+                                        class="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
                                         style="margin-right: 10px;">
                                         <img class="icon-heart1 dis-block trans-04"
                                             src="{{ asset('client/images/icons/icon-heart-01.png') }}"
