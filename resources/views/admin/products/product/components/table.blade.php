@@ -40,8 +40,7 @@
                                         data-sort="product_name">Tên sản phẩm</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
                                         data-sort="product_name">Giá</th>
-                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
-                                        data-sort="status">Trạng thái</th>
+                                   
                                     <th
                                         class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 action">
                                         Hành động</th>
@@ -71,16 +70,7 @@
                                                     class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">{{ number_format($product->price) }}
                                                     vnđ</span>
                                             </td>
-                                            <td
-                                                class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 status">
-                                                @if ($product->publish == 1)
-                                                    <span
-                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-green-100 border-transparent text-green-500 dark:bg-green-500/20 dark:border-transparent">Publish</span>
-                                                @else
-                                                    <span
-                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Unpublish</span>
-                                                @endif
-                                            </td>
+                                           
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 action">
                                                 <div class="relative dropdown">
@@ -90,13 +80,6 @@
                                                             data-lucide="more-horizontal" class="size-3"></i></button>
                                                     <ul class="absolute z-50 hidden py-2 mt-1 ltr:text-left rtl:text-right list-none bg-white rounded-md shadow-md dropdown-menu min-w-[10rem] dark:bg-zink-600"
                                                         aria-labelledby="productAction1">
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-product hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
-                                                                href="apps-ecommerce-product-overview.html"><i
-                                                                    data-lucide="eye"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Overview</span></a>
-                                                        </li>
                                                         <li>
                                                             <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-product hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
                                                                 href="{{ route('admin.product.edit', $product->id) }}"><i
