@@ -128,32 +128,15 @@
         <div class="card">
             <div class="card-header align-items-center d-flex">
                 <h4 class="card-title mb-0 flex-grow-1">Gallery</h4>
-                <button type="button" class="btn btn-primary" onclick="addImageGallery()">Thêm ảnh</button>
+                <button type="button" class="btn btn-primary btn-aqua" onclick="addImageGallery()">Thêm ảnh</button>
             </div><!-- end card header -->
             <div class="card-body">
                 <div class="live-preview">
-                    <div class="row gy-4" id="gallery_list">
-                        <div class="col-md-4" id="gallery_default_item">
-                            <label for="gallery_default" class="form-label">Image</label>
-                            <div class="d-flex">
-                                <input type="file" class="form-control" name="product_galleries[]"
-                                    id="gallery_default">
-
-                                <button type="button" class="btn btn-primary btn-aqua" onclick="addImageGallery()">Thêm
-                                    ảnh</button>
-                            </div><!-- end card header -->
-                            <div class="card-body">
-                                <div class="live-preview">
-                                    <div class="row gy-3 d-flex" id="gallery_list" class="">
-                                        <div class="col-md-4 gallery-item">
-                                            <label class="form-label">Image</label>
-                                            <div class="d-flex align-items-center gap-2">
-                                                <input type="file" class="form-control" name="product_galleries[]">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
+                    <div class="row gy-3 d-flex" id="gallery_list" class="">
+                        <div class="col-md-4 gallery-item">
+                            <label class="form-label">Image</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <input type="file" class="form-control" name="product_galleries[]">
                             </div>
                         </div>
                     </div>
@@ -178,6 +161,8 @@
         </div>
     </div>
 </div>
+
+
 <script>
     function addImageGallery() {
         const container = document.getElementById('gallery_list');
