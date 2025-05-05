@@ -158,32 +158,6 @@
                         </div>
                     </div>
                 </div>
-
-                <script>
-                    function addImageGallery() {
-                        let id = 'gen' + '_' + Math.random().toString(36).substring(2, 15).toLowerCase();
-                        let html = `
-        <div class="col-md-4" id="${id}_item">
-            <label for="${id}" class="form-label">Image</label>
-            <div class="d-flex">
-                <input type="file" class="form-control" name="product_galleries[]" id="${id}">
-                <button type="button" class="btn btn-danger" onclick="removeImageGallery('${id}_item')">
-                    <span class="bx bx-trash"></span>
-                </button>
-            </div>
-        </div>
-    `;
-
-                        $('#gallery_list').append(html);
-                    }
-
-                    function removeImageGallery(id) {
-                        if (confirm('Chắc chắn xóa không?')) {
-                            $('#' + id).remove();
-                        }
-                    }
-                </script>
-
                 @if (isset($product_galleries))
                     <input type="hidden" id="deleted_gallery_ids" name="file_product_galleries">
                     @foreach ($product_galleries as $item)
