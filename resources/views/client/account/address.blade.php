@@ -535,34 +535,6 @@
         });
     });
 </script>
-{{-- <script>
-    $(document).ready(function() {
-        $('#city').select2({
-            placeholder: 'Chọn tỉnh/thành phố',
-            allowClear: true,
-            width: '100%' // rất quan trọng để giữ giao diện full như form-control
-        });
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        $('#district').select2({
-            placeholder: 'Chọn quận/huyện',
-            allowClear: true,
-            width: '100%' // rất quan trọng để giữ giao diện full như form-control
-        });
-    });
-</script>
-
-<script>
-    $(document).ready(function() {
-        $('#ward').select2({
-            placeholder: 'Chọn phường/xã',
-            allowClear: true,
-            width: '100%' // rất quan trọng để giữ giao diện full như form-control
-        });
-    });
-</script> --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('addressForm');
@@ -583,41 +555,6 @@
         });
     });
 </script>
-{{-- <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const citySelect = $('#city');
-        const districtSelect = $('#district');
-        const wardSelect = $('#ward');
-
-        // Khởi tạo select2
-        citySelect.select2();
-        districtSelect.select2();
-        wardSelect.select2();
-
-        // Kiểm tra xem có giá trị không (old value)
-        const hasCity = citySelect.val() !== '';
-        const hasDistrict = districtSelect.val() !== '';
-        const hasWard = wardSelect.val() !== '';
-
-        districtSelect.prop('disabled', !hasCity);
-        wardSelect.prop('disabled', !hasDistrict);
-
-        // Khi chọn Tỉnh
-        citySelect.on('change', function () {
-            districtSelect.val('').trigger('change');
-            wardSelect.val('').trigger('change');
-
-            districtSelect.prop('disabled', !this.value);
-            wardSelect.prop('disabled', true);
-        });
-
-        // Khi chọn Quận
-        districtSelect.on('change', function () {
-            wardSelect.val('').trigger('change');
-            wardSelect.prop('disabled', !this.value);
-        });
-    });
-</script> --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const citySelect = document.getElementById('city');

@@ -8,7 +8,16 @@
 
                     <a href="{{ route('client.cart.viewCart') }}" class="text-primary mb-3">Quay Lại Giỏ Hàng</a>
                     <h4>Thông Tin Vận Chuyển</h4>
+                    @if (isset($userAddresses) && $userAddresses->isNotEmpty())
+                        <button type="button" id="change-address-btn" class="btn btn-outline-primary btn-sm">
+                            <i class="fa fa-map-marker me-1"></i> Đổi địa chỉ
+                        </button>
+                    @endif
                 </div>
+
+
+
+
                 <div class="shipping-info">
                     @if ($user)
                         <div class="mb-3">
@@ -142,7 +151,8 @@
                         {{-- (Tùy chọn) Hiển thị thông tin coupon đã áp dụng --}}
                         <div id="applied-coupon-div" class="text-success p-t-10"
                             style="display: none; font-size: 0.9em;">
-                            Đã áp dụng mã: <strong id="applied-coupon-code"></strong>  (<strong id="applied-coupon-discount_value"></strong>%)
+                            Đã áp dụng mã: <strong id="applied-coupon-code"></strong> (<strong
+                                id="applied-coupon-discount_value"></strong>%)
                             {{-- <span id="discount-amount-display" class="text-danger"></span> --}} {{-- Không có số tiền giảm cụ thể nếu không lưu --}}
                         </div>
                     </div>
@@ -165,3 +175,17 @@
         </div>
     </div>
 </form>
+
+<div id="addressModal" class="address-modal">
+    <div class="address-modal-content">
+        <span class="address-modal-close" id="closeAddressModal">&times;</span>
+        <h5 class="address-modal-title">Chọn địa chỉ giao hàng</h5>
+        <div id="modal-address-list">
+            @if (isset($userAddresses) && $userAddresses->isNotEmpty())
+            @else
+                <p>Không có địa chỉ nào được lưu.</p>
+            @endif
+        </div>
+
+    </div>
+</div>

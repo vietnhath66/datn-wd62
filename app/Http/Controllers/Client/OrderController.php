@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Mail\OrderPlacedMail;
+use App\Models\Address;
 use App\Models\Cart;
 use App\Models\CartDetail;
 use App\Models\Coupon;
@@ -31,9 +32,7 @@ class OrderController extends Controller
         }
 
         $user = Auth::user();
-
         $orderId = Session::get('order_id');
-
         $order = Order::with('items.product')->find($orderId);
 
         if (!$order) {
@@ -42,8 +41,14 @@ class OrderController extends Controller
         }
 
 
-        $userAddress = $user;
+        $userAddresses = Address::where('user_id', $user->id)
+            ->orderByDesc('is_default') // Ưu tiên địa chỉ mặc định lên đầu
+            ->orderByDesc('created_at') // Tiếp theo là địa chỉ mới nhất
+            ->get();
+        // Lấy địa chỉ mặc định (nếu có) để điền sẵn form ban đầu
+        $defaultUserAddress = $userAddresses->firstWhere('is_default', 1);
 
+        // $userAddress = $user;
         $provinces = Province::orderBy('full_name', 'asc')->get();
 
         $cartItems = $order->items;
@@ -55,8 +60,9 @@ class OrderController extends Controller
             'order' => $order,
             'totalPrice' => $totalPrice,
             'user' => $user,
-            'userAddress' => $userAddress,
-            'provinces' => $provinces
+            'defaultUserAddress' => $defaultUserAddress, // Địa chỉ mặc định để điền form
+            'userAddresses' => $userAddresses,
+            'provinces' => $provinces,
         ]);
     }
 
