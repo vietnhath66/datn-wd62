@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\Wishlist;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Http\RedirectResponse;
@@ -16,6 +18,8 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\URL;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class HomeAuthController extends Controller
 {
@@ -153,4 +157,95 @@ class HomeAuthController extends Controller
     {
         return view('client.auth.change-password');
     }
+
+
+    public function viewWishlists()
+    {
+        $user = Auth::user();
+
+        $wishlistProducts = $user->wishlistedProducts()
+            ->with(['variants'])
+            ->where('publish', 1)
+            ->orderBy('wishlists.created_at', 'desc')
+            ->paginate(12);
+
+        return view('client.wishlists.wishlists')->with([
+            'wishlistProducts' => $wishlistProducts
+        ]);
+    }
+
+
+    public function addWishlists(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'product_id' => 'required|integer|exists:products,id', // Kiểm tra product_id tồn tại trong bảng products
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422); // Unprocessable Entity
+        }
+
+        $userId = Auth::id();
+        $productId = $request->input('product_id');
+
+        try {
+            // Kiểm tra xem đã tồn tại chưa (dùng firstOrCreate để ngắn gọn)
+            // firstOrCreate sẽ tìm bản ghi khớp, nếu không thấy sẽ tạo mới
+            $wishlistItem = Wishlist::firstOrCreate(
+                [
+                    'user_id' => $userId,
+                    'product_id' => $productId,
+                ]
+                // Không cần tham số thứ 2 nếu chỉ cần tạo với 2 cột này
+            );
+
+            // Kiểm tra xem bản ghi có vừa được tạo hay không (wasRecentlyCreated là thuộc tính của Eloquent)
+            if ($wishlistItem->wasRecentlyCreated) {
+                Log::info("User {$userId} added Product {$productId} to wishlist.");
+                return response()->json(['success' => true, 'message' => 'Đã thêm vào danh sách yêu thích!']);
+            } else {
+                Log::info("User {$userId} tried to add Product {$productId} which is already in wishlist.");
+                // Có thể trả về success=true vì sản phẩm vẫn nằm trong wishlist
+                return response()->json(['success' => true, 'message' => 'Sản phẩm đã có trong danh sách yêu thích.']);
+                // Hoặc trả về lỗi nhẹ nếu muốn thông báo rõ là đã có sẵn
+                // return response()->json(['success' => false, 'message' => 'Sản phẩm đã có trong danh sách yêu thích.'], 409); // Conflict
+            }
+
+        } catch (\Exception $e) {
+            Log::error("Error adding product to wishlist: User {$userId}, Product {$productId}. Error: " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Đã xảy ra lỗi, vui lòng thử lại.'], 500); // Internal Server Error
+        }
+    }
+
+
+    public function removeWishlist(Product $product)
+    {
+        $user = Auth::user(); // Lấy người dùng đang đăng nhập
+
+        if (!$user) {
+            // Trường hợp hiếm gặp nhưng nên kiểm tra
+            return redirect()->route('client.viewWishlists')->with('error', 'Vui lòng đăng nhập lại.');
+        }
+
+        try {
+            // Sử dụng relationship belongsToMany (wishlistedProducts) đã định nghĩa trong User model
+            // Phương thức detach() sẽ xóa bản ghi tương ứng trong bảng trung gian (wishlists)
+            $deleted = $user->wishlistedProducts()->detach($product->id);
+
+            if ($deleted) {
+                // Nếu có bản ghi bị xóa (tức là sản phẩm có trong wishlist và đã được xóa)
+                Log::info("User {$user->id} removed Product {$product->id} from wishlist.");
+                return redirect()->route('client.viewWishlists')->with('success', 'Đã xóa "' . $product->name . '" khỏi danh sách yêu thích.');
+            } else {
+                // Nếu không có bản ghi nào bị xóa (có thể sản phẩm không có trong wishlist của user này)
+                Log::warning("User {$user->id} tried to remove Product {$product->id} which was not in their wishlist.");
+                return redirect()->route('client.viewWishlists')->with('info', 'Sản phẩm không có trong danh sách yêu thích của bạn.');
+            }
+
+        } catch (\Exception $e) {
+            Log::error("Error removing product from wishlist: User {$user->id}, Product {$product->id}. Error: " . $e->getMessage());
+            return redirect()->route('client.viewWishlists')->with('error', 'Đã xảy ra lỗi khi xóa sản phẩm khỏi danh sách yêu thích.');
+        }
+    }
 }
+

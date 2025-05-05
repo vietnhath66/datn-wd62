@@ -523,7 +523,8 @@
 
 
     {{-- JS --}}
-    <script src="{{ asset('plugins/nice-select/jquery.nice-select.min.js') }}"></script>
+    {{-- Nó đang báo lỗi ở đây --}}
+    <script src="{{ asset('backend/plugins/nice-select/js/jquery.nice-select.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>

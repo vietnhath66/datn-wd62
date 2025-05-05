@@ -89,4 +89,15 @@ class User extends Authenticatable implements MustVerifyEmail
         // Thay vì gửi Notification mặc định, chúng ta gửi Mailable tùy chỉnh
         Mail::to($this->email)->send(new VerifyUserEmail($this));
     }
+
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
+
+    public function wishlistedProducts()
+    {
+        return $this->belongsToMany(Product::class, 'wishlists', 'user_id', 'product_id')->withTimestamps();
+    }
 }

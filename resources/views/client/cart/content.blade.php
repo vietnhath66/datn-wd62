@@ -33,9 +33,12 @@
                                             <td><input type="checkbox" style="cursor: pointer" class="product-checkbox"
                                                     data-id="{{ $item->id }}" style="..."></td>
 
-                                            <td><img src="{{ Storage::url($item->product->image) }}" ...></td>
-                                            <td><a
+                                            <td><img class="product-img" src="{{ Storage::url($item->product->image) }}"
+                                                    ...></td>
+                                            <td>
+                                                <a
                                                     href="{{ Route('client.product.show', $item->product->id) }}">{{ optional($item->product)->name }}</a>
+
                                             </td>
                                             <td>{{ number_format(optional($item->productVariant)->price ?? ($item->price ?? 0)) }}
                                                 VND</td>
@@ -54,7 +57,8 @@
                                                     </button>
                                                 </div>
                                                 <p style="color: red; padding-top: 5px;" class="stock-quantity-display">
-                                                      Còn: {{ (optional($item->productVariant)->quantity ?? 0) - ($item->quantity ?? 0) }}
+                                                    Còn:
+                                                    {{ $item->productVariant->quantity ?? 0 }}
                                                 </p>
                                             </td>
                                             <td class="kanit-thin" data-id="{{ $item->id }}">

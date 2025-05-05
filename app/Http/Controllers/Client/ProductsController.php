@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Models\Brand;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductCatalogue;
 use App\Models\Review;
@@ -188,8 +189,24 @@ class ProductsController extends Controller
 
         $colors = $variants->pluck('name_variant_color')->unique();
 
-        return view('client.productss.detailProducts', compact('product', 'variants', 'colors', 'relatedProducts'));
+        // === BẮT ĐẦU KIỂM TRA QUYỀN ĐÁNH GIÁ ===
+        $canReview = false; // Mặc định là không thể đánh giá
+        if (Auth::check()) { // Kiểm tra nếu người dùng đã đăng nhập
+            $userId = Auth::id();
+            $productId = $product->id;
 
+            // Kiểm tra xem user này có đơn hàng nào đã hoàn thành ('completed', 'delivered')
+            // và chứa sản phẩm này không
+            $canReview = Order::where('user_id', $userId)
+                ->whereIn('status', ['completed', 'delivered']) // <<<--- Sử dụng đúng status hoàn thành của bạn
+                ->whereHas('items', function ($query) use ($productId) {
+                    $query->where('product_id', $productId);
+                })
+                ->exists(); // Chỉ cần tồn tại ít nhất 1 đơn hàng thỏa mãn
+        }
+        // === KẾT THÚC KIỂM TRA QUYỀN ĐÁNH GIÁ ===
+
+        return view('client.productss.detailProducts', compact('product', 'variants', 'colors', 'relatedProducts', 'canReview'));
 
     }
 
@@ -235,8 +252,29 @@ class ProductsController extends Controller
                 ->with('error_scroll', '#reviews');
         }
 
+        // ===>>> BẮT ĐẦU KIỂM TRA QUYỀN <<<===
+        $userId = Auth::id(); // Đảm bảo người dùng đã đăng nhập (có thể thêm check Auth::check() nếu cần)
+        $productId = $product->id;
 
+        // Kiểm tra xem user này có đơn hàng nào đã hoàn thành ('completed', 'delivered')
+        // và chứa sản phẩm này không
+        $hasPurchased = Order::where('user_id', $userId)
+            ->whereIn('status', ['completed', 'delivered']) // <<<--- Sử dụng đúng status hoàn thành của bạn
+            ->whereHas('items', function ($query) use ($productId) {
+                $query->where('product_id', $productId);
+            })
+            ->exists();
 
+        if (!$hasPurchased) {
+            // Ghi log nếu cần theo dõi
+            Log::warning("Review attempt blocked: User {$userId} tried to review Product {$productId} without purchase.");
+            // Trả về lỗi
+            return redirect()->back()
+                ->with('error', 'Bạn cần mua sản phẩm này để có thể gửi đánh giá.')
+                ->withInput() // Giữ lại dữ liệu đã nhập (rating, comment)
+                ->with('error_scroll', '#reviews'); // Cuộn lại phần reviews
+        }
+        // ===>>> KẾT THÚC KIỂM TRA QUYỀN <<<===
 
         try {
             Review::create([

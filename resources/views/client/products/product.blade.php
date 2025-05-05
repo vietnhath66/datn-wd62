@@ -132,7 +132,7 @@
                                                         </span>
                                                     </div>
                                                     <div class="block2-txt-child2 flex-r p-t-3">
-                                                        <a href="#"
+                                                        <a href="#" data-product-id="{{ $product->id }}"
                                                             class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
                                                             <img class="icon-heart1 dis-block trans-04"
                                                                 src="{{ asset('client/images/icons/icon-heart-01.png') }}"
@@ -194,7 +194,7 @@
                                                         </span>
                                                     </div>
                                                     <div class="block2-txt-child2 flex-r p-t-3">
-                                                        <a href="#"
+                                                        <a href="#" data-product-id="{{ $product->id }}"
                                                             class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
                                                             <img class="icon-heart1 dis-block trans-04"
                                                                 src="{{ asset('client/images/icons/icon-heart-01.png') }}"
@@ -256,7 +256,7 @@
                                                         </span>
                                                     </div>
                                                     <div class="block2-txt-child2 flex-r p-t-3">
-                                                        <a href="#"
+                                                        <a href="#" data-product-id="{{ $product->id }}"
                                                             class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
                                                             <img class="icon-heart1 dis-block trans-04"
                                                                 src="{{ asset('client/images/icons/icon-heart-01.png') }}"

@@ -63,13 +63,14 @@
                         {{ $product->content }}
                     </p>
 
-                    <form action="{{ route('client.cart.addToCart') }}" method="POST"> {{-- Đảm bảo route name đúng --}}
+                    <form id="add-to-cart-form" action="{{ route('client.cart.addToCart') }}" method="POST">
+                        {{-- Đảm bảo route name đúng --}}
                         @csrf
 
                         <div class="p-t-33">
                             {{-- Chọn Màu --}}
                             <div class="flex-w flex-r-m p-b-10">
-                                <div class="size-203 flex-c-m respon6">Color</div>
+                                <div class="size-203 flex-c-m respon6">Màu</div>
                                 <div class="size-204 respon6-next">
                                     <div class="rs1-select2 bor8 bg0">
                                         <select id="color-select" name="color" class="form-control">
@@ -86,7 +87,7 @@
 
                             {{-- Chọn Size --}}
                             <div class="flex-w flex-r-m p-b-10">
-                                <div class="size-203 flex-c-m respon6">Size</div>
+                                <div class="size-203 flex-c-m respon6">Kích thước</div>
                                 <div class="size-204 respon6-next">
                                     <div class="rs1-select2 bor8 bg0">
                                         {{-- Thêm name nếu cần gửi size lên server --}}
@@ -133,7 +134,7 @@
                     <!--  -->
                     <div class="flex-w flex-m p-l-100 p-t-40 respon7">
                         <div class="flex-m bor9 p-r-10 m-r-11">
-                            <a href="#"
+                            <a href="#" data-product-id="{{ $product->id }}"
                                 class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100"
                                 data-tooltip="Add to Wishlist">
                                 <i class="zmdi zmdi-favorite"></i>
@@ -231,57 +232,64 @@
 
 
                                     @auth
-                                        <form class="w-full p-t-40" method="POST"
-                                            action="{{ route('client.product.reviewProduct', $product->id) }}">
-                                            @csrf
+                                        @if ($canReview)
+                                            <form class="w-full p-t-40" method="POST"
+                                                action="{{ route('client.product.reviewProduct', $product->id) }}">
+                                                @csrf
 
-                                            <div class="flex-w flex-m p-t-25 p-b-23">
-                                                <span class="stext-102 cl3 m-r-16">
-                                                    Đánh giá của bạn <span class="text-danger">*</span>
-                                                </span>
-                                                <span class="wrap-rating fs-30 cl11 pointer">
-                                                    <i class="item-rating pointer zmdi zmdi-star-outline"
-                                                        data-rating="1"></i>
-                                                    <i class="item-rating pointer zmdi zmdi-star-outline"
-                                                        data-rating="2"></i>
-                                                    <i class="item-rating pointer zmdi zmdi-star-outline"
-                                                        data-rating="3"></i>
-                                                    <i class="item-rating pointer zmdi zmdi-star-outline"
-                                                        data-rating="4"></i>
-                                                    <i class="item-rating pointer zmdi zmdi-star-outline"
-                                                        data-rating="5"></i>
+                                                <div class="flex-w flex-m p-t-25 p-b-23">
+                                                    <span class="stext-102 cl3 m-r-16">
+                                                        Đánh giá của bạn <span class="text-danger">*</span>
+                                                    </span>
+                                                    <span class="wrap-rating fs-30 cl11 pointer">
+                                                        <i class="item-rating pointer zmdi zmdi-star-outline"
+                                                            data-rating="1"></i>
+                                                        <i class="item-rating pointer zmdi zmdi-star-outline"
+                                                            data-rating="2"></i>
+                                                        <i class="item-rating pointer zmdi zmdi-star-outline"
+                                                            data-rating="3"></i>
+                                                        <i class="item-rating pointer zmdi zmdi-star-outline"
+                                                            data-rating="4"></i>
+                                                        <i class="item-rating pointer zmdi zmdi-star-outline"
+                                                            data-rating="5"></i>
 
-                                                    <input class="dis-none" type="number" name="rating"
-                                                        value="{{ old('rating') }}" />
-                                                </span>
+                                                        <input class="dis-none" type="number" name="rating"
+                                                            value="{{ old('rating') }}" />
+                                                    </span>
 
-                                                @error('rating')
-                                                    <div class="text-danger w-100 d-block mt-2">
-                                                        <small>{{ $message }}</small>
-                                                    </div>
-                                                @enderror
-                                            </div>
-
-
-                                            <div class="row p-b-25">
-                                                <div class="col-12 p-b-5">
-                                                    <label class="kanit-thin stext-102 cl3" for="comment">Bình luận của
-                                                        bạn</label>
-                                                    <textarea placeholder="Nhập bình luận của bạn ở đây..."
-                                                        class="kanit-thin size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10 form-control @error('comment') is-invalid @enderror"
-                                                        id="comment" name="comment" rows="5">{{ old('comment') }}</textarea>
-                                                    @error('comment')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @error('rating')
+                                                        <div class="text-danger w-100 d-block mt-2">
+                                                            <small>{{ $message }}</small>
+                                                        </div>
                                                     @enderror
                                                 </div>
-                                            </div>
 
-                                            {{-- Nút Submit --}}
-                                            <button type="submit"
-                                                class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 m-b-10">
-                                                Gửi đánh giá
-                                            </button>
-                                        </form>
+
+                                                <div class="row p-b-25">
+                                                    <div class="col-12 p-b-5">
+                                                        <label class="kanit-thin stext-102 cl3" for="comment">Bình luận
+                                                            của
+                                                            bạn</label>
+                                                        <textarea placeholder="Nhập bình luận của bạn ở đây..."
+                                                            class="kanit-thin size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10 form-control @error('comment') is-invalid @enderror"
+                                                            id="comment" name="comment" rows="5">{{ old('comment') }}</textarea>
+                                                        @error('comment')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+
+                                                {{-- Nút Submit --}}
+                                                <button type="submit"
+                                                    class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 m-b-10">
+                                                    Gửi đánh giá
+                                                </button>
+                                            </form>
+                                        @else
+                                            {{-- Thông báo nếu chưa mua hàng --}}
+                                            <p class="p-t-40 stext-102 cl6">Bạn cần mua sản phẩm này để có thể đánh giá.
+                                            </p>
+                                        @endif
                                     @else
                                         {{-- Thông báo nếu chưa đăng nhập --}}
                                         <p class="p-t-40"><a href="{{ route('client.viewLogin') }}">Đăng nhập</a> để gửi
@@ -327,7 +335,8 @@
                     <div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
                         <div class="block2">
                             <div class="block2-pic hov-img0">
-                                <img src="{{ $relatedProduct->image ? Storage::url($relatedProduct->image) : asset('client/images/no-image-available.png') }}"
+                                <img style="aspect-ratio: 3 / 4; object-fit: cover; width: 100%; height: auto; max-width: 300px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);"
+                                    src="{{ $relatedProduct->image ? Storage::url($relatedProduct->image) : asset('client/images/no-image-available.png') }}"
                                     alt="{{ $relatedProduct->name }}">
                             </div>
 
@@ -345,7 +354,9 @@
                                 </div>
 
                                 <div class="block2-txt-child2 flex-r p-t-3">
-                                    <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+                                    <a href="#" data-product-id="{{ $relatedProduct->id }}"
+                                        class="btn-addwish-b2
+                                        dis-block pos-relative js-addwish-b2">
                                         <img class="icon-heart1 dis-block trans-04"
                                             src="{{ asset('client/images/icons/icon-heart-01.png') }}"
                                             alt="ICON">
@@ -379,6 +390,8 @@
         const colorSelectElement = document.getElementById('color-select');
         const sizeSelect = document.getElementById('size-select');
         const stockInfo = document.getElementById('stock-info');
+        const variantIdInput = document.getElementById('selected-product-variant-id');
+        const addToCartForm = document.getElementById('add-to-cart-form');
 
         if (!colorSelectElement || !sizeSelect || !stockInfo) {
             console.log('Không tìm thấy phần tử cần thiết');
@@ -389,7 +402,6 @@
         colorSelectElement.addEventListener('change', function() {
             const selectedColor = this.value.trim();
             console.log('Màu đã chọn:', selectedColor);
-
             // Xóa size cũ
             sizeSelect.innerHTML = '<option value="">Choose a size</option>';
             sizeSelect.disabled = true;
@@ -451,6 +463,44 @@
             } else {
                 stockInfo.textContent = ''; // Xóa thông tin tồn kho nếu chưa chọn đủ
                 variantIdInput.value = ''; // Xóa ID
+            }
+        });
+
+
+        addToCartForm.addEventListener('submit', function(event) {
+            const selectedColor = colorSelectElement.value.trim();
+            const selectedSize = sizeSelect.value.trim();
+            const selectedVariantId = variantIdInput.value; // Kiểm tra cả ID variant
+
+            console.log('Kiểm tra trước khi submit:', {
+                selectedColor,
+                selectedSize,
+                selectedVariantId
+            });
+
+            // Kiểm tra xem màu HOẶC size chưa được chọn HOẶC không tìm được variant ID tương ứng
+            if (!selectedColor || !selectedSize || !selectedVariantId) {
+                // Ngăn chặn form gửi đi
+                event.preventDefault();
+
+                // Hiển thị thông báo lỗi
+                alert('Vui lòng chọn đầy đủ Màu sắc và Kích thước.');
+
+                // (Tùy chọn nâng cao) Thay vì alert, bạn có thể hiển thị lỗi gần nút bấm hơn
+                // Ví dụ:
+                // const errorElement = document.getElementById('add-to-cart-error');
+                // if (errorElement) {
+                //     errorElement.textContent = 'Vui lòng chọn Màu sắc và Kích thước.';
+                //     errorElement.style.display = 'block'; // Hiện thông báo lỗi
+                // }
+
+                console.log('Submit bị chặn do thiếu lựa chọn.');
+            } else {
+                // Nếu đã chọn đủ, cho phép form submit bình thường
+                console.log('Đã chọn đủ, cho phép submit.');
+                // (Tùy chọn nâng cao) Ẩn thông báo lỗi nếu có
+                // const errorElement = document.getElementById('add-to-cart-error');
+                // if (errorElement) errorElement.style.display = 'none';
             }
         });
 

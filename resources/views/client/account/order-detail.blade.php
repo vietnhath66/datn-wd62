@@ -371,7 +371,7 @@
 
                     // 4. Tạo HTML cho Badge trạng thái đơn hàng - Giữ nguyên logic dựa trên $currentStatus
                     // ...
-
+                    $endedStatuses = ['completed', 'cancelled', 'refunded', 'failed'];
                     // Các biến khác dùng cho hiển thị - Giữ nguyên
                     $orderCode = $order->barcode ?? 'DH' . sprintf('%03d', $order->id);
                     $finalTotalFormatted = number_format($order->total ?? 0, 0, ',', '.') . ' VNĐ';
@@ -480,6 +480,13 @@
                                             @endif
                                         </div>
                                     </div>
+                                    @if (in_array($currentStatus, $endedStatuses))
+                                        <a href="{{ route('client.product.show', $item->product_id) }}#reviews"
+                                            class="btn btn-sm btn-outline-info mt-2"
+                                            style="font-size: 0.85rem; padding: 5px 10px;">
+                                            Viết đánh giá
+                                        </a>
+                                    @endif
                                 </div>
                             </div>
                         @empty
