@@ -79,7 +79,7 @@
                                                 @endif
                                             </td>
                                             <td class="px-3.5 py-2.5 border-y">{{ $banner->link }}</td>
-                                            <td class="px-3.5 py-2.5 border-y">{{ $banner->created_at }}</td>
+                                            <td class="px-3.5 py-2.5 border-y">{{ $banner->created_at->format('H:i d/m/Y') }}</td>
                                         
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 action">
