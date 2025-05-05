@@ -80,42 +80,36 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
         }
     }
 
-    public function update($id, $request, $languageId)
+    public function update($id, $request)
     {
         DB::beginTransaction();
         try {
             $attributeCatalogue = $this->attributeCatalogueReponsitory->findById($id);
             $flag = $this->updateCatalogue($attributeCatalogue, $request);
-            if ($flag == TRUE) {
-                $this->updateLanguageForCatalogue($attributeCatalogue, $request, $languageId);
-                $this->nestedset = new Nestedsetbie([
-                    'table' => 'attribute_catalogues',
-                    'foreignkey' => 'attribute_catalogue_id',
-                ]);
-                $this->nestedset();
-            }
+            // if ($flag == TRUE) {
+            //     $this->updateLanguageForCatalogue($attributeCatalogue, $request, $languageId);
+            //     $this->nestedset = new Nestedsetbie([
+            //         'table' => 'attribute_catalogues',
+            //         'foreignkey' => 'attribute_catalogue_id',
+            //     ]);
+            //     $this->nestedset();
+            // }
             DB::commit();
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
             // Log::error($e->getMessage());
             echo $e->getMessage();
-            die();
+            // die();
             return false;
         }
     }
 
-    public function destroy($id, $languageId)
+    public function destroy($id)
     {
         DB::beginTransaction();
         try {
-            $attributeCatalogue = $this->attributeCatalogueReponsitory->delete($id);
-            $this->nestedset = new Nestedsetbie([
-                'table' => 'attribute_catalogues',
-                'foreignkey' => 'attribute_catalogue_id',
-                'language_id' =>  $languageId,
-            ]);
-            $this->nestedset();
+            $attributeCatalogue = $this->attributeCatalogueReponsitory->destroy($id);
             DB::commit();
             return true;
         } catch (\Exception $e) {
@@ -131,7 +125,8 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
     {
         $payload = $request->only($this->payload());
         if ($request->hasFile('image')) {
-            $payload['image'] = Storage::put(self::PATH_UPLOAD, $request->file('image'));
+            $payload['image'] = $request->file('image')->store(self::PATH_UPLOAD, 'public');
+
         }
         $attributeCatalogue = $this->attributeCatalogueReponsitory->create($payload);
         return $attributeCatalogue;
@@ -140,10 +135,21 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
     private function updateCatalogue($attributeCatalogue, $request)
     {
         $payload = $request->only($this->payload());
-
-        $flag = $this->attributeCatalogueReponsitory->update($attributeCatalogue->id, $payload);
-        return $flag;
+    
+        // Chỉ xử lý khi có file mới
+        if ($request->hasFile('image')) {
+            // Xóa ảnh cũ nếu có
+            if ($attributeCatalogue->image && Storage::disk('public')->exists($attributeCatalogue->image)) {
+                Storage::disk('public')->delete($attributeCatalogue->image);
+            }
+    
+            // Lưu ảnh mới
+            $payload['image'] = $request->file('image')->store(self::PATH_UPLOAD, 'public');
+        }
+    
+        return $this->attributeCatalogueReponsitory->update($attributeCatalogue->id, $payload);
     }
+    
 
     private function updateLanguageForCatalogue($attributeCatalogue, $request, $languageId)
     {
@@ -156,7 +162,7 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
     private function formatLanguagePayload($attributeCatalogue, $request, $languageId)
     {
         $payload = $request->only($this->payloadLanguage());
-        $payload['canonical'] = Str::slug($payload['canonical']);
+        // $payload['canonical'] = Str::slug($payload['canonical']);
         $payload['language_id'] =  $languageId;
         $payload['attribute_catalogue_id'] = $attributeCatalogue->id;
         return $payload;
@@ -199,7 +205,7 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
             'meta_title',
             'meta_keyword',
             'meta_description',
-            'canonical'
+            // 'canonical'
         ];
     }
 }

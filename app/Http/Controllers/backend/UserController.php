@@ -33,6 +33,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         // $this->authorize('modules', 'admin.users.index');
+        $request->merge(['status' => 1]); // chỉ lấy user đang hoạt động
         $users = $this->UserService->paginate($request);
         // dd($users);
 
@@ -216,7 +217,7 @@ public function lock(User $user)
     $user->status = 0;
     $user->save();
 
-    return redirect()->route('admin.users.index')->with('success', 'Khóa tài khoản thành công!');
+    return redirect()->route('admin.users.locked')->with('success', 'Khóa tài khoản thành công!');
 }
 
 // Mở khóa tài khoản
@@ -240,6 +241,7 @@ public function unlock(User $user)
     }
     public function locked(Request $request)
 {
+    $request->merge(['status' => 0]); // chỉ lấy user đã bị khóa
     $users = $this->UserService->getLockedUsers($request); // giả sử bạn có phương thức này trong service
 
     $config = [

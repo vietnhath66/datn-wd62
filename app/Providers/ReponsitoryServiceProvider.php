@@ -5,6 +5,10 @@ namespace App\Providers;
 use App\Repositories\Interfaces\ProductCatalogueRepositoryInterface;
 use App\Repositories\ProductCatalogueRepository;
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\Interfaces\ReviewRepositoryInterface;
+use App\Repositories\ReviewRepository;
+use App\Services\Interfaces\ReviewServiceInterface;
+use App\Services\ReviewService;
 
 class ReponsitoryServiceProvider extends ServiceProvider
 {
@@ -26,6 +30,8 @@ class ReponsitoryServiceProvider extends ServiceProvider
             $this->app->bind($key, $val);
         }
         $this->app->bind(ProductCatalogueRepositoryInterface::class, ProductCatalogueRepository::class);
+        $this->app->bind(ReviewRepositoryInterface::class, ReviewRepository::class);
+        $this->app->bind(ReviewServiceInterface::class, ReviewService::class);
     }
 
     /**

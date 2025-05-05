@@ -92,11 +92,13 @@
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
                                         data-sort="product_name">Tên Khuyến mãi</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
-                                        data-sort="status">Loại</th>
+                                        data-sort="status">Loại khuyến mãi</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
                                         data-sort="status">Giá trị khuyến mãi</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
                                         data-sort="status">Đơn hàng tối thiểu</th>
+                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
+                                        data-sort="status">Số lượng</th>
                                     <th
                                         class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 action">
                                         Hành động</th>
@@ -149,6 +151,13 @@
                                                     class="flex items-center gap-2">
                                                     <h6 class="product_name">
                                                         {{ number_format($counpon->minimum_order_amount) }} vnđ</h6>
+                                                </a>
+                                            </td>
+                                            <td
+                                                class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 product_name">
+                                                <a href="apps-ecommerce-product-overview.html"
+                                                    class="flex items-center gap-2">
+                                                    <h6 class="product_name">{{ $counpon->number }}</h6>
                                                 </a>
                                             </td>
                                             <td

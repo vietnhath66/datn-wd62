@@ -21,31 +21,27 @@ class AttributeReponsitory extends BaseRepository implements AttributeReponsitor
     }
 
     
-
-    public function getAttributeById(int $id = 0, $language_id = 0){
+    public function getAttributeById(int $id = 0){
         return $this->model->select([
                 'attributes.id',
                 'attributes.attribute_catalogue_id',
                 'attributes.image',
-                'attributes.icon',
-                'attributes.album',
-                'attributes.publish',
-                'attributes.follow',
-                'tb2.name',
-                'tb2.description',
-                'tb2.content',
-                'tb2.meta_title',
-                'tb2.meta_keyword',
-                'tb2.meta_description',
-                'tb2.canonical',
+                // 'attributes.icon',
+                // 'attributes.album',
+                // 'attributes.publish',
+                // 'attributes.follow',
+                'attributes.name',
+                'attributes.description',
+                'attributes.content',
+                // 'tb2.meta_title',
+                // 'tb2.meta_keyword',
+                // 'tb2.meta_description',
+                // 'tb2.canonical',
             ]
         )
-        ->join('attribute_language as tb2', 'tb2.attribute_id', '=','attributes.id')
-        ->with('attribute_catalogues')
-        ->where('tb2.language_id', '=', $language_id)
+        ->with('attribute_catalogues') // Nếu có quan hệ
         ->find($id);
     }
-
     public function searchAttributes(string $keyword = '', array $option = []){
         return $this->model->whereHas('attribute_catalogues', function($query) use ($option){
             $query->where('attribute_catalogue_id', $option['attributeCatalogueId']);
@@ -74,5 +70,17 @@ class AttributeReponsitory extends BaseRepository implements AttributeReponsitor
         ->whereIn('attributes.id', $attribuetId)
         ->distinct()
         ->pluck('attributes.id');
+    }
+    public function destroy($model)
+    {
+        if (!$model instanceof Model) {
+            $model = $this->model->find($model); // Nếu truyền ID, tìm Model
+        }
+    
+        if (!$model) {
+            return false; // Nếu không tìm thấy, trả về false
+        }
+    
+        return $model->delete();
     }
 }

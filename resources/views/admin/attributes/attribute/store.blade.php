@@ -65,10 +65,10 @@
                                             @endforeach
                                         </select>
                                         <p class="mt-1 text-sm text-slate-400 dark:text-zink-200">
-                                            Code will be generated automatically
+                                            Vui lòng chọn cấp danh mục cho thuộc tính
                                         </p>
                                     </div>
-                                    <div class="lg:col-span-2 xl:col-span-12">
+                                    {{-- <div class="lg:col-span-2 xl:col-span-12">
                                         <label for="genderSelect" class="inline-block mb-2 text-base font-medium">Ảnh
                                             thuộc tính</label>
                                         <div
@@ -91,7 +91,7 @@
                                         @if (isset($attribute->image))
                                             <img src="{{ \Storage::url($attribute->image) }}" alt=""
                                                 width="50">
-                                        @endif
+                                        @endif --}}
                                         {{-- <ul class="flex flex-wrap mb-0 gap-x-5" id="dropzone-preview2">
                                             <li class="mt-5" id="dropzone-preview-list2">
                                                 <!-- This is used as the file preview template -->
@@ -126,7 +126,7 @@
                                             </li>
                                         </ul> --}}
                                     </div>
-                                    <div class="lg:col-span-2 xl:col-span-12">
+                                    {{-- <div class="lg:col-span-2 xl:col-span-12">
                                         <div>
                                             <label for="productDescription"
                                                 class="inline-block mb-2 text-base font-medium">Ghi chú</label>
@@ -142,7 +142,7 @@
                                                 name="content" id="productDescription" placeholder="Enter Description" rows="5">{{ old('name', $attribute->content ?? '') }}</textarea>
                                         </div>
 
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <!--end grid-->
                                 <div class="flex justify-end gap-2 mt-4">

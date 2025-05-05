@@ -43,6 +43,8 @@ use App\Services\ProductCatalogueService;
 use App\Services\ProductService;
 use App\Services\RoleService;
 use App\Services\UserService;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -87,6 +89,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        App::setLocale(config('app.locale'));
+        Carbon::setLocale(config('app.locale'));
     }
 }

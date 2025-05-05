@@ -17,6 +17,7 @@ use App\Http\Controllers\Backend\ProductCatalogueController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Backend\UserController;
+use App\Http\Controllers\Backend\ReviewController;
 // Client
 Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
 
@@ -90,12 +91,12 @@ Route::prefix('admin')
                 Route::delete('destroy/{roles}',                              [RoleController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
             });
 
-            Route::prefix('users')
+        Route::prefix('users')
             ->as('users.')
             ->group(function () {
                 // Ai cũng truy cập được
                 Route::get('index', [UserController::class, 'index'])->name('index');
-        
+
                 // Chỉ role_id = 1 mới được truy cập
                 Route::middleware('check.admin')->group(function () {
                     Route::get('locked', [UserController::class, 'locked'])->name('locked');
@@ -134,8 +135,20 @@ Route::prefix('admin')
                 Route::get('delete/{attribute}',              [AttributeController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
                 Route::delete('destroy/{attribute}',          [AttributeController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
             });
+        Route::prefix('review')
+            ->as('review.')
+            ->group(function () {
+                Route::get('index',                       [ReviewController::class, 'index'])->name('index');
+                // Route::get('create',                      [ReviewController::class, 'create'])->name('create');
+                // Route::post('store',                      [ReviewController::class, 'store'])->name('store');
+                // Route::get('edit/{review}',               [ReviewController::class, 'edit'])->where(['review' => '[0-9]+'])->name('edit');
+                // Route::put('update/{review}',             [ReviewController::class, 'update'])->where(['review' => '[0-9]+'])->name('update');
+                Route::get('delete/{review}',             [ReviewController::class, 'delete'])->where(['review' => '[0-9]+'])->name('delete');
+                Route::delete('destroy/{review}',         [ReviewController::class, 'destroy'])->where(['review' => '[0-9]+'])->name('destroy');
+            });
 
-            Route::prefix('counpon')
+
+        Route::prefix('counpon')
             ->as('counpon.')
             ->group(function () {
                 Route::get('index',                           [CounponController::class, 'index'])->name('index');
@@ -148,8 +161,8 @@ Route::prefix('admin')
             });
 
 
-            Route::get('ajax/attribute/getAttribute',               [AjaxAttributeController::class, 'getAttribute'])->name('ajax.attribute.getAttribute');
-            Route::get('ajax/attribute/loadAttribute',              [AjaxAttributeController::class, 'loadAttribute'])->name('ajax.attribute.loadAttribute');
+        Route::get('ajax/attribute/getAttribute',               [AjaxAttributeController::class, 'getAttribute'])->name('ajax.attribute.getAttribute');
+        Route::get('ajax/attribute/loadAttribute',              [AjaxAttributeController::class, 'loadAttribute'])->name('ajax.attribute.loadAttribute');
     });
 
 Route::get('admin/login', [AuthController::class, 'index'])->name('auth.admin')->middleware('login');

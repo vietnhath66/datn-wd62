@@ -46,7 +46,7 @@ class CounponService implements CounponServiceInterface
         DB::beginTransaction();
         try {
             $payload = $request->only($this->payload());
-            $payload['number'] = 1;
+            // $payload['number'] = 1;
 
             $counpon = $this->CounponRepository->create($payload);
             DB::commit();

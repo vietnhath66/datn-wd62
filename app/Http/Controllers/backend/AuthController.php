@@ -26,19 +26,24 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => $request->password,
         ];
-
-        // dd($credentials,Auth::attempt($credentials));
-
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            return redirect()->route('admin.dashboard.index')->with('success', 'Đăng nhập thành công');
-        }else {
-            return redirect()->route('auth.admin')->with('error', 'Email hoặc mật khẩu không chính xác');
+    
+        // Tìm user theo email
+        $user = \App\Models\User::where('email', $request->email)->first();
+    
+        if ($user) {
+            // Kiểm tra nếu tài khoản đã bị khoá (status = 0)
+            if ($user->status == 0) {
+                return redirect()->route('auth.admin')->with('error', 'Tài khoản của bạn đã bị khóa.');
+            }
+    
+            // Tiến hành đăng nhập
+            if (Auth::attempt($credentials)) {
+                $request->session()->regenerate();
+                return redirect()->route('admin.dashboard.index')->with('success', 'Đăng nhập thành công');
+            }
         }
-
-        // toastr()->error('Email hoặc mật khẩu không chính xác !');
- 
-        return redirect()->route('auth.admin')->with('error', 'Đăng nhập thất bại');
+    
+        return redirect()->route('auth.admin')->with('error', 'Email hoặc mật khẩu không chính xác');
     }
 
     public function logout(Request $request){

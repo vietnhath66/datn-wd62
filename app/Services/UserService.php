@@ -26,20 +26,26 @@ class UserService extends BaseService implements UserServiceInterface
     public function paginate($request)
     {
         $condition['keyword'] = addslashes($request->input('keyword'));
+    
+        // Lấy theo status nếu có truyền vào
+        if ($request->has('status')) {
+            $condition['status'] = $request->integer('status');
+        }
+    
         $condition['publish'] = $request->integer('publish');
-        $perPage = addslashes($request->integer('per_page'));
-
+    
+        $perPage = $request->integer('per_page') ?? 10;
+    
         $users = $this->userRepository->pagination(
-            
             ['users.*'],
             $condition,
             $perPage,
             ['path' => 'admin/users/index'],
             ['users.id', 'DESC'],
             [['roles as tb2', 'tb2.id', '=', 'users.role_id']],
-            // [],
             ['roles'],
         );
+    
         return $users;
     }
 
@@ -55,13 +61,14 @@ class UserService extends BaseService implements UserServiceInterface
         } catch (\Exception $e) {
             DB::rollBack();
             echo $e->getMessage();
-            die();
+            // die();
             return false;
         }
     }
 
     public function update($data, $user)
     {
+        // dd($data, $user);
         DB::beginTransaction();
         try {
 

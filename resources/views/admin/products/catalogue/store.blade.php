@@ -131,7 +131,7 @@
                                             </li>
                                         </ul> --}}
                                     </div>
-                                    <div class="lg:col-span-2 xl:col-span-12">
+                                    {{-- <div class="lg:col-span-2 xl:col-span-12">
                                         <div>
                                             <label for="productDescription"
                                                 class="inline-block mb-2 text-base font-medium">Ghi chú</label>
@@ -147,7 +147,7 @@
                                                 name="content" id="productDescription" placeholder="Enter Description" rows="5">{{ old('name', $productCatalogue->content ?? '') }}</textarea>
                                         </div>
 
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <!--end grid-->
                                 <div class="flex justify-end gap-2 mt-4">

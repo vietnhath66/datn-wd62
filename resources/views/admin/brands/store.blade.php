@@ -61,28 +61,32 @@
                                         </p>
                                     </div> --}}
                                     <div class="lg:col-span-2 xl:col-span-12">
-                                        <label for="genderSelect" class="inline-block mb-2 text-base font-medium">Ảnh
-                                            thương hiệu</label>
-                                        <div
-                                            class="flex items-center justify-center bg-white border border-dashed rounded-md cursor-pointer dropzone border-slate-300 dark:bg-zink-700 dark:border-zink-500 dropzone2">
-                                            <div class="fallback">
-                                                <input name="image" type="file" multiple="multiple" />
+                                        <label class="inline-block mb-2 text-base font-medium">Ảnh thương hiệu</label>
+                                    
+                                        <div class="flex items-center gap-4 bg-white border border-dashed rounded-md p-4 border-slate-300 dark:bg-zink-700 dark:border-zink-500">
+                                    
+                                            {{-- Nút chọn tệp --}}
+                                            <div>
+                                                <input name="image" type="file" class="block text-sm text-slate-500
+                                                    file:mr-4 file:py-2 file:px-4
+                                                    file:rounded-full file:border-0
+                                                    file:text-sm file:font-semibold
+                                                    file:bg-slate-100 file:text-slate-700
+                                                    hover:file:bg-slate-200
+                                                    " />
                                             </div>
-                                            <div class="w-full py-5 text-lg text-center dz-message needsclick">
-                                                <div class="mb-3">
-                                                    <i data-lucide="upload-cloud"
-                                                        class="block mx-auto size-12 text-slate-500 fill-slate-200 dark:text-zink-200 dark:fill-zink-500"></i>
+                                    
+                                            {{-- Ảnh thương hiệu cũ (nếu có) --}}
+                                            @if (!empty($brand->image))
+                                                <div>
+                                                    <img src="{{ Storage::url($brand->image) }}" alt="Ảnh thương hiệu cũ"
+                                                         class="h-20 w-auto rounded border shadow-sm">
                                                 </div>
-
-                                                <h5 class="mb-0 font-normal text-slate-500 dark:text-zink-200 text-15">
-                                                    Drag and drop your product images or
-                                                    <a href="#!">browse</a> your product images
-                                                </h5>
-                                            </div>
+                                            @endif
                                         </div>
-                                        @if (isset($brand->image))
-                                            <img src="{{ \Storage::url($brand->image) }}" alt="" width="50">
-                                        @endif
+                                    </div>
+                                    
+
                                         {{-- <ul class="flex flex-wrap mb-0 gap-x-5" id="dropzone-preview2">
                                             <li class="mt-5" id="dropzone-preview-list2">
                                                 <!-- This is used as the file preview template -->
@@ -117,7 +121,7 @@
                                             </li>
                                         </ul> --}}
                                     </div>
-                                    <div class="lg:col-span-2 xl:col-span-12">
+                                    {{-- <div class="lg:col-span-2 xl:col-span-12">
                                         <div>
                                             <label for="productDescription"
                                                 class="inline-block mb-2 text-base font-medium">Ghi chú</label>
@@ -125,7 +129,7 @@
                                                 class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
                                                 id="productDescription" placeholder="Enter Description" rows="5">{{ old('name', $brand->description ?? '') }}</textarea>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <!--end grid-->
                                 <div class="flex justify-end gap-2 mt-4">
