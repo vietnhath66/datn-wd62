@@ -31,32 +31,20 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'products.product_catalogue_id',
                 'products.brand_id', // Thêm brand_id để đảm bảo có dữ liệu join
                 'products.image',
-                'products.icon',
-                'products.album',
                 'products.publish',
-                'products.follow',
-                'products.code',
-                'products.made_in',
+                'products.name',
                 'products.price',
+                'products.is_sale',
+                'products.is_new',
+                'products.is_trending',
+                'products.is_show_home',
                 'products.attributeCatalogue',
                 'products.attribute',
                 'products.variant',
-                'products.name',
                 'products.description',
                 'products.content',
-                'products.meta_title',
-                'products.meta_keyword',
-                'products.meta_description',
-                'products.canonical',
             ]
         )
-            ->with([
-                'product_catalogues:id,name',
-                'brand:id,name',
-                'product_variants',
-                'galleries',
-                'reviews'
-            ])
             ->find($id);
     }
 

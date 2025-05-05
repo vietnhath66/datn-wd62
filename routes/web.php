@@ -51,6 +51,7 @@ Route::prefix('admin')
 
                 Route::put('update/{brand}',                                 [BrandController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
 
+
                 Route::get('delete/{brand}',                                 [BrandController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
                 Route::delete('destroy/{brand}',                             [BrandController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
             });
@@ -94,6 +95,7 @@ Route::prefix('admin')
         Route::prefix('users')
             ->as('users.')
             ->group(function () {
+
                 // Ai cũng truy cập được
                 Route::get('index', [UserController::class, 'index'])->name('index');
 
@@ -110,6 +112,7 @@ Route::prefix('admin')
                     Route::patch('lock/{user}', [UserController::class, 'lock'])->where(['user' => '[0-9]+'])->name('lock');
                     Route::patch('unlock/{user}', [UserController::class, 'unlock'])->where(['user' => '[0-9]+'])->name('unlock');
                 });
+
             });
 
         Route::prefix('attribute_catalogue')
@@ -145,6 +148,18 @@ Route::prefix('admin')
                 // Route::put('update/{review}',             [ReviewController::class, 'update'])->where(['review' => '[0-9]+'])->name('update');
                 Route::get('delete/{review}',             [ReviewController::class, 'delete'])->where(['review' => '[0-9]+'])->name('delete');
                 Route::delete('destroy/{review}',         [ReviewController::class, 'destroy'])->where(['review' => '[0-9]+'])->name('destroy');
+            });
+
+            Route::prefix('counpon')
+            ->as('counpon.')
+            ->group(function () {
+                Route::get('index',                           [CounponController::class, 'index'])->name('index');
+                Route::get('create',                          [CounponController::class, 'create'])->name('create');
+                Route::post('store',                          [CounponController::class, 'store'])->name('store');
+                Route::get('edit/{counpon}',                [CounponController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
+                Route::put('update/{counpon}',              [CounponController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
+                Route::get('delete/{counpon}',              [CounponController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
+                Route::delete('destroy/{counpon}',          [CounponController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
             });
 
 

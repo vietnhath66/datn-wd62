@@ -25,6 +25,7 @@
 <link href="../backend/css/customize.css" rel="stylesheet">
 <link rel="icon" href="../backend/img/logo.jpg" type="image/x-icon" />
 <link href="../backend/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+
 <style>
     .badge {
         display: inline-block;
@@ -43,6 +44,7 @@
     }
     </style>
     
+
 
 @if (isset($config['css']))
     @foreach ($config['css'] as $css => $value)

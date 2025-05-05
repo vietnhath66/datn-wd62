@@ -7,8 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Services\Interfaces\ProductServiceInterface  as ProductService;
 
-use App\Repositories\Interfaces\ProductRepositoryInterface  as ProductReponsitory;
-
+use App\Repositories\Interfaces\ProductRepositoryInterface  as productReponsitory;
 use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface  as AttributeCatalogueRepository;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
@@ -55,9 +54,8 @@ class ProductController extends Controller
     public function index(Request $request){
         // $this->authorize('modules', 'admin.product.index');
         $products = $this->productService->paginate($request);
-        $brands = Brand::all();
-        $productCatalogues = ProductCatalogue::all();
         // dd($products);
+       
         $config = [
             'js' => [
                 'admin/js/plugins/switchery/switchery.js',
@@ -99,15 +97,8 @@ class ProductController extends Controller
     public function create(){
         // $this->authorize('modules', 'admin.product.create');
 
-        // $attributeCatalogue = $this->attributeCatalogue->getAll;
-
-
         $attributeCatalogue = AttributeCatalogue::get();
         $brands = Brand::get();
-
-        $productCatalogues = ProductCatalogue::get();
-
-
 
         $config = $this->configData();
         $config['seo'] =  [
@@ -149,11 +140,6 @@ class ProductController extends Controller
     }
 
     public function edit($id){
-
-        // dd($id);
-        $this->authorize('modules', 'admin.product.update');
-        $attributeCatalogue = AttributeCatalogue::with('attribute_catalogue_language')->get();
-        $product = $this->productReponsitory->getProductById($id);
 
 
         // $this->authorize('modules', 'admin.product.update');

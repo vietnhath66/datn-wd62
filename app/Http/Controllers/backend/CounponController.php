@@ -108,6 +108,7 @@ class CounponController extends Controller
     {
         // $this->authorize('modules', 'admin.counpons.update');
         $counpon = $this->CounponRepository->getCounponById($id);
+
         // dd($brand);
         $config = $this->configData();
         $config['seo'] =  [
@@ -145,13 +146,16 @@ class CounponController extends Controller
             return redirect()->route('admin.counpon.index')->with('success', 'Cập nhật bản ghi thành công');
         }
         return redirect()->route('admin.counpon.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
+
     }
 
     public function delete($id)
     {
+
         $this->authorize('modules', 'admin.counpon.destroy');
         $config['seo'] = __('messages.productCatalogue');
         $productCatalogue = $this->CounponRepository->getProductCatalogueById($id);
+
         $template = 'admin.product.catalogue.delete';
         return view('admin.dashboard.layout', compact(
             'template',
@@ -162,10 +166,12 @@ class CounponController extends Controller
 
     public function destroy(DeleteProductCatalogueRequest $request, $id)
     {
+
         if ($this->CounponService->destroy($id)) {
             return redirect()->route('admin.counpon.index')->with('success', 'Xóa bản ghi thành công');
         }
         return redirect()->route('admin.counpon.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
+
     }
 
     private function configData()

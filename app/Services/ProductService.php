@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Language;
+use App\Models\Product;
 use App\Models\ProductGallery;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\Services\BaseService;
@@ -80,16 +81,13 @@ class ProductService extends BaseService implements ProductServiceInterface
             'where' => [],
         ];
         $paginationConfig = [
-            'path' => ($extend['path']) ?? 'admin/product/index',
+            'path' => ($extend['path']) ?? 'admin/products/product/index',
             'groupBy' => $this->paginateSelect()
         ];
         $orderBy = ['products.id', 'DESC'];
         $relations = ['product_catalogues'];
         $rawQuery = $this->whereRaw($request, $modelCatalogue);
         $joins = [
-
-            // ['product_language as tb2', 'tb2.product_id', '=', 'products.id'],
-
 
             ['product_catalogues as tb2', 'products.product_catalogue_id', '=', 'tb2.id'],
         ];
@@ -103,7 +101,9 @@ class ProductService extends BaseService implements ProductServiceInterface
             $relations,
             $rawQuery
         );
-
+        if(isset($condition['keyword'])){
+            $products = Product::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->get();
+        }
         return $products;
     }
 
@@ -394,14 +394,21 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function createVariantArray(array $payload = [], $product): array
     {
         // dd($payload);
+
         $variant = [];
         if (isset($payload['variant']['sku']) && count($payload['variant']['sku'])) {
             foreach ($payload['variant']['sku'] as $key => $val) {
+
                 // $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $payload['productVariant']['id'][$key]);
                 $vId = ($payload['productVariant']['id'][$key]) ?? '';
                 $productVariantId = $this->sortString($vId);
+                $variant_details = explode(",", $payload['productVariant']['name'][$key]);
+                // $array = explode(",", $str);
                 $variant[] = [
-                    'name' => $product->name . " " . $payload['productVariant']['name'][$key],
+                    // 'name' => $product->name . " " . $payload['productVariant']['name'][$key],
+                    'name' => $product->name,
+                    'name_variant_size' => $variant_details[0],
+                    'name_variant_color' => $variant_details[1],
                     'code' => $productVariantId,
                     'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
                     'sku' => $val,
@@ -414,6 +421,7 @@ class ProductService extends BaseService implements ProductServiceInterface
                 ];
             }
         }
+        // dd($payload['productVariant']);
         // dd($variant);
         return $variant;
     }
@@ -604,10 +612,12 @@ class ProductService extends BaseService implements ProductServiceInterface
             'products.product_catalogue_id',
             'products.brand_id',
             'products.publish',
+            'products.name',
             'products.image',
             'products.price',
-            'products.name',
-            'products.id',
+
+            // 'tb2.name AS catalogue_name'
+
         ];
     }
 
@@ -627,7 +637,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             'is_show_home',
             'product_catalogue_id',
             'price',
-            // 'attributeCatalogue',
+            'attributeCatalogue',
             'attribute',
             'variant'
         ];

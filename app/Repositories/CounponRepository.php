@@ -54,6 +54,7 @@ class CounponRepository extends BaseRepository implements CounponRepositoryInter
 
         return $query->paginate($perPage)->withQueryString()->withPath(env('APP_URL').$extend['path']);
     }
+
     public function destroy($model)
     {
         if (!$model instanceof Model) {

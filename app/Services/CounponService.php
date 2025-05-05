@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+
 use App\Models\User;
 use App\Repositories\Interfaces\CounponRepositoryInterface as CounponRepository;
 use App\Services\Interfaces\CounponServiceInterface;
@@ -30,6 +31,7 @@ class CounponService implements CounponServiceInterface
 
 
         $brands = $this->CounponRepository->pagination(
+
             ['*'],
             $condition,
             $perPage,
@@ -38,7 +40,9 @@ class CounponService implements CounponServiceInterface
             [],
             [],
         );
+
         return $brands;
+
     }
 
     public function create($request)
@@ -47,6 +51,7 @@ class CounponService implements CounponServiceInterface
         try {
             $payload = $request->only($this->payload());
             // $payload['number'] = 1;
+
 
             $counpon = $this->CounponRepository->create($payload);
             DB::commit();
@@ -76,10 +81,12 @@ class CounponService implements CounponServiceInterface
                 Storage::delete($currentImage);
             }
 
+
             $updateCounpon = $this->CounponRepository->update($id, $payload);
             if (!$updateCounpon) {
                 throw new \Exception("Cập nhật khuyến mãi thất bại");
             }
+
             DB::commit();
             return true;
         } catch (\Exception $e) {
@@ -95,6 +102,7 @@ class CounponService implements CounponServiceInterface
         DB::beginTransaction();
         try {
             $destroyCounpon = $this->CounponRepository->destroy($counpon);
+
             DB::commit();
             return true;
         } catch (\Exception $e) {
