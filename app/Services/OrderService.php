@@ -631,7 +631,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     }
 
 
-    public function orderStatistic()
+    public function orderStatistic($monthChoose)
     {
         $month = now()->month;
         $year = now()->year;
@@ -648,11 +648,11 @@ class OrderService extends BaseService implements OrderServiceInterface
             'totalCancelOrders' => $this->orderReponsitory->getCancelOrders(),
             'revenueOrders' => $this->orderReponsitory->revenueOrders(),
             'revenueChartYear' => $this->convaertRevenueChartData($this->orderReponsitory->revenueByYear($year)),
-            // 'revenueChartMonth' => $this->convaertRevenueChartData($this->orderReponsitory->revenueCurrentMonth($month,$year)),
             'revenueChartWeek' => $this->convertChartDataDay($this->orderReponsitory->revenue7Day($year)),
-            // 'revenueChartWeek' => $this->orderReponsitory->revenue7Day($year),
-
-
+            'revenueChartMonth' => $this->orderReponsitory->revenueByMonth($monthChoose),
+            'revenueChartWeek' => $this->orderReponsitory->lastMonth(),
+            'revenueCurrentMonthTotal' => $this->orderReponsitory->revenueCurrentMonthTotal(),
+            'revenueCurrentMonthOrder' => $this->orderReponsitory->revenueCurrentMonthOrder()
         ];
     }
 

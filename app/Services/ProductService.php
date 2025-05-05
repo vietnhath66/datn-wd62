@@ -136,18 +136,14 @@ class ProductService extends BaseService implements ProductServiceInterface
             $product = $this->uploadProduct($id, $request);
             if ($product) {
 
-
                 $product->product_variants()->each(function ($variant) {
-
                     $variant->attributes()->detach();
                     $variant->delete();
                 });
                 if ($request->input('attribute')) {
 
                     $this->createVariant($product, $request);
-                    // dd($product);
                 }
-                // $this->ProductCatalogueService->setAttribute($product);
 
             }
             DB::commit();
@@ -196,7 +192,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         if ($request->hasFile('image')) {
             $payload['image'] = Storage::put(self::PATH_UPLOAD, $request->file('image'));
         }
-        // dd($payload);
+
 
         $payload['price'] = (float) $payload['price'];
         $payload['attributeCatalogue'] = $this->formatJson($request, 'attributeCatalogue');
@@ -217,7 +213,8 @@ class ProductService extends BaseService implements ProductServiceInterface
         if (isset($payload['is_show_home'])) {
             $payload['is_show_home'] == "on" ? $payload['is_show_home'] = 1 : $payload['is_show_home'] = 0;
         }
-        // dd($payload);
+
+
         $product = $this->productReponsitory->create($payload);
 
         $dataProductGalleries = $request->product_galleries ?: [];
@@ -265,7 +262,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         $payload['attributeCatalogue'] = $this->formatJson($request, 'attributeCatalogue');
         $payload['attribute'] = $request->input('attribute');
         $payload['variant'] = $this->formatJson($request, 'variant');
-        // dd($payload);
         if (isset($payload['publish'])) {
             $payload['publish'] == "on" ? $payload['publish'] = 1 : $payload['publish'] = 0;
         }
@@ -287,8 +283,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         $dataProductGalleries = $request->product_galleries ?: [];
 
         $dataProductGalleriesPre = $request->file_product_galleries ?: "";
-        // dd($request);
-        // dd(ProductGallery::where('id','=', $dataProductGalleriesPre[1])->first()->id);
         $dataProductGalleriesPre = explode(',', $dataProductGalleriesPre);
 
         foreach ($dataProductGalleriesPre as $val) {
@@ -301,13 +295,6 @@ class ProductService extends BaseService implements ProductServiceInterface
                 }
             }
         }
-        // foreach ($dataProductGalleriesPre as $val) {
-        //     ProductGallery::where('id','!=', ProductGallery::where('id','=',(int) $val)->first()->id)->delete();
-        //     $image = ProductGallery::where('id','=',(int) $val)->first()->image;
-        //     // if ($image && Storage::exists($image)) {
-        //     //     Storage::delete($image);
-        //     // }
-        // }
 
         foreach ($dataProductGalleries as $image) {
             ProductGallery::query()->create([
@@ -425,11 +412,11 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function createVariant($product, $request)
     {
         $payload = $request->only(['variant', 'productVariant', 'attribute']);
+        // dd($payload);
         $variant = $this->createVariantArray($payload, $product);
         $product->product_variants()->delete();
         $varriants = $product->product_variants()->createMany($variant);
         $variantId = $varriants->pluck('id');
-
         $variantAttribute = [];
         $attributeCombines = $this->combineAttributes(array_values($payload['attribute']));
         if (count($variantId)) {
@@ -476,7 +463,6 @@ class ProductService extends BaseService implements ProductServiceInterface
 
 
 
-
         $variant = [];
         if (isset($payload['variant']['sku']) && count($payload['variant']['sku'])) {
             foreach ($payload['variant']['sku'] as $key => $val) {
@@ -489,6 +475,7 @@ class ProductService extends BaseService implements ProductServiceInterface
                             'name' => $product->name,
                             'name_variant_size' => '',
                             'name_variant_color' => $variant_details[0],
+                            'sku' => ($payload['variant']['sku'][$key]) ?? '',
                             'code' => $productVariantId,
                             'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
                             'price' => ($payload['variant']['price'][$key]) ? $this->convert_price($payload['variant']['price'][$key]) : '',
@@ -500,6 +487,7 @@ class ProductService extends BaseService implements ProductServiceInterface
                             'name_variant_size' => $variant_details[0],
                             'name_variant_color' => '',
                             'code' => $productVariantId,
+                            'sku' => ($payload['variant']['sku'][$key]) ?? '',
                             'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
                             'price' => ($payload['variant']['price'][$key]) ? $this->convert_price($payload['variant']['price'][$key]) : '',
                             'publish' => 1,
@@ -512,6 +500,7 @@ class ProductService extends BaseService implements ProductServiceInterface
                             'name_variant_size' => $variant_details[0],
                             'name_variant_color' => $variant_details[1],
                             'code' => $productVariantId,
+                            'sku' => ($payload['variant']['sku'][$key]) ?? '',
                             'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
                             'price' => ($payload['variant']['price'][$key]) ? $this->convert_price($payload['variant']['price'][$key]) : '',
                             'publish' => 1,
@@ -522,6 +511,7 @@ class ProductService extends BaseService implements ProductServiceInterface
                             'name_variant_size' => $variant_details[1],
                             'name_variant_color' => $variant_details[0],
                             'code' => $productVariantId,
+                            'sku' => ($payload['variant']['sku'][$key]) ?? '',
                             'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
                             'price' => ($payload['variant']['price'][$key]) ? $this->convert_price($payload['variant']['price'][$key]) : '',
                             'publish' => 1,

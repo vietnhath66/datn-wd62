@@ -1,7 +1,7 @@
 @include('admin.dashboard.components.breadcrumb', [
     'title' => $config['seo'][$config['method']]['title'],
 ])
-@include('admin.dashboard.components.formError')
+
 @php
     $url = $config['method'] == 'create' ? route('admin.product.store') : route('admin.product.update', $product->id);
 @endphp
@@ -62,6 +62,7 @@
             <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
                 <div class="grow">
                     <h5 class="text-16">{{ $config['seo'][$config['method']]['title'] }}</h5>
+                    @include('admin.dashboard.components.formError')
                 </div>
                 <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
                     <li

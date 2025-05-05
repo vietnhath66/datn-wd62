@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Models\Order;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Repositories\BaseRepository;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Orders;
 
@@ -154,7 +156,6 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
                 if (is_null($val))
                     continue;
                 $query->having($val);
-
             }
         }
         if (isset($param['groupBy']) && count($param['groupBy'])) {
@@ -307,6 +308,147 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             ->get()->toArray();
     }
 
+    public function monthlyRevenue()
+    {
+        return $monthlyRevenue = DB::table('orders')
+            ->selectRaw('DATE_FORMAT(paid_at, "%Y-%m") as month, SUM(total) as revenue')
+            ->whereNotNull('paid_at')
+            ->groupBy(DB::raw('DATE_FORMAT(paid_at, "%Y-%m")'))
+            ->orderBy('month', 'desc')
+            ->get();
+    }
+
+    public function revenueByMonth($request)
+    {
+        $selectedMonth = $request;
+
+        // $month = date('m', strtotime($selectedMonth));
+        // $year = date('Y', strtotime($selectedMonth));
+
+        // // Tổng doanh số theo tháng được chọn
+        // $currentMonthRevenue = DB::table('orders')
+        //     ->whereYear('paid_at', $year)
+        //     ->whereMonth('paid_at', $month)
+        //     ->sum('total');
+
+        // // Dữ liệu biểu đồ doanh số 12 tháng
+        // $monthlyData = DB::table('orders')
+        //     ->select(
+        //         DB::raw('MONTH(paid_at) as month'),
+        //         DB::raw('SUM(total) as total')
+        //     )
+        //     ->whereYear('paid_at', $year)
+        //     ->groupBy(DB::raw('MONTH(paid_at)'))
+        //     ->orderBy('month')
+        //     ->get();
+
+        // // Convert về mảng cho Chart.js
+        // $chartLabels = [];
+        // $chartData = [];
+
+        // for ($m = 1; $m <= 12; $m++) {
+        //     $label = Carbon::create()->month($m)->format('F');
+        //     $chartLabels[] = $label;
+
+        //     $monthRecord = $monthlyData->firstWhere('month', $m);
+        //     $chartData[] = $monthRecord ? (float)$monthRecord->total : 0;
+        // }
+
+        $month = date('m', strtotime($selectedMonth));
+        $year = date('Y', strtotime($selectedMonth));
+
+        // Tổng doanh số của tháng được chọn (không thay đổi nếu cần giữ tổng chung)
+        $currentMonthRevenue = DB::table('orders')
+            ->whereYear('paid_at', $year)
+            ->whereMonth('paid_at', $month)
+            ->sum('total');
+
+        // Lấy doanh số theo từng ngày trong tháng
+        $dailyData = DB::table('orders')
+            ->select(
+                DB::raw('DAY(paid_at) as day'),
+                DB::raw('SUM(total) as total')
+            )
+            ->whereYear('paid_at', $year)
+            ->whereMonth('paid_at', $month)
+            ->groupBy(DB::raw('DAY(paid_at)'))
+            ->orderBy('day')
+            ->get();
+
+        // Convert dữ liệu cho biểu đồ Chart.js
+        $chartLabels = [];
+        $chartData = [];
+
+        $daysInMonth = Carbon::createFromDate($year, $month)->daysInMonth;
+
+        for ($d = 1; $d <= $daysInMonth; $d++) {
+            $label = 'Ngày ' . str_pad($d, 1, '0', STR_PAD_LEFT); // ví dụ: "01", "02", ...
+            $chartLabels[] = $label;
+
+            $dayRecord = $dailyData->firstWhere('day', $d);
+            $chartData[] = $dayRecord ? (float)$dayRecord->total : 0;
+        }
+
+        $totalRevenue = DB::table('orders')
+            ->whereYear('paid_at', $year)
+            ->whereMonth('paid_at', $month)
+            ->sum('total');
+
+        $totalOrdersMoth = DB::table('orders')
+            ->whereYear('paid_at', $year)
+            ->whereMonth('paid_at', $month)
+            ->count();
+
+        // Tổng số đơn bị huỷ trong tháng
+        $cancelledOrdersMoth = DB::table('orders')
+            ->whereYear('cancelled_at', $year)
+            ->whereMonth('cancelled_at', $month)
+            ->count();
+
+        return  [
+            'cancelledOrdersMoth' => $cancelledOrdersMoth,
+            'totalOrdersMoth' => $totalOrdersMoth,
+            'totalRevenue' => $totalRevenue,
+            'selectedMonth' => $selectedMonth,
+            'currentRevenue' => $currentMonthRevenue,
+            'chartLabels' => $chartLabels,
+            'chartData' => $chartData,
+        ];
+    }
+
+    public function revenueCurrentMonthTotal()
+    {
+        $now = Carbon::now();
+        $currentMonth = $now->month;
+        $currentYear = $now->year;
+
+        return $currentMonthRevenueTotal = DB::table('orders')
+            ->whereYear('paid_at', $currentYear)
+            ->whereMonth('paid_at', $currentMonth)
+            ->sum('total');
+    }
+
+    public function revenueCurrentMonthOrder()
+    {
+        $now = Carbon::now();
+        $currentMonth = $now->month;
+        $currentYear = $now->year;
+
+        return $revenueCurrentMonthOrder = DB::table('orders')
+            ->whereYear('paid_at', $currentYear)
+            ->whereMonth('paid_at', $currentMonth)
+            ->count();
+    }
+
+    public function lastMonth()
+    {
+        return $lastMonthRevenue = DB::table('orders')
+            ->whereNotNull('paid_at')
+            ->whereMonth('paid_at', now()->subMonth()->month)
+            ->whereYear('paid_at', now()->subMonth()->year)
+            ->sum('total');
+    }
+
     public function getTotalOrders()
     {
         return $this->model->count();
@@ -317,11 +459,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         return $this->model->where('status', '=', 'cancel')->count();
     }
 
-    private function convertPriceFilter($price)
-    {
-    }
+    private function convertPriceFilter($price) {}
 
-    private function convertRateFilter($rate)
-    {
-    }
+    private function convertRateFilter($rate) {}
 }
