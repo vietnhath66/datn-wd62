@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Attribute;
 use Log;
 use Validator;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductsController extends Controller
 {
@@ -94,6 +95,14 @@ class ProductsController extends Controller
 
         }
 
+        $minPrice = $request->query('min_price');
+        $maxPrice = $request->query('max_price');
+        if (is_numeric($minPrice)) {
+            $productsQuery->where('price', '>=', $minPrice);
+        }
+        if (is_numeric($maxPrice)) {
+            $productsQuery->where('price', '<=', $maxPrice);
+        }
 
         if ($request->has('sort')) {
             $sortParam = explode('_', $request->query('sort'));
@@ -129,6 +138,40 @@ class ProductsController extends Controller
             });
         }
 
+        $selectedBrands = $request->query('brands', []); // Lấy mảng brands[] từ URL
+        if (!empty($selectedBrands) && is_array($selectedBrands)) {
+            // Lọc các brand ID hợp lệ
+            $validBrandIds = array_filter($selectedBrands, 'is_numeric');
+            if (!empty($validBrandIds)) {
+                $productsQuery->whereIn('brand_id', $validBrandIds);
+            }
+        }
+
+        $selectedRatings = $request->query('ratings', []); // Lấy mảng ratings[] từ URL
+        if (!empty($selectedRatings) && is_array($selectedRatings)) {
+            $validRatings = array_map('intval', array_filter($selectedRatings, 'is_numeric'));
+            $validRatings = array_filter($validRatings, fn($r) => $r >= 1 && $r <= 5); // Chỉ lấy rating 1-5
+
+            if (!empty($validRatings)) {
+                // --- Cách 1: Lọc sản phẩm có ÍT NHẤT MỘT đánh giá nằm trong các mức đã chọn ---
+                $productsQuery->whereHas('reviews', function (Builder $query) use ($validRatings) {
+                    $query->whereIn('rating', $validRatings);
+                });
+
+                // --- Cách 2: Lọc sản phẩm có ĐIỂM TRUNG BÌNH nằm trong khoảng đã chọn ---
+                // (Yêu cầu bạn phải có cột average_rating trong bảng products và được cập nhật thường xuyên)
+                // $productsQuery->where(function (Builder $query) use ($validRatings) {
+                //     foreach ($validRatings as $rating) {
+                //         if ($rating == 5) {
+                //             $query->orWhere('average_rating', '>=', 5);
+                //         } else {
+                //             $query->orWhereBetween('average_rating', [$rating, $rating + 0.99]); // Ví dụ: 4 sao là từ 4.0 đến 4.99
+                //         }
+                //     }
+                // });
+            }
+        }
+
         $brands = Brand::orderBy('name', 'asc')->get();
 
         if ($filterType) {
@@ -140,6 +183,10 @@ class ProductsController extends Controller
         $colors = Attribute::where('attribute_catalogue_id', 11)->get();
         $sizes = Attribute::where('attribute_catalogue_id', 10)->get();
 
+        $wishlistedProductIds = []; // Lấy wishlist IDs (như đã làm)
+        if (Auth::check()) {
+            $wishlistedProductIds = Auth::user()->wishlistedProducts()->pluck('products.id')->toArray();
+        }
 
         return view('client.productss.productss', compact(
             'products',
@@ -149,8 +196,9 @@ class ProductsController extends Controller
             'selectedCategoryId',
             'colors',
             'sizes',
-            'request',
-            'brands'
+            'request', // Giữ lại request để đọc param trong view nếu cần
+            'brands',
+            'wishlistedProductIds'
         ));
     }
 
