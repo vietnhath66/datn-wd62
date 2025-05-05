@@ -31,4 +31,18 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'momo' => [
+        // --- SANDBOX ---
+        'sandbox_endpoint_url' => env('MOMO_SANDBOX_ENDPOINT_URL', 'https://test-payment.momo.vn/v2/gateway/api/create'),
+        'sandbox_partner_code' => env('MOMO_SANDBOX_PARTNER_CODE'),
+        'sandbox_access_key' => env('MOMO_SANDBOX_ACCESS_KEY'),
+        'sandbox_secret_key' => env('MOMO_SANDBOX_SECRET_KEY'),
+
+        // --- PRODUCTION (Để sẵn cho sau này) ---
+        // 'production_endpoint_url' => env('MOMO_PRODUCTION_ENDPOINT_URL', 'https://payment.momo.vn/v2/gateway/api/create'), // Check URL Production
+        // 'production_partner_code' => env('MOMO_PRODUCTION_PARTNER_CODE'),
+        // 'production_access_key' => env('MOMO_PRODUCTION_ACCESS_KEY'),
+        // 'production_secret_key' => env('MOMO_PRODUCTION_SECRET_KEY'),
+    ],
+
 ];
