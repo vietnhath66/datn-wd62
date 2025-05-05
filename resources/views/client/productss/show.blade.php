@@ -112,7 +112,7 @@
                     <!--  -->
                     <div class="flex-w flex-m p-l-100 p-t-40 respon7">
                         <div class="flex-m bor9 p-r-10 m-r-11">
-                            <a href="#"
+                            <a href="#" data-product-id="{{ $product->id }}"
                                 class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100"
                                 data-tooltip="Add to Wishlist">
                                 <i class="zmdi zmdi-favorite"></i>
@@ -210,57 +210,64 @@
 
 
                                     @auth
-                                        <form class="w-full p-t-40" method="POST"
-                                            action="{{ route('client.product.reviewProduct', $product->id) }}">
-                                            @csrf
+                                        @if ($canReview)
+                                            <form class="w-full p-t-40" method="POST"
+                                                action="{{ route('client.product.reviewProduct', $product->id) }}">
+                                                @csrf
 
-                                            <div class="flex-w flex-m p-t-25 p-b-23">
-                                                <span class="stext-102 cl3 m-r-16">
-                                                    Đánh giá của bạn <span class="text-danger">*</span>
-                                                </span>
-                                                <span class="wrap-rating fs-30 cl11 pointer">
-                                                    <i class="item-rating pointer zmdi zmdi-star-outline"
-                                                        data-rating="1"></i>
-                                                    <i class="item-rating pointer zmdi zmdi-star-outline"
-                                                        data-rating="2"></i>
-                                                    <i class="item-rating pointer zmdi zmdi-star-outline"
-                                                        data-rating="3"></i>
-                                                    <i class="item-rating pointer zmdi zmdi-star-outline"
-                                                        data-rating="4"></i>
-                                                    <i class="item-rating pointer zmdi zmdi-star-outline"
-                                                        data-rating="5"></i>
+                                                <div class="flex-w flex-m p-t-25 p-b-23">
+                                                    <span class="stext-102 cl3 m-r-16">
+                                                        Đánh giá của bạn <span class="text-danger">*</span>
+                                                    </span>
+                                                    <span class="wrap-rating fs-30 cl11 pointer">
+                                                        <i class="item-rating pointer zmdi zmdi-star-outline"
+                                                            data-rating="1"></i>
+                                                        <i class="item-rating pointer zmdi zmdi-star-outline"
+                                                            data-rating="2"></i>
+                                                        <i class="item-rating pointer zmdi zmdi-star-outline"
+                                                            data-rating="3"></i>
+                                                        <i class="item-rating pointer zmdi zmdi-star-outline"
+                                                            data-rating="4"></i>
+                                                        <i class="item-rating pointer zmdi zmdi-star-outline"
+                                                            data-rating="5"></i>
 
-                                                    <input class="dis-none" type="number" name="rating"
-                                                        value="{{ old('rating') }}" />
-                                                </span>
+                                                        <input class="dis-none" type="number" name="rating"
+                                                            value="{{ old('rating') }}" />
+                                                    </span>
 
-                                                @error('rating')
-                                                    <div class="text-danger w-100 d-block mt-2">
-                                                        <small>{{ $message }}</small>
-                                                    </div>
-                                                @enderror
-                                            </div>
-
-
-                                            <div class="row p-b-25">
-                                                <div class="col-12 p-b-5">
-                                                    <label class="kanit-thin stext-102 cl3" for="comment">Bình luận của
-                                                        bạn</label>
-                                                    <textarea placeholder="Nhập bình luận của bạn ở đây..."
-                                                        class="kanit-thin size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10 form-control @error('comment') is-invalid @enderror"
-                                                        id="comment" name="comment" rows="5">{{ old('comment') }}</textarea>
-                                                    @error('comment')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @error('rating')
+                                                        <div class="text-danger w-100 d-block mt-2">
+                                                            <small>{{ $message }}</small>
+                                                        </div>
                                                     @enderror
                                                 </div>
-                                            </div>
 
-                                            {{-- Nút Submit --}}
-                                            <button type="submit"
-                                                class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 m-b-10">
-                                                Gửi đánh giá
-                                            </button>
-                                        </form>
+
+                                                <div class="row p-b-25">
+                                                    <div class="col-12 p-b-5">
+                                                        <label class="kanit-thin stext-102 cl3" for="comment">Bình luận
+                                                            của
+                                                            bạn</label>
+                                                        <textarea placeholder="Nhập bình luận của bạn ở đây..."
+                                                            class="kanit-thin size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10 form-control @error('comment') is-invalid @enderror"
+                                                            id="comment" name="comment" rows="5">{{ old('comment') }}</textarea>
+                                                        @error('comment')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+
+                                                {{-- Nút Submit --}}
+                                                <button type="submit"
+                                                    class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 m-b-10">
+                                                    Gửi đánh giá
+                                                </button>
+                                            </form>
+                                        @else
+                                            {{-- Thông báo nếu chưa mua hàng --}}
+                                            <p class="p-t-40 stext-102 cl6">Bạn cần mua sản phẩm này để có thể đánh giá.
+                                            </p>
+                                        @endif
                                     @else
                                         {{-- Thông báo nếu chưa đăng nhập --}}
                                         <p class="p-t-40"><a href="{{ route('client.viewLogin') }}">Đăng nhập</a> để gửi
@@ -279,7 +286,7 @@
 
     <div class="bg6 flex-c-m flex-w size-302 m-t-73 p-tb-15">
         <span class="stext-107 cl6 p-lr-25">
-            Mã sản phẩm: {{ $product->product_catalogue_id }}
+
         </span>
 
     </div>
@@ -418,7 +425,8 @@
                                     <span class="stext-105 cl3">
                                         {{ number_format($relatedProduct->price, 0, ',', '.') }} VNĐ
                                     </span>
-                                    <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
+                                    <a href="#" data-product-id="{{ $relatedProduct->id }}"
+                                        class="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
                                         style="margin-right: 10px;">
                                         <img class="icon-heart1 dis-block trans-04"
                                             src="{{ asset('client/images/icons/icon-heart-01.png') }}"
@@ -552,7 +560,7 @@
         const quantityUpButton = document.querySelector('.btn-num-product-up');
         const quantityDownButton = document.querySelector('.btn-num-product-down');
         const addToCartButton = document.querySelector(
-        'button[type="submit"]'); // Select the Add to Cart button
+            'button[type="submit"]'); // Select the Add to Cart button
         let currentStock = 0;
 
         if (!colorSelectElement || !sizeSelect || !stockInfo || !quantityInput || !quantityUpButton || !
@@ -610,7 +618,7 @@
                         option.value = size;
                         option.textContent = size + (hasStock ? '' : ' (Hết hàng)');
                         option.disabled = !
-                        hasStock; // Disable if no stock for this color and size
+                            hasStock; // Disable if no stock for this color and size
                         sizeSelect.appendChild(option);
                     });
                     sizeSelect.disabled = false;
