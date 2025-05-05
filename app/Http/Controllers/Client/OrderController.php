@@ -450,7 +450,8 @@ class OrderController extends Controller
                 'message' => 'Áp dụng mã giảm giá thành công!',
                 'original_total_price_display' => number_format($originalTotal) . ' VNĐ',
                 'new_total_price_display' => number_format($finalTotal) . ' VNĐ',
-                'coupon_code' => $coupon->code
+                'coupon_code' => $coupon->code,
+                'discount_value' => $coupon->discount_value
             ]);
 
         } catch (\Exception $e) {
