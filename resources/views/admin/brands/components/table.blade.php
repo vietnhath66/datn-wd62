@@ -1,41 +1,4 @@
-{{-- <table class="table table-striped table-bordered">
-    <thead>
-    <tr>
-        <th style="width:50px;">
-            <input type="checkbox" value="" id="checkAll" class="input-checkbox">
-        </th>
-        <th>{{ __('messages.tableName') }}</th>
-        @include('backend.dashboard.components.languageTh')
-        <th class="text-center" style="width:100px;">{{ __('messages.tableStatus') }} </th>
-        <th class="text-center" style="width:100px;">{{ __('messages.tableAction') }} </th>
-    </tr>
-    </thead>
-    <tbody>
-        @if (isset($productCatalogues) && is_object($productCatalogues))
-            @foreach ($productCatalogues as $productCatalogue)
-            <tr >
-                <td>
-                    <input type="checkbox" value="{{ $productCatalogue->id }}" class="input-checkbox checkBoxItem">
-                </td>
-               
-                <td>
-                    {{ str_repeat('|----', (($productCatalogue->level > 0)?($productCatalogue->level - 1):0)).$productCatalogue->name }}
-                </td>
-                @include('backend.dashboard.components.languageTd', ['model' => $productCatalogue, 'modeling' => 'ProductCatalogue'])
-                <td class="text-center js-switch-{{ $productCatalogue->id }}"> 
-                    <input type="checkbox" value="{{ $productCatalogue->publish }}" class="js-switch status " data-field="publish" data-model="{{ $config['model'] }}" {{ ($productCatalogue->publish == 2) ? 'checked' : '' }} data-modelId="{{ $productCatalogue->id }}" />
-                </td>
-                <td class="text-center"> 
-                    <a href="{{ route('admin.product_catalogue.edit', $productCatalogue) }}" class="btn btn-success"><i class="fa fa-edit"></i></a>
-                    <a href="{{ route('admin.product_catalogue.delete', $productCatalogue) }}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
-                </td>
-            </tr>
-            @endforeach
-        @endif
-    </tbody>
-</table>
-{{  $productCatalogues->links('pagination::bootstrap-4') }} --}}
-{{-- @dd() --}}
+
 <div class="relative min-h-screen group-data-[sidebar-size=sm]:min-h-sm">
     <div
         class="group-data-[sidebar-size=lg]:ltr:md:ml-vertical-menu group-data-[sidebar-size=lg]:rtl:md:mr-vertical-menu group-data-[sidebar-size=md]:ltr:ml-vertical-menu-md group-data-[sidebar-size=md]:rtl:mr-vertical-menu-md group-data-[sidebar-size=sm]:ltr:ml-vertical-menu-sm group-data-[sidebar-size=sm]:rtl:mr-vertical-menu-sm pt-[calc(theme('spacing.header')_*_1)] pb-[calc(theme('spacing.header')_*_0.8)] px-4 group-data-[navbar=bordered]:pt-[calc(theme('spacing.header')_*_1.3)] group-data-[navbar=hidden]:pt-0 group-data-[layout=horizontal]:mx-auto group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:px-0 group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
