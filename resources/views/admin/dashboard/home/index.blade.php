@@ -400,7 +400,7 @@
                     </div>
                 </div> --}}
                 <!--end col-->
-                <div class="col-span-12 card md:col-span-6 lg:col-span-3 2xl:col-span-2">
+                {{-- <div class="col-span-12 card md:col-span-6 lg:col-span-3 2xl:col-span-2">
                     <div class="text-center card-body">
                         <div
                             class="flex items-center justify-center mx-auto rounded-full size-14 bg-custom-100 text-custom-500 dark:bg-custom-500/20">
@@ -413,16 +413,16 @@
                         <p class="text-slate-500 dark:text-zink-200">Tổng Doanh Thu</p>
                         
                     </div>
-                </div>
+                </div> --}}
                 <!--end col-->
                 <div class="col-span-12 card md:col-span-6 lg:col-span-3 2xl:col-span-2">
                     <div class="text-center card-body">
                         <div
                             class="flex items-center justify-center mx-auto text-purple-500 bg-purple-100 rounded-full size-14 dark:bg-purple-500/20">
-                            <i data-lucide="package"></i>
+                            <i data-lucide="wallet-2"></i>
                         </div>
                         <h5 class="mt-4 mb-2">
-                            <span class="counter-value" data-target="{{ $orderStatistic['revenueCurrentMonthTotal'] }}">0</span>
+                            <span class="counter-value" data-target="{{ $orderStatistic['revenueCurrentMonthTotal'] }}"> </span> VNĐ
                         </h5>
                         <p class="text-slate-500 dark:text-zink-200">Doanh thu tháng này</p>
                         <p class="text-slate-500 dark:text-zink-200">({{ $orderStatistic['revenueCurrentMonthOrder'] }} đơn)</p>
@@ -436,13 +436,15 @@
                             <i data-lucide="truck"></i>
                         </div>
                         <h5 class="mt-4 mb-2">
-                            <span class="counter-value" data-target="{{ $orderStatistic['totalOrders'] }}">0</span>
+                            <span class="counter-value" data-target="{{ $orderStatistic['getTotalAndOrderLastMonth']->total_revenue }}">0</span>
                         </h5>
-                        <p class="text-slate-500 dark:text-zink-200">Tổng đơn hàng</p>
+                        <p></p>
+                        <p class="text-slate-500 dark:text-zink-200">Doanh thu tháng trước</p>
+                        <p class="text-slate-500 dark:text-zink-200">({{ $orderStatistic['getTotalAndOrderLastMonth']->total_orders }} đơn)</p>
                     </div>
                 </div>
                 <!--end col-->
-                <div class="col-span-12 card md:col-span-6 lg:col-span-3 2xl:col-span-2">
+                {{-- <div class="col-span-12 card md:col-span-6 lg:col-span-3 2xl:col-span-2">
                     <div class="text-center card-body">
                         <div
                             class="flex items-center justify-center mx-auto text-red-500 bg-red-100 rounded-full size-14 dark:bg-red-500/20">
@@ -454,28 +456,28 @@
                         </h5>
                         <p class="text-slate-500 dark:text-zink-200">Đơn hàng đã hủy</p>
                     </div>
-                </div>
+                </div> --}}
                 <!--end col-->
-                <div class="col-span-12 card 2xl:col-span-8">
+                <div class="col-span-12 card 2xl:col-span-10">
                     <div class="card-body">
                         <canvas id="barChart" height="100"></canvas>
                     </div>
                 </div>
                 <!--end col-->
-                <div class="col-span-12 2xl:col-span-4">
+                <div class="col-span-12 2xl:col-span-2">
                     <div class="grid grid-cols-12 gap-x-5">
                         <div class="col-span-12 card lg:col-span-6 2xl:col-span-12">
                             <div class="card-body">
                                 <div class="grid grid-cols-1 gap-5 xl:grid-cols-12">
                                     <div class="xl:col-span-4">
                                       
-                                        <button type="button"
+                                        <button type="button" style="width:150px"
                                             class="inline-block px-4 py-2 text-base transition-all duration-300 ease-linear  rounded-md text-slate-500 dark:text-zink-200 border border-transparent [&.active]:bg-custom-500 dar:[&.active]:bg-custom-500 [&.active]:text-white dark:[&.active]:text-white hover:text-custom-500 dark:hover:text-custom-500 active:text-custom-500 dark:active:text-custom-500 -mb-[1px] chartButton"
                                             data-chart="1">Biểu đồ năm</button>
-                                        <button type="button"
+                                        <button type="button" style="width:150px"
                                             class="inline-block px-4 py-2 text-base transition-all duration-300 ease-linear rounded-md text-slate-500 dark:text-zink-200 border border-transparent [&.active]:bg-custom-500 dar:[&.active]:bg-custom-500 [&.active]:text-white dark:[&.active]:text-white hover:text-custom-500 dark:hover:text-custom-500 active:text-custom-500 dark:active:text-custom-500 -mb-[1px] chartButton"
                                             data-chart="30">Tháng hiện tại</button>
-                                        <button type="button"
+                                        <button type="button" style="width:150px"
                                             class="inline-block px-4 py-2 text-base transition-all duration-300 ease-linear rounded-md text-slate-500 dark:text-zink-200 border border-transparent [&.active]:bg-custom-500 dar:[&.active]:bg-custom-500 [&.active]:text-white dark:[&.active]:text-white hover:text-custom-500 dark:hover:text-custom-500 active:text-custom-500 dark:active:text-custom-500 -mb-[1px] chartButton"
                                             data-chart="7">7 ngày gần nhất</button>
                                     </div>
@@ -504,7 +506,7 @@
                         
                         <p class="revenue-summary">
                             Tổng doanh thu tháng này: 
-                            <strong>{{ $orderStatistic['revenueChartMonth']['totalRevenue'] }} ₫</strong>
+                            <strong>{{number_format($orderStatistic['revenueChartMonth']['totalRevenue'], 0, ',', '.') , 'VNĐ'  }} </strong> VNĐ
                         </p>
                         <p class="revenue-order">
                             Số đơn hàng tháng này: 

@@ -311,9 +311,9 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
     public function monthlyRevenue()
     {
         return $monthlyRevenue = DB::table('orders')
-            ->selectRaw('DATE_FORMAT(paid_at, "%Y-%m") as month, SUM(total) as revenue')
-            ->whereNotNull('paid_at')
-            ->groupBy(DB::raw('DATE_FORMAT(paid_at, "%Y-%m")'))
+            ->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, SUM(total) as revenue')
+            ->whereNotNull('created_at')
+            ->groupBy(DB::raw('DATE_FORMAT(created_at, "%Y-%m")'))
             ->orderBy('month', 'desc')
             ->get();
     }
@@ -327,18 +327,18 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
         // // Tổng doanh số theo tháng được chọn
         // $currentMonthRevenue = DB::table('orders')
-        //     ->whereYear('paid_at', $year)
-        //     ->whereMonth('paid_at', $month)
+        //     ->whereYear('created_at', $year)
+        //     ->whereMonth('created_at', $month)
         //     ->sum('total');
 
         // // Dữ liệu biểu đồ doanh số 12 tháng
         // $monthlyData = DB::table('orders')
         //     ->select(
-        //         DB::raw('MONTH(paid_at) as month'),
+        //         DB::raw('MONTH(created_at) as month'),
         //         DB::raw('SUM(total) as total')
         //     )
-        //     ->whereYear('paid_at', $year)
-        //     ->groupBy(DB::raw('MONTH(paid_at)'))
+        //     ->whereYear('created_at', $year)
+        //     ->groupBy(DB::raw('MONTH(created_at)'))
         //     ->orderBy('month')
         //     ->get();
 
@@ -359,19 +359,19 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
         // Tổng doanh số của tháng được chọn (không thay đổi nếu cần giữ tổng chung)
         $currentMonthRevenue = DB::table('orders')
-            ->whereYear('paid_at', $year)
-            ->whereMonth('paid_at', $month)
+            ->whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
             ->sum('total');
 
         // Lấy doanh số theo từng ngày trong tháng
         $dailyData = DB::table('orders')
             ->select(
-                DB::raw('DAY(paid_at) as day'),
+                DB::raw('DAY(created_at) as day'),
                 DB::raw('SUM(total) as total')
             )
-            ->whereYear('paid_at', $year)
-            ->whereMonth('paid_at', $month)
-            ->groupBy(DB::raw('DAY(paid_at)'))
+            ->whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->groupBy(DB::raw('DAY(created_at)'))
             ->orderBy('day')
             ->get();
 
@@ -390,13 +390,13 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         }
 
         $totalRevenue = DB::table('orders')
-            ->whereYear('paid_at', $year)
-            ->whereMonth('paid_at', $month)
+            ->whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
             ->sum('total');
 
         $totalOrdersMoth = DB::table('orders')
-            ->whereYear('paid_at', $year)
-            ->whereMonth('paid_at', $month)
+            ->whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
             ->count();
 
         // Tổng số đơn bị huỷ trong tháng
@@ -423,8 +423,8 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         $currentYear = $now->year;
 
         return $currentMonthRevenueTotal = DB::table('orders')
-            ->whereYear('paid_at', $currentYear)
-            ->whereMonth('paid_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->whereMonth('created_at', $currentMonth)
             ->sum('total');
     }
 
@@ -435,18 +435,29 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         $currentYear = $now->year;
 
         return $revenueCurrentMonthOrder = DB::table('orders')
-            ->whereYear('paid_at', $currentYear)
-            ->whereMonth('paid_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->whereMonth('created_at', $currentMonth)
             ->count();
     }
 
     public function lastMonth()
     {
         return $lastMonthRevenue = DB::table('orders')
-            ->whereNotNull('paid_at')
-            ->whereMonth('paid_at', now()->subMonth()->month)
-            ->whereYear('paid_at', now()->subMonth()->year)
+            ->whereNotNull('created_at')
+            ->whereMonth('created_at', now()->subMonth()->month)
+            ->whereYear('created_at', now()->subMonth()->year)
             ->sum('total');
+    }
+
+    public function getTotalAndOrderLastMonth()
+    {
+        $lastMonthStart = Carbon::now()->subMonth()->startOfMonth();
+        $lastMonthEnd = Carbon::now()->subMonth()->endOfMonth();
+
+        return $result = DB::table('orders')
+            ->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])
+            ->selectRaw('SUM(total) as total_revenue, COUNT(*) as total_orders')
+            ->first();
     }
 
     public function getTotalOrders()

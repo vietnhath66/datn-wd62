@@ -652,7 +652,8 @@ class OrderService extends BaseService implements OrderServiceInterface
             'revenueChartMonth' => $this->orderReponsitory->revenueByMonth($monthChoose),
             'revenueChartWeek' => $this->orderReponsitory->lastMonth(),
             'revenueCurrentMonthTotal' => $this->orderReponsitory->revenueCurrentMonthTotal(),
-            'revenueCurrentMonthOrder' => $this->orderReponsitory->revenueCurrentMonthOrder()
+            'revenueCurrentMonthOrder' => $this->orderReponsitory->revenueCurrentMonthOrder(),
+            'getTotalAndOrderLastMonth' => $this->orderReponsitory->getTotalAndOrderLastMonth()
         ];
     }
 
