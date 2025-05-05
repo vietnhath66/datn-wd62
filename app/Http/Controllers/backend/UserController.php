@@ -113,7 +113,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $this->authorize('modules', 'admin.users.update');
+        // $this->authorize('modules', 'admin.users.update');
 
         $provinces = $this->provinceReponsitory->all();
         $user_catalogues = $this->userCatalogueReponsitory->all();

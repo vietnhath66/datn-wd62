@@ -10,6 +10,7 @@ use App\Traits\QueryScopes;
 
 class Attribute extends Model
 {
+
     use HasFactory, SoftDeletes, QueryScopes;
 
     protected $fillable = [
@@ -19,21 +20,19 @@ class Attribute extends Model
         'description',
         'attribute_catalogue_id',
     ];
-
     protected $table = 'attributes';
-
-
-
     public function attribute_catalogues()
     {
         return $this->belongsToMany(AttributeCatalogue::class, 'attribute_catalogue_attribute', 'attribute_id', 'attribute_catalogue_id');
     }
 
-    // public function products_variants()
-    // {
-    //     return $this->belongsToMany(ProductVariant::class, 'product_variant_attribute', 'attribute_id', 'attribute_id')
-    //         ->withPivot(
-    //             'name',
-    //         )->withTimestamps();
-    // }
+    public function catalogue()
+    {
+        return $this->belongsTo(AttributeCatalogue::class, 'attribute_catalogue_id');
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'product_attributes', 'attribute_id', 'product_id');
+    }
 }

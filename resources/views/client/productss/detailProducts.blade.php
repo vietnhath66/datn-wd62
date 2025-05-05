@@ -4,5 +4,4 @@
 
 @section('content')
     @include('client.productss.show')
-    
 @endsection

@@ -12,6 +12,7 @@ use App\Repositories\Interfaces\AttributeRepositoryInterface as AttributeReponsi
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Classes\Nestedsetbie;
+use App\Models\ProductCatalogue;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -65,7 +66,11 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             ['id', 'ASC'],
             [],
         );
-        // dd($productCatalogues);
+
+        if(isset($condition['keyword'])){
+
+            $productCatalogues = ProductCatalogue::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->get();
+        }
         return $productCatalogues;
     }
 
@@ -179,7 +184,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
     {
         $payload = $request->only($this->payloadLanguage());
         $payload['canonical'] = Str::slug($payload['canonical']);
-        $payload['language_id'] =  $languageId;
+        $payload['language_id'] = $languageId;
         $payload['product_catalogue_id'] = $productCatalogue->id;
         return $payload;
     }
@@ -194,7 +199,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
     public function setAttribute($product)
     {
         $attribute = $product->attribute;
-        $productCatalogueId = (int)$product->product_catalogue_id;
+        $productCatalogueId = (int) $product->product_catalogue_id;
         $productCatalogue = $this->ProductCatalogueRepository->findById($productCatalogueId);
         if (!is_array($productCatalogue->attribute)) {
             $payload['attribute'] = $attribute;

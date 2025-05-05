@@ -1,41 +1,4 @@
-{{-- <table class="table table-striped table-bordered">
-    <thead>
-    <tr>
-        <th style="width:50px;">
-            <input type="checkbox" value="" id="checkAll" class="input-checkbox">
-        </th>
-        <th>{{ __('messages.tableName') }}</th>
-        @include('backend.dashboard.components.languageTh')
-        <th class="text-center" style="width:100px;">{{ __('messages.tableStatus') }} </th>
-        <th class="text-center" style="width:100px;">{{ __('messages.tableAction') }} </th>
-    </tr>
-    </thead>
-    <tbody>
-        @if (isset($productCatalogues) && is_object($productCatalogues))
-            @foreach ($productCatalogues as $productCatalogue)
-            <tr >
-                <td>
-                    <input type="checkbox" value="{{ $productCatalogue->id }}" class="input-checkbox checkBoxItem">
-                </td>
-               
-                <td>
-                    {{ str_repeat('|----', (($productCatalogue->level > 0)?($productCatalogue->level - 1):0)).$productCatalogue->name }}
-                </td>
-                @include('backend.dashboard.components.languageTd', ['model' => $productCatalogue, 'modeling' => 'ProductCatalogue'])
-                <td class="text-center js-switch-{{ $productCatalogue->id }}"> 
-                    <input type="checkbox" value="{{ $productCatalogue->publish }}" class="js-switch status " data-field="publish" data-model="{{ $config['model'] }}" {{ ($productCatalogue->publish == 2) ? 'checked' : '' }} data-modelId="{{ $productCatalogue->id }}" />
-                </td>
-                <td class="text-center"> 
-                    <a href="{{ route('admin.product_catalogue.edit', $productCatalogue) }}" class="btn btn-success"><i class="fa fa-edit"></i></a>
-                    <a href="{{ route('admin.product_catalogue.delete', $productCatalogue) }}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
-                </td>
-            </tr>
-            @endforeach
-        @endif
-    </tbody>
-</table>
-{{  $productCatalogues->links('pagination::bootstrap-4') }} --}}
-{{-- @dd() --}}
+
 <div class="relative min-h-screen group-data-[sidebar-size=sm]:min-h-sm">
     <div
         class="group-data-[sidebar-size=lg]:ltr:md:ml-vertical-menu group-data-[sidebar-size=lg]:rtl:md:mr-vertical-menu group-data-[sidebar-size=md]:ltr:ml-vertical-menu-md group-data-[sidebar-size=md]:rtl:mr-vertical-menu-md group-data-[sidebar-size=sm]:ltr:ml-vertical-menu-sm group-data-[sidebar-size=sm]:rtl:mr-vertical-menu-sm pt-[calc(theme('spacing.header')_*_1)] pb-[calc(theme('spacing.header')_*_0.8)] px-4 group-data-[navbar=bordered]:pt-[calc(theme('spacing.header')_*_1.3)] group-data-[navbar=hidden]:pt-0 group-data-[layout=horizontal]:mx-auto group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:px-0 group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
@@ -58,15 +21,7 @@
             <div class="card" id="productListTable">
                 <div class="card-body">
                     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-12">
-                        <div class="xl:col-span-3">
-                            <div class="relative">
-                                <input type="text"
-                                    class="ltr:pl-8 rtl:pr-8 search form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
-                                    placeholder="Tìm kiếm..." autocomplete="off">
-                                <i data-lucide="search"
-                                    class="inline-block size-4 absolute ltr:left-2.5 rtl:right-2.5 top-2.5 text-slate-500 dark:text-zink-200 fill-slate-100 dark:fill-zink-600"></i>
-                            </div>
-                        </div><!--end col-->
+                        @include('admin.counpons.components.filter')
                         <div class="xl:col-span-2">
                             <div>
                                 <input type="text"
@@ -147,7 +102,8 @@
                                                         <li>
                                                             <a data-modal-target="deleteModal"
                                                                 class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
-                                                                href="{{ route('admin.brands.destroy', $item->id) }}"><i data-lucide="trash-2"
+                                                                href="{{ route('admin.brands.destroy', $item->id) }}"><i
+                                                                    data-lucide="trash-2"
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
                                                                 <span class="align-middle">Delete</span></a>
                                                         </li>

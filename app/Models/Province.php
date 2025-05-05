@@ -10,14 +10,18 @@ class Province extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'code', 'name', 'name_en', 'full_name', 'full_name_en', 'code_name', 'administrative_unit_id', 'administrative_region_id',
     ];
 
-    protected $table = 'provinces';  
+    protected $table = 'provinces';
     protected $primaryKey = 'code';
     public $incrementing = false;
 
     public function districts(){
         return $this->hasMany(District::class, 'province_code', 'code');
+    }
+    public function addresses()
+    {
+        return $this->hasMany(Address::class, 'province_code', 'code');
     }
 }

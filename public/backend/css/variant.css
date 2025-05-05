@@ -1,0 +1,63 @@
+.variant-box,
+.product-variant {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.variant-box .ibox-title h5,
+.product-variant .ibox-title h5 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.variant-checkbox {
+    margin-bottom: 20px;
+}
+
+.variant-checkbox input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.attribute-title {
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.variant-item select {
+    width: 100%;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.remove-attribute {
+    margin-top: 30px;
+}
+
+.add-variant {
+    background-color: #409EFF;
+    color: #fff;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.add-variant:hover {
+    background-color: #66b1ff;
+}
+
+.variantTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.variantTable th,
+.variantTable td {
+    border: 1px solid #ddd;
+    padding: 10px;
+}

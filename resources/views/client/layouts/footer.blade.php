@@ -50,13 +50,13 @@
             </div>
 
             <div class="col-sm-6 col-lg-3 p-b-50">
-                <h4 class="stext-301 cl0 p-b-30">Liên Hệ</h4>            
-				<p class="stext-115 cl1 size-213 p-t-18">
-								Hotline: 0968343848
-							</p>
-                            <p class="stext-115 cl1 size-213 p-t-18">
-								Email: chicwear68@gmail.com
-							</p>
+                <h4 class="stext-301 cl0 p-b-30">Liên Hệ</h4>
+                <p class="stext-115 cl1 size-213 p-t-18">
+                    Hotline: 0968343848
+                </p>
+                <p class="stext-115 cl1 size-213 p-t-18">
+                    Email: chicwear68@gmail.com
+                </p>
 
                 <div class="p-t-27">
                     <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
@@ -95,23 +95,23 @@
         <div class="p-t-40">
             <div class="flex-c-m flex-w p-b-18">
                 <a href="#" class="m-all-1">
-                    <img src="images/icons/icon-pay-01.png" alt="ICON-PAY" />
+                    <img src="{{ asset('client/images/icons/icon-pay-01.png') }}" alt="ICON-PAY" />
                 </a>
 
                 <a href="#" class="m-all-1">
-                    <img src="images/icons/icon-pay-02.png" alt="ICON-PAY" />
+                    <img src="{{ asset('client/images/icons/icon-pay-02.png') }}" alt="ICON-PAY" />
                 </a>
 
                 <a href="#" class="m-all-1">
-                    <img src="images/icons/icon-pay-03.png" alt="ICON-PAY" />
+                    <img src="{{ asset('client/images/icons/icon-pay-03.png') }}" alt="ICON-PAY" />
                 </a>
 
                 <a href="#" class="m-all-1">
-                    <img src="images/icons/icon-pay-04.png" alt="ICON-PAY" />
+                    <img src="{{ asset('client/images/icons/icon-pay-04.png') }}" alt="ICON-PAY" />
                 </a>
 
                 <a href="#" class="m-all-1">
-                    <img src="images/icons/icon-pay-05.png" alt="ICON-PAY" />
+                    <img src="{{ asset('client/images/icons/icon-pay-05.png') }}" alt="ICON-PAY" />
                 </a>
             </div>
 
@@ -121,8 +121,8 @@
                 <script>
                     document.write(new Date().getFullYear());
                 </script>
-               by Chic Wear
-                
+                by Chic Wear
+
                 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
             </p>
         </div>

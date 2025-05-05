@@ -63,6 +63,8 @@
 
     HT.changeChart = () => {
         $(document).on('click', '.chartButton', function(e){
+            console.log(123);
+            
             e.preventDefault();
             let button = $(this);
             let chartType  = button.attr('data-chart');
@@ -75,7 +77,7 @@
 
     HT.callChart = (chartType) => {
         $.ajax({
-            url: "http://shopprojectt.test/admin/ajax/order/chart",
+            url: "http://127.0.0.1:8000/admin/ajax/order/chart",
             type: "GET",
             data: {
                 chartType: chartType
@@ -89,7 +91,7 @@
 
 
     $(document).ready(function () {
-        HT.crateCanvas(label,data) 
-        HT.changeChart()
+        HT.changeChart();
+        HT.crateCanvas(label,data);
     });
 })(jQuery);

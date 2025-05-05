@@ -13,21 +13,30 @@
 
 <!-- App js -->
 <script src="{{ asset('admin/js/app.js') }}"></script>
-<script src="backend/js/bootstrap.min.js"></script>
-<script src="backend/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="backend/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-<script src="backend/js/inspinia.js"></script>
-<script src="backend/js/plugins/pace/pace.min.js"></script>
-<script src="backend/js/plugins/toastr/toastr.min.js"></script>
+<script src="{{ asset('backend/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('backend/js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
+<script src="{{ asset('backend/js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+<script src="{{ asset('backend/js/inspinia.js') }}"></script>
+<script src="{{ asset('backend/js/plugins/pace/pace.min.js') }}"></script>
+<script src="{{ asset('backend/js/plugins/toastr/toastr.min.js') }}"></script>
 
-<script src="backend/library/library.js"></script>
+<script src="{{ asset('backend/library/library.js') }}"></script>
 
 
 <!-- jQuery UI -->
-<script src="backend/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script src="{{ asset('backend/js/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
 
 @if (isset($config['js']) && is_array($config['js']))
     @foreach ($config['js'] as $key => $value)
         {!! '<script src="' . $value . '"></script>' !!}
     @endforeach
 @endif
+
+{{-- <script>
+    Dropzone.options.myDropzone = {
+        paramName: "file",
+        maxFilesize: 2, // Giới hạn 2MB
+        acceptedFiles: "image/*", // Chỉ nhận ảnh
+        dictDefaultMessage: "Kéo thả ảnh vào đây hoặc click để chọn ảnh"
+    };
+</script> --}}

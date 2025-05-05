@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+
+use App\Models\Brand;
 use App\Models\User;
 use App\Repositories\Interfaces\BrandRepositoryInterface as BrandRepository;
 use App\Services\Interfaces\BrandServiceInterface;
@@ -30,6 +32,7 @@ class BrandService implements BrandServiceInterface
         $perPage = addslashes($request->integer('per_page'));
 
 
+        // dd($condition['keyword']);
         $brands = $this->BrandRepository->pagination(
             ['*'],
             $condition,
@@ -39,6 +42,11 @@ class BrandService implements BrandServiceInterface
             [],
             [],
         );
+
+        if (isset($_GET) && isset($condition['keyword'])) {
+
+            $brands = Brand::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->get();
+        }
         return $brands;
     }
 
@@ -48,16 +56,22 @@ class BrandService implements BrandServiceInterface
         try {
             $payload = $request->only($this->payload());
             if ($request->hasFile('image')) {
-                $payload['image'] = Storage::put(self::PATH_UPLOAD, $request->file('image'));
+                // Sửa lỗi: Chỉ định disk 'public' để lưu vào storage/app/public
+                $payload['image'] = Storage::disk('public')->put(self::PATH_UPLOAD, $request->file('image'));
+
+                // Hoặc dùng cách này:
+                // $payload['image'] = Storage::put(self::PATH_UPLOAD, $request->file('image'), 'public');
             }
             $brand = $this->BrandRepository->create($payload);
             DB::commit();
-            return true;
+            return true; // Có thể trả về $brand hoặc redirect response nếu cần
         } catch (\Exception $e) {
             DB::rollBack();
-            echo $e->getMessage();
-            die();
-            return false;
+            // Thay vì echo và die, nên log lỗi và trả về false hoặc response lỗi
+            // echo $e->getMessage();
+            // die();
+            \Log::error('Lỗi tạo brand:', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            return false; // Hoặc response lỗi
         }
     }
 
