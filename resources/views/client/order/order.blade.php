@@ -543,7 +543,7 @@
 @push('script')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    {{-- <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
 
             // Lấy các select element (sử dụng ID mới)
@@ -717,9 +717,9 @@
                 // ... logic xử lý quantity buttons và checkout form submission ...
             };
         }); // End DOMContentLoaded
-    </script> --}}
+    </script>
 
-    {{-- <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('addressForm');
 
@@ -740,9 +740,9 @@
 
             });
         });
-    </script> --}}
+    </script>
 
-    {{-- <script>
+    <script>
         $(document).ready(function() {
 
             // --- Setup AJAX CSRF Token (Quan trọng) ---
@@ -924,9 +924,9 @@
             }); // Kết thúc on submit
 
         }); // Kết thúc $(document).ready
-    </script> --}}
+    </script>
 
-    {{-- <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             // === CÁC ELEMENT LIÊN QUAN ĐẾN FORM CHÍNH ===
             const nameInput = document.getElementById('fullName');
@@ -1113,351 +1113,6 @@
                 if (nameInput) nameInput.value = "{{ $user->name }}";
                 if (phoneInput) phoneInput.value = "{{ $user->phone }}";
                 if (emailInput) emailInput.value = "{{ $user->email }}";
-            }
-
-        });
-    </script> --}}
-
-    <script>
-        $(document).ready(function() {
-
-            // --- 0. CSRF Token Setup ---
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            // --- 1. Select2 Init & Elements ---
-            const $provinceSelect = $('#province');
-            const $districtSelect = $('#district');
-            const $wardSelect = $('#ward');
-            const $checkoutForm = $('#checkoutForm'); // Lấy form checkout
-
-            $provinceSelect.select2({
-                placeholder: 'Chọn tỉnh/thành phố',
-                width: '100%'
-            });
-            $districtSelect.select2({
-                placeholder: 'Chọn quận/huyện',
-                width: '100%'
-            });
-            $wardSelect.select2({
-                placeholder: 'Chọn phường/xã',
-                width: '100%'
-            });
-
-            // --- Biến cờ để kiểm soát việc chờ load ---
-            let isDistrictLoading = false;
-            let isWardLoading = false;
-
-            // --- 2. Logic Load Địa chỉ Động (Cần Sửa Đổi để báo hiệu hoàn thành) ---
-
-            // Hàm fetch và populate options, trả về Promise để báo hiệu hoàn thành
-            function fetchAndPopulate(selectElement, url, placeholder) {
-                return new Promise((resolve, reject) => {
-                    // Reset và disable
-                    selectElement.html(`<option value="">${placeholder}</option>`).prop('disabled', true)
-                        .trigger('change.select2');
-
-                    // Nếu không có url (ví dụ provinceCode rỗng), resolve ngay
-                    if (!url) {
-                        console.log(`URL empty for ${selectElement.attr('id')}, resolving.`);
-                        resolve();
-                        return;
-                    }
-
-                    console.log(`Workspaceing for ${selectElement.attr('id')} from ${url}`);
-                    fetch(url)
-                        .then(response => response.json())
-                        .then(data => {
-                            let optionsHtml = `<option value="">${placeholder}</option>`;
-                            if (!data.message && data.length > 0) {
-                                data.forEach(item => {
-                                    // !!! VALUE VẪN LÀ CODE, NHƯNG TEXT LÀ FULL NAME !!!
-                                    // Điều này quan trọng cho việc tìm kiếm theo text sau này
-                                    optionsHtml +=
-                                        `<option value="${item.code}" data-name="${item.full_name}">${item.full_name}</option>`;
-                                });
-                                selectElement.html(optionsHtml).prop('disabled', false);
-                            } else {
-                                selectElement.html(
-                                    `<option value="">${data.message || 'Không có dữ liệu'}</option>`
-                                ).prop('disabled', true);
-                            }
-                            selectElement.trigger('change.select2'); // Cập nhật Select2
-                            console.log(`Finished populating ${selectElement.attr('id')}`);
-                            resolve(); // Báo hiệu hoàn thành
-                        })
-                        .catch(error => {
-                            console.error(`Error fetching for ${selectElement.attr('id')}:`, error);
-                            selectElement.html(`<option value="">Lỗi tải dữ liệu</option>`).prop(
-                                'disabled', true).trigger('change.select2');
-                            reject(error); // Báo hiệu lỗi
-                        });
-                });
-            }
-
-            // Khi thay đổi tỉnh
-            $provinceSelect.on('change', function() {
-                const provinceCode = $(this).val();
-                isDistrictLoading = true; // Bắt đầu load huyện
-                isWardLoading = true; // Xã cũng sẽ cần load lại
-                fetchAndPopulate($districtSelect, provinceCode ? `/get-districts/${provinceCode}` : null,
-                        'Chọn quận/huyện')
-                    .finally(() => {
-                        isDistrictLoading = false;
-                        console.log("District loading finished (event flag)");
-                    });
-                // Reset xã ngay lập tức
-                fetchAndPopulate($wardSelect, null, 'Chọn phường/xã')
-                    .finally(() => {
-                        isWardLoading = false;
-                    }); // Reset trạng thái loading xã
-            });
-
-            // Khi thay đổi huyện
-            $districtSelect.on('change', function() {
-                const districtCode = $(this).val();
-                isWardLoading = true; // Bắt đầu load xã
-                fetchAndPopulate($wardSelect, districtCode ? `/get-wards/${districtCode}` : null,
-                        'Chọn phường/xã')
-                    .finally(() => {
-                        isWardLoading = false;
-                        console.log("Ward loading finished (event flag)");
-                    });
-            });
-
-
-            // --- 3. Logic Modal Chọn Địa Chỉ ---
-            const $addressModal = $('#addressModal');
-            const $modalAddressListDiv = $('#modal-address-list');
-            const savedAddresses = @json($userAddresses ?? []);
-
-            // Hàm render modal (Lưu tên vào data attribute)
-            function renderModalAddressList() {
-                $modalAddressListDiv.empty();
-                if (savedAddresses && savedAddresses.length > 0) {
-                    savedAddresses.forEach(addr => {
-                        const itemHtml = `
-                            <div class="modal-address-item form-check">
-                                <input class="form-check-input saved-address-radio-modal" type="radio" name="selected_address_modal" id="modal_address_${addr.id}" value="${addr.id}"
-                                       data-name="{{ $user->name }}" data-phone="{{ $user->phone }}" data-email="{{ $user->email }}"
-                                       data-address="${addr.address}"
-                                       data-province="${addr.province}" {{-- LƯU TÊN TỈNH --}}
-                                       data-district="${addr.district}" {{-- LƯU TÊN HUYỆN --}}
-                                       data-ward="${addr.neighborhood}" {{-- LƯU TÊN XÃ --}}
-                                       ${addr.is_default ? 'data-is-default="true"' : ''}>
-                                <label class="form-check-label" for="modal_address_${addr.id}">
-                                    ${addr.address}, ${addr.neighborhood}, ${addr.district}, ${addr.province}
-                                    ${addr.is_default ? '<span class="badge bg-primary ms-2">Mặc định</span>' : ''}
-                                </label>
-                            </div>`;
-                        $modalAddressListDiv.append(itemHtml);
-                    });
-                } else {
-                    /* ... */
-                }
-            }
-
-            // Hàm điền form (Cố gắng chọn theo TÊN, xử lý bất đồng bộ)
-            async function populateForm(data) {
-                if (!data) return;
-                console.log("Populating form with (name-based):", data);
-
-                // Điền trường text
-                $('#fullName').val(data.name || '');
-                $('#phone').val(data.phone || '');
-                $('#email').val(data.email || '');
-                $('#address').val(data.address || '');
-
-                // Hàm chọn option theo TEXT và trả về Promise khi hoàn thành (bao gồm cả chờ load)
-                function selectOptionByText(selectElement, textToMatch, loadTriggerPromise) {
-                    return new Promise(async (resolve) => {
-                        if (!selectElement || !textToMatch) {
-                            resolve();
-                            return;
-                        }
-
-                        console.log(
-                            `Attempting to select "${textToMatch}" in #${selectElement.attr('id')}`
-                        );
-
-                        // 1. Đợi cho quá trình load trước đó (nếu có) hoàn thành
-                        if (loadTriggerPromise) {
-                            console.log(
-                                `Waiting for load trigger promise for #${selectElement.attr('id')}`
-                            );
-                            await loadTriggerPromise;
-                            console.log(
-                                `Load trigger promise resolved for #${selectElement.attr('id')}`
-                            );
-                            // Đợi thêm một chút sau khi promise resolve để đảm bảo DOM update
-                            await new Promise(r => setTimeout(r, 100));
-                        }
-
-                        // 2. Tìm option có text khớp
-                        let foundOption = null;
-                        selectElement.find('option').each(function() {
-                            if ($(this).text().trim() === textToMatch.trim()) {
-                                foundOption = $(this);
-                                return false; // Thoát vòng lặp
-                            }
-                        });
-
-                        // 3. Set giá trị nếu tìm thấy và trigger change
-                        if (foundOption) {
-                            if (selectElement.val() !== foundOption.val()) {
-                                console.log(
-                                    `Found option for "${textToMatch}". Setting value to ${foundOption.val()}`
-                                );
-                                selectElement.val(foundOption.val()).trigger(
-                                    'change'); // Trigger change quan trọng
-                                // Đợi sau khi trigger change
-                                await new Promise(r => setTimeout(r, 150));
-                            } else {
-                                console.log(
-                                    `#${selectElement.attr('id')} already has correct value for "${textToMatch}"`
-                                );
-                            }
-                            resolve(true); // Báo hiệu đã chọn thành công
-                        } else {
-                            console.warn(
-                                `Option with text "${textToMatch}" not found in #${selectElement.attr('id')}`
-                            );
-                            if (selectElement.val() !== "") {
-                                selectElement.val("").trigger('change'); // Reset nếu không tìm thấy
-                                await new Promise(r => setTimeout(r, 150));
-                            }
-                            resolve(false); // Báo hiệu không chọn được
-                        }
-                    });
-                }
-
-                // --- Thực hiện chọn tuần tự ---
-                // Tạo các Promise giả để báo hiệu khi nào việc load hoàn thành
-                let districtLoadPromise = new Promise(r => $(document).one('districtsLoaded', r));
-                let wardLoadPromise = new Promise(r => $(document).one('wardsLoaded', r));
-
-                // Bọc lại hàm fetch để trigger sự kiện tùy chỉnh khi xong
-                function fetchAndPopulateWithEvent(selectElement, url, placeholder, eventName) {
-                    // (Copy logic từ hàm fetchAndPopulate ở trên)
-                    // ... fetch ...
-                    // .then(data => { ... populate options ...})
-                    // .finally(() => {
-                    //     $(document).trigger(eventName); // Trigger sự kiện tùy chỉnh khi xong
-                    //     resolve(); // hoặc reject(error)
-                    // });
-                    // *** Cần sửa lại hàm fetchAndPopulate ở trên để tích hợp cái này ***
-                    // *** Hoặc sửa trực tiếp listener 'change' của province/district để trigger event ***
-                    // ---> Ví dụ sửa listener change của province:
-                    // $provinceSelect.on('change', function() {
-                    //     const provinceCode = $(this).val();
-                    //     isDistrictLoading = true;
-                    //     fetchAndPopulate($districtSelect, provinceCode ? `/get-districts/${provinceCode}` : null, 'Chọn quận/huyện')
-                    //         .then(() => $(document).trigger('districtsLoaded')) // Trigger event khi xong
-                    //         .finally(() => { isDistrictLoading = false; });
-                    //     // Reset xã...
-                    // });
-                    // ---> Tương tự cho district change để trigger 'wardsLoaded'
-
-                    // Do việc sửa đổi hàm fetch phức tạp, tạm thời dùng setTimeout để mô phỏng chờ
-                    console.warn(
-                        "Using setTimeout as a fallback for waiting. Refactor fetch logic for robustness.");
-                    return new Promise(resolve => setTimeout(resolve, 800)); // Chờ 800ms (KHÔNG ĐÁNG TIN CẬY)
-
-                }
-
-
-                // Chọn Tỉnh/TP
-                let provincePromise = selectOptionByText($provinceSelect, data.province);
-                let provinceSelected = await provincePromise;
-
-
-                // Chọn Quận/Huyện (Chỉ chạy nếu tỉnh được chọn thành công)
-                let districtSelected = false;
-                if (provinceSelected) {
-                    // Đợi quá trình load huyện (dùng Promise hoặc setTimeout không đáng tin cậy)
-                    console.log("Waiting simulated delay for districts...");
-                    await fetchAndPopulateWithEvent($districtSelect, null, '',
-                        'districtsLoaded'); // Mô phỏng chờ
-                    districtSelected = await selectOptionByText($districtSelect, data.district);
-                }
-
-                // Chọn Phường/Xã (Chỉ chạy nếu huyện được chọn thành công)
-                if (districtSelected) {
-                    console.log("Waiting simulated delay for wards...");
-                    await fetchAndPopulateWithEvent($wardSelect, null, '', 'wardsLoaded'); // Mô phỏng chờ
-                    await selectOptionByText($wardSelect, data.ward);
-                }
-
-                console.log("populateForm (name-based) finished.");
-            }
-
-
-            // Mở/Đóng Modal (Giữ nguyên)
-            $('#change-address-btn').on('click', showModal);
-            $('#closeAddressModal').on('click', hideModal);
-            $(window).on('click', function(event) {
-                /* ... đóng modal ... */
-            });
-
-            function showModal() {
-                /* ... */
-                renderModalAddressList();
-                $addressModal.css('display', 'block');
-            }
-
-            function hideModal() {
-                /* ... */
-                $addressModal.css('display', 'none');
-            }
-
-            // Xử lý chọn địa chỉ trong modal (Lấy tên từ data attribute)
-            $modalAddressListDiv.on('click', '.modal-address-item', function() {
-                const $radio = $(this).find('.saved-address-radio-modal');
-                if (!$radio.prop('checked')) {
-                    $radio.prop('checked', true);
-                }
-                const selectedData = {
-                    name: $radio.data('name'),
-                    phone: $radio.data('phone'),
-                    email: $radio.data('email'),
-                    address: $radio.data('address'),
-                    province: $radio.data('province'), // <<< Lấy TÊN
-                    district: $radio.data('district'),
-                    ward: $radio.data('ward') // <<< Lấy TÊN
-                };
-                populateForm(selectedData); // Gọi hàm async
-                hideModal();
-            });
-
-            // --- 4. Apply Coupon AJAX (Giữ nguyên) ---
-            $('.btn-apply-coupon').on('click', function(e) {
-                /* ... */
-            });
-
-            // --- 5. Checkout Form Validation (Giữ nguyên) ---
-            $('#checkoutForm').on('submit', function(event) {
-                /* ... */
-            });
-
-            // --- 6. Điền form mặc định khi tải trang (Dùng TÊN) ---
-            const defaultAddressData = @json($defaultUserAddress ?? null);
-            if (defaultAddressData) {
-                const initialData = {
-                    name: "{{ $user->name }}",
-                    phone: "{{ $user->phone }}",
-                    email: "{{ $user->email }}",
-                    address: defaultAddressData.address,
-                    province: defaultAddressData.province, // <<< Lấy TÊN
-                    district: defaultAddressData.district, // <<< Lấy TÊN
-                    ward: defaultAddressData.neighborhood // <<< Lấy TÊN
-                };
-                console.log('Populating form with default address on load (name-based):', initialData);
-                populateForm(initialData); // Gọi hàm async
-            } else {
-                /* ... điền thông tin user ... */
             }
 
         });

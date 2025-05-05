@@ -307,7 +307,7 @@ class OrderController extends Controller
                 }
                 $redirectUrl = route($returnRouteName);
 
-                $ngrokForwardingUrl = "https://e9cf-2001-ee0-40e1-1481-9144-4653-4e80-2528.ngrok-free.app";
+                $ngrokForwardingUrl = "https://17ee-2001-ee0-40e1-4949-5c7d-2314-6a43-871e.ngrok-free.app";
                 $ipnRouteUri = "/momo/payment/notify";
                 $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
                 Log::info('Using temporary Ngrok IPN URL: ' . $ipnUrl);
@@ -527,7 +527,7 @@ class OrderController extends Controller
                 throw new \Exception('Lỗi cấu hình URL MoMo.');
             }
             $redirectUrl = route($returnRouteName);
-            $ngrokForwardingUrl = "https://e9cf-2001-ee0-40e1-1481-9144-4653-4e80-2528.ngrok-free.app";
+            $ngrokForwardingUrl = "https://17ee-2001-ee0-40e1-4949-5c7d-2314-6a43-871e.ngrok-free.app";
             $ipnRouteUri = "/momo/payment/notify";
             $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
             Log::info('Using temporary Ngrok IPN URL: ' . $ipnUrl);
