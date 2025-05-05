@@ -22,6 +22,7 @@ class CheckProductCatalogueChildrenRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        // dd(123);
         $flag = ProductCatalogue::isNodeCheck($this->id);
         if ($flag == false) {
             $fail('Không thể xóa do vẫn còn danh mục con');
