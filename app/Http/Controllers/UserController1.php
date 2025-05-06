@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 
-class UserController extends Controller
+class UserController1 extends Controller
 {
     const PATH_UPLOAD = 'users';
 
