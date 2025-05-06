@@ -139,7 +139,13 @@ class ProductController extends Controller
             $path = $request->file('image')->store('products', 'public');
             $request->merge(['image' => $path]);
         }
-        // dd(123);
+
+        foreach ($request->variant['quantity'] as $key) {
+            if($key == null){
+                return redirect()->back()->with('error', 'Vui lòng nhập hết số lượng biến thể!');
+            }
+        }
+        
         if ($this->productService->create($request)) {
             return redirect()->route('admin.product.index')->with('success', 'Thêm mới bản ghi thành công');
         }

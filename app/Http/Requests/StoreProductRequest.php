@@ -26,8 +26,6 @@ class StoreProductRequest extends FormRequest
             'price' => 'required|numeric|min:0.01',
             'brand_id' => 'required|',
             'product_catalogue_id' => 'required|not_in:0',
-
-
         ];
     }
 

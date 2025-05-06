@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Controllers\Backend\ProductController;
 use App\Models\Language;
 use App\Models\Product;
 use App\Models\ProductGallery;
@@ -193,7 +194,6 @@ class ProductService extends BaseService implements ProductServiceInterface
             $payload['image'] = Storage::put(self::PATH_UPLOAD, $request->file('image'));
         }
 
-
         $payload['price'] = (float) $payload['price'];
         $payload['attributeCatalogue'] = $this->formatJson($request, 'attributeCatalogue');
         $payload['attribute'] = $request->input('attribute');
@@ -213,7 +213,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         if (isset($payload['is_show_home'])) {
             $payload['is_show_home'] == "on" ? $payload['is_show_home'] = 1 : $payload['is_show_home'] = 0;
         }
-
 
         $product = $this->productReponsitory->create($payload);
 
