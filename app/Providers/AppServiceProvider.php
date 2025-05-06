@@ -50,6 +50,12 @@ use App\Services\ProductService;
 use App\Services\RoleService;
 use App\Services\UserService;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Carbon;
+use App\Repositories\Interfaces\ReviewRepositoryInterface;
+use App\Repositories\ReviewRepository;
+use App\Services\Interfaces\ReviewServiceInterface;
+use App\Services\ReviewService;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -90,6 +96,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ProductVariantAttributeReponsitoryInterface::class, ProductVariantAttributeRepository::class);
         $this->app->bind(CounponRepositoryInterface::class, CounponRepository::class);
         $this->app->bind(CounponServiceInterface::class, CounponService::class);
+        $this->app->bind(ReviewRepositoryInterface::class, ReviewRepository::class);
+        $this->app->bind(ReviewServiceInterface::class, ReviewService::class);
+
 
     }
 
@@ -103,5 +112,7 @@ class AppServiceProvider extends ServiceProvider
             ->get();
 
         View::share('catalogues', $catalogues);
+        App::setLocale(config('app.locale'));
+        Carbon::setLocale(config('app.locale'));
     }
 }

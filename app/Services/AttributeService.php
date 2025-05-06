@@ -88,18 +88,21 @@ class AttributeService extends BaseService implements AttributeServiceInterface
         }
     }
 
-    public function update($attribute, $request, $languageId)
+    public function update($id, $request)
     {
         DB::beginTransaction();
         try {
-            $attribute = $this->attributeReponsitory->findById($attribute);
-            if ($this->uploadAttribute($attribute, $request)) {
-                $this->updateLanguageForAttribute($attribute, $request, $languageId);
-                $this->updateCatalogueForAttribute($attribute, $request);
-                // $this->updateRouter(
-                //     $attribute, $request, $this->controllerName
-                // );
-            }
+            $payload = $request->only($this->payload());
+            $attribute = $this->attributeReponsitory->findById($id);
+            // if ($this->uploadAttribute($id, $request)) {
+            //     // $this->updateLanguageForAttribute($attribute, $request, $languageId);
+            //     $this->updateCatalogueForAttribute($id, $request);
+            //     // $this->updateRouter(
+            //     //     $attribute, $request, $this->controllerName
+            //     // );
+            // }
+            $this->updateCatalogueForAttribute($attribute, $request);
+            $updateAttribute = $this->attributeReponsitory->update($id, $payload);
             DB::commit();
             return true;
         } catch (\Exception $e) {

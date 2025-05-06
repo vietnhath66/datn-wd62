@@ -81,12 +81,13 @@ class ProductService extends BaseService implements ProductServiceInterface
             'path' => ($extend['path']) ?? 'admin/products/product/index',
             'groupBy' => $this->paginateSelect()
         ];
-        $orderBy = ['products.id', 'DESC'];
+        
         $relations = ['product_catalogues'];
         $rawQuery = $this->whereRaw($request, $modelCatalogue);
         $joins = [
             ['product_catalogues as tb2', 'products.product_catalogue_id', '=', 'tb2.id'],
         ];
+        $orderBy = ['products.id', 'DESC'];
         $products = $this->productReponsitory->pagination(
             $this->paginateSelect(),
             $condition,
@@ -175,6 +176,9 @@ class ProductService extends BaseService implements ProductServiceInterface
                     $gallery = ProductGallery::destroy($key->id);
                 }
             }
+            if ($product->image && file_exists(public_path('storage/' . $product->image))) {
+                unlink(public_path('storage/' . $product->image));
+            }
             $deleteProduct = $this->productReponsitory->destroy($product);
             DB::commit();
             return true;
@@ -189,8 +193,15 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function createProduct($request)
     {
         $payload = $request->only($this->payload());
+        // if ($request->hasFile('image')) {
+        //     $payload['image'] = Storage::put(self::PATH_UPLOAD, $request->file('image'));
+        // }
+        
         if ($request->hasFile('image')) {
-            $payload['image'] = Storage::put(self::PATH_UPLOAD, $request->file('image'));
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('storage/products'), $imageName);
+            $payload['image'] = 'products/' . $imageName;
         }
 
 
@@ -222,7 +233,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         foreach ($dataProductGalleries as $image) {
             ProductGallery::query()->create([
                 'product_id' => $product->id,
-                'image' => Storage::put('storage/products', $image)
+                'image' => $payload['image'] = 'products/' . $imageName
             ]);
         }
         return $product;
@@ -248,14 +259,20 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         $product = $this->productReponsitory->findById($id);
 
+
+
         if ($request->hasFile('image')) {
-            $payload['image'] = Storage::put(self::PATH_UPLOAD, $request->file('image'));
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('storage/products'), $imageName);
+            $payload['image'] = 'products/' . $imageName;
         }
 
         $currentImage = $product->image;
 
-        if ($request->hasFile('image') && $currentImage && Storage::exists($currentImage)) {
-            Storage::delete($currentImage);
+    
+        if ($currentImage && file_exists(public_path('storage/' . $currentImage))) {
+            unlink(public_path('storage/' . $currentImage));
         }
 
         $payload['price'] = (float) $payload['price'];
@@ -290,8 +307,8 @@ class ProductService extends BaseService implements ProductServiceInterface
             if ($gallery) {
                 $gallery->delete();
                 $image = $gallery->image;
-                if ($image && Storage::exists($image)) {
-                    Storage::delete($image);
+                if ($image && file_exists(public_path('storage/' . $image))) {
+                    unlink(public_path('storage/' . $image));
                 }
             }
         }
@@ -299,7 +316,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         foreach ($dataProductGalleries as $image) {
             ProductGallery::query()->create([
                 'product_id' => $product->id,
-                'image' => Storage::put('products', $image)
+                'image' => $payload['image'] = 'products/' . $imageName
             ]);
         }
 

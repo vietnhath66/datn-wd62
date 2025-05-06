@@ -2,8 +2,9 @@
     'title' => $config['seo'][$config['method']]['title'],
 ])
 @include('admin.dashboard.components.formError')
+
 @php
-    $url = $config['method'] == 'create' ? route('admin.users.store') : route('admin.users.udpate', $user);
+    $url = $config['method'] == 'create' ? route('admin.users.store') : route('admin.users.update', $user->id);
 @endphp
 
 
@@ -30,8 +31,7 @@
                         <div class="card-body">
                             <h6 class="mb-4 text-15">{{ $config['seo'][$config['method']]['title'] }}</h6>
 
-                            <form action="{{ $url }}" method="POST" class="box"
-                                enctype="multipart/form-data">
+                            <form action="{{ $url }}" method="POST" class="box">
                                 @csrf
                                 @if ($config['method'] == 'edit')
                                     @method('PUT')
@@ -39,7 +39,7 @@
                                 <div class="grid grid-cols-1 gap-5 lg:grid-cols-2 xl:grid-cols-12">
                                     <div class="xl:col-span-6">
                                         <label for="productNameInput"
-                                            class="inline-block mb-2 text-base font-medium">Tên vai trò</label>
+                                            class="inline-block mb-2 text-base font-medium">Tên người dùng</label>
                                         <input type="text" id="productNameInput"
                                             class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
                                             placeholder="Product title" required="" name="name"
@@ -47,7 +47,23 @@
                                         <p class="mt-1 text-sm text-slate-400 dark:text-zink-200">
                                             Tên vai trò không được quá 20 ký tự
                                         </p>
-                                    </div>                                 
+                                    </div>
+                                    <div class="xl:col-span-3">
+                                        <label for="productNameInput"
+                                            class="inline-block mb-2 text-base font-medium">Email</label>
+                                        <input type="email" id="productNameInput"
+                                            class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
+                                            placeholder="Email"  name="email"
+                                            value="{{ old('email', $user->email ?? '') }}" disabled/>
+                                    </div>
+                                    <div class="xl:col-span-3">
+                                        <label for="productNameInput"
+                                            class="inline-block mb-2 text-base font-medium">Số điện thoại</label>
+                                        <input type="text" id="productNameInput"
+                                            class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
+                                            placeholder="Số điện thoại"  name="phone"
+                                            value="{{ old('phone', $user->phone ?? '') }}" />
+                                    </div>                                
                                 </div>
                                 <!--end grid-->
                                 <div class="flex justify-end gap-2 mt-4">

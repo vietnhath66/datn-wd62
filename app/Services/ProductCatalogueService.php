@@ -52,27 +52,29 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
     }
 
     public function paginate($request)
-    {
-        $perPage = $request->integer('perpage');
-        $condition = [
-            'keyword' => addslashes($request->input('keyword')),
-        ];
-        // dd($condition);
+{
+    $perPage = $request->integer('perpage') ?? 10;
+    $keyword = $request->input('keyword');
+    $condition = ['keyword' => $keyword];
+
+    if (!empty($condition['keyword'])) {
+        $productCatalogues = ProductCatalogue::where('name', 'LIKE', '%' . $condition['keyword'] . '%')
+            ->orderBy('id', 'DESC')
+            ->paginate($perPage)
+            ->withQueryString();
+    } else {
         $productCatalogues = $this->ProductCatalogueRepository->pagination(
-            $this->paginateSelect(),
+            ['*'],
             $condition,
             $perPage,
-            ['path' => 'product.catalogue.index'],
-            ['id', 'ASC'],
+            ['path' => 'admin/product/catalogue/index'],
+            ['id', 'DESC'],
             [],
         );
-
-        if(isset($condition['keyword'])){
-
-            $productCatalogues = ProductCatalogue::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->get();
-        }
-        return $productCatalogues;
     }
+
+    return $productCatalogues;
+}
 
     public function create($request)
     {

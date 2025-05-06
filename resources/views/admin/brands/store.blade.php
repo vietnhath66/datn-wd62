@@ -1,22 +1,19 @@
 @include('admin.dashboard.components.breadcrumb', [
     'title' => $config['seo'][$config['method']]['title'],
 ])
-
+@include('admin.dashboard.components.formError')
 @php
-    $url = $config['method'] == 'create' ? route('admin.brands.store') : route('admin.brands.udpate', $brand);
+    $url = $config['method'] == 'create' ? route('admin.brands.store') : route('admin.brands.update', $brand);
 @endphp
 
 
 <div class="relative min-h-screen group-data-[sidebar-size=sm]:min-h-sm">
-    
     <div
         class="group-data-[sidebar-size=lg]:ltr:md:ml-vertical-menu group-data-[sidebar-size=lg]:rtl:md:mr-vertical-menu group-data-[sidebar-size=md]:ltr:ml-vertical-menu-md group-data-[sidebar-size=md]:rtl:mr-vertical-menu-md group-data-[sidebar-size=sm]:ltr:ml-vertical-menu-sm group-data-[sidebar-size=sm]:rtl:mr-vertical-menu-sm pt-[calc(theme('spacing.header')_*_1)] pb-[calc(theme('spacing.header')_*_0.8)] px-4 group-data-[navbar=bordered]:pt-[calc(theme('spacing.header')_*_1.3)] group-data-[navbar=hidden]:pt-0 group-data-[layout=horizontal]:mx-auto group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:px-0 group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
         <div class="container-fluid group-data-[content=boxed]:max-w-boxed mx-auto">
             <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
                 <div class="grow">
                     <h5 class="text-16">{{ $config['seo'][$config['method']]['title'] }}</h5>
-            @include('admin.dashboard.components.formError')
-
                 </div>
                 <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
                     <li
@@ -45,14 +42,14 @@
                                             class="inline-block mb-2 text-base font-medium">Tên thương hiệu</label>
                                         <input type="text" id="productNameInput"
                                             class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
-                                            placeholder="Product title" name="name"
+                                            placeholder="Product title" required="" name="name"
                                             value="{{ old('name', $brand->name ?? '') }}" />
                                         <p class="mt-1 text-sm text-slate-400 dark:text-zink-200">
                                             Tên thương hiệu không được quá 20 ký tự
                                         </p>
                                     </div>
                                     <!--end col-->
-                                    <div class="xl:col-span-6">
+                                    {{-- <div class="xl:col-span-6">
                                         <label for="productCodeInput"
                                             class="inline-block mb-2 text-base font-medium">Product Code</label>
                                         <input type="text" id="productCodeInput"
@@ -62,30 +59,34 @@
                                         <p class="mt-1 text-sm text-slate-400 dark:text-zink-200">
                                             Code will be generated automatically
                                         </p>
-                                    </div>
+                                    </div> --}}
                                     <div class="lg:col-span-2 xl:col-span-12">
-                                        <label for="genderSelect" class="inline-block mb-2 text-base font-medium">Ảnh
-                                            thương hiệu</label>
-                                        <div
-                                            class="flex items-center justify-center bg-white border border-dashed rounded-md cursor-pointer dropzone border-slate-300 dark:bg-zink-700 dark:border-zink-500 dropzone2">
-                                            <div class="fallback">
-                                                <input name="image" type="file" multiple="multiple" />
+                                        <label class="inline-block mb-2 text-base font-medium">Ảnh thương hiệu</label>
+                                    
+                                        <div class="flex items-center gap-4 bg-white border border-dashed rounded-md p-4 border-slate-300 dark:bg-zink-700 dark:border-zink-500">
+                                    
+                                            {{-- Nút chọn tệp --}}
+                                            <div>
+                                                <input name="image" type="file" class="block text-sm text-slate-500
+                                                    file:mr-4 file:py-2 file:px-4
+                                                    file:rounded-full file:border-0
+                                                    file:text-sm file:font-semibold
+                                                    file:bg-slate-100 file:text-slate-700
+                                                    hover:file:bg-slate-200
+                                                    " />
                                             </div>
-                                            <div class="w-full py-5 text-lg text-center dz-message needsclick">
-                                                <div class="mb-3">
-                                                    <i data-lucide="upload-cloud"
-                                                        class="block mx-auto size-12 text-slate-500 fill-slate-200 dark:text-zink-200 dark:fill-zink-500"></i>
+                                    
+                                            {{-- Ảnh thương hiệu cũ (nếu có) --}}
+                                            @if (!empty($brand->image))
+                                                <div>
+                                                    <img src="{{ Storage::url($brand->image) }}" alt="Ảnh thương hiệu cũ"
+                                                         class="h-20 w-auto rounded border shadow-sm">
                                                 </div>
-
-                                                <h5 class="mb-0 font-normal text-slate-500 dark:text-zink-200 text-15">
-                                                    Drag and drop your product images or
-                                                    <a href="#!">browse</a> your product images
-                                                </h5>
-                                            </div>
+                                            @endif
                                         </div>
-                                        @if (isset($brand->image))
-                                            <img src="{{ \Storage::url($brand->image) }}" alt="" width="50">
-                                        @endif
+                                    </div>
+                                    
+
                                         {{-- <ul class="flex flex-wrap mb-0 gap-x-5" id="dropzone-preview2">
                                             <li class="mt-5" id="dropzone-preview-list2">
                                                 <!-- This is used as the file preview template -->
@@ -120,7 +121,7 @@
                                             </li>
                                         </ul> --}}
                                     </div>
-                                    <div class="lg:col-span-2 xl:col-span-12">
+                                    {{-- <div class="lg:col-span-2 xl:col-span-12">
                                         <div>
                                             <label for="productDescription"
                                                 class="inline-block mb-2 text-base font-medium">Ghi chú</label>
@@ -128,7 +129,7 @@
                                                 class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
                                                 id="productDescription" placeholder="Enter Description" rows="5">{{ old('name', $brand->description ?? '') }}</textarea>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <!--end grid-->
                                 <div class="flex justify-end gap-2 mt-4">

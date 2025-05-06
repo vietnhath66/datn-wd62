@@ -52,7 +52,7 @@
                                         </p>
                                     </div>
                                     <!--end col-->
-                                    <div class="xl:col-span-6">
+                                    {{-- <div class="xl:col-span-6">
                                         <label for="productCodeInput"
                                             class="inline-block mb-2 text-base font-medium">Cấp danh mục</label>
                                         <select
@@ -63,19 +63,19 @@
                                                     {{ $key == old('parent_id', isset($attributeCatalogue->parent_id) ? $attributeCatalogue->parent_id : '') ? 'selected' : '' }}
                                                     value="{{ $key }}">{{ $val }}</option>
                                             @endforeach
-                                            {{-- <option value="">Root</option>
+                                            <option value="">Root</option>
                                             <option value="Verified">Verified</option>
                                             <option value="Waiting">Waiting</option>
                                             <option value="Rejected">Rejected</option>
-                                            <option value="Hidden">Hidden</option> --}}
+                                            <option value="Hidden">Hidden</option>
                                         </select>
                                         <p class="mt-1 text-sm text-slate-400 dark:text-zink-200">
                                             Code will be generated automatically
                                         </p>
-                                    </div>
-                                    <div class="lg:col-span-2 xl:col-span-12">
+                                    </div> --}}
+                                    {{-- <div class="lg:col-span-2 xl:col-span-12">
                                         <label for="genderSelect" class="inline-block mb-2 text-base font-medium">Ảnh
-                                            thương hiệu</label>
+                                            thuộc tính</label>
                                         <div
                                             class="flex items-center justify-center bg-white border border-dashed rounded-md cursor-pointer dropzone border-slate-300 dark:bg-zink-700 dark:border-zink-500 dropzone2">
                                             <div class="fallback">
@@ -96,7 +96,7 @@
                                         @if (isset($attributeCatalogue->image))
                                             <img src="{{ \Storage::url($attributeCatalogue->image) }}" alt=""
                                                 width="50">
-                                        @endif
+                                        @endif --}}
                                         {{-- <ul class="flex flex-wrap mb-0 gap-x-5" id="dropzone-preview2">
                                             <li class="mt-5" id="dropzone-preview-list2">
                                                 <!-- This is used as the file preview template -->
@@ -131,7 +131,7 @@
                                             </li>
                                         </ul> --}}
                                     </div>
-                                    <div class="lg:col-span-2 xl:col-span-12">
+                                    {{-- <div class="lg:col-span-2 xl:col-span-12">
                                         <div>
                                             <label for="productDescription"
                                                 class="inline-block mb-2 text-base font-medium">Ghi chú</label>
@@ -147,7 +147,7 @@
                                                 name="content" id="productDescription" placeholder="Enter Description" rows="5">{{ old('content', $attributeCatalogue->content ?? '') }}</textarea>
                                         </div>
 
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <!--end grid-->
                                 <div class="flex justify-end gap-2 mt-4">

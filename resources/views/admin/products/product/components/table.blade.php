@@ -20,7 +20,7 @@
                 <div class="card-body">
                     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-12">
                         @include('admin.products.product.components.filter')
-                        
+
                         <div class="lg:col-span-2 ltr:lg:text-right rtl:lg:text-left xl:col-span-2 xl:col-start-11">
                             <a href="{{ route('admin.product.create') }}" type="button"
                                 class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20"><i
@@ -40,7 +40,7 @@
                                         data-sort="product_name">Tên sản phẩm</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
                                         data-sort="product_name">Giá</th>
-                                   
+
                                     <th
                                         class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 action">
                                         Hành động</th>
@@ -70,7 +70,7 @@
                                                     class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">{{ number_format($product->price) }}
                                                     vnđ</span>
                                             </td>
-                                           
+
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 action">
                                                 <div class="relative dropdown">
@@ -105,11 +105,16 @@
                         </table>
 
                     </div>
-                    @if (!isset($_GET['keyword']) || isset($_GET['keyword']) == '')
-                        <div class="" style="padding-top:30px">
-                            {{ $products->links() }}
-                        </div>
-                    @endif
+                    <div class="mt-4 flex justify-between items-center">
+                        <p class="text-slate-500">
+                            Hiển thị <b>{{ $products->count() }}</b> / <b>{{ $products->total() }}</b> Sản phẩm
+                        </p>
+                        @if (!isset($_GET['keyword']) || isset($_GET['keyword']) == '')
+                            <div class="" style="padding-top:30px">
+                                {{ $products->links() }}
+                            </div>
+                        @endif
+                    </div>
                     {{-- <div class="flex flex-col items-center gap-4 px-4 mt-4 md:flex-row" id="pagination-element">
                         <div class="grow">
                             <p class="text-slate-500 dark:text-zink-200">Showing <b class="showing">10</b> of <b

@@ -200,8 +200,16 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="flex flex-col items-center gap-4 px-4 mt-4 md:flex-row" id="pagination-element">
+                    <div class="mt-4 flex justify-between items-center">
+                        <p class="text-slate-500">
+                            Hiển thị <b>{{ $orders->count() }}</b> / <b>{{ $orders->total() }}</b> Đơn hàng
+                        </p>
+                    
+                        <div class="pagination-buttons">
+                            {{ $orders->links() }}
+                        </div>
+                    </div>
+                    {{-- <div class="flex flex-col items-center gap-4 px-4 mt-4 md:flex-row" id="pagination-element">
                         <div class="grow">
                             <p class="text-slate-500 dark:text-zink-200">Showing <b class="showing">10</b> of <b
                                     class="total-records">38</b> Results</p>
@@ -221,7 +229,7 @@
                                 </a>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                 </div>
             </div><!--end card-->
