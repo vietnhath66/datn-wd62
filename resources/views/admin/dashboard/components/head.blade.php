@@ -1,12 +1,12 @@
 
 <base href="{{ env('APP_URL') }}">
 <meta charset="utf-8" />
-<title>Ecommerce | StarCode - Admin & Dashboard Template</title>
+<title>ChicWear | ChicWear - Admin & Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 <meta content="Minimal Admin & Dashboard Template" name="description" />
 <meta content="SttarCode Kh" name="author" />
 <!-- App favicon -->
-<link rel="shortcut icon" href="{{ asset('admin/images/favicon.ico') }}" />
+<link rel="icon" type="image/png" href="{{ asset('client/images/icons/favicon.png') }}" />
 <!-- Layout config Js -->
 <script src="{{ asset('admin/js/layout.js') }}"></script>
 <script src="{{ asset('admin/js/select2/select2.full.min.js') }}"></script>

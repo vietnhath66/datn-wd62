@@ -32,12 +32,12 @@
         <div class="!px-10 !py-12 card-body">
             <a href="index-1.html">
                 <img src="images/logo-light.png" alt="" class="hidden h-6 mx-auto dark:block">
-                <img src="images/logo-dark.png" alt="" class="block h-6 mx-auto dark:hidden">
+                <img src="{{ asset('client/images/icons/logo-03.png') }}" alt="" class="block h-6 mx-auto dark:hidden">
             </a>
 
             <div class="mt-8 text-center">
-                <h4 class="mb-2 text-purple-500 dark:text-purple-500">Welcome Back !</h4>
-                <p class="text-slate-500 dark:text-zink-200">Sign in to continue to starcode.</p>
+                <h4 class="mb-2 text-purple-500 dark:text-purple-500">Chào mừng trờ lại!</h4>
+                <p class="text-slate-500 dark:text-zink-200">Đăng nhập vào ChicWear Admin</p>
             </div>
             <form class="mt-10" role="form" action="{{ route('auth.login') }}" method="POST">
                 @csrf
