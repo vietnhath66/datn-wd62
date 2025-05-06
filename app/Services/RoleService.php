@@ -23,26 +23,31 @@ class RoleService implements RoleServiceInterface
     }
 
     public function paginate($request)
-    {
-        $condition['keyword'] = addslashes($request->input('keyword'));
-        $condition['publish'] = $request->integer('publish');
-        $perPage = addslashes($request->integer('per_page'));
+{
+    // Lấy điều kiện tìm kiếm và các tham số khác từ request
+    $condition['keyword'] = addslashes($request->input('keyword'));
+    $condition['publish'] = $request->integer('publish');
+    $perPage = addslashes($request->integer('per_page')); // Sử dụng một cách an toàn
 
+    // Gọi phương thức phân trang từ repository
+    $roles = $this->RoleRepository->pagination(
+        ['*'],
+        $condition,
+        $perPage,
+        ['path' => 'admin/role/index'], // Đặt đường dẫn cho phân trang
+        ['id', 'DESC'], // Sắp xếp theo id giảm dần
+        [], // Các join nếu có
+        ['users'], // Các mối quan hệ nếu có
+    );
 
-        $roles = $this->RoleRepository->pagination(
-            ['*'],
-            $condition,
-            $perPage,
-            ['path' => 'admin/role/index'],
-            ['id', 'DESC'],
-            [],
-            ['users'],
-        );
-        if(isset($condition['keyword'])){
-            $roles = Role::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->get();
-        }
-        return $roles;
+    // Lọc theo từ khóa tìm kiếm nếu có
+    if (isset($condition['keyword'])) {
+        $roles = Role::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->paginate($perPage);
     }
+
+    // Trả về kết quả phân trang
+    return $roles;
+}
 
     public function create($request)
     {

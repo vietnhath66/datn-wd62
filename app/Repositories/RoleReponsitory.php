@@ -72,5 +72,17 @@ public function getRoleById(int $id = 0){
     return $this->model->find($id);
 }
 
+public function getProductCatalogueById(int $id = 0)
+    {
+        $role = $this->model->find($id);
+
+        if (!$role) {
+            throw new \Exception("Không tìm thấy thương hiệu với ID: $id");
+        }
+
+        return $role;
+    }
 
 }
+
+

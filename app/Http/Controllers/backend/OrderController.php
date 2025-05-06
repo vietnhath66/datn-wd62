@@ -91,7 +91,7 @@ class OrderController extends Controller
             })
             ->groupBy('orders.id')
             ->orderBy('orders.id', 'DESC')
-            ->paginate(1000); // Giới hạn kết quả trả về (10 đơn hàng mỗi trang)
+            ->paginate(10); // Giới hạn kết quả trả về (10 đơn hàng mỗi trang)
 
         // Tải quan hệ sau khi lấy dữ liệu (Order Items, Products và Product Variants)
         $orders->load(['orderItems.products.product_variants']);

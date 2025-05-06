@@ -30,7 +30,6 @@ class BrandService implements BrandServiceInterface
         $condition['publish'] = $request->integer('publish');
         $perPage = addslashes($request->integer('per_page'));
 
-        // dd($condition['keyword']);
         $brands = $this->BrandRepository->pagination(
             ['*'],
             $condition,
@@ -40,21 +39,29 @@ class BrandService implements BrandServiceInterface
             [],
             [],
         );
-        if(isset($_GET) && isset($condition['keyword'])){
-            $brands = Brand::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->get();
+
+        if (isset($condition['keyword'])) {
+            $brands = Brand::where('name', 'LIKE', '%' . $condition['keyword'] . '%')->paginate($perPage);
         }
+
         return $brands;
     }
+
 
     public function create($request)
     {
         DB::beginTransaction();
         try {
             $payload = $request->only($this->payload());
+
             if ($request->hasFile('image')) {
-                $payload['image'] = Storage::put(self::PATH_UPLOAD, $request->file('image'));
+                $image = $request->file('image');
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('storage/brands'), $imageName);
+                $payload['image'] = 'brands/' . $imageName;
             }
             $brand = $this->BrandRepository->create($payload);
+
             DB::commit();
             return true;
         } catch (\Exception $e) {
@@ -74,28 +81,41 @@ class BrandService implements BrandServiceInterface
             if (!$brand) {
                 throw new \Exception("Không tìm thấy thương hiệu với ID: $id");
             }
-    
+
             // Lấy dữ liệu cần cập nhật
             $payload = $request->only($this->payload());
-    
+
             // Kiểm tra và xử lý ảnh
+            // if ($request->hasFile('image')) {
+            //     $newImage = Storage::put(self::PATH_UPLOAD, $request->file('image'));
+            //     if ($newImage) {
+            //         $payload['image'] = $newImage;
+            //         // Xóa ảnh cũ nếu có
+            //         if ($brand->image && Storage::exists($brand->image)) {
+            //             Storage::delete($brand->image);
+            //         }
+            //     }
+            // }
             if ($request->hasFile('image')) {
-                $newImage = Storage::put(self::PATH_UPLOAD, $request->file('image'));
-                if ($newImage) {
-                    $payload['image'] = $newImage;
-                    // Xóa ảnh cũ nếu có
-                    if ($brand->image && Storage::exists($brand->image)) {
-                        Storage::delete($brand->image);
-                    }
+                // Xóa ảnh cũ nếu tồn tại
+                if ($brand->image && file_exists(public_path('storage/' . $brand->image))) {
+                    unlink(public_path('storage/' . $brand->image));
                 }
+
+                $image = $request->file('image');
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('storage/brands'), $imageName);
+
+                // Gán tên ảnh mới vào payload
+                $payload['image'] = 'brands/' . $imageName;
             }
-    
+
             // Cập nhật thương hiệu
             $updateBrand = $this->BrandRepository->update($id, $payload);
             if (!$updateBrand) {
                 throw new \Exception("Cập nhật thương hiệu thất bại");
             }
-    
+
             DB::commit();
             return true;
         } catch (\Exception $e) {
@@ -104,7 +124,7 @@ class BrandService implements BrandServiceInterface
             return false;
         }
     }
-    
+
 
     public function destroy($brand)
     {

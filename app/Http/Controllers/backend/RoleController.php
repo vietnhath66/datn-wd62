@@ -106,7 +106,7 @@ class RoleController extends Controller
     public function edit($id)
     {
         // $this->authorize('modules', 'admin.roles.update');
-        $role = $this->RoleRepository->getBrandById($id);
+        $role = $this->RoleRepository->getRoleById($id);
         // dd($role);
         $config = $this->configData();
         $config['seo'] =  [
@@ -133,7 +133,7 @@ class RoleController extends Controller
         ));
     }
 
-    public function udpate($id, UpdateRoleRequest $request)
+    public function update($id, UpdateRoleRequest $request)
     {
         // dd($request);
         if ($this->RoleService->update($id, $request)) {
@@ -146,7 +146,7 @@ class RoleController extends Controller
     {
         $this->authorize('modules', 'admin.roles.destroy');
         $config['seo'] = __('messages.productCatalogue');
-        $productCatalogue = $this->RoleRepository->getProductCatalogueById($id, $this->language);
+        $productCatalogue = $this->RoleRepository->getProductCatalogueById($id);
         $template = 'admin.product.catalogue.delete';
         return view('admin.dashboard.layout', compact(
             'template',
@@ -157,7 +157,7 @@ class RoleController extends Controller
 
     public function destroy(DeleteProductCatalogueRequest $request, $id)
     {
-        if ($this->RoleService->destroy($id, $this->language)) {
+        if ($this->RoleService->destroy($id)) {
             return redirect()->route('admin.roles.index')->with('success', 'Xóa bản ghi thành công');
         }
         return redirect()->route('admin.roles.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
