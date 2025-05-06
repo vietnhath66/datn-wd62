@@ -611,7 +611,7 @@
             ' int">';
         html = html + "</div>";
         html = html + '<div class="col-lg-3">';
-        html = html + '<label for="" class="control-label">SKU</label>';
+        // html = html + '<label for="" class="control-label">SKU</label>';
         html =
             html +
             '<input type="hidden" name="variant_sku" value="' +
@@ -775,7 +775,8 @@
 
         $(".variant-row").each(function (index, value) {
             console.log(123);
-
+            console.log(variant.sku);
+            
             let _this = $(this);
             let variantKey = _this
                 .attr("class")
@@ -783,7 +784,8 @@
             let dataIndex = variant.sku.findIndex((sku) =>
                 sku.includes(variantKey)
             );
-
+            console.log(dataIndex);
+            
             console.log(variantKey, dataIndex);
 
             if (dataIndex !== -1) {

@@ -230,7 +230,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="relative group">
+                    {{-- <li class="relative group">
                         @php
                             $isAttributeActive = request()->routeIs('admin.attribute_catalogue.*');
                         @endphp
@@ -272,7 +272,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </li> --}}
                     <li class="relative group">
                         @php
                             $isAttributeItemActive = request()->routeIs('admin.attribute.*');
