@@ -96,9 +96,9 @@
                                 </span>
                             </div>
 
-                            <div class="block1-txt-child2 p-b-4 trans-05">
+                            {{-- <div class="block1-txt-child2 p-b-4 trans-05">
                                 <div class="block1-link stext-101 cl0 trans-09">Shop Now</div>
-                            </div>
+                            </div> --}}
                         </a>
                     </div>
                 </div>

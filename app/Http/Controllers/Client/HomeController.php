@@ -40,6 +40,7 @@ class HomeController extends Controller
 
         $bannerslide = Banner::where('is_active', true)->where('position', 'slide')->orderBy('position')->get();
 
+        // dd($comment);
         return view('client.home.home')->with([
             'newProducts' => $newProducts,
             'saleProducts' => $saleProducts,
