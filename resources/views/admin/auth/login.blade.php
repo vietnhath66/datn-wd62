@@ -41,7 +41,7 @@
                 <h4 class="mb-2 text-purple-500">Welcome Back !</h4>
                 <p class="text-slate-500">Sign in to continue to starcode.</p>
             </div>
-            <form class="mt-10" role="form" action="{{ route('auth.login') }}" method="POST">
+            <form class="mt-10" role="form" action="{{ route('login') }}" method="POST">
                 @csrf
                 <div class="mt-3">
                     <label for="email" class="inline-block mb-2 text-base font-medium">Email</label>
