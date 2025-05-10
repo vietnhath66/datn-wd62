@@ -587,19 +587,43 @@ class OrderController extends Controller
 
             $order->load('items.productVariant');
 
-            foreach ($order->items as $item) {
-                if ($variant = $item->productVariant) {
-                    $variant->increment('quantity', $item->quantity);
-                    Log::info("Hoàn kho Variant ID {$variant->id} +{$item->quantity} do hủy Order ID {$order->id}.");
-                } else {
-                    Log::warning("Không tìm thấy Variant ID {$item->product_variant_id} để hoàn kho khi hủy Order ID {$order->id}.");
-                }
-            }
+            // foreach ($order->items as $item) {
+            //     if ($variant = $item->productVariant) {
+            //         $variant->increment('quantity', $item->quantity);
+            //         Log::info("Hoàn kho Variant ID {$variant->id} +{$item->quantity} do hủy Order ID {$order->id}.");
+            //     } else {
+            //         Log::warning("Không tìm thấy Variant ID {$item->product_variant_id} để hoàn kho khi hủy Order ID {$order->id}.");
+            //     }
+            // }
 
             $order->status = 'cancelled';
             $order->cancelled_at = now();
             $order->note = ($order->note ? $order->note . "\n" : '') . 'Đơn hàng được hủy bởi khách hàng';
             $order->save();
+
+            if (!empty($order->temporary_cart_ids)) {
+                $cartDetailIdsToClean = json_decode($order->temporary_cart_ids, true);
+
+                if (is_array($cartDetailIdsToClean) && !empty($cartDetailIdsToClean)) {
+                    // Lấy cart_id của người dùng hiện tại
+                    $cart = Cart::where('user_id', Auth::id())->first();
+
+                    if ($cart) {
+                        // Xóa các CartDetail có ID nằm trong danh sách VÀ thuộc giỏ hàng của user VÀ có status 'checkout'
+                        $deletedCount = CartDetail::where('cart_id', $cart->id)
+                            ->whereIn('id', $cartDetailIdsToClean)
+                            ->where('status', 'checkout') // Đảm bảo chỉ xóa item đang 'checkout'
+                            ->delete();
+                        Log::info("Order ID {$order->id} cancelled: Deleted {$deletedCount} 'checkout' status CartDetail items (IDs: " . implode(',', $cartDetailIdsToClean) . ") from Cart ID {$cart->id}.");
+                    } else {
+                        Log::warning("Order ID {$order->id} cancelled: Cart not found for User ID " . Auth::id() . " to clean up temporary_cart_ids.");
+                    }
+                } else {
+                    Log::info("Order ID {$order->id} cancelled: No valid temporary_cart_ids found to clean from cart.");
+                }
+            } else {
+                Log::info("Order ID {$order->id} cancelled: No temporary_cart_ids stored with the order to clean from cart.");
+            }
 
             DB::commit();
 

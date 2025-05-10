@@ -94,7 +94,7 @@
                                             class="fs-16 zmdi zmdi-minus"></i> </div>
                                     {{-- Đặt ID và Name cho input số lượng --}}
                                     <input id="product-quantity" class="mtext-104 cl3 txt-center num-product"
-                                        type="number" name="quantity" value="1" min="1">
+                                        type="number" name="quantity" value="1" min="1" readonly>
                                     <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m"> <i
                                             class="fs-16 zmdi zmdi-plus"></i> </div>
                                 </div>
@@ -406,8 +406,7 @@
                 @forelse ($relatedProducts as $relatedProduct)
                     <div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
                         <div class="block2 product-item d-flex flex-column align-items-center text-center">
-                            <div class="block2-pic hov-img0"
-                                style="aspect-ratio: 3 / 4; max-width: 300px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                            <div class="block2-pic hov-img0">
                                 <img src="{{ $relatedProduct->image ? Storage::url($relatedProduct->image) : asset('client/images/no-image-available.png') }}"
                                     alt="{{ $relatedProduct->name }}"
                                     style="object-fit: cover; width: 100%; height: 100%; border-radius: inherit;">
