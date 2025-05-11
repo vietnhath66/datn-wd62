@@ -2,14 +2,22 @@
 
 namespace App\Providers;
 
+use App\Models\Coupon;
+use App\Models\ProductCatalogue;
 use App\Repositories\AttributeCatalogueReponsitory;
 use App\Repositories\AttributeReponsitory;
+use App\Repositories\Interfaces\OrderRepositoryInterface;
+use App\Repositories\OrderRepository;
+use App\Services\Interfaces\OrderServiceInterface;
+use App\Services\OrderService;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\Interfaces\BrandRepositoryInterface;
 use App\Repositories\BrandRepository;
+use App\Repositories\CounponRepository;
 use App\Repositories\DistrictRepository;
 use App\Repositories\Interfaces\AttributeCatalogueReponsitoryInterface;
 use App\Repositories\Interfaces\AttributeReponsitoryInterface;
+use App\Repositories\Interfaces\CounponRepositoryInterface;
 use App\Repositories\Interfaces\DistrictRepositoryInterface;
 use App\Repositories\Interfaces\ProductCatalogueRepositoryInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
@@ -29,8 +37,10 @@ use App\Services\AttributeCatalogueService;
 use App\Services\AttributeService;
 use App\Services\Interfaces\BrandServiceInterface;
 use App\Services\BrandService;
+use App\Services\CounponService;
 use App\Services\Interfaces\AttributeCatalogueServiceInterface;
 use App\Services\Interfaces\AttributeServiceInterface;
+use App\Services\Interfaces\CounponServiceInterface;
 use App\Services\Interfaces\ProductCatalogueServiceInterface;
 use App\Services\Interfaces\ProductServiceInterface;
 use App\Services\Interfaces\RoleServiceInterface;
@@ -39,6 +49,14 @@ use App\Services\ProductCatalogueService;
 use App\Services\ProductService;
 use App\Services\RoleService;
 use App\Services\UserService;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Carbon;
+use App\Repositories\Interfaces\ReviewRepositoryInterface;
+use App\Repositories\ReviewRepository;
+use App\Services\Interfaces\ReviewServiceInterface;
+use App\Services\ReviewService;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -72,16 +90,29 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AttributeServiceInterface::class, AttributeService::class);
         $this->app->bind(AttributeCatalogueServiceInterface::class, AttributeCatalogueService::class);
         $this->app->bind(ProductServiceInterface::class, ProductService::class);
+        $this->app->bind(OrderServiceInterface::class, OrderService::class);
         $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
+        $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
         $this->app->bind(ProductVariantAttributeReponsitoryInterface::class, ProductVariantAttributeRepository::class);
+        $this->app->bind(CounponRepositoryInterface::class, CounponRepository::class);
+        $this->app->bind(CounponServiceInterface::class, CounponService::class);
+        $this->app->bind(ReviewRepositoryInterface::class, ReviewRepository::class);
+        $this->app->bind(ReviewServiceInterface::class, ReviewService::class);
+
 
     }
 
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot()
     {
-        //
+        $catalogues = ProductCatalogue::whereNull('parent_id')
+            ->with('children')
+            ->get();
+
+        View::share('catalogues', $catalogues);
+        App::setLocale(config('app.locale'));
+        Carbon::setLocale(config('app.locale'));
     }
 }

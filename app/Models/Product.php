@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Validation\Rule;
 use App\Traits\QueryScopes;
@@ -11,6 +12,7 @@ use App\Traits\QueryScopes;
 class Product extends Model
 {
     use HasFactory, SoftDeletes, QueryScopes;
+
 
     protected $fillable = [
         'name',
@@ -25,6 +27,10 @@ class Product extends Model
         'is_new',
         'is_trending',
         'is_show_home',
+        'attributeCatalogue',
+        'attribute',
+        'variant',
+        'view',
     ];
 
     protected $table = 'products';
@@ -41,5 +47,50 @@ class Product extends Model
 
     protected $casts = [
         'attribute' => 'json',
+
     ];
+
+    public function attributes()
+    {
+        return $this->belongsToMany(Attribute::class, 'product_attributes', 'product_id', 'attribute_id');
+    }
+
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class, 'product_id');
+    }
+
+
+    // public function reviews() {
+    //     return $this->morphMany(Review::class, 'reviewable');
+    // }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class, 'product_id');
+    }
+
+    public function getAverageRatingAttribute()
+    {
+        return (float) $this->reviews()->avg('rating') ?? 0;
+    }
+    public function galleries()
+    {
+        //Product belong to catalogues
+        return $this->hasMany(ProductGallery::class);
+    }
+
+
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
+
+    public function wishingUsers()
+    {
+        return $this->belongsToMany(User::class, 'wishlists', 'product_id', 'user_id')->withTimestamps();
+    }
+
 }
+

@@ -23,6 +23,7 @@ class DeleteProductCatalogueRequest extends FormRequest
     public function rules(): array
     {
         $id = $this->route('product_catalogue');
+
         return [
             'name' => [
                new CheckProductCatalogueChildrenRule($id)

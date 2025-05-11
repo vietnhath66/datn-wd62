@@ -15,4 +15,13 @@ class ProductVariantAttribute extends Model
         'product_variant_id',
         'attribute_id',
     ];
+
+
+    public function productVariants()
+    {
+        return $this->belongsToMany(ProductVariant::class, 'product_variant_attribute', 'attribute_id', 'product_variant_id')
+            ->withPivot(['value'])
+            ->withTimestamps();
+    }
+
 }

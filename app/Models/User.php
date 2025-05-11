@@ -2,10 +2,16 @@
 
 namespace App\Models;
 
+
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Mail\VerifyUserEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -20,8 +26,17 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'name',
         'email',
-        'password',
         'role_id',
+
+        'password',
+        'phone',
+        'avt',
+        'status',
+        'active_status',
+        'dark_mode',
+        'messenger_color',
+        'email_verified_at',
+        'status'
     ];
 
     /**
@@ -52,5 +67,39 @@ class User extends Authenticatable implements MustVerifyEmail
     public function hasRole($roles)
     {
         return in_array($this->role_id, (array) $roles);
+    }
+
+    public function shipperProfile(): HasOne
+    {
+        return $this->hasOne(ShipperProfile::class, 'user_id', 'id');
+    }
+
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class, 'user_id');
+    }
+
+    public function addresses()
+    {
+        return $this->hasMany(Attribute::class, 'user_id');
+    }
+
+
+    public function sendEmailVerificationNotification()
+    {
+        // Thay vì gửi Notification mặc định, chúng ta gửi Mailable tùy chỉnh
+        Mail::to($this->email)->send(new VerifyUserEmail($this));
+    }
+
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
+
+    public function wishlistedProducts()
+    {
+        return $this->belongsToMany(Product::class, 'wishlists', 'user_id', 'product_id')->withTimestamps();
     }
 }

@@ -32,7 +32,6 @@ class AttributeController extends Controller
                 'text' => $attribute->name,
             ];
         })->all();
-
         return response()->json(array('items' => $attributeMapped));
     }
 
@@ -44,6 +43,7 @@ class AttributeController extends Controller
         $payload['attributeCatalogueId'] = $request->input('attributeCatalogueId');
         $attributeArray = $payload['attribute'][$payload['attributeCatalogueId']];
         $attributes = [];
+        // dd(123);
         if (count($attributeArray)) {
             $attributes = $this->attributeRepository->findAttributeByIdArray($attributeArray);
         }

@@ -3,8 +3,8 @@
 @section('title', 'Trang Chủ')
 
 @section('content')
-    @include('client.layouts.slide')
-    @include('client.layouts.banner')
+    @include('client.layouts.slide', ['bannerslide' => $bannerslide])
+    @include('client.layouts.banner', ['banners' => $banners])
     @include('client.products.product')
-    @include('client.products.modal')
+    @include('client.productss.modal')
 @endsection

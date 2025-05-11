@@ -23,13 +23,23 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'name' => 'required',
+            'price' => 'required|numeric|min:0.01',
+            'brand_id' => 'required|',
+            'product_catalogue_id' => 'required|not_in:0',
+
+
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'Bạn chưa nhập vào ô tiêu đề sản phẩm',
+            'name.required'                     => 'Bạn chưa nhập vào ô tên sản phẩm',
+            'price.required'                    => 'Bạn chưa nhập vào ô tên sản phẩm',
+            'price.numeric'                     => 'Giá sản phẩm phải là một số',
+            'price.min'                         => 'Giá sản phẩm phải lớn hơn 0',
+            'brand_id.required'                 => 'Bạn chưa chọn ô thương hiệu',
+            'product_catalogue_id.not_in'       => 'Bạn chưa chọn ô danh mục sản phẩm',
         ];
     }
 }

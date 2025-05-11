@@ -23,46 +23,27 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
 
 
-    public function getProductById(int $id = 0, $language_id = 0)
+    public function getProductById(int $id = 0)
     {
         return $this->model->select(
             [
                 'products.id',
                 'products.product_catalogue_id',
                 'products.image',
-                'products.icon',
-                'products.album',
                 'products.publish',
-                'products.follow',
-                'products.code',
-                'products.made_in',
+                'products.name',
                 'products.price',
+                'products.is_sale',
+                'products.is_new',
+                'products.is_trending',
+                'products.is_show_home',
                 'products.attributeCatalogue',
                 'products.attribute',
                 'products.variant',
-                'tb2.name',
-                'tb2.description',
-                'tb2.content',
-                'tb2.meta_title',
-                'tb2.meta_keyword',
-                'tb2.meta_description',
-                'tb2.canonical',
+                'products.description',
+                'products.content',
             ]
         )
-            ->join('product_language as tb2', 'tb2.product_id', '=', 'products.id')
-            ->with([
-                'product_catalogues',
-                'product_variants' => function ($query) use ($language_id) {
-                    $query->with(['attributes' => function ($query) use ($language_id) {
-                        $query->with(['attribute_language' => function ($query) use ($language_id) {
-                            $query->where('language_id', '=', $language_id);
-                        }]);
-                    }]);
-                },
-                'galleries',
-                'reviews'
-            ])
-            ->where('tb2.language_id', '=', $language_id)
             ->find($id);
     }
 
@@ -138,7 +119,8 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
         if (isset($param['join']) && count($param['join'])) {
             foreach ($param['join'] as $key => $val) {
-                if (is_null($val)) continue;
+                if (is_null($val))
+                    continue;
                 $query->leftJoin($val[0], $val[1], $val[2], $val[3]);
             }
         }
@@ -153,9 +135,10 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
         if (isset($param['having']) && count($param['having'])) {
             foreach ($param['having'] as $key => $val) {
-                if (is_null($val)) continue;
+                if (is_null($val))
+                    continue;
                 $query->having($val);
-            
+
             }
         }
         if (isset($param['groupBy']) && count($param['groupBy'])) {
@@ -171,9 +154,10 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         return $query->paginate($perpage);
     }
 
-    private function convertAttributeFilter($attribute)
+
+    private function convertAttributeFilter($attribute, $languageId, $catId)
     {
-        $rawCondition['whereRaw'] =  [
+        $rawCondition['whereRaw'] = [
             [
                 'tb3.id IN (
                     SELECT id
@@ -188,7 +172,11 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         ];
     }
 
-    private function convertPriceFilter($price) {}
+    private function convertPriceFilter($price)
+    {
+    }
 
-    private function convertRateFilter($rate) {}
+    private function convertRateFilter($rate)
+    {
+    }
 }

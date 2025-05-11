@@ -35,17 +35,24 @@ class BaseRepository implements BaseRepositoryInterface
         array $rawQuery = [],
     ) {
         $query = $this->model->select($column);
-        return $query
-            ->keyword($condition['keyword'] ?? null)
+    
+        // Apply joins, filters...
+        $query = $query
             ->publish($condition['publish'] ?? null)
             ->relationCount($relations ?? null)
             ->CustomWhere($condition['where'] ?? null)
             ->customWhereRaw($rawQuery['whereRaw'] ?? null)
             ->customJoin($join ?? null)
-            ->customGroupBy($extend['groupBy'] ?? null)
-            ->customOrderBy($orderBy ?? null)
-            ->paginate($perPage)
-            ->withQueryString()->withPath(env('APP_URL') . $extend['path']);
+            ->customGroupBy($extend['groupBy'] ?? null);
+    
+        // Sắp xếp
+        if (!empty($orderBy)) {
+            $query->orderBy($orderBy[0], $orderBy[1]);
+        }
+    
+        return $query->paginate($perPage)
+            ->withQueryString()
+            ->withPath(env('APP_URL') . $extend['path']);
     }
 
     public function create($data)
@@ -58,8 +65,8 @@ class BaseRepository implements BaseRepositoryInterface
     {
         $model = $this->model->findOrFail($id);
         // dd($model);
-        $model->update($data); 
-        return $model->fresh(); 
+        $model->update($data);
+        return $model->fresh();
     }
 
     public function createRoute($data)
@@ -103,6 +110,7 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function destroy($model)
     {
+        
         return $model->delete();
     }
 

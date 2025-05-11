@@ -29,7 +29,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->intended(RouteServiceProvider::HOME)->with('success', 'Đăng nhập thành công!');
     }
 
     /**
@@ -43,6 +43,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('client/home');
+        return redirect('client/home')->with('success', 'Đăng xuất thành công!');
+        ;
+
     }
 }

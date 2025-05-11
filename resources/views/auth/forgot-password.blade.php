@@ -1,6 +1,8 @@
 <x-guest-layout>
     <div class="mb-4 text-sm text-gray-600">
-        {{ __('Quên mật khẩu? Không vấn đề gì. Chỉ cần cho chúng tôi biết địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn một liên kết đặt lại mật khẩu cho phép bạn chọn mật khẩu mới.') }}
+
+        {{ __('Quên mật khẩu? Không vấn đề gì. Chỉ cần cho chúng tôi biết địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn liên kết đặt lại mật khẩu cho phép bạn chọn mật khẩu mới.') }}
+
     </div>
 
     <!-- Session Status -->
@@ -12,13 +14,16 @@
         <!-- Email Address -->
         <div>
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
+            <x-text-input id="email" placeholder="Nhập địa chỉ email của bạn" class="block mt-1 w-full" type="email"
+                name="email" :value="old('email')" required autofocus />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-end mt-4">
             <x-primary-button>
-                {{ __('Liên kết đặt lại mật khẩu Email') }}
+
+                {{ __('Lấy lại mật khẩu') }}
+
             </x-primary-button>
         </div>
     </form>

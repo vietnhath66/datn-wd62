@@ -10,7 +10,6 @@
     <meta content="Minimal Admin & Dashboard Template" name="description">
     <meta content="StarCode Kh" name="author">
     <!-- App favicon -->
-
     <link rel="shortcut icon" href="{{ asset('admin/images/favicon.ico') }}">
     <!-- Layout config Js -->
     <script src="{{ asset('admin/js/layout.js') }}"></script>
@@ -28,25 +27,27 @@
 </head>
 
 <body
-    class="flex items-center justify-center min-h-screen py-16 bg-cover bg-auth-pattern font-public">
+    class="flex items-center justify-center min-h-screen py-16 bg-cover bg-auth-pattern dark:bg-auth-pattern-dark dark:text-zink-100 font-public">
 
-    <div class="mb-0 border-none lg:w-[500px] card bg-white/70 shadow-none">
+    <div class="mb-0 border-none lg:w-[500px] card bg-white/70 shadow-none dark:bg-zink-500/70">
         <div class="!px-10 !py-12 card-body">
             <a href="index-1.html">
                 <img src="images/logo-light.png" alt="" class="hidden h-6 mx-auto dark:block">
-                <img src="images/logo-dark.png" alt="" class="block h-6 mx-auto dark:hidden">
+
+                <img src="{{ asset('client/images/icons/logo-03.png') }}" alt="" class="block h-6 mx-auto dark:hidden">
             </a>
 
             <div class="mt-8 text-center">
-                <h4 class="mb-2 text-purple-500">Welcome Back !</h4>
-                <p class="text-slate-500">Sign in to continue to starcode.</p>
+                <h4 class="mb-2 text-purple-500 dark:text-purple-500">Chào mừng trờ lại!</h4>
+                <p class="text-slate-500 dark:text-zink-200">Đăng nhập vào ChicWear Admin</p>
             </div>
             <form class="mt-10" role="form" action="{{ route('login') }}" method="POST">
                 @csrf
                 <div class="mt-3">
                     <label for="email" class="inline-block mb-2 text-base font-medium">Email</label>
                     <input type="text"
-                        class="form-input border-slate-200 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-500 placeholder:text-slate-400"
+
+                        class="form-input dark:bg-zink-600/50 border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
 
                         placeholder="Email" name="email" value="{{ request('email') ?: old('email') }}">
                     @error('email')
@@ -56,7 +57,8 @@
                 <div class="mt-3">
                     <label for="password" class="inline-block mb-2 text-base font-medium">Mật khẩu</label>
                     <input type="password"
-                        class="form-input border-slate-200 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-500 placeholder:text-slate-400"
+
+                        class="form-input dark:bg-zink-600/50 border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
 
                         placeholder="Password" name="password">
                     @error('password')
@@ -66,13 +68,13 @@
                 <div class="mt-10">
                     <button type="submit"
 
-                        class="w-full text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100">Đăng
+                        class="w-full text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">Đăng
                         Nhập</button>
                 </div>
                 <div
-                    class="relative text-center my-9 before:absolute before:top-3 before:left-0 before:right-0 before:border-t before:border-t-slate-200">
+                    class="relative text-center my-9 before:absolute before:top-3 before:left-0 before:right-0 before:border-t before:border-t-slate-200 dark:before:border-t-zink-500">
                     <h5
-                        class="inline-block px-2 py-0.5 text-sm bg-white text-slate-500 rounded relative">
+                        class="inline-block px-2 py-0.5 text-sm bg-white text-slate-500 dark:bg-zink-600 dark:text-zink-200 rounded relative">
                         Sign In with</h5>
                 </div>
 
@@ -92,9 +94,9 @@
                 </div>
 
                 <div class="mt-10 text-center">
-                    <p class="mb-0 text-slate-500">Don't have an account ? <a
+                    <p class="mb-0 text-slate-500 dark:text-zink-200">Don't have an account ? <a
                             href="auth-register-basic.html"
-                            class="font-semibold underline transition-all duration-150 ease-linear text-slate-500 hover:text-custom-500">
+                            class="font-semibold underline transition-all duration-150 ease-linear text-slate-500 dark:text-zink-200 hover:text-custom-500 dark:hover:text-custom-500">
                             SignUp</a> </p>
                 </div>
                 <a class="btn btn-sm btn-white btn-block" href="register.html">Create an account</a>
