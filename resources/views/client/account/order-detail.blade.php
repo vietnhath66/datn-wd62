@@ -448,11 +448,11 @@
                                     $variantInfo = [];
                                     if ($item->productVariant) {
                                         // Giả sử có accessor hoặc thuộc tính 'color_name', 'size_name'
-                                        if (isset($item->productVariant->color_name)) {
-                                            $variantInfo[] = $item->productVariant->color_name;
+                                        if (isset($item->productVariant->name_variant_color)) {
+                                            $variantInfo[] = $item->productVariant->name_variant_color;
                                         }
-                                        if (isset($item->productVariant->size_name)) {
-                                            $variantInfo[] = $item->productVariant->size_name;
+                                        if (isset($item->productVariant->name_variant_size)) {
+                                            $variantInfo[] = $item->productVariant->name_variant_size;
                                         }
                                         // Hoặc lấy từ tên biến thể nếu có
                                         // if($item->productVariant->name) $variantInfo[] = $item->productVariant->name;
@@ -471,6 +471,11 @@
                                     </div>
                                     <div>
                                         <div class="product-quantity">SL: {{ $item->quantity }}</div>
+                                        {{-- <div class="product-quantity">Màu:
+                                            {{ $item->productVariant->name_variant_color }}
+                                        </div>
+                                        <div class="product-quantity">Size: {{ $item->productVariant->name_variant_size }}
+                                        </div> --}}
                                         <div class="product-line-total">
                                             {{ number_format($item->price * $item->quantity, 0, ',', '.') }} VNĐ
                                             @if ($item->quantity > 1)

@@ -111,18 +111,12 @@
     }
 
     .custom-price-range-inputs {
-        display: flex;
-        /* Sử dụng flexbox để căn chỉnh các ô nhập */
-        align-items: center;
-        /* Căn giữa theo chiều dọc */
-        gap: 10px;
-        /* Khoảng cách giữa các ô nhập và separator */
-        margin-bottom: 15px;
-        /* Khoảng cách dưới các ô nhập trước slider placeholder */
+        display: block;
+
     }
 
     .custom-price-input {
-        width: calc(50% - 15px);
+        width: 80%;
         /* Mỗi ô nhập chiếm gần 50%, trừ đi gap và separator */
         padding: 8px 12px;
         border: 1px solid #ccc;
@@ -576,8 +570,7 @@
                                 <div class="mtext-102 cl2 p-b-15 custom-filter-title">Khoảng giá</div>
                                 <div class="custom-price-range-inputs">
                                     <input type="number" name="min_price" placeholder="Tối thiểu"
-                                        class="stext-104 cl4 custom-price-input">
-                                    <span class="stext-104 cl4 custom-price-separator">-</span> {{-- Thêm class cho separator --}}
+                                        class="stext-104 cl4 custom-price-input mb-3">
                                     <input type="number" name="max_price" placeholder="Tối đa"
                                         class="stext-104 cl4 custom-price-input">
                                 </div>

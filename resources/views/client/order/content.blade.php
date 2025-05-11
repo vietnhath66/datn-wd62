@@ -114,15 +114,15 @@
                                     <p class="mb-0">
                                         <a
                                             href="{{ Route('client.product.show', $item->product->id) }}">{{ $item->product->name }}</a>
-                                        <span class="text-muted">x{{ $item->quantity }}</span>
                                     </p>
-                                    <p class="mb-0">
-                                        Màu: <span
-                                            class="text-muted">{{ $item->productVariant->name_variant_color }}</span>
+                                    <p class="mb-0 text-muted">
+                                        SL: <span>{{ $item->quantity }}</span>
                                     </p>
-                                    <p class="mb-0">
-                                        Size: <span
-                                            class="text-muted">{{ $item->productVariant->name_variant_size }}</span>
+                                    <p class="mb-0 text-muted">
+                                        Màu: <span>{{ $item->productVariant->name_variant_color }}</span>
+                                    </p>
+                                    <p class="mb-0 text-muted">
+                                        Size: <span>{{ $item->productVariant->name_variant_size }}</span>
                                     </p>
                                 </div>
                                 <p style="margin-left: auto"> {{ number_format($item->quantity * $item->price) }} VND

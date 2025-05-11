@@ -78,10 +78,16 @@
         </div>
     </div>
 </section>
+
+@php
+    $admin = \App\Models\User::whereHas('roles', function ($query) {
+        $query->where('id', 1); // 1 là role Admin
+    })->first();
+@endphp
 @if (auth()->check() &&
         auth()->user()->hasRole([4, 5]))
     {{-- Cộng tác viên (4) hoặc Khách hàng (5) --}}
-    <a href="{{ url('chatify/2') }}" target="_blank" class="floating-button">
+    <a href="{{ url('chatify/' . $admin->id) }}" target="_blank" class="floating-button">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="color: #fff" fill="currentColor"
             class="bi bi-chat-dots" viewBox="0 0 16 16">
             <path
