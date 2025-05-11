@@ -14,5 +14,3 @@
         </div>
     </div>
 </x-app-layout>
-
-{{-- Hoàn thiện toàn bộ website rồi
