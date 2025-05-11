@@ -38,7 +38,6 @@ class HomeController extends Controller
 
         $banners = Banner::where('is_active', true)->where('position', 'home_top')->orderBy('position')->get();
 
-        // Lấy banner dưới cùng ('home_bottom')
         $bannerslide = Banner::where('is_active', true)->where('position', 'slide')->orderBy('position')->get();
 
         return view('client.home.home')->with([

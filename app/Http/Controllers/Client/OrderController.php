@@ -42,13 +42,11 @@ class OrderController extends Controller
 
 
         $userAddresses = Address::where('user_id', $user->id)
-            ->orderByDesc('is_default') // Ưu tiên địa chỉ mặc định lên đầu
-            ->orderByDesc('created_at') // Tiếp theo là địa chỉ mới nhất
+            ->orderByDesc('is_default')
+            ->orderByDesc('created_at')
             ->get();
-        // Lấy địa chỉ mặc định (nếu có) để điền sẵn form ban đầu
         $defaultUserAddress = $userAddresses->firstWhere('is_default', 1);
 
-        // $userAddress = $user;
         $provinces = Province::orderBy('full_name', 'asc')->get();
 
         $cartItems = $order->items;
@@ -60,7 +58,7 @@ class OrderController extends Controller
             'order' => $order,
             'totalPrice' => $totalPrice,
             'user' => $user,
-            'defaultUserAddress' => $defaultUserAddress, // Địa chỉ mặc định để điền form
+            'defaultUserAddress' => $defaultUserAddress,
             'userAddresses' => $userAddresses,
             'provinces' => $provinces,
         ]);
@@ -307,7 +305,7 @@ class OrderController extends Controller
                 }
                 $redirectUrl = route($returnRouteName);
 
-                $ngrokForwardingUrl = "https://17ee-2001-ee0-40e1-4949-5c7d-2314-6a43-871e.ngrok-free.app";
+                $ngrokForwardingUrl = "https://f276-118-70-48-14.ngrok-free.app";
                 $ipnRouteUri = "/momo/payment/notify";
                 $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
                 Log::info('Using temporary Ngrok IPN URL: ' . $ipnUrl);
@@ -527,7 +525,7 @@ class OrderController extends Controller
                 throw new \Exception('Lỗi cấu hình URL MoMo.');
             }
             $redirectUrl = route($returnRouteName);
-            $ngrokForwardingUrl = "https://17ee-2001-ee0-40e1-4949-5c7d-2314-6a43-871e.ngrok-free.app";
+            $ngrokForwardingUrl = "https://f276-118-70-48-14.ngrok-free.app";
             $ipnRouteUri = "/momo/payment/notify";
             $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
             Log::info('Using temporary Ngrok IPN URL: ' . $ipnUrl);
