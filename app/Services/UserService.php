@@ -28,8 +28,8 @@ class UserService extends BaseService implements UserServiceInterface
         $condition['keyword'] = addslashes($request->input('keyword'));
     
         // Lấy theo status nếu có truyền vào
-        if ($request->has('status')) {
-            $condition['status'] = $request->integer('status');
+        if ($request->has('is_locked')) {
+            $condition['is_locked'] = $request->integer('is_locked');
         }
     
         $condition['publish'] = $request->integer('publish');
@@ -155,6 +155,6 @@ class UserService extends BaseService implements UserServiceInterface
     }
     public function getLockedUsers($request)
 {
-    return User::where('status', 0)->paginate(10);
+    return User::where('is_locked', 1)->paginate(10);
 }
 }
