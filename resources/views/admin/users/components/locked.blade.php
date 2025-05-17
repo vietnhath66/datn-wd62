@@ -116,7 +116,7 @@
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
                                         data-sort="product_name">Số điện thoại</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
-                                        data-sort="status">Trạng thái</th>
+                                        data-sort="is_locked">Trạng thái</th>
                                     <th
                                         class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 action">
                                         Hành động</th>
@@ -153,11 +153,11 @@
                                                 </a>
                                             </td>
                                             <td>
-                                                @if($item->status == 1)
-                                                    <span class="badge badge-success">Hoạt động</span>
-                                                @else
-                                                    <span class="badge badge-danger">Đã khoá</span>
-                                                @endif
+                                            @if($item->is_locked == 1)
+                                                <span class="badge badge-danger">Đã khoá</span>
+                                            @else
+                                                <span class="badge badge-success">Hoạt động</span>
+                                            @endif
                                             </td>
                                             <td
                                                 class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 action">

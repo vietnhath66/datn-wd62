@@ -34,7 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'dark_mode',
         'messenger_color',
         'email_verified_at',
-        'status'
+        'is_locked'
     ];
 
     /**
