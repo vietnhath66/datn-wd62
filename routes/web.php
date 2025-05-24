@@ -77,6 +77,7 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     Route::get('home', [HomeController::class, 'viewHome'])->name('viewHome');
     Route::get('about', [AboutController::class, 'viewAbout'])->name('viewAbout');
     Route::get('contact', [ContactController::class, 'viewContact'])->name('viewContact');
+    Route::post('contact', [ContactController::class, 'sendContact'])->name('sendContact');
     Route::get('search', [ClientProductController::class, 'viewSearch'])->name('viewSearch');
     Route::get('product/{id}', [ProductController::class, 'viewShow'])->name('viewShow');
     Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
@@ -164,7 +165,7 @@ Route::prefix('admin')
                 Route::get('edit/{brand}', [BrandController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
 
                 // Route::put('update/{brand}',                                 [BrandController::class, 'update'])->where(['id' => '[0-9]+'])->name('udpate');
-        
+
                 Route::put('update/{brand}', [BrandController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
 
 
@@ -229,7 +230,6 @@ Route::prefix('admin')
                     Route::patch('lock/{user}', [UserController::class, 'lock'])->where(['user' => '[0-9]+'])->name('lock');
                     Route::patch('unlock/{user}', [UserController::class, 'unlock'])->where(['user' => '[0-9]+'])->name('unlock');
                 });
-
             });
 
         Route::prefix('attribute_catalogue')
@@ -347,4 +347,3 @@ Route::get('/get-wards/{district_code}', function ($district_code) {
 
     return response()->json($wards);
 });
-

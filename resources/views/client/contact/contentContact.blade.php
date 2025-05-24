@@ -2,11 +2,11 @@
     <div class="container">
         <div class="flex-w flex-tr">
             <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md">
-                <form>
+                <form method="POST" action="{{ route('client.sendContact') }}">
+                    @csrf
                     <h4 class="mtext-105 cl2 txt-center p-b-30">
                         Liên hệ
                     </h4>
-
                     <div class="bor8 m-b-20 how-pos4-parent">
                         <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 " type="text" name="email"
                             placeholder="Email">
@@ -14,17 +14,17 @@
                     </div>
 
                     <div class="bor8 m-b-20 how-pos4-parent">
-                        <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 " type="text" name="sdt"
+                        <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 " type="text" name="phone"
                             placeholder="Số Điện Thoại">
                         <i class="fas fa-phone how-pos4 pointer-none"></i>
                     </div>
 
                     <div class="bor8 m-b-30">
-                        <textarea class="stext-111 cl2 plh3 size-120 p-lr-28 p-tb-25" name="msg"
+                        <textarea class="stext-111 cl2 plh3 size-120 p-lr-28 p-tb-25" name="message"
                             placeholder="Chúng tôi có thể giúp gì cho bạn ?"></textarea>
                     </div>
 
-                    <button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer">
+                    <button type="submit" class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer">
                         Gửi
                     </button>
                 </form>
@@ -78,6 +78,8 @@
         </div>
     </div>
 </section>
+
+
 
 @php
     $admin = \App\Models\User::whereHas('roles', function ($query) {
