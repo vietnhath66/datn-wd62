@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProductCatalogue;
 use Illuminate\Http\Request;
 
 use App\Services\Interfaces\ProductCatalogueServiceInterface  as ProductCatalogueService;
@@ -49,25 +50,42 @@ class ProductCatalogueController extends Controller
     {
         // $this->authorize('modules', 'admin.product_catalogue.index');
         $productCatalogues = $this->productCatalogueService->paginate($request);
-        for ($i = 0; $i < count($productCatalogues); $i++) {
-            $children = [];
+        // $products = ProductCatalogue::paginate(10);
+        // for ($i = 0; $i < count($productCatalogues); $i++) {
+        //     $children = [];
 
-                foreach ($productCatalogues as $key) {
-                    if ($key->parent_id == $productCatalogues[$i]->id) {
-                        array_push($children, $key);
-                    }
-                }
-                $productCatalogues[$i]->children = $children;
-            // if ($productCatalogues[$i]->parent_id == 0) {
+        //         foreach ($productCatalogues as $key) {
+        //             if ($key->parent_id == $productCatalogues[$i]->id) {
+        //                 array_push($children, $key);
+        //             }
+        //         }
+        //         $productCatalogues[$i]->children = $children;
+        //     // if ($productCatalogues[$i]->parent_id == 0) {
                 
-            // }
-        }
+        //     // }
+        // }
 
-        $productCatalogues = $productCatalogues->filter(function ($item) {
-            return !empty($item->parent_id == 0);
-        });
+        // $productCatalogues = $productCatalogues->filter(function ($item) {
+        //     return !empty($item->parent_id == 0);
+        // });
         // dd($productCatalogues);
+        $catalogueItems = collect($productCatalogues->items());
 
+        for ($i = 0; $i < count($catalogueItems); $i++) {
+            $children = [];
+        
+            foreach ($catalogueItems as $key) {
+                if ($key->parent_id == $catalogueItems[$i]->id) {
+                    array_push($children, $key);
+                }
+            }
+        
+            $catalogueItems[$i]->children = $children;
+        }
+        
+        $filteredCatalogues = $catalogueItems->filter(function ($item) {
+            return $item->parent_id == 0;
+        });
         $config = [
             'js' => [
                 'admin/js/plugins/switchery/switchery.js',

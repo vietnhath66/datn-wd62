@@ -448,11 +448,11 @@
                                     $variantInfo = [];
                                     if ($item->productVariant) {
                                         // Giả sử có accessor hoặc thuộc tính 'color_name', 'size_name'
-                                        if (isset($item->productVariant->color_name)) {
-                                            $variantInfo[] = $item->productVariant->color_name;
+                                        if (isset($item->productVariant->name_variant_color)) {
+                                            $variantInfo[] = $item->productVariant->name_variant_color;
                                         }
-                                        if (isset($item->productVariant->size_name)) {
-                                            $variantInfo[] = $item->productVariant->size_name;
+                                        if (isset($item->productVariant->name_variant_size)) {
+                                            $variantInfo[] = $item->productVariant->name_variant_size;
                                         }
                                         // Hoặc lấy từ tên biến thể nếu có
                                         // if($item->productVariant->name) $variantInfo[] = $item->productVariant->name;
@@ -471,6 +471,11 @@
                                     </div>
                                     <div>
                                         <div class="product-quantity">SL: {{ $item->quantity }}</div>
+                                        {{-- <div class="product-quantity">Màu:
+                                            {{ $item->productVariant->name_variant_color }}
+                                        </div>
+                                        <div class="product-quantity">Size: {{ $item->productVariant->name_variant_size }}
+                                        </div> --}}
                                         <div class="product-line-total">
                                             {{ number_format($item->price * $item->quantity, 0, ',', '.') }} VNĐ
                                             @if ($item->quantity > 1)
@@ -702,14 +707,26 @@
                                                     {{-- Hiển thị thêm lý do nữa, đang không hiển thị được $userName trong elseif này --}}
                                                 @endif
                                                 @if ($statusKey === 'completed' && $isCompleted && $order->note)
-                                                    <small style="font-size: 12px" class="d-block text-muted mt-1">Lý do:
-                                                        {{ e($order->note) }}</small>
+                                                      <p><strong>Lý do:</strong> {{ $order->note }}</p>
+
+                                                        @if ($order->shipper_photo)
+                                                         <div class="mt-3">
+                                                            <label>Ảnh xác nhận giao hàng:</label><br>
+                                                            <img src="{{ asset('storage/' . $order->shipper_photo) }}"
+                                                                style="max-width: 250px; width: 100%; border: 1px solid #ccc; border-radius: 6px;"
+                                                                alt="Ảnh giao hàng">
+                                                        </div>
+                                                    @endif
+
                                                 @endif
                                             </span>
+                                            
                                         @endif
                                     </div>
                                 </li>
                             @endforeach
+                            
+                            
 
                             {{-- Xử lý hiển thị các trạng thái KẾT THÚC TIÊU CỰC (cancelled, failed, refunded) --}}
                             @if ($isEndedState && $currentStatus !== 'completed')
@@ -743,7 +760,16 @@
                                         @else
                                             {{-- Có thể hiển thị dòng này nếu muốn rõ ràng là không có ghi chú --}}
                                             {{-- <small class="d-block text-muted mt-1">Lý do: (Không có ghi chú)</small> --}}
+                                            
                                         @endif
+                                         @if ($order->shipper_photo)
+                                                         <div class="mt-3">
+                                                            <label>Ảnh xác nhận giao hàng:</label><br>
+                                                            <img src="{{ asset('storage/' . $order->shipper_photo) }}"
+                                                                style="max-width: 250px; width: 100%; border: 1px solid #ccc; border-radius: 6px;"
+                                                                alt="Ảnh giao hàng">
+                                                        </div>
+                                                    @endif
                                     </div>
                                 </li>
                             @endif
@@ -798,10 +824,11 @@
                                     $fullAddress = implode(
                                         ', ',
                                         array_filter([
-                                            $order->address,
-                                            $order->ward->full_name,
-                                            $order->district->full_name,
-                                            $order->province->full_name,
+                                            // array_filter sẽ tự động loại bỏ các giá trị null
+                                            $order->address, // Địa chỉ cụ thể
+                                            optional($order->ward)->full_name, // <<< Dùng optional()
+                                            optional($order->district)->full_name, // <<< Dùng optional()
+                                            optional($order->province)->full_name, // <<< Dùng optional()
                                         ]),
                                     );
                                 @endphp

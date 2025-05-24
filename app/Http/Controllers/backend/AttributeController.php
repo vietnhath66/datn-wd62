@@ -45,7 +45,7 @@ class AttributeController extends Controller
 
     public function index(Request $request){
         // $this->authorize('modules', 'admin.attribute.index');
-        $attributes = $this->attributeService->paginate($request, $this->language);
+        $attributes = $this->attributeService->paginate($request);
         $config = [
             'js' => [
                 'admin/js/plugins/switchery/switchery.js',
@@ -119,13 +119,27 @@ class AttributeController extends Controller
     }
 
     public function edit($id){
-        $this->authorize('modules', 'admin.attribute.update');
-        $attribute = $this->attributeReponsitory->getAttributeById($id, $this->language);
+        // $this->authorize('modules', 'admin.attribute.update');
+        $attribute = $this->attributeReponsitory->getAttributeById($id);
         $config = $this->configData();
-        $config['seo'] = __('messages.attribute');
+        $config['seo'] =  [
+            'index' => [
+                'title' => 'Quản lý thuộc tính',
+                'table' => 'Danh sách thuộc tính'
+            ],
+            'create' => [
+                'title' => 'Thêm mới thuộc tính'
+            ],
+            'edit' => [
+                'title' => 'Cập nhật thuộc tính'
+            ],
+            'delete' => [
+                'title' => 'Xóa thuộc tính'
+            ],
+        ];
         $config['method'] = 'edit';
         $dropdown  = $this->nestedset->Dropdown();
-        $template = 'admin.attribute.attribute.store';
+        $template = 'admin.attributes.attribute.store';
         return view('admin.dashboard.layout', compact(
             'template',
             'config',
@@ -134,8 +148,8 @@ class AttributeController extends Controller
         ));
     }
 
-    public function update($attribute, UpdateAttributeRequest $request){
-        if($this->attributeService->update($attribute, $request, $this->language)){
+    public function update($id, UpdateAttributeRequest $request){
+        if($this->attributeService->update($id, $request)){
             return redirect()->route('admin.attribute.index')->with('success','Cập nhật bản ghi thành công');
         }
         return redirect()->route('admin.attribute.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
@@ -144,7 +158,7 @@ class AttributeController extends Controller
     public function delete($id){
         $this->authorize('modules', 'admin.attribute.destroy');
         $config['seo'] = __('messages.attribute');
-        $attribute = $this->attributeReponsitory->getAttributeById($id, $this->language);
+        $attribute = $this->attributeReponsitory->getAttributeById($id);
         $template = 'admin.attribute.attribute.delete';
         return view('admin.dashboard.layout', compact(
             'template',
@@ -153,9 +167,9 @@ class AttributeController extends Controller
         ));
     }
 
-    public function destroy($attribute){
-        $attribute = $this->attributeReponsitory->getAttributeById($attribute, $this->language);
-        if($this->attributeService->destroy($attribute, $this->language)){
+    public function destroy($id){
+        // $attribute = $this->attributeReponsitory->getAttributeById($attribute);
+        if($this->attributeService->destroy($id)){
             return redirect()->route('admin.attribute.index')->with('success','Xóa bản ghi thành công');
         }
         return redirect()->route('admin.attribute.index')->with('error','Xóa bản ghi không thành công. Hãy thử lại');

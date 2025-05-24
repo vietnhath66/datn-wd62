@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
@@ -29,11 +30,13 @@ use App\Http\Controllers\UserController1;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\ContactController;
+use App\Http\Controllers\Client\ProductsController;
+use App\Http\Controllers\Client\FavoritesController;
 use App\Http\Controllers\Client\ProductController as ClientProductController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Client\ProductsController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Backend\ReviewController;
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -58,6 +61,7 @@ Route::prefix('shipper')
         Route::put('delivered/{order}', [ShipperController::class, 'updateOrderStatus'])->name('updateOrderStatus');
         Route::get('order-detail/{order}', [ShipperController::class, 'orderDetailShipper'])->name('orderDetailShipper');
         Route::post('accept-order/{order}', [ShipperController::class, 'acceptOrder'])->name('acceptOrder');
+        
     });
 
 
@@ -131,7 +135,11 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
         Route::post('product-detail/{product}/reviews', [ProductsController::class, 'reviewProduct'])->name('reviewProduct')->middleware('auth');
     });
 
-    // Route::get('products/{id}', [ProductsController::class, 'lienquan'])->name('productss.show');
+
+    // Route::middleware('auth')->group(function () {
+    //     Route::post('/favorite/add', [FavoritesController::class, 'add'])->name('favorite.add');
+    // });
+
 
 });
 
@@ -152,7 +160,12 @@ Route::prefix('admin')
                 Route::get('create', [BrandController::class, 'create'])->name('create');
                 Route::post('store', [BrandController::class, 'store'])->name('store');
                 Route::get('edit/{brand}', [BrandController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
+
+                // Route::put('update/{brand}',                                 [BrandController::class, 'update'])->where(['id' => '[0-9]+'])->name('udpate');
+        
                 Route::put('update/{brand}', [BrandController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
+
+
                 Route::get('delete/{brand}', [BrandController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
                 Route::delete('destroy/{brand}', [BrandController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
             });
@@ -185,7 +198,6 @@ Route::prefix('admin')
         Route::prefix('roles')
             ->as('roles.')
             ->group(function () {
-
                 Route::get('index', [RoleController::class, 'index'])->name('index');
                 Route::get('create', [RoleController::class, 'create'])->name('create');
                 Route::post('store', [RoleController::class, 'store'])->name('store');
@@ -198,19 +210,29 @@ Route::prefix('admin')
         Route::prefix('users')
             ->as('users.')
             ->group(function () {
+
+                // Ai cũng truy cập được
                 Route::get('index', [UserController::class, 'index'])->name('index');
-                Route::get('create', [UserController::class, 'create'])->name('create');
-                Route::post('store', [UserController::class, 'store'])->name('store');
-                Route::get('edit/{users}', [UserController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
-                Route::put('update/{users}', [UserController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
-                Route::get('delete/{users}', [UserController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
-                Route::delete('destroy/{users}', [UserController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
+
+                // Chỉ role_id = 1 mới được truy cập
+                Route::middleware('check.admin')->group(function () {
+                    Route::get('locked', [UserController::class, 'locked'])->name('locked');
+                    Route::get('create', [UserController::class, 'create'])->name('create');
+                    Route::post('store', [UserController::class, 'store'])->name('store');
+                    Route::get('edit/{user}', [UserController::class, 'edit'])->where(['user' => '[0-9]+'])->name('edit');
+                    Route::put('update/{user}', [UserController::class, 'update'])->where(['user' => '[0-9]+'])->name('update');
+                    Route::get('delete/{user}', [UserController::class, 'delete'])->where(['user' => '[0-9]+'])->name('delete');
+                    Route::delete('destroy/{user}', [UserController::class, 'destroy'])->where(['user' => '[0-9]+'])->name('destroy');
+
+                    Route::patch('lock/{user}', [UserController::class, 'lock'])->where(['user' => '[0-9]+'])->name('lock');
+                    Route::patch('unlock/{user}', [UserController::class, 'unlock'])->where(['user' => '[0-9]+'])->name('unlock');
+                });
+
             });
 
         Route::prefix('attribute_catalogue')
             ->as('attribute_catalogue.')
             ->group(function () {
-
                 Route::get('index', [AttributeCatalogueController::class, 'index'])->name('index');
                 Route::get('create', [AttributeCatalogueController::class, 'create'])->name('create');
                 Route::post('store', [AttributeCatalogueController::class, 'store'])->name('store');
@@ -223,8 +245,6 @@ Route::prefix('admin')
         Route::prefix('attribute')
             ->as('attribute.')
             ->group(function () {
-
-
                 Route::get('index', [AttributeController::class, 'index'])->name('index');
                 Route::get('create', [AttributeController::class, 'create'])->name('create');
                 Route::post('store', [AttributeController::class, 'store'])->name('store');
@@ -232,6 +252,17 @@ Route::prefix('admin')
                 Route::put('update/{attribute}', [AttributeController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
                 Route::get('delete/{attribute}', [AttributeController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
                 Route::delete('destroy/{attribute}', [AttributeController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
+            });
+        Route::prefix('review')
+            ->as('review.')
+            ->group(function () {
+                Route::get('index', [ReviewController::class, 'index'])->name('index');
+                // Route::get('create',                      [ReviewController::class, 'create'])->name('create');
+                // Route::post('store',                      [ReviewController::class, 'store'])->name('store');
+                // Route::get('edit/{review}',               [ReviewController::class, 'edit'])->where(['review' => '[0-9]+'])->name('edit');
+                // Route::put('update/{review}',             [ReviewController::class, 'update'])->where(['review' => '[0-9]+'])->name('update');
+                Route::get('delete/{review}', [ReviewController::class, 'delete'])->where(['review' => '[0-9]+'])->name('delete');
+                Route::delete('destroy/{review}', [ReviewController::class, 'destroy'])->where(['review' => '[0-9]+'])->name('destroy');
             });
 
         Route::prefix('counpon')

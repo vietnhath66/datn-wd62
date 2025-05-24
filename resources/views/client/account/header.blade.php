@@ -6,14 +6,14 @@
     <div class="details">
         <div class="name">{{ Auth::user()->name }}</div>
         <div class="role">{{ Auth::user()->roles->name ?? 'Không xác định' }}</div>
-        <div class="stats">
+        {{-- <div class="stats">
             <div class="stat-item">
                 <i class="fas fa-shopping-cart"></i> 0 VND
             </div>
             <div class="stat-item">
                 <i class="fas fa-clock"></i> Số lần đặt hàng: 0
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>
 
@@ -24,3 +24,6 @@
     <a href="#" data-page="addresses">Địa chỉ</a>
     <a href="#" data-page="coupons">Phiếu giảm giá</a>
 </div>
+
+
+

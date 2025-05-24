@@ -16,7 +16,7 @@ class BrandRepository extends BaseRepository implements BrandRepositoryInterface
 
     public function __construct(
         Brand $model
-    ){
+    ) {
         $this->model = $model;
     }
 
@@ -29,10 +29,10 @@ class BrandRepository extends BaseRepository implements BrandRepositoryInterface
         array $join = [],
         array $relations = [],
         array $whereRaw = [],
-    ){
-        $query = $this->model->select($column)->where(function($query) use ($condition){
-            if(isset($condition['keyword']) && !empty($condition['keyword'])){
-                $query->where('name', 'LIKE', '%'.$condition['keyword'].'%');
+    ) {
+        $query = $this->model->select($column)->where(function ($query) use ($condition) {
+            if (isset($condition['keyword']) && !empty($condition['keyword'])) {
+                $query->where('name', 'LIKE', '%' . $condition['keyword'] . '%');
             }
         });
 
@@ -42,21 +42,50 @@ class BrandRepository extends BaseRepository implements BrandRepositoryInterface
         //     }
         // }
 
-        if(isset($join) && is_array($join) && count($join)){
-            foreach($join as $key => $val){
+        if (isset($join) && is_array($join) && count($join)) {
+            foreach ($join as $key => $val) {
                 $query->join($val[0], $val[1], $val[2], $val[3]);
             }
         }
 
-        if(isset($orderBy) && is_array($orderBy) && count($orderBy)){
+        if (isset($orderBy) && is_array($orderBy) && count($orderBy)) {
             $query->orderBy($orderBy[0], $orderBy[1]);
         }
 
-        return $query->paginate($perPage)->withQueryString()->withPath(env('APP_URL').$extend['path']);
+        return $query->paginate($perPage)->withQueryString()->withPath(env('APP_URL') . $extend['path']);
     }
 
-    public function getBrandById(int $id = 0){
-        return $this->model->find($id);
+    public function destroy($model)
+    {
+        if (!$model instanceof Model) {
+            $model = $this->model->find($model); // Nếu truyền ID, tìm Model
+        }
+
+
+        $imagePath = public_path('storage/' . $model->image);
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
+        }
+
+        if (!$model) {
+            return false; // Nếu không tìm thấy, trả về false
+        }
+
+        return $model->delete();
     }
+
+
+
+    public function getBrandById(int $id = 0)
+    {
+        $brand = $this->model->find($id);
+
+        if (!$brand) {
+            throw new \Exception("Không tìm thấy thương hiệu với ID: $id");
+        }
+
+        return $brand;
+    }
+
 
 }

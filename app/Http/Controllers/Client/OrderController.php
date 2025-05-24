@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Mail\OrderPlacedMail;
+use App\Models\Address;
 use App\Models\Cart;
 use App\Models\CartDetail;
 use App\Models\Coupon;
@@ -31,9 +32,7 @@ class OrderController extends Controller
         }
 
         $user = Auth::user();
-
         $orderId = Session::get('order_id');
-
         $order = Order::with('items.product')->find($orderId);
 
         if (!$order) {
@@ -42,7 +41,11 @@ class OrderController extends Controller
         }
 
 
-        $userAddress = $user;
+        $userAddresses = Address::where('user_id', $user->id)
+            ->orderByDesc('is_default')
+            ->orderByDesc('created_at')
+            ->get();
+        $defaultUserAddress = $userAddresses->firstWhere('is_default', 1);
 
         $provinces = Province::orderBy('full_name', 'asc')->get();
 
@@ -55,8 +58,9 @@ class OrderController extends Controller
             'order' => $order,
             'totalPrice' => $totalPrice,
             'user' => $user,
-            'userAddress' => $userAddress,
-            'provinces' => $provinces
+            'defaultUserAddress' => $defaultUserAddress,
+            'userAddresses' => $userAddresses,
+            'provinces' => $provinces,
         ]);
     }
 
@@ -301,7 +305,7 @@ class OrderController extends Controller
                 }
                 $redirectUrl = route($returnRouteName);
 
-                $ngrokForwardingUrl = "https://e9cf-2001-ee0-40e1-1481-9144-4653-4e80-2528.ngrok-free.app";
+                $ngrokForwardingUrl = "https://f276-118-70-48-14.ngrok-free.app";
                 $ipnRouteUri = "/momo/payment/notify";
                 $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
                 Log::info('Using temporary Ngrok IPN URL: ' . $ipnUrl);
@@ -450,7 +454,8 @@ class OrderController extends Controller
                 'message' => 'Áp dụng mã giảm giá thành công!',
                 'original_total_price_display' => number_format($originalTotal) . ' VNĐ',
                 'new_total_price_display' => number_format($finalTotal) . ' VNĐ',
-                'coupon_code' => $coupon->code
+                'coupon_code' => $coupon->code,
+                'discount_value' => $coupon->discount_value
             ]);
 
         } catch (\Exception $e) {
@@ -520,7 +525,7 @@ class OrderController extends Controller
                 throw new \Exception('Lỗi cấu hình URL MoMo.');
             }
             $redirectUrl = route($returnRouteName);
-            $ngrokForwardingUrl = "https://e9cf-2001-ee0-40e1-1481-9144-4653-4e80-2528.ngrok-free.app";
+            $ngrokForwardingUrl = "https://f276-118-70-48-14.ngrok-free.app";
             $ipnRouteUri = "/momo/payment/notify";
             $ipnUrl = $ngrokForwardingUrl . $ipnRouteUri;
             Log::info('Using temporary Ngrok IPN URL: ' . $ipnUrl);
@@ -582,19 +587,43 @@ class OrderController extends Controller
 
             $order->load('items.productVariant');
 
-            foreach ($order->items as $item) {
-                if ($variant = $item->productVariant) {
-                    $variant->increment('quantity', $item->quantity);
-                    Log::info("Hoàn kho Variant ID {$variant->id} +{$item->quantity} do hủy Order ID {$order->id}.");
-                } else {
-                    Log::warning("Không tìm thấy Variant ID {$item->product_variant_id} để hoàn kho khi hủy Order ID {$order->id}.");
-                }
-            }
+            // foreach ($order->items as $item) {
+            //     if ($variant = $item->productVariant) {
+            //         $variant->increment('quantity', $item->quantity);
+            //         Log::info("Hoàn kho Variant ID {$variant->id} +{$item->quantity} do hủy Order ID {$order->id}.");
+            //     } else {
+            //         Log::warning("Không tìm thấy Variant ID {$item->product_variant_id} để hoàn kho khi hủy Order ID {$order->id}.");
+            //     }
+            // }
 
             $order->status = 'cancelled';
             $order->cancelled_at = now();
             $order->note = ($order->note ? $order->note . "\n" : '') . 'Đơn hàng được hủy bởi khách hàng';
             $order->save();
+
+            if (!empty($order->temporary_cart_ids)) {
+                $cartDetailIdsToClean = json_decode($order->temporary_cart_ids, true);
+
+                if (is_array($cartDetailIdsToClean) && !empty($cartDetailIdsToClean)) {
+                    // Lấy cart_id của người dùng hiện tại
+                    $cart = Cart::where('user_id', Auth::id())->first();
+
+                    if ($cart) {
+                        // Xóa các CartDetail có ID nằm trong danh sách VÀ thuộc giỏ hàng của user VÀ có status 'checkout'
+                        $deletedCount = CartDetail::where('cart_id', $cart->id)
+                            ->whereIn('id', $cartDetailIdsToClean)
+                            ->where('status', 'checkout') // Đảm bảo chỉ xóa item đang 'checkout'
+                            ->delete();
+                        Log::info("Order ID {$order->id} cancelled: Deleted {$deletedCount} 'checkout' status CartDetail items (IDs: " . implode(',', $cartDetailIdsToClean) . ") from Cart ID {$cart->id}.");
+                    } else {
+                        Log::warning("Order ID {$order->id} cancelled: Cart not found for User ID " . Auth::id() . " to clean up temporary_cart_ids.");
+                    }
+                } else {
+                    Log::info("Order ID {$order->id} cancelled: No valid temporary_cart_ids found to clean from cart.");
+                }
+            } else {
+                Log::info("Order ID {$order->id} cancelled: No temporary_cart_ids stored with the order to clean from cart.");
+            }
 
             DB::commit();
 

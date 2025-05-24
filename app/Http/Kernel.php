@@ -69,5 +69,7 @@ class Kernel extends HttpKernel
         'locale' => \App\Http\Middleware\SetLocale::class,
         'backend_default_locale' => \App\Http\Middleware\SetDefaultLocale::class,
         'shipper' => \App\Http\Middleware\CheckShipperRole::class,
+        'check.admin' => \App\Http\Middleware\CheckAdminRole::class,
+
     ];
 }

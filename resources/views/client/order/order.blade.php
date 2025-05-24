@@ -98,28 +98,42 @@
         }
 
         .payment-method {
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px 15px;
             cursor: pointer;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .payment-method:hover {
-            border-color: #1e90ff;
-            box-shadow: 0 0 10px rgba(30, 144, 255, 0.2);
+            background-color: #f8f9fa;
         }
 
         .payment-method input[type="radio"] {
-            margin-right: 10px;
+            margin-right: 12px;
+            accent-color: #28a745;
+            /* màu xanh lá */
+            transform: scale(1.2);
         }
 
-        .payment-method img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
+        .payment-method label {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
         }
+
+        .payment-method i {
+            color: #6c63ff;
+            font-size: 18px;
+        }
+
 
         .total-section {
             background: #f8f9fa;
@@ -163,6 +177,7 @@
             margin-left: 30px;
 
         }
+
 
         .img-product-payment {
             width: 100px;
@@ -435,6 +450,101 @@
 
         /* Bạn vẫn giữ style .select-form ban đầu cho các select không dùng Select2 */
         /* .select-form { ... style ban đầu ... } */
+
+        .address-modal {
+            display: none;
+            /* Ẩn mặc định */
+            position: fixed;
+            /* Ở cố định trên màn hình */
+            z-index: 1050;
+            /* Nằm trên các phần tử khác */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            /* Cho phép cuộn nếu nội dung dài */
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Nền mờ */
+        }
+
+        .address-modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            /* Canh giữa theo chiều dọc và ngang */
+            padding: 25px;
+            border: 1px solid #ccc;
+            width: 80%;
+            /* Chiều rộng modal */
+            max-width: 600px;
+            /* Giới hạn chiều rộng tối đa */
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .2);
+        }
+
+        .address-modal-close {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .address-modal-close:hover,
+        .address-modal-close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .address-modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .modal-address-item {
+            /* Style cho mỗi dòng địa chỉ trong modal */
+            padding: 10px 5px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .modal-address-item:last-child {
+            border-bottom: none;
+        }
+
+        .modal-address-item:hover {
+            background-color: #f0f8ff;
+            /* Màu nền khi hover */
+        }
+
+        .modal-address-item input[type="radio"] {
+            margin-right: 15px;
+            width: 18px;
+            /* Kích thước radio */
+            height: 18px;
+        }
+
+        .modal-address-item label {
+            margin-bottom: 0;
+            /* Ghi đè margin mặc định của label */
+            flex-grow: 1;
+            cursor: pointer;
+            /* Biến label thành con trỏ */
+        }
+
+        .modal-address-item .badge {
+            /* Style cho tag Mặc định */
+            font-size: 0.75rem;
+            padding: 3px 6px;
+        }
     </style>
 @endpush
 
@@ -709,6 +819,7 @@
 
                             // 3. (Tùy chọn) Hiển thị mã coupon đã áp dụng
                             $('#applied-coupon-code').text(response.coupon_code);
+                            $('#applied-coupon-discount_value').text(response.discount_value);
                             $('#applied-coupon-div').show();
 
                             // 4. Vô hiệu hóa ô nhập và nút bấm
@@ -826,5 +937,197 @@
             }); // Kết thúc on submit
 
         }); // Kết thúc $(document).ready
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // === CÁC ELEMENT LIÊN QUAN ĐẾN FORM CHÍNH ===
+            const nameInput = document.getElementById('fullName');
+            const phoneInput = document.getElementById('phone');
+            const emailInput = document.getElementById('email');
+            const addressInput = document.getElementById('address');
+            const provinceSelect = document.getElementById('province');
+            const districtSelect = document.getElementById('district');
+            const wardSelect = document.getElementById('ward');
+
+            // === CÁC ELEMENT LIÊN QUAN ĐẾN MODAL ===
+            const changeAddressButton = document.getElementById('change-address-btn');
+            const addressModal = document.getElementById('addressModal');
+            const closeModalButton = document.getElementById('closeAddressModal');
+            const modalAddressListDiv = document.getElementById('modal-address-list');
+
+            // Lấy dữ liệu địa chỉ đã lưu từ Blade (cần truyền $userAddresses ra view)
+            const savedAddresses = @json($userAddresses ?? []); // Lấy từ biến controller, đảm bảo là mảng
+
+            // --- Hàm để điền dữ liệu vào form chính (Giữ nguyên hoặc cải thiện) ---
+            function populateForm(data) {
+                // ... (code hàm populateForm từ trước, đảm bảo nó hoạt động) ...
+                if (!data) return;
+                if (nameInput && data.name) nameInput.value = data.name;
+                if (phoneInput && data.phone) phoneInput.value = data.phone;
+                if (emailInput && data.email) emailInput.value = data.email;
+                if (addressInput && data.address) addressInput.value = data.address;
+
+                if (provinceSelect && data.province) {
+                    let provinceFound = false;
+                    for (let i = 0; i < provinceSelect.options.length; i++) {
+                        if (provinceSelect.options[i].text.trim() === data.province.trim()) {
+                            provinceSelect.value = provinceSelect.options[i].value;
+                            provinceFound = true;
+                            break;
+                        }
+                    }
+                    var event = new Event('change');
+                    provinceSelect.dispatchEvent(event); // Trigger change để load huyện
+
+                    // >>> Quan trọng: Cần có cơ chế đợi load huyện/xã rồi mới chọn <<<
+                    // >>> Đây là lý do nên dùng CODE thay vì NAME <<<
+                    // Tạm thời reset huyện/xã
+                    districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+                    districtSelect.disabled = !provinceFound;
+                    wardSelect.innerHTML = '<option value="">Chọn phường/xã</option>';
+                    wardSelect.disabled = true;
+
+                } else if (provinceSelect) {
+                    provinceSelect.value = "";
+                    var event = new Event('change');
+                    provinceSelect.dispatchEvent(event);
+                }
+            }
+
+            // --- Hàm tạo danh sách địa chỉ trong Modal ---
+            function renderModalAddressList() {
+                if (!modalAddressListDiv) return;
+                modalAddressListDiv.innerHTML = ''; // Xóa nội dung cũ
+
+                if (savedAddresses && savedAddresses.length > 0) {
+                    savedAddresses.forEach(addr => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'modal-address-item form-check'; // Thêm form-check nếu cần
+
+                        const radioInput = document.createElement('input');
+                        radioInput.className =
+                            'form-check-input saved-address-radio-modal'; // Class riêng cho radio trong modal
+                        radioInput.type = 'radio';
+                        radioInput.name = 'selected_address_modal'; // Tên riêng
+                        radioInput.id = `modal_address_${addr.id}`;
+                        radioInput.value = addr.id;
+
+                        // Lưu trữ dữ liệu vào data attributes của radio button
+                        radioInput.dataset.name = "{{ $user->name }}"; // Lấy tên user chung
+                        radioInput.dataset.phone = "{{ $user->phone }}"; // Lấy SĐT user chung
+                        radioInput.dataset.email = "{{ $user->email }}"; // Lấy email user chung
+                        radioInput.dataset.address = addr.address;
+                        radioInput.dataset.province = addr.province; // Lưu tên tỉnh
+                        radioInput.dataset.district = addr.district; // Lưu tên huyện
+                        radioInput.dataset.ward = addr.neighborhood; // Lưu tên xã (cột neighborhood)
+                        // radioInput.dataset.province_code = addr.province_code; // <<< Nếu bạn lưu code thì dùng cái này
+                        // radioInput.dataset.district_code = addr.district_code;
+                        // radioInput.dataset.ward_code = addr.ward_code;
+
+                        // Check nếu là địa chỉ mặc định
+                        if (addr.is_default) {
+                            // radioInput.checked = true; // Có thể không cần check sẵn trong modal
+                        }
+
+                        const label = document.createElement('label');
+                        label.className = 'form-check-label';
+                        label.htmlFor = `modal_address_${addr.id}`;
+                        label.textContent =
+                            `${addr.address}, ${addr.neighborhood}, ${addr.district}, ${addr.province}`;
+                        if (addr.is_default) {
+                            const badge = document.createElement('span');
+                            badge.className = 'badge bg-primary ms-2';
+                            badge.textContent = 'Mặc định';
+                            label.appendChild(badge);
+                        }
+
+                        itemDiv.appendChild(radioInput);
+                        itemDiv.appendChild(label);
+
+                        // Thêm sự kiện click cho cả div hoặc label để chọn radio
+                        itemDiv.addEventListener('click', function(e) {
+                            if (e.target !==
+                                radioInput) { // Tránh trigger 2 lần nếu click vào radio
+                                radioInput.checked = true;
+                            }
+                            // Lấy dữ liệu từ radio được chọn
+                            const selectedData = {
+                                name: radioInput.dataset.name,
+                                phone: radioInput.dataset.phone,
+                                email: radioInput.dataset.email,
+                                address: radioInput.dataset.address,
+                                province: radioInput.dataset.province, // Lấy TÊN tỉnh
+                                district: radioInput.dataset.district,
+                                ward: radioInput.dataset.ward
+                                // province_code: radioInput.dataset.province_code, // Lấy code nếu dùng
+                            };
+                            populateForm(selectedData); // Điền vào form chính
+                            hideModal(); // Đóng modal sau khi chọn
+                        });
+
+                        modalAddressListDiv.appendChild(itemDiv);
+                    });
+                } else {
+                    modalAddressListDiv.innerHTML = '<p>Không có địa chỉ nào được lưu.</p>';
+                }
+            }
+
+            // --- Hàm hiển thị Modal ---
+            function showModal() {
+                if (addressModal) {
+                    renderModalAddressList(); // Tạo lại danh sách mỗi khi mở
+                    addressModal.style.display = "block";
+                }
+            }
+
+            // --- Hàm ẩn Modal ---
+            function hideModal() {
+                if (addressModal) {
+                    addressModal.style.display = "none";
+                }
+            }
+
+            // --- Gắn sự kiện ---
+            // Mở modal khi click nút "Đổi địa chỉ"
+            if (changeAddressButton) {
+                changeAddressButton.addEventListener('click', showModal);
+            }
+
+            // Đóng modal khi click nút (X)
+            if (closeModalButton) {
+                closeModalButton.addEventListener('click', hideModal);
+            }
+
+            // Đóng modal khi click bên ngoài vùng nội dung modal
+            window.addEventListener('click', function(event) {
+                if (event.target == addressModal) {
+                    hideModal();
+                }
+            });
+
+            // --- Logic điền form mặc định khi tải trang (nếu cần) ---
+            const defaultAddressData = @json($defaultUserAddress ?? null);
+            if (defaultAddressData) {
+                const initialData = {
+                    name: "{{ $user->name }}",
+                    phone: "{{ $user->phone }}",
+                    email: "{{ $user->email }}",
+                    address: defaultAddressData.address,
+                    province: defaultAddressData.province,
+                    district: defaultAddressData.district,
+                    ward: defaultAddressData.neighborhood
+                    // province_code: defaultAddressData.province_code, // Nếu dùng code
+                };
+                populateForm(initialData);
+                console.log('Populated form with default address on load.');
+            } else {
+                // Nếu không có địa chỉ mặc định, vẫn điền tên/sdt/email user
+                if (nameInput) nameInput.value = "{{ $user->name }}";
+                if (phoneInput) phoneInput.value = "{{ $user->phone }}";
+                if (emailInput) emailInput.value = "{{ $user->email }}";
+            }
+
+        });
     </script>
 @endpush

@@ -19,30 +19,26 @@ class AttributeCatalogueReponsitory extends BaseRepository implements AttributeC
     ){
         $this->model = $model;
     }
-
-    public function getAttributeCatalogueById(int $id = 0, $language_id = 0){
+    
+    public function getAttributeCatalogueById(int $id = 0) {
         return $this->model->select([
-                'attribute_catalogues.id',
-                'attribute_catalogues.parent_id',
-                'attribute_catalogues.image',
-                'attribute_catalogues.icon',
-                'attribute_catalogues.album',
-                'attribute_catalogues.publish',
-                'attribute_catalogues.follow',
-                'tb2.name',
-                'tb2.description',
-                'tb2.content',
-                'tb2.meta_title',
-                'tb2.meta_keyword',
-                'tb2.meta_description',
-                'tb2.canonical',
-            ]
-        )
-        ->join('attribute_catalogue_language as tb2', 'tb2.attribute_catalogue_id', '=','attribute_catalogues.id')
-        ->where('tb2.language_id', '=', $language_id)
-        ->find($id);
+                'id',
+                'parent_id',
+                'lft',
+                'rgt',
+                'level',
+                'image',
+                'name',
+                'description',
+                'content',
+                'deleted_at',
+                'created_at',
+                'updated_at',
+            ])
+            ->where('id', $id)
+            ->first();
     }
-
+    
     public function getAll(int $languageId = 0){
         // dd( $this->model->with(['attribute_catalogue_language' => function($query) use ($languageId){
         //     // $query->where('language_id', $languageId);
@@ -64,5 +60,16 @@ class AttributeCatalogueReponsitory extends BaseRepository implements AttributeC
         ->whereIn( $whereInField, $whereIn)
         ->get();
     }
-
+    public function destroy($model)
+    {
+        if (!$model instanceof Model) {
+            $model = $this->model->find($model); // Nếu truyền ID, tìm Model
+        }
+    
+        if (!$model) {
+            return false; // Nếu không tìm thấy, trả về false
+        }
+    
+        return $model->delete();
+    }
 }

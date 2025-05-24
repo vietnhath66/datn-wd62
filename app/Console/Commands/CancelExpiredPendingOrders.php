@@ -25,7 +25,7 @@ class CancelExpiredPendingOrders extends Command
 
         $expiredOrders = Order::where('status', 'pending')
             ->where('updated_at', '<', $threshold)
-            ->with('items.productVariant', 'user') 
+            ->with('items.productVariant', 'user')
             ->get();
 
         if ($expiredOrders->isEmpty()) {
@@ -39,49 +39,49 @@ class CancelExpiredPendingOrders extends Command
         foreach ($expiredOrders as $order) {
             DB::beginTransaction();
             try {
-                $userId = $order->user_id; 
+                $userId = $order->user_id;
                 $originalStatus = $order->status;
 
                 $order->status = 'cancelled';
-                $order->note = ($order->note ? $order->note . "\n" : '') . "Đơn hàng tự động hủy do quá hạn thanh toán online sau {$paymentTimeLimitMinutes} giờ.";
-                $order->cancelled_at = now(); 
+                $order->note = ($order->note ? $order->note . "\n" : '') . "Đơn hàng tự động hủy do quá hạn thanh toán sau {$paymentTimeLimitMinutes} giờ.";
+                $order->cancelled_at = now();
                 $order->temporary_cart_ids = null;
                 $order->save();
 
-                $restoredStock = false; 
-                if ($order->items->isNotEmpty()) {
-                    foreach ($order->items as $item) {
-                        if ($variant = $item->productVariant) {
-                            $variant->increment('quantity', $item->quantity);
-                            $restoredStock = true;
-                        } else {
-                            Log::warning("Không tìm thấy Variant ID {$item->product_variant_id} để hoàn kho khi hủy Order ID {$order->id} do quá hạn.");
-                        }
-                    }
-                    if ($restoredStock) {
-                        Log::info("Đã hoàn kho cho các sản phẩm của đơn hàng hủy {$order->id} do quá hạn.");
-                    }
-                }
+                // $restoredStock = false;
+                // if ($order->items->isNotEmpty()) {
+                //     foreach ($order->items as $item) {
+                //         if ($variant = $item->productVariant) {
+                //             $variant->increment('quantity', $item->quantity);
+                //             $restoredStock = true;
+                //         } else {
+                //             Log::warning("Không tìm thấy Variant ID {$item->product_variant_id} để hoàn kho khi hủy Order ID {$order->id} do quá hạn.");
+                //         }
+                //     }
+                //     if ($restoredStock) {
+                //         Log::info("Đã hoàn kho cho các sản phẩm của đơn hàng hủy {$order->id} do quá hạn.");
+                //     }
+                // }
 
                 $cart = Cart::where('user_id', $userId)->first();
                 if ($cart) {
                     $deletedCount = CartDetail::where('cart_id', $cart->id)
-                        ->where('status', 'checkout') 
+                        ->where('status', 'checkout')
                         ->delete();
                     if ($deletedCount > 0) {
                         Log::info("Đã xóa {$deletedCount} CartDetail ('checkout' status) của User ID {$userId} do hủy Order ID {$order->id} quá hạn.");
                     }
                 }
 
-                DB::commit(); 
+                DB::commit();
                 $this->info("Đã hủy đơn hàng quá hạn ID {$order->id} (Trạng thái cũ: {$originalStatus}).");
 
             } catch (\Exception $e) {
-                DB::rollBack(); 
+                DB::rollBack();
                 Log::error("Lỗi khi hủy đơn hàng quá hạn ID {$order->id}: " . $e->getMessage());
                 $this->error("Lỗi khi xử lý đơn hàng ID {$order->id}. Kiểm tra log.");
             }
-        } 
+        }
 
         $this->info("Hoàn tất kiểm tra và xử lý hủy đơn hàng quá hạn.");
     }

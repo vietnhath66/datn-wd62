@@ -36,6 +36,7 @@ class Order extends Model
         'ward_code',
         'district_code',
         'province_code',
+        'shipper_photo',
     ];
 
     public function user()
