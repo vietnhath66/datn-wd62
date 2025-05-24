@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateBrandRequest;
 use App\Http\Requests\DeleteProductCatalogueRequest;
 use App\Http\Requests\StoreBrandRequest;
 use App\Http\Requests\StoreCounponRequest;
+use App\Models\User;
 
 class CounponController extends Controller
 {
@@ -70,7 +71,7 @@ class CounponController extends Controller
     {
         // $this->authorize('modules', 'admin.counpons.create');
         $config = $this->configData();
-
+        $users = User::where('role_id', 5)->get();
 
         $config['seo'] =  [
 
@@ -94,6 +95,7 @@ class CounponController extends Controller
         return view('admin.dashboard.layout', compact(
             'template',
             'config',
+            'users',
         ));
     }
 
@@ -114,6 +116,7 @@ class CounponController extends Controller
 
         // dd($brand);
         $config = $this->configData();
+        $users = User::where('role_id', 5)->get();
         $config['seo'] =  [
             'index' => [
                 'title' => 'Quản lý khuyến mãi',
@@ -135,6 +138,7 @@ class CounponController extends Controller
             'template',
             'config',
             'counpon',
+            'users',
         ));
     }
 

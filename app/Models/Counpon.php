@@ -21,4 +21,8 @@ class Counpon extends Model
     ];
 
     protected $table = 'coupons';
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'coupon_user', 'coupon_id', 'user_id');
+    }
 }
