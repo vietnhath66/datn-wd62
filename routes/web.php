@@ -61,6 +61,7 @@ Route::prefix('shipper')
         Route::put('delivered/{order}', [ShipperController::class, 'updateOrderStatus'])->name('updateOrderStatus');
         Route::get('order-detail/{order}', [ShipperController::class, 'orderDetailShipper'])->name('orderDetailShipper');
         Route::post('accept-order/{order}', [ShipperController::class, 'acceptOrder'])->name('acceptOrder');
+        
     });
 
 

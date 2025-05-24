@@ -707,14 +707,26 @@
                                                     {{-- Hiển thị thêm lý do nữa, đang không hiển thị được $userName trong elseif này --}}
                                                 @endif
                                                 @if ($statusKey === 'completed' && $isCompleted && $order->note)
-                                                    <small style="font-size: 12px" class="d-block text-muted mt-1">Lý do:
-                                                        {{ e($order->note) }}</small>
+                                                      <p><strong>Lý do:</strong> {{ $order->note }}</p>
+
+                                                        @if ($order->shipper_photo)
+                                                         <div class="mt-3">
+                                                            <label>Ảnh xác nhận giao hàng:</label><br>
+                                                            <img src="{{ asset('storage/' . $order->shipper_photo) }}"
+                                                                style="max-width: 250px; width: 100%; border: 1px solid #ccc; border-radius: 6px;"
+                                                                alt="Ảnh giao hàng">
+                                                        </div>
+                                                    @endif
+
                                                 @endif
                                             </span>
+                                            
                                         @endif
                                     </div>
                                 </li>
                             @endforeach
+                            
+                            
 
                             {{-- Xử lý hiển thị các trạng thái KẾT THÚC TIÊU CỰC (cancelled, failed, refunded) --}}
                             @if ($isEndedState && $currentStatus !== 'completed')
@@ -748,7 +760,16 @@
                                         @else
                                             {{-- Có thể hiển thị dòng này nếu muốn rõ ràng là không có ghi chú --}}
                                             {{-- <small class="d-block text-muted mt-1">Lý do: (Không có ghi chú)</small> --}}
+                                            
                                         @endif
+                                         @if ($order->shipper_photo)
+                                                         <div class="mt-3">
+                                                            <label>Ảnh xác nhận giao hàng:</label><br>
+                                                            <img src="{{ asset('storage/' . $order->shipper_photo) }}"
+                                                                style="max-width: 250px; width: 100%; border: 1px solid #ccc; border-radius: 6px;"
+                                                                alt="Ảnh giao hàng">
+                                                        </div>
+                                                    @endif
                                     </div>
                                 </li>
                             @endif
