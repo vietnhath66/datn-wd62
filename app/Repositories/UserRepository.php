@@ -39,8 +39,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                 $query->where('role_id', 5);
     
                 // ✅ Thêm điều kiện lọc theo trạng thái hoạt động
-                if (isset($condition['status'])) {
-                    $query->where('users.status', $condition['status']);
+                if (isset($condition['is_locked'])) {
+                    $query->where('users.is_locked', $condition['is_locked']);
                 }
             });
     

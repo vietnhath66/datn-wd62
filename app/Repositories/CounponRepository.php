@@ -75,7 +75,7 @@ class CounponRepository extends BaseRepository implements CounponRepositoryInter
             throw new \Exception("Không tìm thấy khuyến mãi với ID: $id");
         }
     
-        return $counpon;
+        return $this->model->with('users')->findOrFail($id);
     }
 
 }
