@@ -16,6 +16,7 @@ use App\Models\AttributeCatalogue;
 use App\Models\AttributeCatalogueLanguage;
 use App\Models\Brand;
 use App\Models\Language;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductGallery;
 
@@ -139,11 +140,11 @@ class ProductController extends Controller
             $path = $request->file('image')->store('products', 'public');
             $request->merge(['image' => $path]);
         }
-        if(count($request->attributeCatalogue) == 1){
+        if (count($request->attributeCatalogue) == 1) {
             return redirect()->back()->with('error', 'Biến thể sản phẩm phải có đủ cả kích thước và màu sắc!');
         }
         foreach ($request->variant['quantity'] as $key) {
-            if($key == null){
+            if ($key == null) {
                 return redirect()->back()->with('error', 'Vui lòng nhập hết số lượng biến thể!');
             }
         }
@@ -195,13 +196,35 @@ class ProductController extends Controller
     public function update($id, UpdateProductRequest $request)
     {
 
-        if(count($request->attributeCatalogue) == 1){
+        if (count($request->attributeCatalogue) == 1) {
             return redirect()->back()->with('error', 'Biến thể sản phẩm phải có đủ cả kích thước và màu sắc!');
         }
-        
+
         foreach ($request->variant['quantity'] as $key) {
-            if($key == null){
+            if ($key == null) {
                 return redirect()->back()->with('error', 'Vui lòng nhập hết số lượng biến thể!');
+            }
+        }
+
+        $payload = $request->except(['_token', '_method']);
+        $old_variants = $request->old_variants;
+        $old_variants = json_decode($old_variants, true);
+        $deleteVariants = [];
+        for ($i = 0; $i < count($old_variants); $i++) {
+            for ($j = 0; $j < count($payload['variant']['sku']); $j++) {
+                if ($payload['variant']['sku'][$j] != $old_variants[$i]['sku']) {
+                    array_push($deleteVariants, $old_variants[$i]);
+                }
+            }
+        }
+
+        // dd($deleteVariants);
+        if (count($deleteVariants) > 0) {
+            for ($l = 0; $l < count($deleteVariants); $l++) {
+                $variantHaveInOrderItem = OrderItem::where('product_variant_id', $deleteVariants[$l]['id'])->first();
+                if (isset($variantHaveInOrderItem)) {
+                    return redirect()->route('admin.product.index')->with('error', 'Biến thể bạn xóa đang có trong giỏ hàng !');
+                }
             }
         }
         if ($this->productService->update($id, $request)) {

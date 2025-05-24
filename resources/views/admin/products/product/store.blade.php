@@ -218,6 +218,9 @@
 
                                     </div>
                                 </div>
+                                @if (isset($product))
+                                    <input type="hidden" name="old_variants" value="{{ $product->variants }}">
+                                @endif
                                 <!--end grid-->
                                 <div class="flex justify-end gap-2 mt-4">
                                     <button type="reset"

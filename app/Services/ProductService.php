@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Http\Controllers\Backend\ProductController;
 use App\Models\Language;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductGallery;
 use App\Models\ProductVariant;
@@ -145,7 +146,6 @@ class ProductService extends BaseService implements ProductServiceInterface
 
                     $this->createVariant($product, $request);
                 }
-
             }
             DB::commit();
             return true;
@@ -244,7 +244,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function uploadProduct($id, $request)
     {
         $payload = $request->only($this->payload());
-
+       
         $product = $this->productReponsitory->findById($id);
 
         if ($request->hasFile('image')) {

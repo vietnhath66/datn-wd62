@@ -12,6 +12,7 @@ use App\Http\Requests\UpdateProductCatalogueRequest;
 use App\Http\Requests\DeleteProductCatalogueRequest;
 use App\Classes\Nestedsetbie;
 use App\Models\Language;
+use App\Models\OrderItem;
 
 class ProductCatalogueController extends Controller
 {
@@ -176,9 +177,12 @@ class ProductCatalogueController extends Controller
 
     public function update($id, UpdateProductCatalogueRequest $request)
     {
+        
+
         if ($this->productCatalogueService->update($id, $request)) {
             return redirect()->route('admin.product_catalogue.index')->with('success', 'Cập nhật bản ghi thành công');
         }
+        
         return redirect()->route('admin.product_catalogue.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 

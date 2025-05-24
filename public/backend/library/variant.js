@@ -338,7 +338,9 @@
         let option = {
             attributeCatalogueId: object.attr("data-catid"),
         };
+        console.log(option);
 
+        
         $(object).select2({
             minimumInputLength: 1,
             placeholder: "Nhập tối thiểu 1 kí tự để tìm kiếm",

@@ -14,7 +14,9 @@ use Kalnoy\Nestedset\NodeTrait;
 
 class ProductCatalogue extends Model
 {
-    use HasFactory, QueryScopes, NodeTrait;
+    // use HasFactory, QueryScopes, NodeTrait;
+    use HasFactory, QueryScopes;
+
 
 
     protected $fillable = [
