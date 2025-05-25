@@ -21,20 +21,19 @@
                 <div class="card-body">
                     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-12">
                         <div class="xl:col-span-3">
-                            <form action="{{ route('admin.review.index') }}" method="GET" class="flex items-center gap-2">
+                            <form action="{{ route('admin.review.index') }}" method="GET"
+                                class="flex items-center gap-2">
                                 <div class="relative">
-                                    <input type="text"
-                                        name="keyword"
-                                        value="{{ request('keyword') }}"
+                                    <input type="text" name="keyword" value="{{ request('keyword') }}"
                                         class="ltr:pl-8 rtl:pr-8 search form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
                                         placeholder="Tìm kiếm..." autocomplete="off">
                                     <i data-lucide="search"
                                         class="inline-block size-4 absolute ltr:left-2.5 rtl:right-2.5 top-2.5 text-slate-500 dark:text-zink-200 fill-slate-100 dark:fill-zink-600"></i>
                                 </div>
-                                
+
                             </form>
                         </div><!--end col-->
-                        
+
                     </div><!--end grid-->
                 </div>
                 <div class="!pt-1 card-body">
@@ -46,15 +45,16 @@
                                         data-sort="product_code">Mã đánh giá</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
                                         data-sort="product_name">Người dùng</th>
-                                        <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
+                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
                                         data-sort="product_name">Sản phẩm</th>
-                                        <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
+                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
                                         data-sort="product_name">Nội dung</th>
-                                        <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
+                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort product_name"
                                         data-sort="product_name">Đánh giá</th>
-                                        <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">
-                                            Thời gian
-                                        </th>
+                                    <th
+                                        class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">
+                                        Thời gian
+                                    </th>
 
                                     <th
                                         class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 action">
@@ -62,11 +62,13 @@
                                 </tr>
                             </thead>
                             <tbody class="list">
+
                                 @if (isset($reviews) && is_object($reviews))
                                     @foreach ($reviews as $item)
                                         <tr>
                                             <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
-                                                <a href="#!" class="transition-all duration-150 ease-linear product_code text-custom-500 hover:text-custom-600">{{ $item->id }}</a>
+                                                <a href="#!"
+                                                    class="transition-all duration-150 ease-linear product_code text-custom-500 hover:text-custom-600">{{ $item->id }}</a>
                                             </td>
                                             <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
                                                 <h6>{{ $item->user->name }}</h6>
@@ -80,36 +82,107 @@
                                             <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
                                                 <span>{{ $item->rating }} ★</span>
                                             </td>
-                                            {{-- <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
-                                                <span>{{ $item->created_at->format('d/m/Y H:i') }}</span>
-                                            </td> --}}
                                             <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
                                                 <span>{{ \Carbon\Carbon::parse($item->created_at)->locale('vi')->diffForHumans() }}</span>
                                             </td>
-                                            <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 action">
+                                            <td
+                                                class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 action">
                                                 <div class="relative dropdown">
-                                                    <button class="flex items-center justify-center size-[30px] dropdown-toggle p-0 text-slate-500 btn bg-slate-100 hover:text-white hover:bg-slate-600 focus:text-white focus:bg-slate-600 focus:ring focus:ring-slate-100 active:text-white active:bg-slate-600 active:ring active:ring-slate-100 dark:bg-slate-500/20 dark:text-slate-400 dark:hover:bg-slate-500 dark:hover:text-white dark:focus:bg-slate-500 dark:focus:text-white dark:active:bg-slate-500 dark:active:text-white dark:ring-slate-400/20"
+                                                    <button
+                                                        class="flex items-center justify-center size-[30px] dropdown-toggle p-0 text-slate-500 btn bg-slate-100 hover:text-white hover:bg-slate-600 focus:text-white focus:bg-slate-600 focus:ring focus:ring-slate-100 active:text-white active:bg-slate-600 active:ring active:ring-slate-100 dark:bg-slate-500/20 dark:text-slate-400 dark:hover:bg-slate-500 dark:hover:text-white dark:focus:bg-slate-500 dark:focus:text-white dark:active:bg-slate-500 dark:active:text-white dark:ring-slate-400/20"
                                                         id="reviewAction{{ $item->id }}" data-bs-toggle="dropdown">
                                                         <i data-lucide="more-horizontal" class="size-3"></i>
                                                     </button>
                                                     <ul class="absolute z-50 hidden py-2 mt-1 ltr:text-left rtl:text-right list-none bg-white rounded-md shadow-md dropdown-menu min-w-[10rem] dark:bg-zink-600"
                                                         aria-labelledby="productAction1">
                                                         <li>
-                                                            <form action="{{ route('admin.review.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
+                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-product hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
+                                                                href="{{ route('admin.review.reply', $item->id) }}"><i
+                                                                    data-lucide="file-edit"
+                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
+                                                                <span class="align-middle">Reply</span></a>
+                                                        </li>
+                                                        <li>
+                                                            <form
+                                                                action="{{ route('admin.review.destroy', $item->id) }}"
+                                                                method="POST"
+                                                                onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <button type="submit"
                                                                     class="block w-full text-left px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200">
-                                                                    <i data-lucide="trash-2" class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
+                                                                    <i data-lucide="trash-2"
+                                                                        class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
                                                                     <span class="align-middle">Delete</span>
                                                                 </button>
                                                             </form>
                                                         </li>
-                                                        
+
                                                     </ul>
                                                 </div>
                                             </td>
                                         </tr>
+                                        @foreach ($item->replies as $reply)
+                                            <tr class="bg-slate-50 text-sm">
+                                                <td
+                                                    class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+                                                    {{ $reply->id }}</td>
+                                                <td
+                                                    class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+                                                    {{ $reply->user->name ?? 'Admin' }}
+                                                </td>
+                                                <td
+                                                    class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+                                                    {{ $item->product->name }}</td>
+                                                <td
+                                                    class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+                                                    ↪
+                                                    {{ $reply->comment }}</td>
+                                                <td
+                                                    class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+                                                    –</td>
+                                                <td
+                                                    class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+                                                    {{ \Carbon\Carbon::parse($reply->created_at)->locale('vi')->diffForHumans() }}
+                                                </td>
+                                                <td
+                                                    class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500 action">
+                                                    <div class="relative dropdown">
+                                                        <button
+                                                            class="flex items-center justify-center size-[30px] dropdown-toggle p-0 text-slate-500 btn bg-slate-100 hover:text-white hover:bg-slate-600 focus:text-white focus:bg-slate-600 focus:ring focus:ring-slate-100 active:text-white active:bg-slate-600 active:ring active:ring-slate-100 dark:bg-slate-500/20 dark:text-slate-400 dark:hover:bg-slate-500 dark:hover:text-white dark:focus:bg-slate-500 dark:focus:text-white dark:active:bg-slate-500 dark:active:text-white dark:ring-slate-400/20"
+                                                            id="reviewAction{{ $item->id }}"
+                                                            data-bs-toggle="dropdown">
+                                                            <i data-lucide="more-horizontal" class="size-3"></i>
+                                                        </button>
+                                                        <ul class="absolute z-50 hidden py-2 mt-1 ltr:text-left rtl:text-right list-none bg-white rounded-md shadow-md dropdown-menu min-w-[10rem] dark:bg-zink-600"
+                                                            aria-labelledby="productAction1">
+                                                            <li>
+                                                                <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-product hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
+                                                                    href="{{ route('admin.review.reply', $item->id) }}"><i
+                                                                        data-lucide="file-edit"
+                                                                        class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
+                                                                    <span class="align-middle">Reply</span></a>
+                                                            </li>
+                                                            <li>
+                                                                <form
+                                                                    action="{{ route('admin.review.destroy', $reply->id) }}"
+                                                                    method="POST"
+                                                                    onsubmit="return confirm('Bạn có chắc chắn muốn xóa phản hồi này?');">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit"
+                                                                        class="block w-full text-left px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200">
+                                                                        <i data-lucide="trash-2"
+                                                                            class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
+                                                                        <span class="align-middle">Delete</span>
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     @endforeach
                                 @endif
                             </tbody>
@@ -129,7 +202,7 @@
                         <p class="text-slate-500">
                             Hiển thị <b>{{ $reviews->count() }}</b> / <b>{{ $reviews->total() }}</b> Đánh giá
                         </p>
-                    
+
                         <div class="pagination-buttons">
                             {{ $reviews->links() }}
                         </div>

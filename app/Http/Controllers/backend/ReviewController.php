@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\ReviewRepositoryInterface as ReviewRepository;
 use App\Services\Interfaces\ReviewServiceInterface as ReviewService;
@@ -48,10 +50,64 @@ class ReviewController extends Controller
 
         $template = 'admin.reviews.index';
         return view('admin.dashboard.layout', compact(
-            'template', 
+            'template',
             'config',
             'reviews'
         ));
+    }
+
+    public function reply($id)
+    {
+        $review = Review::find($id);
+        if (!$review) {
+            return redirect()->route('admin.review.index')->with('error', 'Review không tồn tại.');
+        }
+        $products = $review->product;
+        $users = $review->user;
+        $config = [
+            'method' => 'reply',
+            'seo' => [
+                'index' => [
+                    'title' => 'Quản lý Review',
+                    'table' => 'Danh sách Review'
+                ],
+                'delete' => [
+                    'title' => 'Xóa reply'
+                ],
+                'reply' => [
+                    'title' => 'Trả lời đánh giá'
+                ],
+                'url' => route('admin.review.reply', $id),
+            ],
+
+        ];
+
+        $template = 'admin.reviews.store';
+
+        return view('admin.dashboard.layout', compact('template', 'config', 'review', 'products', 'users'));
+    }
+
+    public function replys(Request $request, $id)
+    {
+        $parentReview = Review::find($id);
+
+        if (!$parentReview) {
+            return redirect()->route('admin.review.index')->with('error', 'Đánh giá không tồn tại.');
+        }
+    
+        $request->validate([
+            'reply' => 'required|string|min:3',
+        ]);
+    
+        Review::create([
+            'user_id' => auth()->id(), // hoặc admin_id nếu khác
+            'product_id' => $parentReview->product_id,
+            'comment' => $request->input('reply'),
+            'rating' => null, // Vì là reply, không cần rating
+            'parent_id' => $parentReview->id,
+        ]);
+    
+        return redirect()->route('admin.review.index')->with('success', 'Đã trả lời đánh giá.');
     }
 
     public function delete($id)

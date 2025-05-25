@@ -257,12 +257,12 @@ Route::prefix('admin')
             ->as('review.')
             ->group(function () {
                 Route::get('index', [ReviewController::class, 'index'])->name('index');
-                // Route::get('create',                      [ReviewController::class, 'create'])->name('create');
-                // Route::post('store',                      [ReviewController::class, 'store'])->name('store');
-                // Route::get('edit/{review}',               [ReviewController::class, 'edit'])->where(['review' => '[0-9]+'])->name('edit');
-                // Route::put('update/{review}',             [ReviewController::class, 'update'])->where(['review' => '[0-9]+'])->name('update');
-                Route::get('delete/{review}', [ReviewController::class, 'delete'])->where(['review' => '[0-9]+'])->name('delete');
-                Route::delete('destroy/{review}', [ReviewController::class, 'destroy'])->where(['review' => '[0-9]+'])->name('destroy');
+                Route::get('reply/{review}',                      [ReviewController::class, 'reply'])->where(['id' => '[0-9]+'])->name('reply');
+                Route::post('replys/{review}',                      [ReviewController::class, 'replys'])->where(['id' => '[0-9]+'])->name('replys');
+                // Route::post('/reviews/{parent}/reply', [ReviewController::class, 'reply'])->name('reviews.reply');
+
+                Route::get('delete/{review}', [ReviewController::class, 'delete'])->where(['id' => '[0-9]+'])->name('delete');
+                Route::delete('destroy/{review}', [ReviewController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
             });
 
         Route::prefix('counpon')
