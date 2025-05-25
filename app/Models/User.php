@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Mail\VerifyUserEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -26,6 +27,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'role_id',
+
         'password',
         'phone',
         'avt',

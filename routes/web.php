@@ -1,6 +1,7 @@
 <?php
 
 
+
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
@@ -38,6 +39,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Backend\ReviewController;
 
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -47,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
 
 
 // Shipper
@@ -75,6 +78,7 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
     Route::get('home', [HomeController::class, 'viewHome'])->name('viewHome');
     Route::get('about', [AboutController::class, 'viewAbout'])->name('viewAbout');
     Route::get('contact', [ContactController::class, 'viewContact'])->name('viewContact');
+    Route::post('contact', [ContactController::class, 'sendContact'])->name('sendContact');
     Route::get('search', [ClientProductController::class, 'viewSearch'])->name('viewSearch');
     Route::get('product/{id}', [ProductController::class, 'viewShow'])->name('viewShow');
     Route::get('policy', [PolicyController::class, 'viewPolicy'])->name('viewPolicy');
@@ -101,7 +105,7 @@ Route::group(['prefix' => 'client', 'as' => 'client.'], function () {
 
 
     // Account
-    Route::group(['prefix' => 'account', 'as' => 'account.'], function () {
+        Route::group(['prefix' => 'account', 'as' => 'account.'], function () {
         Route::get('/', [AccountController::class, 'viewAccount'])->name('viewAccount');
         Route::get('order', [AccountController::class, 'accountMyOrder'])->name('accountMyOrder');
         Route::get('order-detail/{order}', [AccountController::class, 'accountOrderDetail'])->name('accountOrderDetail');
@@ -162,7 +166,7 @@ Route::prefix('admin')
                 Route::get('edit/{brand}', [BrandController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
 
                 // Route::put('update/{brand}',                                 [BrandController::class, 'update'])->where(['id' => '[0-9]+'])->name('udpate');
-        
+
                 Route::put('update/{brand}', [BrandController::class, 'update'])->where(['id' => '[0-9]+'])->name('update');
 
 
@@ -227,7 +231,6 @@ Route::prefix('admin')
                     Route::patch('lock/{user}', [UserController::class, 'lock'])->where(['user' => '[0-9]+'])->name('lock');
                     Route::patch('unlock/{user}', [UserController::class, 'unlock'])->where(['user' => '[0-9]+'])->name('unlock');
                 });
-
             });
 
         Route::prefix('attribute_catalogue')
@@ -277,6 +280,7 @@ Route::prefix('admin')
                 Route::delete('destroy/{counpon}', [CounponController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('destroy');
             });
 
+
         Route::prefix('order')
             ->as('order.')
             ->group(function () {
@@ -307,6 +311,7 @@ Route::prefix('admin')
 Route::get('admin/login', [AuthController::class, 'index'])->name('auth.admin')->middleware('login');
 Route::post('login', [AuthController::class, 'login'])->name('auth.login');
 Route::get('admin/logout', [AuthController::class, 'logout'])->name('auth.logout');
+
 
 // require __DIR__ . '/auth.php';
 // require __DIR__ . '/auth.php';
