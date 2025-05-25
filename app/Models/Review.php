@@ -16,7 +16,8 @@ class Review extends Model
         'user_id',
         'product_id',
         'rating',
-        'comment'
+        'comment',
+        'parent_id'
     ];
 
 
@@ -29,6 +30,16 @@ class Review extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Review::class, 'parent_id');
+    }
+
+    public function replies()
+    {
+        return $this->hasMany(Review::class, 'parent_id');
     }
 
 

@@ -89,7 +89,7 @@ class CartController extends Controller
 
             $productName = optional(optional($variant)->products)->name ?? 'Sản phẩm';
 
-            if ($variant->quantity < 1) { 
+            if ($variant->quantity < 1) {
                 DB::rollBack();
                 return redirect()->back()->with('error', "Sản phẩm '{$productName}' tạm thời hết hàng.")->withInput();
             }
@@ -98,12 +98,13 @@ class CartController extends Controller
 
             $existingItem = CartDetail::where('cart_id', $cart->id)
                 ->where('product_variant_id', $productVariantId)
+                ->where('status', 'active')
                 ->first();
 
             if ($existingItem) {
                 $newQuantityInCart = $existingItem->quantity + $quantity;
 
-                if ($newQuantityInCart > $variant->quantity) { 
+                if ($newQuantityInCart > $variant->quantity) {
                     DB::rollBack();
                     return redirect()->back()->with('error', "Số lượng yêu cầu quá lớn so với tồn kho. Chỉ còn {$variant->quantity} sản phẩm.")->withInput();
                 }
@@ -127,8 +128,8 @@ class CartController extends Controller
                     'product_id' => $variant->product_id,
                     'product_variant_id' => $variant->id,
                     'quantity' => $quantity,
-                    'price' => $variant->price, 
-                    'status' => 'active', 
+                    'price' => $variant->price,
+                    'status' => 'active',
                 ]);
 
 
@@ -151,8 +152,8 @@ class CartController extends Controller
     public function updateCart(Request $request)
     {
         $validatedData = $request->validate([
-            'cart_item_id' => 'required|integer|exists:cart_items,id', 
-            'quantity' => 'required|integer|min:1', 
+            'cart_item_id' => 'required|integer|exists:cart_items,id',
+            'quantity' => 'required|integer|min:1',
         ]);
 
         $cartItemId = $validatedData['cart_item_id'];
@@ -175,7 +176,7 @@ class CartController extends Controller
 
             $variant = $cartDetail->productVariant;
             $cart = $cartDetail->cart;
-            $oldQuantity = $cartDetail->quantity; 
+            $oldQuantity = $cartDetail->quantity;
 
             if (!$variant) {
                 DB::rollBack();
@@ -191,11 +192,11 @@ class CartController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => "Số lượng ít nhất phải là 1.",
-                    'originalQuantity' => $oldQuantity 
-                ], 400); 
+                    'originalQuantity' => $oldQuantity
+                ], 400);
             }
 
-            if ($newQuantity > $variant->quantity) { 
+            if ($newQuantity > $variant->quantity) {
                 DB::rollBack();
                 return response()->json([
                     'success' => false,
@@ -212,14 +213,14 @@ class CartController extends Controller
 
             Log::info("Cart quantity updated: CartDetail ID {$cartDetail->id} quantity changed from {$oldQuantity} to {$newQuantity}.");
 
-            $newLineTotal = $newQuantity * $cartDetail->price; 
+            $newLineTotal = $newQuantity * $cartDetail->price;
 
-            $cart->load('items'); 
-            $totalCartAmount = $cart->items->sum(function ($item) { 
-                return $item->quantity * $item->price;
+            $cart->load('items');
+            $totalCartAmount = $cart->items->where('status', 'active')->sum(function ($item) {
+                return ($item->quantity ?? 0) * ($item->price ?? 0);
             });
-            $cartItemCount = $cart->items->sum('quantity'); 
-
+            $cartItemCount = $cart->items->sum('quantity');
+            $activeCartItemCount = $cart->items->where('status', 'active')->sum('quantity');
             DB::commit();
 
             return response()->json([
@@ -227,8 +228,8 @@ class CartController extends Controller
                 'message' => 'Cập nhật giỏ hàng thành công!',
                 'newQuantity' => $cartDetail->quantity,
                 'newLineTotal' => $newLineTotal,
-                'newCartTotal' => $totalCartAmount,
-                'cartItemCount' => $cartItemCount,
+                'newCartTotal' => $totalCartAmount,      // <<< Giờ đây là tổng của các item 'active'
+                'cartItemCount' => $activeCartItemCount,
                 'newStockQuantity' => optional($variant)->quantity ?? '-'
             ]);
 
@@ -271,22 +272,24 @@ class CartController extends Controller
             Log::info("Deleted CartDetail ID {$id}");
 
 
-            $cart->load('items'); 
-            $totalCartAmount = $cart->items->sum(function ($item) { 
-                return $item->quantity * $item->price;
+            $cart->load('items');
+            $totalCartAmount = $cart->items->where('status', 'active')->sum(function ($item) {
+                return ($item->quantity ?? 0) * ($item->price ?? 0);
             });
-            $cartItemCount = $cart->items->sum('quantity'); 
+            $cartItemCount = $cart->items->sum('quantity');
 
-            $cartIsEmpty = $cart->items->isEmpty(); 
+            $activeCartItemCount = $cart->items->where('status', 'active')->sum('quantity');
+
+            $cartIsEmpty = $cart->items->where('status', 'active')->isEmpty();
 
             DB::commit();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Đã xóa sản phẩm khỏi giỏ hàng.',
-                'newCartTotal' => $totalCartAmount, 
-                'cartIsEmpty' => $cartIsEmpty, 
-                'cartItemCount' => $cartItemCount 
+                'newCartTotal' => $totalCartAmount,
+                'cartIsEmpty' => $cartIsEmpty,
+                'cartItemCount' => $activeCartItemCount
             ]);
 
         } catch (\Exception $e) {

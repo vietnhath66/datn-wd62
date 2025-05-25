@@ -15,7 +15,6 @@ class ProductCatalogue extends Model
 {
     use HasFactory, QueryScopes;
 
-
     protected $fillable = [
         'image',
         'name',

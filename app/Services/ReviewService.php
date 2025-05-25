@@ -21,23 +21,25 @@ class ReviewService implements ReviewServiceInterface
     }
 
     public function paginate($request)
-    {
-        $condition['keyword'] = addslashes($request->input('keyword'));
-        $condition['status'] = $request->input('status');
-        $perPage = $request->integer('per_page');
+{
+    $condition['keyword'] = addslashes($request->input('keyword'));
+    $condition['status'] = $request->input('status');
+    $perPage = $request->integer('per_page');
 
-        $reviews = $this->ReviewRepository->pagination(
-            ['*'],
-            $condition,
-            $perPage,
-            ['path' => 'admin/review/index'],
-            ['created_at', 'DESC'],
-            [],
-            ['user', 'product']
-        );
+    $condition['parent_id'] = null;
 
-        return $reviews;
-    }
+    $reviews = $this->ReviewRepository->pagination(
+        ['*'],
+        $condition,
+        $perPage,
+        ['path' => 'admin/review/index'],
+        ['created_at', 'DESC'],
+        [],
+        ['user', 'product']
+    );
+
+    return $reviews;
+}
 
     public function destroy($review)
     {

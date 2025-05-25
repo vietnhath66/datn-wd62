@@ -98,28 +98,42 @@
         }
 
         .payment-method {
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px 15px;
             cursor: pointer;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .payment-method:hover {
-            border-color: #1e90ff;
-            box-shadow: 0 0 10px rgba(30, 144, 255, 0.2);
+            background-color: #f8f9fa;
         }
 
         .payment-method input[type="radio"] {
-            margin-right: 10px;
+            margin-right: 12px;
+            accent-color: #28a745;
+            /* màu xanh lá */
+            transform: scale(1.2);
         }
 
-        .payment-method img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
+        .payment-method label {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
         }
+
+        .payment-method i {
+            color: #6c63ff;
+            font-size: 18px;
+        }
+
 
         .total-section {
             background: #f8f9fa;
@@ -531,7 +545,6 @@
             font-size: 0.75rem;
             padding: 3px 6px;
         }
-    </style>
     </style>
 @endpush
 

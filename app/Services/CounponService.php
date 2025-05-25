@@ -53,7 +53,9 @@ class CounponService implements CounponServiceInterface
             // $payload['number'] = 1;
 
 
+            $userIds = $request->input('user_ids', []);
             $counpon = $this->CounponRepository->create($payload);
+            $counpon->users()->sync($userIds); // Gán mã giảm giá cho người dùng    
             DB::commit();
             return true;
         } catch (\Exception $e) {
@@ -70,6 +72,7 @@ class CounponService implements CounponServiceInterface
         try {
             $payload = $request->only($this->payload());
             $counpon = $this->CounponRepository->findById($id);
+            $counpon->users()->sync($request->input('user_ids', [])); // Cập nhật lại user
 
             if ($request->hasFile('image')) {
                 $payload['image'] = Storage::put(self::PATH_UPLOAD, $request->file('image'));
@@ -83,6 +86,9 @@ class CounponService implements CounponServiceInterface
 
 
             $updateCounpon = $this->CounponRepository->update($id, $payload);
+            if ($request->has('user_ids')) {
+                $counpon->users()->sync($request->input('user_ids'));
+        }
             if (!$updateCounpon) {
                 throw new \Exception("Cập nhật khuyến mãi thất bại");
             }

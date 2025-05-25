@@ -48,7 +48,7 @@
                         <div class="p-t-33">
                             {{-- Chọn Màu --}}
                             <div class="flex-w flex-r-m p-b-10">
-                                <div class="size-203 flex-c-m respon6">Color</div>
+                                <div class="size-203 flex-c-m respon6">Màu</div>
                                 <div class="size-204 respon6-next">
                                     <div class="rs1-select2 bor8 bg0">
                                         <select id="color-select" name="color" class="form-control">
@@ -94,7 +94,7 @@
                                             class="fs-16 zmdi zmdi-minus"></i> </div>
                                     {{-- Đặt ID và Name cho input số lượng --}}
                                     <input id="product-quantity" class="mtext-104 cl3 txt-center num-product"
-                                        type="number" name="quantity" value="1" min="1">
+                                        type="number" name="quantity" value="1" min="1" readonly>
                                     <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m"> <i
                                             class="fs-16 zmdi zmdi-plus"></i> </div>
                                 </div>
@@ -166,7 +166,7 @@
                                         {{ $product->reviews->count() }} Đánh giá cho "{{ $product->name }}"
                                     </h5>
 
-                                    @forelse ($product->reviews()->latest()->paginate(5) as $review)
+                                    {{-- @forelse ($product->reviews()->whereNull('parent_id')->latest()->paginate(5) as $review)
 
                                         <div class="flex-w flex-t p-b-40 {{ !$loop->last ? 'bor18' : '' }}">
                                             <div class="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
@@ -202,10 +202,66 @@
                                         </div>
                                     @empty
                                         <p class="stext-102 cl6">Chưa có đánh giá nào cho sản phẩm này.</p>
-                                    @endforelse
-
+                                    @endforelse --}}
+                                    @forelse ($product->reviews()->whereNull('parent_id')->latest()->paginate(5) as $review)
+                                    <div class="flex-w flex-t p-b-40 {{ !$loop->last ? 'bor18' : '' }}">
+                                        <div class="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
+                                            <img src="{{ optional($review->user)->avt ? Storage::url($review->user->avt) : asset('client/images/avatar-2.png') }}"
+                                                alt="{{ optional($review->user)->name ?? 'Người dùng ẩn danh' }}">
+                                        </div>
+                                        <div class="size-207">
+                                            <div class="flex-w flex-sb-m p-b-17">
+                                                <span class="mtext-107 cl2 p-r-20">
+                                                    {{ optional($review->user)->name ?? 'Người dùng ẩn danh' }}
+                                                </span>
+                                                <span class="fs-18 cl11">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        @if ($i <= $review->rating)
+                                                            <i class="zmdi zmdi-star"></i>
+                                                        @else
+                                                            <i class="zmdi zmdi-star-outline"></i>
+                                                        @endif
+                                                    @endfor
+                                                </span>
+                                            </div>
+                                            <p class="stext-102 cl6">
+                                                <small>{{ optional($review->created_at)->diffForHumans() }}</small>
+                                            </p>
+                                            @if ($review->comment)
+                                                <p class="stext-102 cl6 m-t-10">
+                                                    {{ $review->comment }}
+                                                </p>
+                                            @endif
+                                
+                                            {{-- Hiển thị các phản hồi (replies) --}}
+                                            @foreach ($review->replies as $reply)
+                                                <div class="flex-w flex-t p-t-15 m-l-40">
+                                                    <div class="wrap-pic-s size-90 bor0 of-hidden m-r-15 m-t-6">
+                                                        <img src="{{ optional($reply->user)->avt ? Storage::url($reply->user->avt) : asset('client/images/avatar-2.png') }}"
+                                                            alt="{{ optional($reply->user)->name ?? 'Admin' }}">
+                                                    </div>
+                                                    <div class="size-207">
+                                                        <div class="flex-w flex-sb-m p-b-10">
+                                                            <span class="mtext-104 cl2 p-r-20 text-sm">
+                                                                {{ optional($reply->user)->name ?? 'Admin' }}
+                                                            </span>
+                                                        </div>
+                                                        <p class="stext-102 cl6">
+                                                            <small>{{ $reply->created_at->diffForHumans() }}</small>
+                                                        </p>
+                                                        <p class="stext-102 cl6 m-t-5 italic text-gray-700">
+                                                            ↪ {{ $reply->comment }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @empty
+                                    <p class="stext-102 cl6">Chưa có đánh giá nào cho sản phẩm này.</p>
+                                @endforelse
                                     <div class="d-flex justify-content-center p-t-30">
-                                        {{ $product->reviews()->latest()->paginate(5)->links() }}
+                                        {{ $product->reviews()->whereNull('parent_id')->paginate(5)->links() }}
                                     </div>
 
 
@@ -406,8 +462,7 @@
                 @forelse ($relatedProducts as $relatedProduct)
                     <div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
                         <div class="block2 product-item d-flex flex-column align-items-center text-center">
-                            <div class="block2-pic hov-img0"
-                                style="aspect-ratio: 3 / 4; max-width: 300px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                            <div class="block2-pic hov-img0">
                                 <img src="{{ $relatedProduct->image ? Storage::url($relatedProduct->image) : asset('client/images/no-image-available.png') }}"
                                     alt="{{ $relatedProduct->name }}"
                                     style="object-fit: cover; width: 100%; height: 100%; border-radius: inherit;">

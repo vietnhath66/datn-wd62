@@ -31,38 +31,48 @@ class HomeAuthController extends Controller
     }
 
 
-    public function postLogin(Request $request)
-    {
-        $request->validate([
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
-        ], [
-            'email.required' => 'Vui lòng nhập địa chỉ email.',
-            'email.email' => 'Địa chỉ email không hợp lệ.',
-            'password.required' => 'Vui lòng nhập mật khẩu.',
+public function postLogin(Request $request)
+{
+    $request->validate([
+        'email' => ['required', 'string', 'email'],
+        'password' => ['required', 'string'],
+    ], [
+        'email.required' => 'Vui lòng nhập địa chỉ email.',
+        'email.email' => 'Địa chỉ email không hợp lệ.',
+        'password.required' => 'Vui lòng nhập mật khẩu.',
+    ]);
+
+    if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+        throw ValidationException::withMessages([
+            'email' => trans('auth.failed'),
         ]);
-
-        if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
-        }
-
-        $user = Auth::user();
-
-        if ($user && $user->email_verified_at === null) {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-
-
-            return redirect()->route('client.viewLogin')->withErrors([
-                'email' => 'Tài khoản của bạn chưa được xác thực email. Vui lòng kiểm tra hộp thư đến để xác thực.',
-            ])->withInput($request->only('email'));
-        }
-
-        return redirect()->intended(RouteServiceProvider::HOME)->with('success', 'Đăng nhập thành công!');
     }
+
+    $user = Auth::user();
+
+    if ($user && (int)$user->is_locked === 1) {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('client.viewLogin')->withErrors([
+            'email' => 'Tài khoản của bạn đã bị khóa.',
+        ])->withInput($request->only('email'));
+    }
+
+    if ($user && $user->email_verified_at === null) {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('client.viewLogin')->withErrors([
+            'email' => 'Tài khoản của bạn chưa được xác thực email. Vui lòng kiểm tra hộp thư đến để xác thực.',
+        ])->withInput($request->only('email'));
+    }
+
+    return redirect()->intended(RouteServiceProvider::HOME)->with('success', 'Đăng nhập thành công!');
+}
+
 
 
     public function postRegister(Request $request): RedirectResponse

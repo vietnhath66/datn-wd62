@@ -506,7 +506,7 @@
                         
                         <p class="revenue-summary">
                             Tổng doanh thu tháng này: 
-                            <strong>{{number_format($orderStatistic['revenueChartMonth']['totalRevenue'], 0, ',', '.') , 'VNĐ'  }} </strong> VNĐ
+                            <strong>{{number_format($orderStatistic['revenueChartMonth']['totalRevenue'], 0, ',', '.') . 'VNĐ'  }} </strong> VNĐ
                         </p>
                         <p class="revenue-order">
                             Số đơn hàng tháng này: 

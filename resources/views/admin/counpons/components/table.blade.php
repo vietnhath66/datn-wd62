@@ -93,7 +93,8 @@
                                         data-sort="status">Giá trị khuyến mãi</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
                                         data-sort="status">Đơn hàng tối thiểu</th>
-
+                                    <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
+                                        data-sort="status">Áp dụng cho</th>
                                     <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 sort status"
                                         data-sort="status">Số lượng</th>
 
@@ -150,6 +151,13 @@
                                                     <h6 class="product_name">
                                                         {{ number_format($counpon->minimum_order_amount) }} vnđ</h6>
                                                 </a>
+                                            </td>
+                                            <td class="px-3.5 py-2.5 border-y border-slate-200">
+                                                @if($counpon->users->count())
+                                                    {{ implode(', ', $counpon->users->pluck('name')->toArray()) }}
+                                                @else
+                                                    Tất cả người dùng
+                                                @endif
                                             </td>
                                             <td
 

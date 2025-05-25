@@ -103,7 +103,38 @@
         <div class="p-b-120">
             <div class="">
                 <hr>
-                <h3 class="ltext-103 cl5 txt-center respon1"><i class="fas fa-lightbulb"></i> Sản Phẩm Mới</h3>
+                <h3 class="section-title">
+  <i class="fas fa-lightbulb"></i> Sản Phẩm Mới
+</h3>
+
+<style>
+.section-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  position: relative;
+  padding: 10px 20px;
+  display: inline-block;
+  border-bottom: 3px solid #f39c12;
+  margin: 40px auto;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #fff, #fef6e4, #fff);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.section-title i {
+  color: #f39c12;
+  margin-right: 8px;
+  animation: blink 1.2s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+</style>
+
                 <hr>
             </div>
             <div class="tab01">
@@ -354,7 +385,7 @@
         },
         breakpoints: {
             768: {
-                slidesPerView: 3,
+                slidesPerView: 1,
             },
             0: {
                 slidesPerView: 1,
