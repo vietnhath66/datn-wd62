@@ -6,14 +6,17 @@
     <div class="details">
         <div class="name">{{ Auth::user()->name }}</div>
         <div class="role">{{ Auth::user()->roles->name ?? 'Không xác định' }}</div>
-        {{-- <div class="stats">
+        <div class="stats">
             <div class="stat-item">
                 <i class="fas fa-shopping-cart"></i> 0 VND
             </div>
             <div class="stat-item">
-                <i class="fas fa-clock"></i> Số lần đặt hàng: 0
+                <i class="fas fa-clock"></i> Đơn hàng đã đặt: 0
             </div>
-        </div> --}}
+            <div class="stat-item">
+                <i class="fas fa-clock"></i> Đơn hàng đã hủy: 0
+            </div>
+        </div>
     </div>
 </div>
 

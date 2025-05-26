@@ -45,5 +45,6 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('client/home')->with('success', 'Đăng xuất thành công!');
         ;
+
     }
 }

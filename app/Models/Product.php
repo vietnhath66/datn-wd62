@@ -49,6 +49,7 @@ class Product extends Model
         'attribute' => 'json',
 
     ];
+
     public function attributes()
     {
         return $this->belongsToMany(Attribute::class, 'product_attributes', 'product_id', 'attribute_id');
@@ -90,5 +91,6 @@ class Product extends Model
     {
         return $this->belongsToMany(User::class, 'wishlists', 'product_id', 'user_id')->withTimestamps();
     }
+
 }
 

@@ -13,6 +13,7 @@
     <link rel="shortcut icon" href="{{ asset('admin/images/favicon.ico') }}">
     <!-- Layout config Js -->
     <script src="{{ asset('admin/js/layout.js') }}"></script>
+
     <!-- Icons CSS -->
 
     <!-- StarCode CSS -->
@@ -32,6 +33,7 @@
         <div class="!px-10 !py-12 card-body">
             <a href="index-1.html">
                 <img src="images/logo-light.png" alt="" class="hidden h-6 mx-auto dark:block">
+
                 <img src="{{ asset('client/images/icons/logo-03.png') }}" alt="" class="block h-6 mx-auto dark:hidden">
             </a>
 
@@ -39,12 +41,14 @@
                 <h4 class="mb-2 text-purple-500 dark:text-purple-500">Chào mừng trờ lại!</h4>
                 <p class="text-slate-500 dark:text-zink-200">Đăng nhập vào ChicWear Admin</p>
             </div>
-            <form class="mt-10" role="form" action="{{ route('auth.login') }}" method="POST">
+            <form class="mt-10" role="form" action="{{ route('login') }}" method="POST">
                 @csrf
                 <div class="mt-3">
                     <label for="email" class="inline-block mb-2 text-base font-medium">Email</label>
                     <input type="text"
+
                         class="form-input dark:bg-zink-600/50 border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
+
                         placeholder="Email" name="email" value="{{ request('email') ?: old('email') }}">
                     @error('email')
                         <span class="text-danger font-italic">* {{ $message }}</span>
@@ -53,7 +57,9 @@
                 <div class="mt-3">
                     <label for="password" class="inline-block mb-2 text-base font-medium">Mật khẩu</label>
                     <input type="password"
+
                         class="form-input dark:bg-zink-600/50 border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
+
                         placeholder="Password" name="password">
                     @error('password')
                         <span class="text-danger font-italic">* {{ $message }}</span>
@@ -61,6 +67,7 @@
                 </div>
                 <div class="mt-10">
                     <button type="submit"
+
                         class="w-full text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">Đăng
                         Nhập</button>
                 </div>
