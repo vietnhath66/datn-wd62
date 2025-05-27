@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\backend\BannerController;
 use App\Http\Controllers\Backend\CounponController;
+use App\Http\Controllers\Backend\StaffManagementController;
 use App\Http\Controllers\Client\AboutController;
 use App\Http\Controllers\Client\AccountController;
 use App\Http\Controllers\Client\CartController;
@@ -149,11 +150,25 @@ Route::prefix('admin')
     ->middleware(['admin', 'locale', 'backend_default_locale'])
     ->group(function () {
 
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+        Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index')->middleware(['can:view_admin_dashboard']);
 
+        Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index')->middleware(['can:view_admin_dashboard']);
+
+        Route::prefix('staff-management')
+            ->as('staff.')
+            ->middleware(['can:manage_staff_ql'])
+            ->group(function () {
+                Route::get('/', [StaffManagementController::class, 'index'])->name('index');
+                Route::get('create', [StaffManagementController::class, 'create'])->name('create');
+                Route::post('/', [StaffManagementController::class, 'store'])->name('store');
+                Route::get('{user}/edit', [StaffManagementController::class, 'edit'])->name('edit');
+                Route::put('{user}', [StaffManagementController::class, 'update'])->name('update');
+                Route::delete('{user}', [StaffManagementController::class, 'destroy'])->name('destroy');
+            });
 
         Route::prefix('brands')
             ->as('brands.')
+            ->middleware(['can:manage_brands_ql'])
             ->group(function () {
                 Route::get('index', [BrandController::class, 'index'])->name('index');
                 Route::get('create', [BrandController::class, 'create'])->name('create');
@@ -171,6 +186,7 @@ Route::prefix('admin')
 
         Route::prefix('product_catalogue')
             ->as('product_catalogue.')
+            ->middleware(['can:manage_product_catalogues_ql'])
             ->group(function () {
 
                 Route::get('index', [ProductCatalogueController::class, 'index'])->name('index');
@@ -184,6 +200,7 @@ Route::prefix('admin')
 
         Route::prefix('product')
             ->as('product.')
+            ->middleware(['can:manage_products_ql'])
             ->group(function () {
                 Route::get('index', [ProductController::class, 'index'])->name('index');
                 Route::get('create', [ProductController::class, 'create'])->name('create');
@@ -196,6 +213,7 @@ Route::prefix('admin')
 
         Route::prefix('roles')
             ->as('roles.')
+            ->middleware(['can:manage_roles_custom_ql'])
             ->group(function () {
                 Route::get('index', [RoleController::class, 'index'])->name('index');
                 Route::get('create', [RoleController::class, 'create'])->name('create');
@@ -208,6 +226,7 @@ Route::prefix('admin')
 
         Route::prefix('users')
             ->as('users.')
+            ->middleware(['can:manage_users_client_ql'])
             ->group(function () {
 
                 // Ai cũng truy cập được
@@ -231,6 +250,7 @@ Route::prefix('admin')
 
         Route::prefix('attribute_catalogue')
             ->as('attribute_catalogue.')
+            ->middleware(['can:manage_attribute_catalogues_ql'])
             ->group(function () {
                 Route::get('index', [AttributeCatalogueController::class, 'index'])->name('index');
                 Route::get('create', [AttributeCatalogueController::class, 'create'])->name('create');
@@ -243,6 +263,7 @@ Route::prefix('admin')
 
         Route::prefix('attribute')
             ->as('attribute.')
+            ->middleware(['can:manage_attributes_ql'])
             ->group(function () {
                 Route::get('index', [AttributeController::class, 'index'])->name('index');
                 Route::get('create', [AttributeController::class, 'create'])->name('create');
@@ -254,6 +275,7 @@ Route::prefix('admin')
             });
         Route::prefix('review')
             ->as('review.')
+            ->middleware(['can:manage_reviews_ql'])
             ->group(function () {
                 Route::get('index', [ReviewController::class, 'index'])->name('index');
                 // Route::get('create',                      [ReviewController::class, 'create'])->name('create');
@@ -266,6 +288,7 @@ Route::prefix('admin')
 
         Route::prefix('counpon')
             ->as('counpon.')
+            ->middleware(['can:manage_coupons_ql'])
             ->group(function () {
                 Route::get('index', [CounponController::class, 'index'])->name('index');
                 Route::get('create', [CounponController::class, 'create'])->name('create');
@@ -278,6 +301,7 @@ Route::prefix('admin')
 
         Route::prefix('order')
             ->as('order.')
+            ->middleware(['can:manage_orders_ql'])
             ->group(function () {
                 Route::get('index', [App\Http\Controllers\Backend\OrderController::class, 'index'])->name('index');
                 Route::get('edit/{order}', [App\Http\Controllers\Backend\OrderController::class, 'edit'])->where(['id' => '[0-9]+'])->name('edit');
@@ -287,6 +311,7 @@ Route::prefix('admin')
 
         Route::prefix('banner')
             ->as('banner.')
+            ->middleware(['can:manage_banners_ql'])
             ->group(function () {
                 Route::get('index', [BannerController::class, 'index'])->name('index');
                 Route::get('create', [BannerController::class, 'create'])->name('create');

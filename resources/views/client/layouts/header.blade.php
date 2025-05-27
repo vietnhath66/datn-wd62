@@ -145,38 +145,37 @@
                 <div class="right-top-bar flex-w h-full">
                     <a href="" class="flex-c-m trans-04 p-lr-25"> Help & FAQs </a>
                     @if (Auth::check())
+                        @php
+                            $user = Auth::user();
+                        @endphp
                         <div class="dropdown">
                             <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="{{ asset('storage/' . Auth::user()->avt) }}" alt=""
-                                    class="rounded-circle" width="30" height="30">
-                                {{ Auth::user()->name }}
+                                <img src="{{ $user->avt ? asset('storage/' . $user->avt) : asset('path/to/default/avatar.png') }}"
+                                    alt="Avatar" class="rounded-circle" width="30" height="30">
+                                {{ $user->name }}
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                                 <span class="dropdown-item text-muted">
-                                    <i class="fa fa-envelope"></i> <span class="ml-2">{{ Auth::user()->email }}</span>
+                                    <i class="fa fa-envelope"></i> <span class="ml-2">{{ $user->email }}</span>
                                 </span>
                                 <div class="dropdown-divider"></div>
-                                @if (Auth::user()->role_id == 5)
-                                @elseif (Auth::user()->role_id == 1)
+
+                                {{-- Liên kết đến Trang quản trị nếu có quyền access_admin_area --}}
+                                @can('access_admin_area')
                                     <a class="dropdown-item" href="{{ route('admin.dashboard.index') }}">
                                         <i class="fa fa-cogs"></i> <span class="ml-2">Trang quản trị</span>
                                     </a>
-                                @elseif (Auth::user()->role_id == 2)
-                                    <a class="dropdown-item" href="">
-                                        <i class="fa fa-cogs"></i> <span class="ml-2">Trang quản lý đơn
-                                            hàng</span>
-                                    </a>
-                                @elseif (Auth::user()->role_id == 3)
+                                @endcan
+
+                                {{-- Liên kết đến Trang Shipper nếu có quyền access_shipper_area --}}
+                                @can('access_shipper_area')
                                     <a class="dropdown-item" href="{{ route('shipper.listOrderShipper') }}">
-                                        <i class="fa fa-cogs"></i> <span class="ml-2">Trang Shipper</span>
+                                        <i class="fa fa-truck"></i> <span class="ml-2">Trang Shipper</span>
                                     </a>
-                                @elseif (Auth::user()->role_id == 4)
-                                    <a class="dropdown-item" href="">
-                                        <i class="fa fa-cogs"></i> <span class="ml-2">Trang quản lý sản phẩm
-                                            hàng</span>
-                                    </a>
-                                @endif
+                                @endcan
+
+                                {{-- Các link chung cho mọi user đã đăng nhập --}}
                                 <a class="dropdown-item" href="{{ route('client.account.viewAccount') }}">
                                     <i class="fa fa-user"></i> <span class="ml-2">Tài khoản</span>
                                 </a>
@@ -196,12 +195,7 @@
                         </div>
                     @else
                         <a href="{{ route('client.viewLogin') }}" class="flex-c-m trans-04 p-lr-25"> Đăng nhập </a>
-
-
-                        {{-- <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25"> Đăng ký </a> --}}
                     @endif
-
-
                 </div>
             </div>
         </div>

@@ -1,75 +1,75 @@
 <style>
     .revenue-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: flex-end;
-    margin-bottom: 20px;
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: flex-end;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
 
-.revenue-form .form-group {
-    display: flex;
-    flex-direction: column;
-}
+    .revenue-form .form-group {
+        display: flex;
+        flex-direction: column;
+    }
 
-.revenue-form label {
-    font-weight: 600;
-    margin-bottom: 5px;
-}
+    .revenue-form label {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
 
-.revenue-form input[type="month"] {
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-}
+    .revenue-form input[type="month"] {
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+    }
 
-.revenue-form button {
-    padding: 8px 16px;
-    border: none;
-    background-color: #007bff;
-    color: white;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
+    .revenue-form button {
+        padding: 8px 16px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
 
-.revenue-form button:hover {
-    background-color: #0056b3;
-}
+    .revenue-form button:hover {
+        background-color: #0056b3;
+    }
 
-.revenue-summary {
-    padding-bottom: 10px;
-    font-size: 18px;
-    padding: 10px;
-    background-color: #e9f7ef;
-    border-left: 4px solid #28a745;
-    border-radius: 5px;
-    color: #155724;
-}
+    .revenue-summary {
+        padding-bottom: 10px;
+        font-size: 18px;
+        padding: 10px;
+        background-color: #e9f7ef;
+        border-left: 4px solid #28a745;
+        border-radius: 5px;
+        color: #155724;
+    }
 
-.revenue-canceled {
-    font-size: 18px;
-    padding: 10px;
-    background-color: #e2d7d8;
-    border-left: 4px solid #e0224b;
-    border-radius: 5px;
-    color: #d31b1b;
-}
+    .revenue-canceled {
+        font-size: 18px;
+        padding: 10px;
+        background-color: #e2d7d8;
+        border-left: 4px solid #e0224b;
+        border-radius: 5px;
+        color: #d31b1b;
+    }
 
-.revenue-order {
-    font-size: 18px;
-    padding: 10px;
-    background-color: #e9e9f7;
-    border-left: 4px solid #2e85e9;
-    border-radius: 5px;
-    color: #1d4fac;
-}
+    .revenue-order {
+        font-size: 18px;
+        padding: 10px;
+        background-color: #e9e9f7;
+        border-left: 4px solid #2e85e9;
+        border-radius: 5px;
+        color: #1d4fac;
+    }
 </style>
 <div class="relative min-h-screen group-data-[sidebar-size=sm]:min-h-sm">
     <div
@@ -422,10 +422,12 @@
                             <i data-lucide="wallet-2"></i>
                         </div>
                         <h5 class="mt-4 mb-2">
-                            <span class="counter-value" data-target="{{ $orderStatistic['revenueCurrentMonthTotal'] }}"> </span> VNĐ
+                            <span class="counter-value"
+                                data-target="{{ $orderStatistic['revenueCurrentMonthTotal'] }}"> </span> VNĐ
                         </h5>
                         <p class="text-slate-500 dark:text-zink-200">Doanh thu tháng này</p>
-                        <p class="text-slate-500 dark:text-zink-200">({{ $orderStatistic['revenueCurrentMonthOrder'] }} đơn)</p>
+                        <p class="text-slate-500 dark:text-zink-200">({{ $orderStatistic['revenueCurrentMonthOrder'] }}
+                            đơn)</p>
                     </div>
                 </div>
                 <!--end col-->
@@ -436,11 +438,13 @@
                             <i data-lucide="truck"></i>
                         </div>
                         <h5 class="mt-4 mb-2">
-                            <span class="counter-value" data-target="{{ $orderStatistic['getTotalAndOrderLastMonth']->total_revenue }}">0</span>
+                            <span class="counter-value"
+                                data-target="{{ $orderStatistic['getTotalAndOrderLastMonth']->total_revenue }}">0</span>
                         </h5>
                         <p></p>
                         <p class="text-slate-500 dark:text-zink-200">Doanh thu tháng trước</p>
-                        <p class="text-slate-500 dark:text-zink-200">({{ $orderStatistic['getTotalAndOrderLastMonth']->total_orders }} đơn)</p>
+                        <p class="text-slate-500 dark:text-zink-200">
+                            ({{ $orderStatistic['getTotalAndOrderLastMonth']->total_orders }} đơn)</p>
                     </div>
                 </div>
                 <!--end col-->
@@ -470,7 +474,7 @@
                             <div class="card-body">
                                 <div class="grid grid-cols-1 gap-5 xl:grid-cols-12">
                                     <div class="xl:col-span-4">
-                                      
+
                                         <button type="button" style="width:150px"
                                             class="inline-block px-4 py-2 text-base transition-all duration-300 ease-linear  rounded-md text-slate-500 dark:text-zink-200 border border-transparent [&.active]:bg-custom-500 dar:[&.active]:bg-custom-500 [&.active]:text-white dark:[&.active]:text-white hover:text-custom-500 dark:hover:text-custom-500 active:text-custom-500 dark:active:text-custom-500 -mb-[1px] chartButton"
                                             data-chart="1">Biểu đồ năm</button>
@@ -485,9 +489,9 @@
                             </div>
                         </div>
                         {{-- @dd($orderStatistic['revenueChartMonth']) --}}
-                        
+
                         <!--end col-->
-                        
+
                         <!--end col-->
                     </div>
                     <!--end grid-->
@@ -499,30 +503,31 @@
                             <div class="form-group">
                                 <label for="month">Chọn tháng:</label>
                                 <input type="month" id="month" name="month"
-                                       value="{{ $orderStatistic['revenueChartMonth']['selectedMonth'] }}">
+                                    value="{{ $orderStatistic['revenueChartMonth']['selectedMonth'] }}">
                             </div>
                             <button type="submit">Xem</button>
                         </form>
-                        
+
                         <p class="revenue-summary">
-                            Tổng doanh thu tháng này: 
-                            <strong>{{number_format($orderStatistic['revenueChartMonth']['totalRevenue'], 0, ',', '.') , 'VNĐ'  }} </strong> VNĐ
+                            Tổng doanh thu tháng này:
+                            <strong>{{ number_format($orderStatistic['revenueChartMonth']['totalRevenue'], 0, ',', '.'), 'VNĐ' }}
+                            </strong> VNĐ
                         </p>
                         <p class="revenue-order">
-                            Số đơn hàng tháng này: 
+                            Số đơn hàng tháng này:
                             <strong> {{ $orderStatistic['revenueChartMonth']['totalOrdersMoth'] }}</strong>
                         </p>
                         <p class="revenue-canceled">
-                            Tổng số đơn hàng hủy tháng này: 
+                            Tổng số đơn hàng hủy tháng này:
                             <strong> {{ $orderStatistic['revenueChartMonth']['cancelledOrdersMoth'] }}</strong>
                         </p>
-                        
-                        @if(isset($orderStatistic['revenueChartMonth']['currentRevenue']))
+
+                        @if (isset($orderStatistic['revenueChartMonth']['currentRevenue']))
                             {{-- <h3>Doanh số tháng {{ \Carbon\Carbon::parse($orderStatistic['revenueChartMonth'])->format('m/Y') }}: {{ number_format($orderStatistic['revenueChartMonth']['currentRevenue']) }} VNĐ</h3> --}}
                         @endif
-                        
+
                         <canvas id="revenueChart" height="100"></canvas>
-                        
+
                         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                         <script>
                             const ctx = document.getElementById('revenueChart').getContext('2d');
@@ -540,21 +545,23 @@
                                 },
                                 options: {
                                     scales: {
-                                        y: { beginAtZero: true }
+                                        y: {
+                                            beginAtZero: true
+                                        }
                                     }
                                 }
                             });
                         </script>
+                    </div>
+
+
+                    <!--end col-->
                 </div>
-               
-                
-                <!--end col-->
+                <!--end grid-->
             </div>
-            <!--end grid-->
+            <!-- container-fluid -->
         </div>
-        <!-- container-fluid -->
+        <!-- End Page-content -->
+
+
     </div>
-    <!-- End Page-content -->
-
-
-</div>
