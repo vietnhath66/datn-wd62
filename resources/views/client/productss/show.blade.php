@@ -34,9 +34,19 @@
                             {{ $product->name }}
                         </h4>
                     </strong>
-                    <span class="mtext-106 cl2">
-                        {{ number_format($product->price, 0, ',', '.') }} VNĐ
-                    </span>
+                    <div class="mb-4">
+                        <span style="font-size: 32px; font-weight: bold; color: #e53935;">
+                            {{ number_format($product->price, 0, ',', '.') }}
+                            <span style="font-size: 16px; vertical-align: super;">VNĐ</span>
+                        </span>
+
+                        @if ($product->original_price && $product->original_price > $product->price)
+                            <del style="font-size: 20px; color: #999; margin-left: 15px;">
+                                {{ number_format($product->original_price, 0, ',', '.') }} VNĐ
+                            </del>
+                        @endif
+                    </div>
+
 
                     <p class="stext-102 cl3 p-t-23">
                         {{ $product->content }}
@@ -79,8 +89,7 @@
 
                             {{-- Input ẩn lưu ID Variant (QUAN TRỌNG) --}}
                             {{-- JavaScript chọn màu/size vẫn cần chạy để cập nhật value cho input này --}}
-                            <input type="hidden" id="selected-product-variant-id" name="product_variant_id"
-                                value="">
+                            <input type="hidden" id="selected-product-variant-id" name="product_variant_id" value="">
 
                             <div class="flex-w flex-r-m p-b-10">
                                 <p id="stock-info" class="mtext-106 cl2 p-t-10" style="color: red; font-size: 15px;">
@@ -154,7 +163,8 @@
                 <div class="tab-content p-t-43">
                     <div class="tab-pane fade show active" id="description" role="tabpanel">
                         <div class="how-pos2 p-lr-15-md">
-                            <p class="stext-102 cl6">{!! $product->description ?? 'Chưa có mô tả cho sản phẩm này.' !!}</p>
+                            <p class="stext-102 cl6">{!! $product->description ?? 'Chưa có mô tả cho sản phẩm này.' !!}
+                            </p>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="reviews" role="tabpanel">
@@ -166,14 +176,48 @@
                                         {{ $product->reviews->count() }} Đánh giá cho "{{ $product->name }}"
                                     </h5>
 
-                                    @forelse ($product->reviews()->latest()->paginate(5) as $review)
+                                    {{-- @forelse ($product->reviews()->whereNull('parent_id')->latest()->paginate(5) as
+                                    $review)
 
+                                    <div class="flex-w flex-t p-b-40 {{ !$loop->last ? 'bor18' : '' }}">
+                                        <div class="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
+
+                                            <img src="{{ optional($review->user)->avt ? Storage::url($review->user->avt) : asset('client/images/avatar-2.png') }}"
+                                                alt="{{ optional($review->user)->name ?? 'Người dùng ẩn danh' }}">
+
+                                        </div>
+                                        <div class="size-207">
+                                            <div class="flex-w flex-sb-m p-b-17">
+                                                <span class="mtext-107 cl2 p-r-20">
+                                                    {{ optional($review->user)->name ?? 'Người dùng ẩn danh' }}
+                                                </span>
+                                                <span class="fs-18 cl11">
+                                                    @for ($i = 1; $i <= 5; $i++) @if ($i <=$review->rating)
+                                                        <i class="zmdi zmdi-star"></i>
+                                                        @else
+                                                        <i class="zmdi zmdi-star-outline"></i>
+                                                        @endif
+                                                        @endfor
+                                                </span>
+                                            </div>
+                                            <p class="stext-102 cl6">
+                                                <small>{{ optional($review->created_at)->diffForHumans() }}</small>
+                                            </p>
+                                            @if ($review->comment)
+                                            <p class="stext-102 cl6 m-t-10">
+                                                {{ $review->comment }}
+                                            </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    @empty
+                                    <p class="stext-102 cl6">Chưa có đánh giá nào cho sản phẩm này.</p>
+                                    @endforelse --}}
+                                    @forelse ($product->reviews()->whereNull('parent_id')->latest()->paginate(5) as $review)
                                         <div class="flex-w flex-t p-b-40 {{ !$loop->last ? 'bor18' : '' }}">
                                             <div class="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
-
                                                 <img src="{{ optional($review->user)->avt ? Storage::url($review->user->avt) : asset('client/images/avatar-2.png') }}"
                                                     alt="{{ optional($review->user)->name ?? 'Người dùng ẩn danh' }}">
-
                                             </div>
                                             <div class="size-207">
                                                 <div class="flex-w flex-sb-m p-b-17">
@@ -198,14 +242,36 @@
                                                         {{ $review->comment }}
                                                     </p>
                                                 @endif
+
+                                                {{-- Hiển thị các phản hồi (replies) --}}
+                                                @foreach ($review->replies as $reply)
+                                                    <div class="flex-w flex-t p-t-15 m-l-40">
+                                                        <div class="wrap-pic-s size-90 bor0 of-hidden m-r-15 m-t-6">
+                                                            <img src="{{ optional($reply->user)->avt ? Storage::url($reply->user->avt) : asset('client/images/avatar-2.png') }}"
+                                                                alt="{{ optional($reply->user)->name ?? 'Admin' }}">
+                                                        </div>
+                                                        <div class="size-207">
+                                                            <div class="flex-w flex-sb-m p-b-10">
+                                                                <span class="mtext-104 cl2 p-r-20 text-sm">
+                                                                    {{ optional($reply->user)->name ?? 'Admin' }}
+                                                                </span>
+                                                            </div>
+                                                            <p class="stext-102 cl6">
+                                                                <small>{{ $reply->created_at->diffForHumans() }}</small>
+                                                            </p>
+                                                            <p class="stext-102 cl6 m-t-5 italic text-gray-700">
+                                                                ↪ {{ $reply->comment }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
                                     @empty
                                         <p class="stext-102 cl6">Chưa có đánh giá nào cho sản phẩm này.</p>
                                     @endforelse
-
                                     <div class="d-flex justify-content-center p-t-30">
-                                        {{ $product->reviews()->latest()->paginate(5)->links() }}
+                                        {{ $product->reviews()->whereNull('parent_id')->paginate(5)->links() }}
                                     </div>
 
 
@@ -421,18 +487,17 @@
                                 </div>
 
                                 <div class="block2-info-right flex-r p-t-3">
-                                    <span class="stext-105 cl3">
-                                        {{ number_format($relatedProduct->price, 0, ',', '.') }} VNĐ
-                                    </span>
+                                  <span class="stext-105 cl3" style="font-size: 18px; font-weight: 600; color: #e53935;">
+    {{ number_format($relatedProduct->price, 0, ',', '.') }}
+    <span style="font-size: 13px; vertical-align: super;">VNĐ</span>
+</span>
                                     <a href="#" data-product-id="{{ $relatedProduct->id }}"
                                         class="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
                                         style="margin-right: 10px;">
                                         <img class="icon-heart1 dis-block trans-04"
-                                            src="{{ asset('client/images/icons/icon-heart-01.png') }}"
-                                            alt="ICON">
+                                            src="{{ asset('client/images/icons/icon-heart-01.png') }}" alt="ICON">
                                         <img class="icon-heart2 dis-block trans-04 ab-t-l"
-                                            src="{{ asset('client/images/icons/icon-heart-02.png') }}"
-                                            alt="ICON">
+                                            src="{{ asset('client/images/icons/icon-heart-02.png') }}" alt="ICON">
                                     </a>
                                 </div>
                             </div>
@@ -450,7 +515,7 @@
 
 <!-- Lấy màu -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         console.log('JavaScript đã được tải'); // Kiểm tra script có chạy không
 
         const variants = @json($variants);
@@ -466,7 +531,7 @@
         }
 
         // Khi chọn màu
-        colorSelectElement.addEventListener('change', function() {
+        colorSelectElement.addEventListener('change', function () {
             const selectedColor = this.value.trim();
             console.log('Màu đã chọn:', selectedColor);
 
@@ -503,7 +568,7 @@
         });
 
         // Khi chọn size
-        sizeSelect.addEventListener('change', function() {
+        sizeSelect.addEventListener('change', function () {
             const selectedColor = colorSelectElement.value.trim();
             const selectedSize = this.value.trim();
             console.log('Size đã chọn:', selectedSize);
@@ -535,7 +600,7 @@
         });
 
         // Thêm: Xóa ID variant và thông tin stock khi đổi màu và chưa chọn size
-        colorSelectElement.addEventListener('change', function() {
+        colorSelectElement.addEventListener('change', function () {
             // ... (code cập nhật size dropdown như cũ) ...
             document.getElementById('selected-product-variant-id').value = ''; // Reset ID khi đổi màu
             // Cập nhật stockInfo cho màu hoặc để trống tùy logic của bạn
@@ -546,7 +611,7 @@
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         console.log('DOMContentLoaded');
 
         const variants = @json($variants);
@@ -582,7 +647,7 @@
         quantityInput.removeAttribute('max');
 
         // When the color selection changes
-        colorSelectElement.addEventListener('change', function() {
+        colorSelectElement.addEventListener('change', function () {
             const selectedColor = this.value.trim();
             console.log('Color changed to:', selectedColor);
 
@@ -610,7 +675,7 @@
                         // Check if there's any variant with the selected color and size in stock
                         const hasStock = availableVariantsForColor.some(
                             variant => variant.name_variant_size === size && variant
-                            .quantity > 0
+                                .quantity > 0
                         );
 
                         const option = document.createElement('option');
@@ -637,7 +702,7 @@
         });
 
         // When the size selection changes
-        sizeSelect.addEventListener('change', function() {
+        sizeSelect.addEventListener('change', function () {
             const selectedColor = colorSelectElement.value.trim();
             const selectedSize = this.value.trim();
             console.log('Size changed to:', selectedSize);
@@ -646,8 +711,8 @@
             if (selectedColor && selectedSize) {
                 const matchedVariant = variants.find(
                     variant =>
-                    variant.name_variant_color.trim() === selectedColor &&
-                    variant.name_variant_size.trim() === selectedSize
+                        variant.name_variant_color.trim() === selectedColor &&
+                        variant.name_variant_size.trim() === selectedSize
                 );
 
                 if (matchedVariant) {
@@ -663,7 +728,7 @@
                 }
             } else if (selectedColor) {
                 const totalQuantityForColor = variants.filter(variant => variant.name_variant_color
-                        .trim() === selectedColor)
+                    .trim() === selectedColor)
                     .reduce((sum, variant) => sum + variant.quantity, 0);
                 currentStock = totalQuantityForColor;
                 stockInfo.textContent = currentStock > 0 ?
@@ -680,7 +745,7 @@
             quantityInput.value = 1;
         });
 
-        quantityInput.addEventListener('input', function() {
+        quantityInput.addEventListener('input', function () {
             let value = parseInt(this.value);
             console.log('quantityInput - Input value:', this.value, 'Parsed value:', value,
                 'currentStock:', currentStock);
@@ -698,7 +763,7 @@
             }
         });
 
-        quantityUpButton.addEventListener('click', function() {
+        quantityUpButton.addEventListener('click', function () {
             console.log('quantityUpButton clicked - current quantity:', quantityInput.value,
                 'currentStock:', currentStock);
             if (!quantityInput.disabled && currentStock > 0 && parseInt(quantityInput.value) <
@@ -711,7 +776,7 @@
             }
         });
 
-        quantityDownButton.addEventListener('click', function() {
+        quantityDownButton.addEventListener('click', function () {
             console.log('quantityDownButton clicked - current quantity:', quantityInput.value);
             if (!quantityInput.disabled && parseInt(quantityInput.value) > 1) {
                 quantityInput.value = parseInt(quantityInput.value) - 1;
@@ -723,7 +788,7 @@
         });
 
         // Intercept the form submission
-        addToCartButton.addEventListener('click', function(event) {
+        addToCartButton.addEventListener('click', function (event) {
             const quantityValue = quantityInput.value.trim();
             const parsedQuantity = parseInt(quantityValue);
 

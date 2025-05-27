@@ -1,6 +1,8 @@
 <x-guest-layout>
     <div class="mb-4 text-sm text-gray-600">
+
         {{ __('Quên mật khẩu? Không vấn đề gì. Chỉ cần cho chúng tôi biết địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn liên kết đặt lại mật khẩu cho phép bạn chọn mật khẩu mới.') }}
+
     </div>
 
     <!-- Session Status -->
@@ -19,7 +21,9 @@
 
         <div class="flex items-center justify-end mt-4">
             <x-primary-button>
+
                 {{ __('Lấy lại mật khẩu') }}
+
             </x-primary-button>
         </div>
     </form>

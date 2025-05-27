@@ -8,10 +8,14 @@
         <div class="role">{{ Auth::user()->roles->name ?? 'Không xác định' }}</div>
         <div class="stats">
             <div class="stat-item">
-                <i class="fas fa-shopping-cart"></i> 0 VND
+                <i class="fas fa-shopping-cart"></i> {{ number_format($totalSpent ?? 0, 0, ',', '.') }} VND
             </div>
             <div class="stat-item">
-                <i class="fas fa-clock"></i> Số lần đặt hàng: 0
+                <i class="fas fa-check-circle"></i> Đơn hàng thành công: {{ $successfulOrdersCount ?? 0 }}
+            </div>
+
+            <div class="stat-item">
+                <i class="fas fa-times-circle"></i> Đơn hàng đã hủy: {{ $cancelledOrdersCount ?? 0 }}
             </div>
         </div>
     </div>

@@ -35,7 +35,7 @@ class ReviewRepository extends BaseRepository implements ReviewRepositoryInterfa
     ->where(function ($query) use ($condition) {
         if (!empty($condition['keyword'])) {
             $keyword = $condition['keyword'];
-
+    
             $query->where(function ($q) use ($keyword) {
                 $q->where('comment', 'LIKE', '%' . $keyword . '%')
                   ->orWhereHas('user', function ($q2) use ($keyword) {
@@ -46,9 +46,18 @@ class ReviewRepository extends BaseRepository implements ReviewRepositoryInterfa
                   });
             });
         }
-
+    
         if (isset($condition['status'])) {
             $query->where('status', $condition['status']);
+        }
+    
+        // ✅ Bổ sung điều kiện lọc đánh giá gốc (không phải reply)
+        if (array_key_exists('parent_id', $condition)) {
+            if ($condition['parent_id'] === null) {
+                $query->whereNull('parent_id');
+            } else {
+                $query->where('parent_id', $condition['parent_id']);
+            }
         }
     });
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Mail\VerifyUserEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -29,6 +30,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'role_id',
+
         'password',
         'phone',
         'avt',
@@ -58,6 +60,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_locked' => 'boolean',
     ];
 
     public function roles()
@@ -110,12 +113,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function wishlistedProducts()
     {
         return $this->belongsToMany(Product::class, 'wishlists', 'user_id', 'product_id')->withTimestamps();
-    }
-
-    public function staffProfile()
-    {
-        // Quan hệ một-một: Một User có một StaffProfile
-        return $this->hasOne(StaffProfile::class, 'user_id', 'id');
     }
 
 
@@ -172,5 +169,11 @@ class User extends Authenticatable implements MustVerifyEmail
         });
     }
 
+
+
+    public function counpons()
+    {
+        return $this->belongsToMany(Counpon::class, 'coupon_user', 'user_id', 'coupon_id');
+    }
 
 }

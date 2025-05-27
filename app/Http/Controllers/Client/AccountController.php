@@ -20,7 +20,37 @@ class AccountController extends Controller
         $provinces = Province::all();
         $districts = District::all();
         $wards = Ward::all();
-        return view('client.master-account', compact('coupons', 'provinces', 'districts', 'wards'));
+        $userId = Auth::id();
+
+        // Tính tổng số tiền đã chi tiêu cho các đơn hàng thành công
+        $totalSpent = Order::where('user_id', $userId)
+            ->where('status', 'completed')
+            ->sum('total');
+
+        // Đếm số đơn hàng thành công
+        $successfulOrdersCount = Order::where('user_id', $userId)
+            ->where('status', 'completed')
+            ->count();
+
+        // Đếm số đơn hàng đã hủy
+        $cancelledOrdersCount = Order::where('user_id', $userId)
+            ->where('status', 'cancelled')
+            ->count();
+
+        // Lấy các dữ liệu khác như cũ
+        $coupons = Coupon::all();
+        $provinces = Province::all();
+        $districts = District::all();
+        $wards = Ward::all();
+        return view('client.master-account', compact(
+            'coupons',
+            'provinces',
+            'districts',
+            'wards',
+            'totalSpent',
+            'successfulOrdersCount',
+            'cancelledOrdersCount'
+        ));
     }
 
 
@@ -31,7 +61,7 @@ class AccountController extends Controller
         $orders = Order::where('user_id', $userId)
             ->with(['items', 'items.product'])
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->paginate(50);
 
         return view('client.account.my-order')->with([
             'orders' => $orders
@@ -43,7 +73,6 @@ class AccountController extends Controller
     {
         if (Auth::id() !== $order->user_id) {
             abort(403, 'Bạn không có quyền truy cập đơn hàng này.');
-
         }
 
         $order->load([
