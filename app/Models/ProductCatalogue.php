@@ -42,6 +42,7 @@ class ProductCatalogue extends Model
         }
 
         return true;
+
     }
 
     public function children(): HasMany
@@ -70,4 +71,7 @@ class ProductCatalogue extends Model
     {
         return 'rgt';
     }
+
+
+
 }
