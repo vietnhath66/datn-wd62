@@ -308,116 +308,233 @@
             <a href="{{ route('client.account.accountMyOrder') }}">Quay lại trang đơn hàng</a>
         </div>
         {{-- Header tóm tắt đơn hàng --}}
-        <div class="order-header">
+        <div class="order-header-modern">
+    <div class="row">
+        @php
+            // 1. Get order status values
+            $currentStatus = strtolower($order->status ?? '');
+            $currentPaymentMethod = strtolower($order->payment_method ?? '');
+            $currentPaymentStatus = strtolower($order->payment_status ?? '');
 
-            <div class="row">
-                @php
-                    // 1. Lấy các giá trị trạng thái từ đối tượng $order
-                    $currentStatus = strtolower($order->status ?? '');
-                    $currentPaymentMethod = strtolower($order->payment_method ?? ''); // <-- Lấy phương thức thanh toán
-                    $currentPaymentStatus = strtolower($order->payment_status ?? ''); // <-- Lấy trạng thái thanh toán
+            $statusLabels = [
+                'pending' => 'Chưa hoàn tất',
+                'processing' => 'Shop đang xử lý',
+                'confirm' => 'Shop đã xác nhận',
+                'shipping' => 'Đang vận chuyển',
+                'completed' => 'Giao hàng thành công',
+                'cancelled' => 'Đã hủy',
+                'refunded' => 'Đã hoàn trả',
+                'failed' => 'Giao thất bại',
+                'payment_error' => 'Lỗi thanh toán',
+            ];
+            $paymentMethodLabels = [
+                'cod' => 'COD',
+                'wallet' => 'Thanh toán MoMo',
+            ];
+            $paymentStatusLabels = [
+                'pending' => 'Chờ thanh toán',
+                'paid' => 'Đã thanh toán',
+                'failed' => 'Thanh toán thất bại',
+                'refunded' => 'Đã hoàn tiền',
+            ];
 
-                    $statusLabels = [
-                        'pending' => 'Chưa hoàn tất',
-                        'processing' => 'Shop đang xử lý',
-                        'confirm' => 'Shop đã xác nhận',
-                        'shipping' => 'Đang vận chuyển',
-                        'completed' => 'Giao hàng thành công',
-                        'cancelled' => 'Đã hủy',
-                        'refunded' => 'Đã hoàn trả',
-                        'failed' => 'Giao thất bại',
-                        'payment_error' => 'Lỗi thanh toán',
-                    ];
-                    $paymentMethodLabels = [
-                        'cod' => 'COD',
-                        'wallet' => 'Thanh toán MOMO',
-                    ];
-                    $paymentStatusLabels = [
-                        'pending' => 'Chờ thanh toán',
-                        'paid' => 'Đã thanh toán',
-                        'failed' => 'Thanh toán thất bại',
-                        'refunded' => 'Đã hoàn tiền',
-                    ];
+            $displayOrderStatusLabel = $statusLabels[$currentStatus] ?? ucfirst($currentStatus);
 
-                    $displayOrderStatusLabel = $statusLabels[$currentStatus] ?? ucfirst($currentStatus);
+            // Payment method logic
+            $displayPaymentMethodText =
+                $paymentMethodLabels[$currentPaymentMethod] ??
+                ($currentPaymentMethod ? ucfirst($currentPaymentMethod) : 'Chưa chọn');
 
-                    // Phương thức TT - Dùng $currentPaymentMethod để tra cứu trong $paymentMethodLabels
-                    $displayPaymentMethodText =
-                        $paymentMethodLabels[$currentPaymentMethod] ??
-                        ($currentPaymentMethod ? ucfirst($currentPaymentMethod) : 'Chưa chọn');
+            // Payment status logic
+            $displayPaymentStatusText =
+                $paymentStatusLabels[$currentPaymentStatus] ?? ucfirst($currentPaymentStatus);
 
-                    // Trạng thái TT - Dùng $currentPaymentStatus để tra cứu trong $paymentStatusLabels
-                    $displayPaymentStatusText =
-                        $paymentStatusLabels[$currentPaymentStatus] ?? ucfirst($currentPaymentStatus);
+            // Special logic for COD and MoMo payment status based on order status
+            if ($currentPaymentMethod === 'cod') {
+                if ($currentStatus === 'completed') {
+                    $displayPaymentStatusText = 'Đã thanh toán (COD)';
+                } elseif ($currentStatus === 'cancelled') {
+                    $displayPaymentStatusText = 'Không thanh toán (Đã hủy)';
+                } else {
+                    $displayPaymentStatusText = 'Thanh toán khi nhận hàng';
+                }
+            } elseif ($currentPaymentMethod === 'wallet' && $currentPaymentStatus === 'pending') {
+                $displayPaymentStatusText = 'Chờ thanh toán MoMo';
+            }
 
-                    // Logic đặc biệt cho COD và MoMo - Cần kiểm tra lại logic này dựa trên biến đã sửa
-                    if ($currentPaymentMethod === 'cod') {
-                        // Kiểm tra đúng biến $currentPaymentMethod
-                        $displayPaymentStatusText = 'Thanh toán khi nhận hàng';
-                        // Nếu đơn COD đã ở trạng thái giao thành công/hoàn thành thì coi như đã TT (dựa vào trạng thái đơn hàng)
-                        if (in_array($currentStatus, ['completed', 'delivered', 'confirm'])) {
-                            $displayPaymentStatusText = 'Đã thanh toán (COD)';
-                        } elseif ($currentStatus === 'cancelled') {
-                            $displayPaymentStatusText = 'Không thanh toán (Đã hủy)';
-                        }
-                    } elseif ($currentPaymentMethod === 'wallet' && $currentStatus === 'pending') {
-                        // Kiểm tra đúng biến $currentPaymentMethod và trạng thái đơn hàng
-                        // Hiển thị rõ hơn khi chờ thanh toán MoMo
-                        // Cần kiểm tra thêm $currentPaymentStatus === 'pending' nếu trạng thái TT cũng là pending
-                        if ($currentPaymentStatus === 'pending') {
-                            $displayPaymentStatusText = 'Chờ thanh toán MoMo';
-                        }
-                    }
+            // Other display variables
+            $orderCode = $order->barcode ?? 'DH' . sprintf('%03d', $order->id);
+            $finalTotalFormatted = number_format($order->total ?? 0, 0, ',', '.') . ' VNĐ';
+            $orderDate = optional($order->created_at)->format('H:i d/m/Y') ?? 'N/A';
+            $customerName = $order->name ?? (optional($order->user)->name ?? 'N/A');
+            $customerEmail = $order->email ?? (optional($order->user)->email ?? 'N/A');
+        @endphp
 
-                    // 4. Tạo HTML cho Badge trạng thái đơn hàng - Giữ nguyên logic dựa trên $currentStatus
-                    // ...
-                    $endedStatuses = ['completed', 'cancelled', 'refunded', 'failed'];
-                    // Các biến khác dùng cho hiển thị - Giữ nguyên
-                    $orderCode = $order->barcode ?? 'DH' . sprintf('%03d', $order->id);
-                    $finalTotalFormatted = number_format($order->total ?? 0, 0, ',', '.') . ' VNĐ';
-                    $orderDate = optional($order->created_at)->format('H:i d/m/Y') ?? 'N/A';
-                    $customerName = $order->name ?? (optional($order->user)->name ?? 'N/A');
-                    $customerEmail = $order->email ?? (optional($order->user)->email ?? 'N/A');
-                @endphp
-
-                <div class="col-lg-2 col-md-4 col-sm-6"> {{-- Sử dụng col-lg để tốt hơn trên màn hình lớn --}}
-                    <div class="order-info">
-                        <div class="status-label">Mã đơn hàng</div>
-                        <div>{{ $orderCode }}</div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6">
-                    <div class="order-info">
-                        <div class="status-label">Ngày đặt hàng</div>
-                        <div>{{ $orderDate }}</div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6">
-                    <div class="order-info">
-                        <div class="status-label">Phương thức thanh toán</div>
-                        <div>{{ $displayPaymentMethodText }}</div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6">
-                    <div class="order-info">
-                        <div class="status-label">Tổng tiền</div>
-                        <div>{{ $finalTotalFormatted }}</div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6">
-                    <div class="order-info">
-                        <div class="status-label">Trạng thái ĐH</div>
-                        <div>{{ $displayOrderStatusLabel }}</div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6">
-                    <div class="order-info">
-                        <div class="status-label">Người đặt</div>
-                        <div>{{ $customerName }}<br />{{ $customerEmail }}</div>
-                    </div>
-                </div>
+        <div class="col-lg-2 col-md-4 col-sm-6 col-6 mb-3">
+            <div class="info-card">
+                <span class="info-label">Mã đơn hàng</span>
+                <span class="info-value order-code-value">{{ $orderCode }}</span>
             </div>
         </div>
+        <div class="col-lg-2 col-md-4 col-sm-6 col-6 mb-3">
+            <div class="info-card">
+                <span class="info-label">Ngày đặt hàng</span>
+                <span class="info-value">{{ $orderDate }}</span>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6 col-6 mb-3">
+            <div class="info-card">
+                <span class="info-label">P.Thức thanh toán</span>
+                <span class="info-value payment-method-value">{{ $displayPaymentMethodText }}</span>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6 col-6 mb-3">
+            <div class="info-card">
+                <span class="info-label">Tổng tiền</span>
+                <span class="info-value total-value">{{ $finalTotalFormatted }}</span>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6 col-6 mb-3">
+            <div class="info-card">
+                <span class="info-label">Trạng thái ĐH</span>
+                {{-- Generate class based on status label for dynamic styling --}}
+                <span class="info-value order-status-value {{ 'status-' . str_replace(' ', '-', strtolower($displayOrderStatusLabel)) }}">
+                    {{ $displayOrderStatusLabel }}
+                </span>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6 col-6 mb-3">
+            <div class="info-card">
+                <span class="info-label">Người đặt</span>
+                <span class="info-value customer-info-value">{{ $customerName }}<br />{{ $customerEmail }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Import Google Font (Inter is a good modern choice) */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    .order-header-modern {
+        background-color: #f8f9fa; /* Light background for the entire header area */
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Softer shadow */
+        margin-bottom: 30px; /* Space below the header */
+        font-family: 'Inter', sans-serif; /* Modern font */
+    }
+
+    .order-header-modern .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: -15px; /* Adjust margin to compensate for column padding */
+    }
+
+    .order-header-modern .col-lg-2,
+    .order-header-modern .col-md-4,
+    .order-header-modern .col-sm-6,
+    .order-header-modern .col-6 {
+        padding: 15px; /* Even spacing between columns */
+    }
+
+    .info-card {
+        background-color: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px; /* Subtle rounded corners */
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* Align content to the left */
+        height: 100%; /* Ensure equal height in each row */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03); /* Very subtle shadow for each card */
+        transition: box-shadow 0.2s ease-in-out;
+    }
+
+    .info-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07); /* More prominent shadow on hover */
+    }
+
+    .info-label {
+        font-size: 0.85rem; /* Smaller font for labels */
+        color: #777; /* Soft gray color */
+        margin-bottom: 5px;
+        font-weight: 500;
+        text-transform: uppercase; /* Slightly uppercase */
+        letter-spacing: 0.5px;
+    }
+
+    .info-value {
+        font-size: 1rem; /* Font size for values */
+        font-weight: 600; /* Semi-bold */
+        color: #333; /* Darker black for values */
+        line-height: 1.4;
+    }
+
+    /* Styling for specific prominent values */
+    .info-value.order-code-value {
+        color: #007bff; /* Primary blue for order code */
+        font-weight: 700;
+    }
+
+    .info-value.total-value {
+        color: #e53935; /* Your brand red for total amount */
+        font-size: 1.1rem; /* Slightly larger */
+        font-weight: 700;
+    }
+
+    .info-value.order-status-value {
+        font-weight: 700;
+        padding: 4px 8px;
+        border-radius: 5px;
+        display: inline-block; /* Essential for padding and border-radius */
+        font-size: 0.9rem;
+    }
+
+    /* Status-specific colors */
+    .info-value.status-chua-hoan-tat { background-color: #ffe082; color: #f57f17; } /* Amber */
+    .info-value.status-shop-dang-xu-ly { background-color: #b3e5fc; color: #0277bd; } /* Light Blue */
+    .info-value.status-shop-da-xac-nhan { background-color: #c8e6c9; color: #2e7d32; } /* Green */
+    .info-value.status-dang-van-chuyen { background-color: #a5d6a7; color: #388e3c; } /* Darker Green */
+    .info-value.status-giao-hang-thanh-cong { background-color: #81c784; color: #1b5e20; } /* Even Darker Green */
+    .info-value.status-da-huy { background-color: #ffcdd2; color: #c62828; } /* Red */
+    .info-value.status-da-hoan-tra { background-color: #b2ebf2; color: #00838f; } /* Cyan */
+    .info-value.status-giao-that-bai { background-color: #ffccbc; color: #bf360c; } /* Deep Orange */
+    .info-value.status-loi-thanh-toan { background-color: #ffe0b2; color: #ef6c00; } /* Orange */
+
+    .info-value.payment-method-value,
+    .info-value.customer-info-value {
+        /* Add specific styling if desired */
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 767.98px) {
+        .order-header-modern .row {
+            margin: -10px; /* Adjust margin for smaller screens */
+        }
+        .order-header-modern .col-lg-2,
+        .order-header-modern .col-md-4,
+        .order-header-modern .col-sm-6,
+        .order-header-modern .col-6 {
+            padding: 10px; /* Adjust padding for smaller screens */
+        }
+        .info-card {
+            padding: 12px;
+        }
+        .info-label {
+            font-size: 0.8rem;
+        }
+        .info-value {
+            font-size: 0.95rem;
+        }
+        .info-value.total-value {
+            font-size: 1rem;
+        }
+        .info-value.order-status-value {
+            font-size: 0.85rem;
+        }
+    }
+</style>
 
 
         {{-- Phần Chi tiết và Thông tin giao hàng/thanh toán --}}
@@ -485,13 +602,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    @if (in_array($currentStatus, $endedStatuses))
-                                        <a href="{{ route('client.product.show', $item->product_id) }}#reviews"
-                                            class="btn btn-sm btn-outline-info mt-2"
-                                            style="font-size: 0.85rem; padding: 5px 10px;">
-                                            Viết đánh giá
-                                        </a>
-                                    @endif
+                                  
                                 </div>
                             </div>
                         @empty
@@ -553,11 +664,11 @@
                             <hr>
 
                             {{-- 4. Hiển thị Tổng cộng (luôn hiển thị) --}}
-                            <div class="total-row" style="font-weight: bold;">
-                                <span>Tổng cộng</span>
-                                {{-- Hiển thị tổng tiền cuối cùng --}}
-                                <span>{{ number_format($finalTotal, 0, ',', '.') }} VNĐ</span>
-                            </div>
+                           <div class="total-row" style="font-weight: bold;">
+    <span>Tổng cộng</span>
+    {{-- Hiển thị tổng tiền cuối cùng --}}
+    <span style="color: #e53935;">{{ number_format($finalTotal, 0, ',', '.') }} VNĐ</span>
+</div>
 
                         </div>
                     </div>
@@ -785,10 +896,10 @@
                     <div class="card-header">Thông tin thanh toán</div>
                     <div class="card-body">
                         <div class="info-section">
-                            <div class="info-row">
-                                <span class="info-label">Tổng tiền</span>
-                                <span class="info-value">{{ $finalTotalFormatted }}</span>
-                            </div>
+                           <div class="info-row">
+    <span class="info-label">Tổng tiền</span>
+    <span class="info-value" style="color: #e53935;">{{ $finalTotalFormatted }}</span>
+</div>
                             <div class="info-row">
                                 <span class="info-label">Phương thức</span>
                                 <span class="info-value">{{ $displayPaymentMethodText }}</span>
