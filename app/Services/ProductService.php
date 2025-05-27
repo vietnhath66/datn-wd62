@@ -169,12 +169,16 @@ class ProductService extends BaseService implements ProductServiceInterface
             $galleries = ProductGallery::where('product_id', $id)->get();
             if (isset($variants)) {
                 foreach ($variants as $key) {
-                    $variant = ProductVariant::destroy($key->id);
+                    $variant = ProductVariant::where('id',$key->id)->first();
+                    $variant->delete();
                 }
             }
             if (isset($galleries)) {
                 foreach ($galleries as $key) {
-                    $gallery = ProductGallery::destroy($key->id);
+                    // $gallery = ProductGallery::delete($key->id);
+                    $gallery = ProductVariant::where('id',$key->id)->first();
+                    $gallery->delete();
+
                 }
             }
             if ($product->image && file_exists(public_path('storage/' . $product->image))) {
