@@ -576,8 +576,15 @@
                     return;
                 }
 
-                saveButton.prop('disabled', true).html(
-                    '<span class="spinner-border spinner-border-sm"></span> Đang lưu...');
+
+                if (!photoData) {
+    alert('Bạn phải chụp ảnh xác nhận giao hàng trước khi lưu!');
+    return;
+}
+
+
+                saveButton.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Đang lưu...');
+                (validate form shipper)
                 form.find('.is-invalid').removeClass('is-invalid');
                 form.find('.invalid-feedback').text('');
 

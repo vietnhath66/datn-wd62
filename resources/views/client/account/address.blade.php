@@ -62,6 +62,147 @@
     .header .actions .hire-btn:hover {
         background: #333;
     }
+/* Form Section */
+.address-section {
+  background: #fefefe;
+  border: 1px solid #ddd;
+  padding: 24px;
+  border-radius: 12px;
+  max-width: 700px;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.section-desc {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.form-group select:disabled {
+  background-color: #f9f9f9;
+}
+
+.form-actions {
+  margin-top: 20px;
+  text-align: right;
+}
+
+.save-btn {
+  background-color: #3490dc;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.save-btn:hover {
+  background-color: #2779bd;
+}
+
+/* Address Table Display */
+#addressDetailContainer h3,
+#addressSummaryContainer h3 {
+  font-size: 18px;
+  margin-top: 30px;
+  margin-bottom: 12px;
+  color: #2c3e50;
+}
+
+#addressDetailContainer table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+#addressDetailContainer th,
+#addressDetailContainer td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  font-size: 14px;
+}
+
+#addressDetailContainer tr:last-child td {
+  border-bottom: none;
+}
+
+#addressDetailContainer button {
+  margin-right: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#editBtn {
+  background-color: #ffc107;
+  color: #fff;
+}
+
+#deleteBtn {
+  background-color: #e3342f;
+  color: #fff;
+}
+
+#editBtn:hover {
+  background-color: #e0a800;
+}
+
+#deleteBtn:hover {
+  background-color: #cc1f1a;
+}
+
+/* Address Summary List */
+#addressList {
+  list-style: none;
+  padding-left: 0;
+}
+
+#addressList li {
+  background-color: #f1f5f9;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
 
     .user-info {
         display: flex;
@@ -485,7 +626,8 @@
             <button type="submit" class="save-btn">Lưu thay đổi</button>
         </div>
     </form>
-    <div id="addressDetailContainer" style="margin-top: 20px;"></div>
+</div>
+<div id="addressDetailContainer" style="margin-top: 20px;"></div>
 
 <div id="addressSummaryContainer" style="margin-top: 20px;">
   <h3>Danh sách địa chỉ cụ thể</h3>
@@ -559,7 +701,7 @@
     summaryList.innerHTML = '';
     addresses.forEach(addr => {
       const li = document.createElement('li');
-      li.textContent = addr.address;
+li.textContent = addr.address;
       summaryList.appendChild(li);
     });
   }
@@ -575,7 +717,6 @@
   }
 </script>
 
-</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
