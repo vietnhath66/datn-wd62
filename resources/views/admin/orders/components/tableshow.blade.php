@@ -166,7 +166,7 @@
                                     <div class="card">
                                         <div class="card-header">Chi tiết sản phẩm</div>
                                         <div class="card-body">
-                                            @forelse ($order->items as $item)
+                                            @forelse ($orderItems as $item)
                                                 <div class="product-item">
                                                     @php
                                                         // Lấy ảnh (cần kiểm tra $item->productVariant trước)

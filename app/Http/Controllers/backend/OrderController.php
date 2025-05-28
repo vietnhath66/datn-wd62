@@ -92,9 +92,9 @@ class OrderController extends Controller
             ->groupBy('orders.id')
             ->orderBy('orders.id', 'DESC')
             ->paginate(10); // Giới hạn kết quả trả về (10 đơn hàng mỗi trang)
-            // dd($orders);
+        // dd($orders);
         // Tải quan hệ sau khi lấy dữ liệu (Order Items, Products và Product Variants)
-        $orders->load(['orderItems.products.product_variants']);
+        $orders->load(['orderItems.product.product_variants']);
 
         // Trả về view với các dữ liệu cần thiết
         $template = 'admin.orders.index';
@@ -276,23 +276,11 @@ class OrderController extends Controller
             return redirect()->route('admin.orders.index')->with('error', 'Đơn hàng không tồn tại.');
         }
 
-        // Lấy các item trong đơn hàng
-        $orderItems = OrderItem::select([
-            'order_items.*',
-            'products.name as product_name',
-            'products.image as image',
-            'product_variants.name as variant_name',
-            'product_variants.sku',
-            'product_variants.name_variant_size',
-            'product_variants.name_variant_color',
-            'product_variants.price as variant_price'
-        ])
-            ->join('products', 'products.id', '=', 'order_items.product_id')
-            ->leftJoin('product_variants', 'product_variants.id', '=', 'order_items.product_variant_id')
-            ->where('order_items.order_id', $id)
-            ->get();
-
-        // $orderItems = $orderItems ?: collect(); 
+        $orderItems = OrderItem::with([
+            'product' => fn($q) => $q->withTrashed(),
+            'productVariant' => fn($q) => $q->withTrashed(),
+        ])->where('order_id', $id)->get();
+// dd($orderItems->pluck('product.name', 'id'));
 
         $config = $this->configData();
         $config['seo'] = [
