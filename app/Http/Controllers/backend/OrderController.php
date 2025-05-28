@@ -265,6 +265,7 @@ class OrderController extends Controller
             'orders.province_code',
             'orders.district_code',
             'orders.address',
+            'shipper_photo',
             'orders.created_at',
             'orders.updated_at'
         ])

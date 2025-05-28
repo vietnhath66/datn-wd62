@@ -363,6 +363,7 @@
                     }
 
                     // Other display variables
+
                     $endedStatuses = ['completed', 'cancelled', 'refunded', 'failed'];
                     $orderCode = $order->barcode ?? 'DH' . sprintf('%03d', $order->id);
                     $finalTotalFormatted = number_format($order->total ?? 0, 0, ',', '.') . ' VNĐ';
@@ -678,6 +679,7 @@
                                             @endif
                                         </div>
                                     </div>
+
                                     @if (in_array($currentStatus, $endedStatuses))
                                         <a href="{{ route('client.product.show', $item->product_id) }}#reviews"
                                             class="btn btn-sm btn-outline-info mt-2"
@@ -899,6 +901,7 @@
                                                     {{-- @php dump("Đang trong elseif - userName:", $userName); @endphp --}}
                                                     {{-- Hiển thị thêm lý do nữa, đang không hiển thị được $userName trong elseif này --}}
                                                 @endif
+
                                                 @if ($statusKey === 'completed' && $isCompleted && $order->note)
                                                     <p><strong>Lý do:</strong> {{ $order->note }}</p>
 
@@ -913,9 +916,19 @@
                                                 @endif
                                             </span>
                                         @endif
+
                                     </div>
                                 </li>
                             @endforeach
+
+                            @if ($order->shipper_photo)
+                                <div class="mt-3">
+                                    <label>Ảnh xác nhận giao hàng:</label><br>
+                                    <img src="{{ asset('storage/' . $order->shipper_photo) }}"
+                                        style="max-width: 250px; width: 100%; border: 1px solid #ccc; border-radius: 6px;"
+                                        alt="Ảnh giao hàng">
+                                </div>
+                            @endif
 
 
 

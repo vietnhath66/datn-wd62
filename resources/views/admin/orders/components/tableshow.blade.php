@@ -497,9 +497,18 @@
                                                         </div>
                                                     </li>
                                                 @endif
+                                                @if ($order->shipper_photo)
+                                                    <div class="mt-3">
+                                                        <label>Ảnh xác nhận giao hàng:</label><br>
+                                                        <img src="{{ asset('storage/' . $order->shipper_photo) }}"
+                                                            style="max-width: 250px; width: 100%; border: 1px solid #ccc; border-radius: 6px;"
+                                                            alt="Ảnh giao hàng">
+                                                    </div>
+                                                @endif
                                             </ul>
                                         </div>
                                     </div>
+
 
                                 </div> {{-- Kết thúc Cột Trái --}}
 
@@ -562,7 +571,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     {{-- <div class="card">
                                         <div class="card-header">Trạng thái đơn hàng</div>
                                         <div class="card-body">

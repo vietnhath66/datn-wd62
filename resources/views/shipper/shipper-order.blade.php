@@ -10,7 +10,7 @@
                     <div class="card-header bg-light">
                         <i class="fas fa-clipboard-list mr-2"></i> Các Đơn Hàng Cần Giao
                     </div>
-                    <div class="card-body">
+                    <div class="card-body order-list-container">
                         @foreach ($orders as $order)
                             @php
                                 $orderCode = $order->barcode ?? 'DH' . sprintf('%03d', $order->id);
@@ -57,12 +57,7 @@
                                         $statusText = 'N/A';
                                         break;
                                 }
-                                $statusBadge = match (strtolower($order->status ?? '')) {
-                                    'shipping' => '<span class="badge badge-primary status-badge">Đang Giao</span>',
-                                    default => '<span class="badge badge-secondary status-badge">' .
-                                        ucfirst($order->status ?? 'N/A') .
-                                        '</span>',
-                                };
+
                                 $detailUrl = '#';
                                 try {
                                     $detailUrl = route('shipper.orderDetailShipper', $order->id);
@@ -72,43 +67,304 @@
                                 }
                             @endphp
 
-                            <div class="order-item mb-3" data-order-item-id="{{ $order->id }}">
-                                <div class="order-details">
-                                    <h5 class="order-item-header">
+
+
+                            {{-- <div class="card-body">
+                        @foreach ($orders as $order)
+                            @php
+                                $orderCode = $order->barcode ?? 'DH' . sprintf('%03d', $order->id);
+                                $recipientName = $order->user->name ?? 'N/A';
+                                $recipientPhone = $order->phone ?? 'N/A';
+                                $fullAddress =
+                                    implode(
+                                        ', ',
+                                        array_filter([
+                                            $order->address,
+                                            optional($order->ward)->full_name,
+                                            optional($order->district)->full_name,
+                                            optional($order->province)->full_name,
+                                        ]),
+                                    ) ?:
+                                    'Chưa có địa chỉ';
+
+                                // Custom status badge
+                                $statusBadgeClass = '';
+                                $statusText = '';
+                                switch (strtolower($order->status ?? '')) {
+                                    case 'pending':
+                                        $statusBadgeClass = 'status-badge-pending';
+                                        $statusText = 'Chờ Xử Lý';
+                                        break;
+                                    case 'processing':
+                                        $statusBadgeClass = 'status-badge-processing';
+                                        $statusText = 'Đang Xử Lý';
+                                        break;
+                                    case 'shipping':
+                                        $statusBadgeClass = 'status-badge-shipping';
+                                        $statusText = 'Đang Giao';
+                                        break;
+                                    case 'completed':
+                                        $statusBadgeClass = 'status-badge-completed';
+                                        $statusText = 'Đã Hoàn Thành';
+                                        break;
+                                    case 'cancelled':
+                                        $statusBadgeClass = 'status-badge-cancelled';
+                                        $statusText = 'Đã Hủy';
+                                        break;
+                                    default:
+                                        $statusBadgeClass = 'status-badge-default';
+                                        $statusText = 'N/A';
+                                        break;
+                                }
+
+                                $detailUrl = '#';
+                                try {
+                                    $detailUrl = route('shipper.orderDetailShipper', $order->id);
+                                } catch (\Exception $e) {
+                                    // Log the error but don't stop execution
+    // \Illuminate\Support\Facades\Log::error("Route 'shipper.orderDetailShipper' not defined for order ID: " . $order->id);
+                                }
+                            @endphp --}}
+
+
+                            <div class="order-card" data-order-item-id="{{ $order->id }}">
+                                <div class="order-header">
+                                    <h5 class="order-title">
                                         Đơn Hàng #<span class="order-id">{{ $orderCode }}</span>
-                                        <span class="status-badge-container ml-2">{!! $statusBadge !!}</span>
                                     </h5>
-                                    <p class="order-item-info">
-                                        <i class="fas fa-user mr-2"></i> Người Nhận:
-                                        <span class="recipient-name">{{ $recipientName }}</span>
+                                    <span class="status-badge {{ $statusBadgeClass }}">{{ $statusText }}</span>
+                                </div>
+
+                                <div class="order-body">
+                                    <p class="order-info-item">
+                                        <i class="fas fa-user icon"></i>
+                                        <span class="label">Người Nhận:</span>
+                                        <span class="value">{{ $recipientName }}</span>
                                     </p>
-                                    <p class="order-item-info">
-                                        <i class="fas fa-map-marker-alt mr-2"></i> Địa Chỉ:
-                                        <span class="delivery-address">{{ $fullAddress }}</span>
+                                    <p class="order-info-item">
+                                        <i class="fas fa-map-marker-alt icon"></i>
+                                        <span class="label">Địa Chỉ:</span>
+                                        <span class="value">{{ $fullAddress }}</span>
                                     </p>
-                                    <p class="order-item-info">
-                                        <i class="fas fa-phone mr-2"></i> Điện Thoại:
-                                        <span class="recipient-phone">{{ $recipientPhone }}</span>
+                                    <p class="order-info-item">
+                                        <i class="fas fa-phone icon"></i>
+                                        <span class="label">Điện Thoại:</span>
+                                        <span class="value">{{ $recipientPhone }}</span>
                                     </p>
-                                    <p class="order-item-info">
-                                        <i class="fas fa-coins mr-2"></i> Tổng tiền:
-                                        <span>{{ number_format($order->total) }} VNĐ</span>
+                                    <p class="order-info-item total-amount">
+                                        <i class="fas fa-money-bill-wave icon"></i>
+                                        <span class="label">Tổng tiền:</span>
+                                        <span class="value">{{ number_format($order->total) }} VNĐ</span>
                                     </p>
                                 </div>
-                                <div class="order-actions mt-2">
-                                    <button class="btn btn-sm btn-primary btn-action" data-toggle="modal"
-                                        data-target="#orderActionModal" data-order-id="{{ $order->id }}"
-                                        data-order-code="{{ $orderCode }}">
-                                        <i class="fas fa-tasks mr-1"></i> Thao tác
+
+                                <div class="order-footer">
+                                    <button class="btn-action primary" data-toggle="modal" data-target="#orderActionModal"
+                                        data-order-id="{{ $order->id }}" data-order-code="{{ $orderCode }}">
+                                        <i class="fas fa-tasks icon"></i> Thao tác
                                     </button>
-                                    <a style="margin-left: 0.5rem;" href="{{ $detailUrl }}"
-                                        class="btn btn-sm btn-info btn-details">
-                                        <i class="fas fa-info-circle mr-1"></i> Chi Tiết
+                                    <a href="{{ $detailUrl }}" class="btn-action info">
+                                        <i class="fas fa-info-circle icon"></i> Chi Tiết
                                     </a>
                                 </div>
                             </div>
                         @endforeach
                     </div>
+
+                    <style>
+                        /* Font Import (if you don't have it globally) */
+                        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+                        .order-list-container {
+                            padding: 20px;
+                            background-color: #f8f8f8;
+                            /* Light background for the list area */
+                            font-family: 'Inter', sans-serif;
+                        }
+
+                        .order-card {
+                            background-color: #ffffff;
+                            border-radius: 12px;
+                            /* Nicer rounded corners */
+                            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                            /* Softer, more modern shadow */
+                            margin-bottom: 25px;
+                            padding: 25px;
+                            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+                        }
+
+                        .order-card:hover {
+                            transform: translateY(-5px);
+                            /* Subtle lift effect on hover */
+                            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+                            /* Slightly stronger shadow on hover */
+                        }
+
+                        .order-header {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-bottom: 15px;
+                            padding-bottom: 10px;
+                            border-bottom: 1px solid #eee;
+                            /* Subtle separator */
+                        }
+
+                        .order-title {
+                            font-size: 1.35rem;
+                            /* Larger title */
+                            font-weight: 700;
+                            /* Bold */
+                            color: #333;
+                            margin: 0;
+                        }
+
+                        .order-id {
+                            color: #e53935;
+                            /* Your brand red for order ID */
+                        }
+
+                        /* Status Badges */
+                        .status-badge {
+                            font-size: 0.85rem;
+                            font-weight: 600;
+                            padding: 6px 12px;
+                            border-radius: 20px;
+                            /* Pill shape */
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                            white-space: nowrap;
+                            /* Prevent wrapping */
+                        }
+
+                        .status-badge-pending {
+                            background-color: #ffeb3b;
+                            /* Yellow */
+                            color: #a1887f;
+                        }
+
+                        .status-badge-processing {
+                            background-color: #bbdefb;
+                            /* Light Blue */
+                            color: #2196f3;
+                        }
+
+                        .status-badge-shipping {
+                            background-color: #81c784;
+                            /* Light Green */
+                            color: #2e7d32;
+                        }
+
+                        .status-badge-completed {
+                            background-color: #a5d6a7;
+                            /* Deeper Green */
+                            color: #1b5e20;
+                        }
+
+                        .status-badge-cancelled {
+                            background-color: #ffcdd2;
+                            /* Light Red */
+                            color: #c62828;
+                        }
+
+                        .status-badge-default {
+                            background-color: #e0e0e0;
+                            color: #757575;
+                        }
+
+                        .order-body {
+                            margin-bottom: 20px;
+                        }
+
+                        .order-info-item {
+                            display: flex;
+                            align-items: center;
+                            margin-bottom: 10px;
+                            font-size: 1rem;
+                            color: #555;
+                        }
+
+                        .order-info-item .icon {
+                            color: #999;
+                            /* Softer icon color */
+                            margin-right: 12px;
+                            width: 20px;
+                            /* Fixed width for icons */
+                            text-align: center;
+                        }
+
+                        .order-info-item .label {
+                            font-weight: 500;
+                            margin-right: 8px;
+                            color: #444;
+                        }
+
+                        .order-info-item .value {
+                            font-weight: 400;
+                            color: #333;
+                            flex-grow: 1;
+                            /* Allow value to take up remaining space */
+                        }
+
+                        .order-info-item.total-amount .value {
+                            font-weight: 700;
+                            /* Bold for total amount */
+                            color: #e53935;
+                            /* Your brand red for total */
+                            font-size: 1.1rem;
+                        }
+
+                        .order-footer {
+                            display: flex;
+                            justify-content: flex-end;
+                            /* Align buttons to the right */
+                            gap: 10px;
+                            /* Space between buttons */
+                            padding-top: 15px;
+                            border-top: 1px solid #eee;
+                            /* Subtle separator */
+                        }
+
+                        .btn-action {
+                            display: inline-flex;
+                            align-items: center;
+                            padding: 10px 20px;
+                            border-radius: 8px;
+                            /* Slightly rounded buttons */
+                            font-size: 0.95rem;
+                            font-weight: 600;
+                            text-decoration: none;
+                            cursor: pointer;
+                            transition: background-color 0.3s ease, transform 0.2s ease;
+                            border: none;
+                            /* Remove default button border */
+                            color: #fff;
+                        }
+
+                        .btn-action .icon {
+                            margin-right: 8px;
+                        }
+
+                        .btn-action.primary {
+                            background-color: #007bff;
+                            /* Primary blue for action */
+                        }
+
+                        .btn-action.primary:hover {
+                            background-color: #0056b3;
+                            transform: translateY(-2px);
+                        }
+
+                        .btn-action.info {
+                            background-color: #6c757d;
+                            /* Grey for info/details */
+                        }
+
+                        .btn-action.info:hover {
+                            background-color: #5a6268;
+                            transform: translateY(-2px);
+                        }
+                    </style>
                 </div>
             </div>
 
@@ -319,10 +575,12 @@
                     alert('Lỗi: Không xác định được đơn hàng hoặc trạng thái.');
                     return;
                 }
+
                 if (!photoData) {
                     alert('Bạn phải chụp ảnh xác nhận giao hàng trước khi lưu!');
                     return;
                 }
+
                 saveButton.prop('disabled', true).html(
                     '<span class="spinner-border spinner-border-sm"></span> Đang lưu...');
                 form.find('.is-invalid').removeClass('is-invalid');

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductVariant extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'product_variants';
 
@@ -53,17 +53,17 @@ class ProductVariant extends Model
     }
 
     public function attributess()
-{
-    return $this->belongsToMany(Attribute::class, 'attribute_product_variant', 'variant_id', 'attribute_id');
-}
+    {
+        return $this->belongsToMany(Attribute::class, 'attribute_product_variant', 'variant_id', 'attribute_id');
+    }
 
-public function size()
-{
-    return $this->belongsTo(Attribute::class, 'size_id');
-}
+    public function size()
+    {
+        return $this->belongsTo(Attribute::class, 'size_id');
+    }
 
-public function color()
-{
-    return $this->belongsTo(Attribute::class, 'color_id');
-}
+    public function color()
+    {
+        return $this->belongsTo(Attribute::class, 'color_id');
+    }
 }

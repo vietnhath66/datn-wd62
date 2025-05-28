@@ -25,24 +25,27 @@ class OrderItem extends Model
     ];
 
 
-    public function product(){
+    public function product()
+    {
         // return $this->belongsTo(Product::class, 'product_id', 'id');
-return $this->belongsTo(Product::class)->withTrashed();
+        return $this->belongsTo(Product::class)->withTrashed();
     }
 
-    public function orders(){
+    public function orders()
+    {
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 
-    public function productVariant(){
+    public function productVariant()
+    {
         // return $this->belongsTo(Product::class, 'product_varian_id', 'id');
-            return $this->belongsTo(ProductVariant::class)->withTrashed();
+        return $this->belongsTo(ProductVariant::class)->withTrashed();
 
     }
     // public function attributes(){
     //     return $this->belongsToMany(Attribute::class, 'product_variant_attribute' , 'product_variant_id', 'attribute_id');
     // }
 
-    
+
 
 }

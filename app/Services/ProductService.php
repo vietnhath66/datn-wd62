@@ -83,7 +83,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             'path' => ($extend['path']) ?? 'admin/products/product/index',
             'groupBy' => $this->paginateSelect()
         ];
-        
+
         $relations = ['product_catalogues'];
         $rawQuery = $this->whereRaw($request, $modelCatalogue);
         $joins = [
@@ -169,16 +169,12 @@ class ProductService extends BaseService implements ProductServiceInterface
             $galleries = ProductGallery::where('product_id', $id)->get();
             if (isset($variants)) {
                 foreach ($variants as $key) {
-                    $variant = ProductVariant::where('id',$key->id)->first();
-                    $variant->delete();
+                    $variant = ProductVariant::destroy($key->id);
                 }
             }
             if (isset($galleries)) {
                 foreach ($galleries as $key) {
-                    // $gallery = ProductGallery::delete($key->id);
-                    $gallery = ProductVariant::where('id',$key->id)->first();
-                    $gallery->delete();
-
+                    $gallery = ProductGallery::destroy($key->id);
                 }
             }
             if ($product->image && file_exists(public_path('storage/' . $product->image))) {
@@ -201,7 +197,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         // if ($request->hasFile('image')) {
         //     $payload['image'] = Storage::put(self::PATH_UPLOAD, $request->file('image'));
         // }
-        
+
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
@@ -259,7 +255,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function uploadProduct($id, $request)
     {
         $payload = $request->only($this->payload());
-       
+
         $product = $this->productReponsitory->findById($id);
 
 
@@ -273,7 +269,7 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         $currentImage = $product->image;
 
-    
+
         if ($currentImage && file_exists(public_path('storage/' . $currentImage))) {
             unlink(public_path('storage/' . $currentImage));
         }
