@@ -16,23 +16,54 @@
                                 $orderCode = $order->barcode ?? 'DH' . sprintf('%03d', $order->id);
                                 $recipientName = $order->user->name ?? 'N/A';
                                 $recipientPhone = $order->phone ?? 'N/A';
-                                $fullAddress = implode(', ', array_filter([
-                                    $order->address,
-                                    $order->ward->full_name,
-                                    $order->district->full_name,
-                                    $order->province->full_name,
-                                ])) ?: 'Chưa có địa chỉ';
+                                $fullAddress =
+                                    implode(
+                                        ', ',
+                                        array_filter([
+                                            $order->address,
+                                            optional($order->ward)->full_name,
+                                            optional($order->district)->full_name,
+                                            optional($order->province)->full_name,
+                                        ]),
+                                    ) ?:
+                                    'Chưa có địa chỉ';
 
-                                $statusBadge = match (strtolower($order->status ?? '')) {
-                                    'shipping' => '<span class="badge badge-primary status-badge">Đang Giao</span>',
-                                    default => '<span class="badge badge-secondary status-badge">' . ucfirst($order->status ?? 'N/A') . '</span>',
-                                };
+                                // Custom status badge
+                                $statusBadgeClass = '';
+                                $statusText = '';
+                                switch (strtolower($order->status ?? '')) {
+                                    case 'pending':
+                                        $statusBadgeClass = 'status-badge-pending';
+                                        $statusText = 'Chờ Xử Lý';
+                                        break;
+                                    case 'processing':
+                                        $statusBadgeClass = 'status-badge-processing';
+                                        $statusText = 'Đang Xử Lý';
+                                        break;
+                                    case 'shipping':
+                                        $statusBadgeClass = 'status-badge-shipping';
+                                        $statusText = 'Đang Giao';
+                                        break;
+                                    case 'completed':
+                                        $statusBadgeClass = 'status-badge-completed';
+                                        $statusText = 'Đã Hoàn Thành';
+                                        break;
+                                    case 'cancelled':
+                                        $statusBadgeClass = 'status-badge-cancelled';
+                                        $statusText = 'Đã Hủy';
+                                        break;
+                                    default:
+                                        $statusBadgeClass = 'status-badge-default';
+                                        $statusText = 'N/A';
+                                        break;
+                                }
 
                                 $detailUrl = '#';
                                 try {
                                     $detailUrl = route('shipper.orderDetailShipper', $order->id);
                                 } catch (\Exception $e) {
-                                    \Illuminate\Support\Facades\Log::error("Route 'shipper.orderDetailShipper' not defined.");
+                                    // Log the error but don't stop execution
+    // \Illuminate\Support\Facades\Log::error("Route 'shipper.orderDetailShipper' not defined for order ID: " . $order->id);
                                 }
                             @endphp
 
@@ -135,8 +166,7 @@
                         </div>
                         <div class="form-group">
                             <label for="noteInput">Ghi chú:</label>
-                            <textarea placeholder="Lý do hủy/trả hàng, ..." class="form-control" id="noteInput" name="note"
-                                rows="3"></textarea>
+                            <textarea placeholder="Lý do hủy/trả hàng, ..." class="form-control" id="noteInput" name="note" rows="3"></textarea>
                             <div class="invalid-feedback" id="noteInputError"></div>
                         </div>
 
@@ -144,11 +174,13 @@
                         <div class="form-group mt-3">
                             <label>Ảnh xác nhận giao hàng:</label>
                             <div>
-                                <video id="video" width="320" height="240" autoplay style="border:1px solid #ccc;"></video>
+                                <video id="video" width="320" height="240" autoplay
+                                    style="border:1px solid #ccc;"></video>
                                 <canvas id="canvas" width="320" height="240"
                                     style="display:none; border:1px solid #ccc;"></canvas>
                             </div>
-                            <button type="button" class="btn btn-sm btn-secondary mt-2" id="startCamera">Bật Camera</button>
+                            <button type="button" class="btn btn-sm btn-secondary mt-2" id="startCamera">Bật
+                                Camera</button>
                             <button type="button" class="btn btn-sm btn-success mt-2" id="takePhoto" disabled>Chụp
                                 Ảnh</button>
                             <button type="button" class="btn btn-sm btn-warning mt-2" id="retakePhoto"
@@ -178,16 +210,18 @@
 
 @push('script')
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $.ajaxSetup({
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
             });
 
             var currentOrderId = null;
             var stream;
 
             // Mở modal thao tác
-            $('#orderActionModal').on('show.bs.modal', function (event) {
+            $('#orderActionModal').on('show.bs.modal', function(event) {
                 var button = $(event.relatedTarget);
                 currentOrderId = button.data('order-id');
                 var orderCode = button.data('order-code');
@@ -215,21 +249,24 @@
             });
 
             // Bật camera
-            $('#startCamera').on('click', function () {
-                navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-                    .then(function (mediaStream) {
+            $('#startCamera').on('click', function() {
+                navigator.mediaDevices.getUserMedia({
+                        video: true,
+                        audio: false
+                    })
+                    .then(function(mediaStream) {
                         stream = mediaStream;
                         $('#video')[0].srcObject = stream;
                         $('#video')[0].play();
                         $('#startCamera').prop('disabled', true);
                         $('#takePhoto').prop('disabled', false);
-                    }).catch(function (err) {
+                    }).catch(function(err) {
                         alert('Không thể mở camera: ' + err.message);
                     });
             });
 
             // Chụp ảnh
-            $('#takePhoto').on('click', function () {
+            $('#takePhoto').on('click', function() {
                 let video = $('#video')[0];
                 let canvas = $('#canvas')[0];
                 let context = canvas.getContext('2d');
@@ -253,7 +290,7 @@
             });
 
             // Chụp lại
-            $('#retakePhoto').on('click', function () {
+            $('#retakePhoto').on('click', function() {
                 $('#photoInput').val('');
                 $('#canvas').hide();
                 $('#video').show();
@@ -264,7 +301,7 @@
             });
 
             // Lưu trạng thái và ảnh
-            $('#saveAction').on('click', function () {
+            $('#saveAction').on('click', function() {
                 var saveButton = $(this);
                 var form = $('#actionForm');
                 var modal = $('#orderActionModal');
@@ -278,7 +315,8 @@
                     return;
                 }
 
-                saveButton.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Đang lưu...');
+                saveButton.prop('disabled', true).html(
+                    '<span class="spinner-border spinner-border-sm"></span> Đang lưu...');
                 form.find('.is-invalid').removeClass('is-invalid');
                 form.find('.invalid-feedback').text('');
 
@@ -295,22 +333,28 @@
                         _method: 'PUT'
                     },
                     dataType: 'json',
-                    success: function (response) {
+                    success: function(response) {
                         if (response.success) {
                             modal.modal('hide');
                             alert(response.message || 'Cập nhật trạng thái thành công!');
 
                             // Cập nhật giao diện đơn hàng
-                            var orderItemDiv = $('.order-item[data-order-item-id="' + orderId + '"]');
+                            var orderItemDiv = $('.order-item[data-order-item-id="' + orderId +
+                                '"]');
                             if (orderItemDiv.length) {
                                 if (response.newStatusBadge) {
-                                    orderItemDiv.find('.status-badge-container').html(response.newStatusBadge);
+                                    orderItemDiv.find('.status-badge-container').html(response
+                                        .newStatusBadge);
                                 }
                                 if (newStatus !== 'shipping') {
                                     orderItemDiv.find('.btn-action').hide();
                                 }
-                                if (['completed', 'cancelled', 'returned', 'delivered', 'confirm', 'refunded'].includes(newStatus)) {
-                                    orderItemDiv.fadeOut(500, function () { $(this).remove(); });
+                                if (['completed', 'cancelled', 'returned', 'delivered',
+                                        'confirm', 'refunded'
+                                    ].includes(newStatus)) {
+                                    orderItemDiv.fadeOut(500, function() {
+                                        $(this).remove();
+                                    });
                                 }
                             } else {
                                 location.reload();
@@ -320,12 +364,13 @@
                             saveButton.prop('disabled', false).html('Lưu thay đổi');
                         }
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         saveButton.prop('disabled', false).html('Lưu thay đổi');
                         if (xhr.status === 422) {
                             let errors = xhr.responseJSON.errors;
-                            $.each(errors, function (key, val) {
-                                let inputId = '#' + key.charAt(0).toLowerCase() + key.slice(1) + (key === 'status' ? 'Select' : 'Input');
+                            $.each(errors, function(key, val) {
+                                let inputId = '#' + key.charAt(0).toLowerCase() + key
+                                    .slice(1) + (key === 'status' ? 'Select' : 'Input');
                                 let errorId = inputId + 'Error';
                                 $(inputId).addClass('is-invalid');
                                 $(errorId).text(val[0]);
@@ -339,7 +384,7 @@
             });
 
             // Khi modal đóng thì dừng camera nếu đang bật
-            $('#orderActionModal').on('hidden.bs.modal', function () {
+            $('#orderActionModal').on('hidden.bs.modal', function() {
                 if (stream) {
                     stream.getTracks().forEach(track => track.stop());
                 }
