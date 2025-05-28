@@ -161,7 +161,6 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     public function destroy($id)
     {
-
         DB::beginTransaction();
         try {
             $product = $this->productReponsitory->findById($id);
@@ -175,10 +174,8 @@ class ProductService extends BaseService implements ProductServiceInterface
             }
             if (isset($galleries)) {
                 foreach ($galleries as $key) {
-                    // $gallery = ProductGallery::delete($key->id);
                     $gallery = ProductVariant::where('id',$key->id)->first();
                     $gallery->delete();
-
                 }
             }
             if ($product->image && file_exists(public_path('storage/' . $product->image))) {
@@ -213,6 +210,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $payload['attributeCatalogue'] = $this->formatJson($request, 'attributeCatalogue');
         $payload['attribute'] = $request->input('attribute');
         $payload['variant'] = $this->formatJson($request, 'variant');
+
         if (isset($payload['publish'])) {
             $payload['publish'] == "on" ? $payload['publish'] = 1 : $payload['publish'] = 0;
         }
@@ -282,6 +280,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $payload['attributeCatalogue'] = $this->formatJson($request, 'attributeCatalogue');
         $payload['attribute'] = $request->input('attribute');
         $payload['variant'] = $this->formatJson($request, 'variant');
+        
         if (isset($payload['publish'])) {
             $payload['publish'] == "on" ? $payload['publish'] = 1 : $payload['publish'] = 0;
         }

@@ -15,6 +15,7 @@ use App\Classes\Nestedsetbie;
 use App\Models\AttributeCatalogue;
 use App\Models\AttributeCatalogueLanguage;
 use App\Models\Brand;
+use App\Models\CartDetail;
 use App\Models\Language;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -221,23 +222,22 @@ class ProductController extends Controller
         $old_variants = $request->old_variants;
         $old_variants = json_decode($old_variants, true);
         $deleteVariants = [];
-        for ($i = 0; $i < count($old_variants); $i++) {
-            for ($j = 0; $j < count($payload['variant']['sku']); $j++) {
-                if ($payload['variant']['sku'][$j] != $old_variants[$i]['sku']) {
-                    array_push($deleteVariants, $old_variants[$i]);
-                }
+
+        foreach ($old_variants as $product) {
+            if (!in_array($product['sku'], $payload['variant']['sku'])) {
+                $deleteVariants[] = $product; // thêm cả sản phẩm vào danh sách xoá
             }
         }
 
-        // dd($deleteVariants);
         if (count($deleteVariants) > 0) {
             for ($l = 0; $l < count($deleteVariants); $l++) {
-                $variantHaveInOrderItem = OrderItem::where('product_variant_id', $deleteVariants[$l]['id'])->first();
-                if (isset($variantHaveInOrderItem)) {
+                $variantHaveInCartItem = CartDetail::where('product_variant_id', $deleteVariants[$l]['id'])->first();
+                if (isset($variantHaveInCartItem)) {
                     return redirect()->route('admin.product.index')->with('error', 'Biến thể bạn xóa đang có trong giỏ hàng !');
                 }
             }
         }
+
         if ($this->productService->update($id, $request)) {
             return redirect()->route('admin.product.index')->with('success', 'Cập nhật bản ghi thành công');
         }
