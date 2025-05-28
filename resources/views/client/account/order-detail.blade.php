@@ -363,6 +363,8 @@
                     }
 
                     // Other display variables
+
+                    $endedStatuses = ['completed', 'cancelled', 'refunded', 'failed'];
                     $orderCode = $order->barcode ?? 'DH' . sprintf('%03d', $order->id);
                     $finalTotalFormatted = number_format($order->total ?? 0, 0, ',', '.') . ' VNĐ';
                     $orderDate = optional($order->created_at)->format('H:i d/m/Y') ?? 'N/A';
@@ -678,6 +680,13 @@
                                         </div>
                                     </div>
 
+                                    @if (in_array($currentStatus, $endedStatuses))
+                                        <a href="{{ route('client.product.show', $item->product_id) }}#reviews"
+                                            class="btn btn-sm btn-outline-info mt-2"
+                                            style="font-size: 0.85rem; padding: 5px 10px;">
+                                            Viết đánh giá
+                                        </a>
+                                    @endif
                                 </div>
                             </div>
                         @empty
@@ -893,12 +902,25 @@
                                                     {{-- Hiển thị thêm lý do nữa, đang không hiển thị được $userName trong elseif này --}}
                                                 @endif
 
+                                                @if ($statusKey === 'completed' && $isCompleted && $order->note)
+                                                    <p><strong>Lý do:</strong> {{ $order->note }}</p>
+
+                                                    @if ($order->shipper_photo)
+                                                        <div class="mt-3">
+                                                            <label>Ảnh xác nhận giao hàng:</label><br>
+                                                            <img src="{{ asset('storage/' . $order->shipper_photo) }}"
+                                                                style="max-width: 250px; width: 100%; border: 1px solid #ccc; border-radius: 6px;"
+                                                                alt="Ảnh giao hàng">
+                                                        </div>
+                                                    @endif
+                                                @endif
                                             </span>
                                         @endif
 
                                     </div>
                                 </li>
                             @endforeach
+
                             @if ($order->shipper_photo)
                                 <div class="mt-3">
                                     <label>Ảnh xác nhận giao hàng:</label><br>
@@ -907,6 +929,7 @@
                                         alt="Ảnh giao hàng">
                                 </div>
                             @endif
+
 
 
                             {{-- Xử lý hiển thị các trạng thái KẾT THÚC TIÊU CỰC (cancelled, failed, refunded) --}}

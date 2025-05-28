@@ -74,11 +74,12 @@
                                                 <h6>{{ $item->user->name }}</h6>
                                             </td>
                                             <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
+
                                                 {{-- <h6>{{ $item->product->name }}</h6> --}}
                                                 @if ($item->product)
-                                                  <h6>  {{ $item->product->name }}</h6>
+                                                    <h6> {{ $item->product->name }}</h6>
                                                 @else
-                                                   <h6> [Sản phẩm đã được xóa]</h6>
+                                                    <h6> [Sản phẩm đã được xóa]</h6>
                                                 @endif
                                             </td>
                                             <td class="px-3.5 py-2.5 border-y border-slate-200 dark:border-zink-500">
