@@ -6,7 +6,7 @@
     $url =
         $config['method'] == 'create'
             ? route('admin.attribute.store')
-            : route('admin.attribute.update', $attribute->id);      
+            : route('admin.attribute.update', $attribute->id);
 @endphp
 
 
@@ -92,7 +92,7 @@
                                             <img src="{{ \Storage::url($attribute->image) }}" alt=""
                                                 width="50">
                                         @endif --}}
-                                        {{-- <ul class="flex flex-wrap mb-0 gap-x-5" id="dropzone-preview2">
+                                    {{-- <ul class="flex flex-wrap mb-0 gap-x-5" id="dropzone-preview2">
                                             <li class="mt-5" id="dropzone-preview-list2">
                                                 <!-- This is used as the file preview template -->
                                                 <div class="border rounded border-slate-200 dark:border-zink-500">
@@ -125,8 +125,8 @@
                                                 </div>
                                             </li>
                                         </ul> --}}
-                                    </div>
-                                    {{-- <div class="lg:col-span-2 xl:col-span-12">
+                                </div>
+                                {{-- <div class="lg:col-span-2 xl:col-span-12">
                                         <div>
                                             <label for="productDescription"
                                                 class="inline-block mb-2 text-base font-medium">Ghi chú</label>
@@ -143,29 +143,29 @@
                                         </div>
 
                                     </div> --}}
-                                </div>
-                                <!--end grid-->
-                                <div class="flex justify-end gap-2 mt-4">
-                                    <button type="reset"
-                                        class="text-red-500 bg-white btn hover:text-red-500 hover:bg-red-100 focus:text-red-500 focus:bg-red-100 active:text-red-500 active:bg-red-100 dark:bg-zink-700 dark:hover:bg-red-500/10 dark:focus:bg-red-500/10 dark:active:bg-red-500/10">
-                                        Tạo lại
-                                    </button>
-                                    <button type="submit"
-                                        class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">
-                                        {{ $config['method'] == 'edit' ? 'Sửa' : 'Tạo mới' }}
-                                    </button>
-                                </div>
-                            </form>
                         </div>
+                        <!--end grid-->
+                        <div class="flex justify-end gap-2 mt-4">
+                            <button type="reset"
+                                class="text-red-500 bg-white btn hover:text-red-500 hover:bg-red-100 focus:text-red-500 focus:bg-red-100 active:text-red-500 active:bg-red-100 dark:bg-zink-700 dark:hover:bg-red-500/10 dark:focus:bg-red-500/10 dark:active:bg-red-500/10">
+                                Tạo lại
+                            </button>
+                            <button type="submit"
+                                class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">
+                                {{ $config['method'] == 'edit' ? 'Sửa' : 'Tạo mới' }}
+                            </button>
+                        </div>
+                        </form>
                     </div>
-                    <!--end card-->
                 </div>
+                <!--end card-->
             </div>
-            <!--end grid-->
         </div>
-        <!-- container-fluid -->
+        <!--end grid-->
     </div>
-    <!-- End Page-content -->
+    <!-- container-fluid -->
+</div>
+<!-- End Page-content -->
 
-    @include('admin.dashboard.components.footer')
+@include('admin.dashboard.components.footer')
 </div>

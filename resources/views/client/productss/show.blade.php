@@ -89,7 +89,8 @@
 
                             {{-- Input ẩn lưu ID Variant (QUAN TRỌNG) --}}
                             {{-- JavaScript chọn màu/size vẫn cần chạy để cập nhật value cho input này --}}
-                            <input type="hidden" id="selected-product-variant-id" name="product_variant_id" value="">
+                            <input type="hidden" id="selected-product-variant-id" name="product_variant_id"
+                                value="">
 
                             <div class="flex-w flex-r-m p-b-10">
                                 <p id="stock-info" class="mtext-106 cl2 p-t-10" style="color: red; font-size: 15px;">
@@ -192,7 +193,7 @@
                                                     {{ optional($review->user)->name ?? 'Người dùng ẩn danh' }}
                                                 </span>
                                                 <span class="fs-18 cl11">
-                                                    @for ($i = 1; $i <= 5; $i++) @if ($i <=$review->rating)
+                                                    @for ($i = 1; $i <= 5; $i++) @if ($i <= $review->rating)
                                                         <i class="zmdi zmdi-star"></i>
                                                         @else
                                                         <i class="zmdi zmdi-star-outline"></i>
@@ -487,17 +488,20 @@
                                 </div>
 
                                 <div class="block2-info-right flex-r p-t-3">
-                                  <span class="stext-105 cl3" style="font-size: 18px; font-weight: 600; color: #e53935;">
-    {{ number_format($relatedProduct->price, 0, ',', '.') }}
-    <span style="font-size: 13px; vertical-align: super;">VNĐ</span>
-</span>
+                                    <span class="stext-105 cl3"
+                                        style="font-size: 18px; font-weight: 600; color: #e53935;">
+                                        {{ number_format($relatedProduct->price, 0, ',', '.') }}
+                                        <span style="font-size: 13px; vertical-align: super;">VNĐ</span>
+                                    </span>
                                     <a href="#" data-product-id="{{ $relatedProduct->id }}"
                                         class="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
                                         style="margin-right: 10px;">
                                         <img class="icon-heart1 dis-block trans-04"
-                                            src="{{ asset('client/images/icons/icon-heart-01.png') }}" alt="ICON">
+                                            src="{{ asset('client/images/icons/icon-heart-01.png') }}"
+                                            alt="ICON">
                                         <img class="icon-heart2 dis-block trans-04 ab-t-l"
-                                            src="{{ asset('client/images/icons/icon-heart-02.png') }}" alt="ICON">
+                                            src="{{ asset('client/images/icons/icon-heart-02.png') }}"
+                                            alt="ICON">
                                     </a>
                                 </div>
                             </div>
@@ -515,7 +519,7 @@
 
 <!-- Lấy màu -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         console.log('JavaScript đã được tải'); // Kiểm tra script có chạy không
 
         const variants = @json($variants);
@@ -531,7 +535,7 @@
         }
 
         // Khi chọn màu
-        colorSelectElement.addEventListener('change', function () {
+        colorSelectElement.addEventListener('change', function() {
             const selectedColor = this.value.trim();
             console.log('Màu đã chọn:', selectedColor);
 
@@ -568,7 +572,7 @@
         });
 
         // Khi chọn size
-        sizeSelect.addEventListener('change', function () {
+        sizeSelect.addEventListener('change', function() {
             const selectedColor = colorSelectElement.value.trim();
             const selectedSize = this.value.trim();
             console.log('Size đã chọn:', selectedSize);
@@ -600,7 +604,7 @@
         });
 
         // Thêm: Xóa ID variant và thông tin stock khi đổi màu và chưa chọn size
-        colorSelectElement.addEventListener('change', function () {
+        colorSelectElement.addEventListener('change', function() {
             // ... (code cập nhật size dropdown như cũ) ...
             document.getElementById('selected-product-variant-id').value = ''; // Reset ID khi đổi màu
             // Cập nhật stockInfo cho màu hoặc để trống tùy logic của bạn
@@ -611,7 +615,7 @@
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         console.log('DOMContentLoaded');
 
         const variants = @json($variants);
@@ -647,7 +651,7 @@
         quantityInput.removeAttribute('max');
 
         // When the color selection changes
-        colorSelectElement.addEventListener('change', function () {
+        colorSelectElement.addEventListener('change', function() {
             const selectedColor = this.value.trim();
             console.log('Color changed to:', selectedColor);
 
@@ -675,7 +679,7 @@
                         // Check if there's any variant with the selected color and size in stock
                         const hasStock = availableVariantsForColor.some(
                             variant => variant.name_variant_size === size && variant
-                                .quantity > 0
+                            .quantity > 0
                         );
 
                         const option = document.createElement('option');
@@ -702,7 +706,7 @@
         });
 
         // When the size selection changes
-        sizeSelect.addEventListener('change', function () {
+        sizeSelect.addEventListener('change', function() {
             const selectedColor = colorSelectElement.value.trim();
             const selectedSize = this.value.trim();
             console.log('Size changed to:', selectedSize);
@@ -711,8 +715,8 @@
             if (selectedColor && selectedSize) {
                 const matchedVariant = variants.find(
                     variant =>
-                        variant.name_variant_color.trim() === selectedColor &&
-                        variant.name_variant_size.trim() === selectedSize
+                    variant.name_variant_color.trim() === selectedColor &&
+                    variant.name_variant_size.trim() === selectedSize
                 );
 
                 if (matchedVariant) {
@@ -728,7 +732,7 @@
                 }
             } else if (selectedColor) {
                 const totalQuantityForColor = variants.filter(variant => variant.name_variant_color
-                    .trim() === selectedColor)
+                        .trim() === selectedColor)
                     .reduce((sum, variant) => sum + variant.quantity, 0);
                 currentStock = totalQuantityForColor;
                 stockInfo.textContent = currentStock > 0 ?
@@ -745,7 +749,7 @@
             quantityInput.value = 1;
         });
 
-        quantityInput.addEventListener('input', function () {
+        quantityInput.addEventListener('input', function() {
             let value = parseInt(this.value);
             console.log('quantityInput - Input value:', this.value, 'Parsed value:', value,
                 'currentStock:', currentStock);
@@ -763,7 +767,7 @@
             }
         });
 
-        quantityUpButton.addEventListener('click', function () {
+        quantityUpButton.addEventListener('click', function() {
             console.log('quantityUpButton clicked - current quantity:', quantityInput.value,
                 'currentStock:', currentStock);
             if (!quantityInput.disabled && currentStock > 0 && parseInt(quantityInput.value) <
@@ -776,7 +780,7 @@
             }
         });
 
-        quantityDownButton.addEventListener('click', function () {
+        quantityDownButton.addEventListener('click', function() {
             console.log('quantityDownButton clicked - current quantity:', quantityInput.value);
             if (!quantityInput.disabled && parseInt(quantityInput.value) > 1) {
                 quantityInput.value = parseInt(quantityInput.value) - 1;
@@ -788,7 +792,7 @@
         });
 
         // Intercept the form submission
-        addToCartButton.addEventListener('click', function (event) {
+        addToCartButton.addEventListener('click', function(event) {
             const quantityValue = quantityInput.value.trim();
             const parsedQuantity = parseInt(quantityValue);
 

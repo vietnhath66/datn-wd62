@@ -13,6 +13,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -65,7 +68,19 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 
-    public function hasRole($roles)
+    public function hasRole($rolesInput) //
+    {
+        $currentRole = $this->roles; //
+        if (!$currentRole) {
+            return false;
+        }
+
+        if (is_array($rolesInput)) {
+            return in_array($currentRole->name, $rolesInput); // So sánh theo tên vai trò
+        }
+        return $currentRole->name === $rolesInput; // So sánh theo tên vai trò
+    }
+    public function hasRoles($roles)
     {
         return in_array($this->role_id, (array) $roles);
     }
@@ -103,8 +118,66 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(Product::class, 'wishlists', 'user_id', 'product_id')->withTimestamps();
     }
+
+
+    public function hasPermissionToCustom(string $permissionName): bool
+    {
+        Log::info("User::hasPermissionToCustom - Checking permission: '{$permissionName}' for User ID: {$this->id}");
+
+        // SỬA Ở ĐÂY: Truy cập đối tượng Role qua $this->roles (thuộc tính động tương ứng với phương thức roles())
+        $currentRole = $this->roles; //
+
+        if (!$currentRole) { // Kiểm tra xem $currentRole có null không
+            Log::info("User::hasPermissionToCustom - User ID: {$this->id} has NO role assigned (this->roles is null). role_id is: " . $this->role_id);
+            return false;
+        }
+        Log::info("User::hasPermissionToCustom - User ID: {$this->id} has Role ID: {$currentRole->id} (Name: {$currentRole->name})");
+
+        $cacheKey = "role_{$currentRole->id}_permissions_list";
+
+        $rolePermissions = Cache::rememberForever($cacheKey, function () use ($currentRole) { // Truyền $currentRole vào closure
+            // Log::info("User::hasPermissionToCustom - Cache miss for '{$cacheKey}'. Fetching permissions from DB for Role ID: {$currentRole->id}");
+            // Gọi phương thức permissions() trên đối tượng $currentRole
+            $dbPerms = $currentRole->permissions()->pluck('custom_permissions.name')->all();
+            Log::info("User::hasPermissionToCustom - Permissions from DB for Role ID {$currentRole->id}: " . implode(', ', $dbPerms ?: ['NONE']));
+            return $dbPerms;
+        });
+
+        if (!is_array($rolePermissions)) {
+            Log::error("User::hasPermissionToCustom - rolePermissions is not an array for cache key {$cacheKey}. Re-fetching from DB.");
+            Cache::forget($cacheKey);
+            $rolePermissions = $currentRole->permissions()->pluck('custom_permissions.name')->all();
+            Cache::forever($cacheKey, $rolePermissions);
+        }
+
+        Log::info("User::hasPermissionToCustom - Permissions for Role ID {$currentRole->id} (from cache or fresh): " . implode(', ', $rolePermissions ?: ['NONE']));
+
+        $hasPermission = in_array($permissionName, $rolePermissions);
+        Log::info("User::hasPermissionToCustom - Permission '{$permissionName}' for User ID {$this->id}: " . ($hasPermission ? 'GRANTED' : 'DENIED'));
+        return $hasPermission;
+    }
+
+
+    public function getAllPermissionNamesCustom(): array
+    {
+        // SỬA Ở ĐÂY: Truy cập đối tượng Role qua $this->roles
+        $currentRole = $this->roles; //
+
+        if (!$currentRole) {
+            return [];
+        }
+        $cacheKey = "role_{$currentRole->id}_permissions_list"; // Nhất quán tên cache key
+        return Cache::rememberForever($cacheKey, function () use ($currentRole) { // Truyền $currentRole vào closure
+            // Gọi phương thức permissions() trên đối tượng $currentRole
+            return $currentRole->permissions()->pluck('custom_permissions.name')->all();
+        });
+    }
+
+
+
     public function counpons()
     {
         return $this->belongsToMany(Counpon::class, 'coupon_user', 'user_id', 'coupon_id');
     }
+
 }

@@ -9,11 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Validation\Rule;
 use App\Traits\QueryScopes;
-// use Kalnoy\Nestedset\NodeTrait;
+use Kalnoy\Nestedset\NodeTrait;
 
 class ProductCatalogue extends Model
 {
-    use HasFactory, QueryScopes;
+    use HasFactory, QueryScopes, NodeTrait;
+    // use HasFactory, QueryScopes;
+
 
     protected $fillable = [
         'image',
@@ -42,6 +44,7 @@ class ProductCatalogue extends Model
         }
 
         return true;
+
     }
 
     public function children(): HasMany
@@ -70,4 +73,7 @@ class ProductCatalogue extends Model
     {
         return 'rgt';
     }
+
+
+
 }

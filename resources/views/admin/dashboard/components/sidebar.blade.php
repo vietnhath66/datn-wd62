@@ -1,10 +1,9 @@
-
 <div class="group-data-[sidebar-size=sm]:min-h-sm group-data-[sidebar-size=sm]:relative">
     <div
         class="app-menu w-vertical-menu bg-vertical-menu ltr:border-r rtl:border-l border-vertical-menu-border fixed bottom-0 top-0 z-[1003] transition-all duration-75 ease-linear group-data-[sidebar-size=md]:w-vertical-menu-md group-data-[sidebar-size=sm]:w-vertical-menu-sm group-data-[sidebar-size=sm]:pt-header group-data-[sidebar=dark]:bg-vertical-menu-dark group-data-[sidebar=dark]:border-vertical-menu-dark group-data-[sidebar=brand]:bg-vertical-menu-brand group-data-[sidebar=brand]:border-vertical-menu-brand group-data-[sidebar=modern]:bg-gradient-to-tr group-data-[sidebar=modern]:to-vertical-menu-to-modern group-data-[sidebar=modern]:from-vertical-menu-form-modern group-data-[layout=horizontal]:w-full group-data-[layout=horizontal]:bottom-auto group-data-[layout=horizontal]:top-header hidden md:block print:hidden group-data-[sidebar-size=sm]:absolute group-data-[sidebar=modern]:border-vertical-menu-border-modern group-data-[layout=horizontal]:dark:bg-zink-700 group-data-[layout=horizontal]:border-t group-data-[layout=horizontal]:dark:border-zink-500 group-data-[layout=horizontal]:border-r-0 group-data-[sidebar=dark]:dark:bg-zink-700 group-data-[sidebar=dark]:dark:border-zink-600 group-data-[layout=horizontal]:group-data-[navbar=scroll]:absolute group-data-[layout=horizontal]:group-data-[navbar=bordered]:top-[calc(theme('spacing.header')_+_theme('spacing.4'))] group-data-[layout=horizontal]:group-data-[navbar=bordered]:inset-x-4 group-data-[layout=horizontal]:group-data-[navbar=hidden]:top-0 group-data-[layout=horizontal]:group-data-[navbar=hidden]:h-16 group-data-[layout=horizontal]:group-data-[navbar=bordered]:w-[calc(100%_-_2rem)] group-data-[layout=horizontal]:group-data-[navbar=bordered]:[&.sticky]:top-header group-data-[layout=horizontal]:group-data-[navbar=bordered]:rounded-b-md group-data-[layout=horizontal]:shadow-md group-data-[layout=horizontal]:shadow-slate-500/10 group-data-[layout=horizontal]:dark:shadow-zink-500/10 group-data-[layout=horizontal]:opacity-0">
         <div
             class="flex items-center justify-center px-5 text-center h-header group-data-[layout=horizontal]:hidden group-data-[sidebar-size=sm]:fixed group-data-[sidebar-size=sm]:top-0 group-data-[sidebar-size=sm]:bg-vertical-menu group-data-[sidebar-size=sm]:group-data-[sidebar=dark]:bg-vertical-menu-dark group-data-[sidebar-size=sm]:group-data-[sidebar=brand]:bg-vertical-menu-brand group-data-[sidebar-size=sm]:group-data-[sidebar=modern]:bg-gradient-to-br group-data-[sidebar-size=sm]:group-data-[sidebar=modern]:to-vertical-menu-to-modern group-data-[sidebar-size=sm]:group-data-[sidebar=modern]:from-vertical-menu-form-modern group-data-[sidebar-size=sm]:group-data-[sidebar=modern]:bg-vertical-menu-modern group-data-[sidebar-size=sm]:z-10 group-data-[sidebar-size=sm]:w-[calc(theme('spacing.vertical-menu-sm')_-_1px)] group-data-[sidebar-size=sm]:group-data-[sidebar=dark]:dark:bg-zink-700">
-            <a href="index.html"
+            <a href="{{ route('client.viewHome') }}"
                 class="group-data-[sidebar=dark]:hidden group-data-[sidebar=brand]:hidden group-data-[sidebar=modern]:hidden">
                 <span class="hidden group-data-[sidebar-size=sm]:block">
                     <img src="../theme/admin/html/assets/images/logo.png" alt="" class="h-6 mx-auto" />
@@ -30,442 +29,477 @@
         <div id="scrollbar"
             class="group-data-[sidebar-size=md]:max-h-[calc(100vh_-_theme('spacing.header')_*_1.2)] group-data-[sidebar-size=lg]:max-h-[calc(100vh_-_theme('spacing.header')_*_1.2)] group-data-[layout=horizontal]:h-56 group-data-[layout=horizontal]:md:h-auto group-data-[layout=horizontal]:overflow-auto group-data-[layout=horizontal]:md:overflow-visible group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:mx-auto">
             <div>
+                {{-- Sidebar --}}
                 <ul class="group-data-[layout=horizontal]:flex group-data-[layout=horizontal]:flex-col group-data-[layout=horizontal]:md:flex-row"
                     id="navbar-nav">
-                    <li
-                        class="px-4 py-1 text-vertical-menu-item group-data-[sidebar=dark]:text-vertical-menu-item-dark group-data-[sidebar=brand]:text-vertical-menu-item-brand group-data-[sidebar=modern]:text-vertical-menu-item-modern uppercase font-medium text-[11px] cursor-default tracking-wider group-data-[sidebar-size=sm]:hidden group-data-[layout=horizontal]:hidden inline-block group-data-[sidebar-size=md]:block group-data-[sidebar-size=md]:underline group-data-[sidebar-size=md]:text-center group-data-[sidebar=dark]:dark:text-zink-200">
-                        <span data-key="t-menu">Menu</span>
-                    </li>
-                    {{-- <li class="relative group-data-[layout=horizontal]:shrink-0 group/sm">
+
+                    @can('view_admin_dashboard')
+                        <li
+                            class="px-4 py-1 text-vertical-menu-item group-data-[sidebar=dark]:text-vertical-menu-item-dark group-data-[sidebar=brand]:text-vertical-menu-item-brand group-data-[sidebar=modern]:text-vertical-menu-item-modern uppercase font-medium text-[11px] cursor-default tracking-wider group-data-[sidebar-size=sm]:hidden group-data-[layout=horizontal]:hidden inline-block group-data-[sidebar-size=md]:block group-data-[sidebar-size=md]:underline group-data-[sidebar-size=md]:text-center group-data-[sidebar=dark]:dark:text-zink-200">
+                            <span data-key="t-menu">Menu</span>
+                        </li>
+                        {{-- <li class="relative group-data-[layout=horizontal]:shrink-0 group/sm">
                         <a class="relative flex items-center ltr:pl-3 rtl:pr-3 ltr:pr-5 rtl:pl-5 mx-3 my-1 group/menu-link text-vertical-menu-item-font-size font-normal transition-all duration-75 ease-linear rounded-md py-2.5 text-vertical-menu-item hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover [&.active]:text-vertical-menu-item-active [&.active]:bg-vertical-menu-item-bg-active group-data-[sidebar=dark]:text-vertical-menu-item-dark group-data-[sidebar=dark]:hover:text-vertical-menu-item-hover-dark group-data-[sidebar=dark]:dark:hover:text-custom-500 group-data-[layout=horizontal]:dark:hover:text-custom-500 group-data-[sidebar=dark]:hover:bg-vertical-menu-item-bg-hover-dark group-data-[sidebar=dark]:dark:hover:bg-zink-600 group-data-[sidebar=dark]:[&.active]:text-vertical-menu-item-active-dark group-data-[sidebar=dark]:[&.active]:bg-vertical-menu-item-bg-active-dark group-data-[sidebar=brand]:text-vertical-menu-item-brand group-data-[sidebar=brand]:hover:text-vertical-menu-item-hover-brand group-data-[sidebar=brand]:hover:bg-vertical-menu-item-bg-hover-brand group-data-[sidebar=brand]:[&.active]:bg-vertical-menu-item-bg-active-brand group-data-[sidebar=brand]:[&.active]:text-vertical-menu-item-active-brand group-data-[sidebar=modern]:text-vertical-menu-item-modern group-data-[sidebar=modern]:hover:bg-vertical-menu-item-bg-hover-modern group-data-[sidebar=modern]:hover:text-vertical-menu-item-hover-modern group-data-[sidebar=modern]:[&.active]:bg-vertical-menu-item-bg-active-modern group-data-[sidebar=modern]:[&.active]:text-vertical-menu-item-active-modern group-data-[sidebar-size=md]:block group-data-[sidebar-size=md]:text-center group-data-[sidebar-size=sm]:group-hover/sm:w-[calc(theme('spacing.vertical-menu-sm')_*_3.63)] group-data-[sidebar-size=sm]:group-hover/sm:bg-vertical-menu group-data-[sidebar-size=sm]:group-data-[sidebar=dark]:group-hover/sm:bg-vertical-menu-dark group-data-[sidebar-size=sm]:group-data-[sidebar=modern]:group-hover/sm:bg-vertical-menu-border-modern group-data-[sidebar-size=sm]:group-data-[sidebar=brand]:group-hover/sm:bg-vertical-menu-brand group-data-[sidebar-size=sm]:my-0 group-data-[sidebar-size=sm]:rounded-b-none group-data-[layout=horizontal]:m-0 group-data-[layout=horizontal]:ltr:pr-8 group-data-[layout=horizontal]:rtl:pl-8 group-data-[layout=horizontal]:hover:bg-transparent group-data-[layout=horizontal]:[&.active]:bg-transparent [&.dropdown-button]:before:absolute [&.dropdown-button]:[&.show]:before:content-['\ea4e'] [&.dropdown-button]:before:content-['\ea6e'] [&.dropdown-button]:before:font-remix ltr:[&.dropdown-button]:before:right-2 rtl:[&.dropdown-button]:before:left-2 [&.dropdown-button]:before:text-16 group-data-[sidebar-size=sm]:[&.dropdown-button]:before:hidden group-data-[sidebar-size=md]:[&.dropdown-button]:before:hidden group-data-[sidebar=dark]:dark:text-zink-200 group-data-[layout=horizontal]:dark:text-zink-200 group-data-[sidebar=dark]:[&.active]:dark:bg-zink-600 group-data-[layout=horizontal]:dark:[&.active]:text-custom-500 rtl:[&.dropdown-button]:before:rotate-180 group-data-[layout=horizontal]:[&.dropdown-button]:before:rotate-90 group-data-[layout=horizontal]:[&.dropdown-button]:[&.show]:before:rotate-0 rtl:[&.dropdown-button]:[&.show]:before:rotate-0"
                             href="{{ route('admin.dashboard.index') }}">
                             <span> --}}
-                    <li class="relative group">
-                        @php
-                            $isProductActive = request()->routeIs('admin.dashboard.index');
-                        @endphp
-                        <a href="{{ route('admin.dashboard.index') }}"
-                            class="flex items-center justify-start w-full px-3 py-2.5 my-1 rounded-md transition-all
+                        <li class="relative group">
+                            @php
+                                $isProductActive = request()->routeIs('admin.dashboard.index');
+                            @endphp
+                            <a href="{{ route('admin.dashboard.index') }}"
+                                class="flex items-center justify-start w-full px-3 py-2.5 my-1 rounded-md transition-all
                                             {{ $isProductActive ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                             hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
 
-                            <span class="min-w-[1.75rem] text-[16px] inline-block text-start">
-                                <i data-lucide="monitor-dot" class="h-4 w-4"></i>
-                            </span>
-                            <span class="pl-3">Thống kê</span>
-                        </a>
-                    </li>
+                                <span class="min-w-[1.75rem] text-[16px] inline-block text-start">
+                                    <i data-lucide="monitor-dot" class="h-4 w-4"></i>
+                                </span>
+                                <span class="pl-3">Thống kê</span>
+                            </a>
+                        </li>
+                    @endcan
+
                     <li
                         class="px-4 py-1 text-vertical-menu-item group-data-[sidebar=dark]:text-vertical-menu-item-dark group-data-[sidebar=brand]:text-vertical-menu-item-brand group-data-[sidebar=modern]:text-vertical-menu-item-modern uppercase font-medium text-[11px] cursor-default tracking-wider group-data-[sidebar-size=sm]:hidden group-data-[layout=horizontal]:hidden inline-block group-data-[sidebar-size=md]:block group-data-[sidebar-size=md]:underline group-data-[sidebar-size=md]:text-center">
                         <span data-key="t-apps">Apps</span>
                     </li>
-                    <li class="relative group">
-                        @php
-                            $isBannerActive = request()->routeIs('admin.banner.*');
-                        @endphp
-                        <a href="#"
-                            class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
+
+                    @can('manage_banners_ql')
+                        <li class="relative group">
+                            @php
+                                $isBannerActive = request()->routeIs('admin.banner.*');
+                            @endphp
+                            <a href="#"
+                                class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
                             {{ $isBannerActive ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                             hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover"
-                            onclick="toggleSubmenu(event)">
+                                onclick="toggleSubmenu(event)">
 
-                            <div class="flex items-center">
-                                <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
-                                    <i data-lucide="image" class="h-4"></i>
+                                <div class="flex items-center">
+                                    <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
+                                        <i data-lucide="image" class="h-4"></i>
+                                    </span>
+                                    <span class="pl-3">QL Banner</span>
+                                </div>
+
+                                <span
+                                    class="transition-transform duration-300 arrow {{ $isBannerActive ? 'rotate-90' : '' }}">
+                                    <i data-lucide="chevron-right" class="h-4 w-4"></i>
                                 </span>
-                                <span class="pl-3">QL Banner</span>
-                            </div>
+                            </a>
 
-                            <span
-                                class="transition-transform duration-300 arrow {{ $isBannerActive ? 'rotate-90' : '' }}">
-                                <i data-lucide="chevron-right" class="h-4 w-4"></i>
-                            </span>
-                        </a>
-
-                        <ul
-                            class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isBannerActive ? '' : 'hidden' }}">
-                            <li>
-                                <a href="{{ route('admin.banner.create') }}"
-                                    class="block px-3 py-2 rounded-md
+                            <ul
+                                class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isBannerActive ? '' : 'hidden' }}">
+                                <li>
+                                    <a href="{{ route('admin.banner.create') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.banner.create') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Thêm mới
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.banner.index') }}"
-                                    class="block px-3 py-2 rounded-md
+                                        Thêm mới
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.banner.index') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.banner.index') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Danh sách
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="relative group">
-                        @php
-                            $isProductActive = request()->routeIs('admin.brands.*');
-                        @endphp
-                        <a href="#"
-                            class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
+                                        Danh sách
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endcan
+
+                    @can('manage_brands_ql')
+                        <li class="relative group">
+                            @php
+                                $isProductActive = request()->routeIs('admin.brands.*');
+                            @endphp
+                            <a href="#"
+                                class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
                             {{ $isProductActive ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                             hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover"
-                            onclick="toggleSubmenu(event)">
+                                onclick="toggleSubmenu(event)">
 
-                            <div class="flex items-center">
-                                <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
-                                    <i data-lucide="calendar-days" class="h-4"></i>
+                                <div class="flex items-center">
+                                    <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
+                                        <i data-lucide="calendar-days" class="h-4"></i>
+                                    </span>
+                                    <span class="pl-3">QL Thương Hiệu</span>
+                                </div>
+
+                                <span
+                                    class="transition-transform duration-300 arrow {{ $isProductActive ? 'rotate-90' : '' }}">
+                                    <i data-lucide="chevron-right" class="h-4 w-4"></i>
                                 </span>
-                                <span class="pl-3">QL Thương Hiệu</span>
-                            </div>
+                            </a>
 
-                            <span
-                                class="transition-transform duration-300 arrow {{ $isProductActive ? 'rotate-90' : '' }}">
-                                <i data-lucide="chevron-right" class="h-4 w-4"></i>
-                            </span>
-                        </a>
-
-                        <ul
-                            class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isProductActive ? '' : 'hidden' }}">
-                            <li>
-                                <a href="{{ route('admin.brands.create') }}"
-                                    class="block px-3 py-2 rounded-md
+                            <ul
+                                class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isProductActive ? '' : 'hidden' }}">
+                                <li>
+                                    <a href="{{ route('admin.brands.create') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.brands.create') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Thêm mới
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.brands.index') }}"
-                                    class="block px-3 py-2 rounded-md
+                                        Thêm mới
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.brands.index') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.brands.index') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Danh sách
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="relative group">
-                        @php
-                            $isProductActive = request()->routeIs('admin.product_catalogue.*');
-                        @endphp
-                        <a href="#"
-                            class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
+                                        Danh sách
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endcan
+
+                    @can('manage_product_catalogues_ql')
+                        <li class="relative group">
+                            @php
+                                $isProductActive = request()->routeIs('admin.product_catalogue.*');
+                            @endphp
+                            <a href="#"
+                                class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
                             {{ $isProductActive ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                             hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover"
-                            onclick="toggleSubmenu(event)">
+                                onclick="toggleSubmenu(event)">
 
-                            <div class="flex items-center">
-                                <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
-                                    <i data-lucide="calendar-days" class="h-4"></i>
+                                <div class="flex items-center">
+                                    <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
+                                        <i data-lucide="calendar-days" class="h-4"></i>
+                                    </span>
+                                    <span class="pl-3">QL Loại Sản Phẩm</span>
+                                </div>
+
+                                <span
+                                    class="transition-transform duration-300 arrow {{ $isProductActive ? 'rotate-90' : '' }}">
+                                    <i data-lucide="chevron-right" class="h-4 w-4"></i>
                                 </span>
-                                <span class="pl-3">QL Loại Sản Phẩm</span>
-                            </div>
+                            </a>
 
-                            <span
-                                class="transition-transform duration-300 arrow {{ $isProductActive ? 'rotate-90' : '' }}">
-                                <i data-lucide="chevron-right" class="h-4 w-4"></i>
-                            </span>
-                        </a>
-
-                        <ul
-                            class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isProductActive ? '' : 'hidden' }}">
-                            <li>
-                                <a href="{{ route('admin.product_catalogue.create') }}"
-                                    class="block px-3 py-2 rounded-md
+                            <ul
+                                class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isProductActive ? '' : 'hidden' }}">
+                                <li>
+                                    <a href="{{ route('admin.product_catalogue.create') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.product_catalogue.create') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Thêm mới
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.product_catalogue.index') }}"
-                                    class="block px-3 py-2 rounded-md
+                                        Thêm mới
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.product_catalogue.index') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.product_catalogue.index') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Danh sách
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="relative group">
-                        @php
-                            $isProductActive = request()->routeIs('admin.product.*');
-                        @endphp
-                        <a href="#"
-                            class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
+                                        Danh sách
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endcan
+
+                    @can('manage_products_ql')
+                        <li class="relative group">
+                            @php
+                                $isProductActive = request()->routeIs('admin.product.*');
+                            @endphp
+                            <a href="#"
+                                class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
                             {{ $isProductActive ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                             hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover"
-                            onclick="toggleSubmenu(event)">
+                                onclick="toggleSubmenu(event)">
 
-                            <div class="flex items-center">
-                                <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
-                                    <i data-lucide="calendar-days" class="h-4"></i>
+                                <div class="flex items-center">
+                                    <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
+                                        <i data-lucide="calendar-days" class="h-4"></i>
+                                    </span>
+                                    <span class="pl-3">QL Sản Phẩm</span>
+                                </div>
+
+                                <span
+                                    class="transition-transform duration-300 arrow {{ $isProductActive ? 'rotate-90' : '' }}">
+                                    <i data-lucide="chevron-right" class="h-4 w-4"></i>
                                 </span>
-                                <span class="pl-3">QL Sản Phẩm</span>
-                            </div>
+                            </a>
 
-                            <span
-                                class="transition-transform duration-300 arrow {{ $isProductActive ? 'rotate-90' : '' }}">
-                                <i data-lucide="chevron-right" class="h-4 w-4"></i>
-                            </span>
-                        </a>
-
-                        <ul
-                            class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isProductActive ? '' : 'hidden' }}">
-                            <li>
-                                <a href="{{ route('admin.product.create') }}"
-                                    class="block px-3 py-2 rounded-md
+                            <ul
+                                class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isProductActive ? '' : 'hidden' }}">
+                                <li>
+                                    <a href="{{ route('admin.product.create') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.product.create') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Thêm mới
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.product.index') }}"
-                                    class="block px-3 py-2 rounded-md
+                                        Thêm mới
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.product.index') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.product.index') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Danh sách
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="relative group">
-                        @php
-                            $isAttributeActive = request()->routeIs('admin.attribute_catalogue.*');
-                        @endphp
-                        <a href="#"
-                            class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
+                                        Danh sách
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endcan
+
+                    @can('manage_attribute_catalogues_ql')
+                        <li class="relative group">
+                            @php
+                                $isAttributeActive = request()->routeIs('admin.attribute_catalogue.*');
+                            @endphp
+                            <a href="#"
+                                class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
+
                             {{ $isAttributeActive ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                             hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover"
-                            onclick="toggleSubmenu(event)">
+                                onclick="toggleSubmenu(event)">
 
-                            <div class="flex items-center">
-                                <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
-                                    <i data-lucide="calendar-days" class="h-4"></i>
+                                <div class="flex items-center">
+                                    <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
+                                        <i data-lucide="calendar-days" class="h-4"></i>
+                                    </span>
+                                    <span class="pl-3">QL Loại Thuộc Tính</span>
+                                </div>
+
+                                <span
+                                    class="transition-transform duration-300 arrow {{ $isAttributeActive ? 'rotate-90' : '' }}">
+                                    <i data-lucide="chevron-right" class="h-4 w-4"></i>
                                 </span>
-                                <span class="pl-3">QL Loại Thuộc Tính</span>
-                            </div>
+                            </a>
 
-                            <span
-                                class="transition-transform duration-300 arrow {{ $isAttributeActive ? 'rotate-90' : '' }}">
-                                <i data-lucide="chevron-right" class="h-4 w-4"></i>
-                            </span>
-                        </a>
-
-                        <ul
-                            class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isAttributeActive ? '' : 'hidden' }}">
-                            <li>
-                                <a href="{{ route('admin.attribute_catalogue.create') }}"
-                                    class="block px-3 py-2 rounded-md
+                            <ul
+                                class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isAttributeActive ? '' : 'hidden' }}">
+                                <li>
+                                    <a href="{{ route('admin.attribute_catalogue.create') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.attribute_catalogue.create') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Thêm mới
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.attribute_catalogue.index') }}"
-                                    class="block px-3 py-2 rounded-md
+                                        Thêm mới
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.attribute_catalogue.index') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.attribute_catalogue.index') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Danh sách
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="relative group">
-                        @php
-                            $isAttributeItemActive = request()->routeIs('admin.attribute.*');
-                        @endphp
-                        <a href="#"
-                            class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
+                                        Danh sách
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endcan
+
+                    @can('manage_attributes_ql')
+                        <li class="relative group">
+                            @php
+                                $isAttributeItemActive = request()->routeIs('admin.attribute.*');
+                            @endphp
+                            <a href="#"
+                                class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
                             {{ $isAttributeItemActive ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                             hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover"
-                            onclick="toggleSubmenu(event)">
+                                onclick="toggleSubmenu(event)">
 
-                            <div class="flex items-center">
-                                <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
-                                    <i data-lucide="calendar-days" class="h-4"></i>
+                                <div class="flex items-center">
+                                    <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
+                                        <i data-lucide="calendar-days" class="h-4"></i>
+                                    </span>
+                                    <span class="pl-3">QL Thuộc Tính</span>
+                                </div>
+
+                                <span
+                                    class="transition-transform duration-300 arrow {{ $isAttributeItemActive ? 'rotate-90' : '' }}">
+                                    <i data-lucide="chevron-right" class="h-4 w-4"></i>
                                 </span>
-                                <span class="pl-3">QL Thuộc Tính</span>
-                            </div>
+                            </a>
 
-                            <span
-                                class="transition-transform duration-300 arrow {{ $isAttributeItemActive ? 'rotate-90' : '' }}">
-                                <i data-lucide="chevron-right" class="h-4 w-4"></i>
-                            </span>
-                        </a>
-
-                        <ul
-                            class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isAttributeItemActive ? '' : 'hidden' }}">
-                            <li>
-                                <a href="{{ route('admin.attribute.create') }}"
-                                    class="block px-3 py-2 rounded-md
+                            <ul
+                                class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isAttributeItemActive ? '' : 'hidden' }}">
+                                <li>
+                                    <a href="{{ route('admin.attribute.create') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.attribute.create') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Thêm mới
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.attribute.index') }}"
-                                    class="block px-3 py-2 rounded-md
+                                        Thêm mới
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.attribute.index') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.attribute.index') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Danh sách
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="relative group">
-                        @php
-                            $isCouponActive = request()->routeIs('admin.counpon.*');
-                        @endphp
-                        <a href="#"
-                            class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
+                                        Danh sách
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endcan
+
+                    @can('manage_coupons_ql')
+                        <li class="relative group">
+                            @php
+                                $isCouponActive = request()->routeIs('admin.counpon.*');
+                            @endphp
+                            <a href="#"
+                                class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
                             {{ $isCouponActive ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                             hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover"
-                            onclick="toggleSubmenu(event)">
+                                onclick="toggleSubmenu(event)">
 
-                            <div class="flex items-center">
-                                <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
-                                    <i data-lucide="award" class="h-4"></i>
+                                <div class="flex items-center">
+                                    <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
+                                        <i data-lucide="award" class="h-4"></i>
+                                    </span>
+                                    <span class="pl-3">QL Khuyến Mãi</span>
+                                </div>
+
+                                <span
+                                    class="transition-transform duration-300 arrow {{ $isCouponActive ? 'rotate-90' : '' }}">
+                                    <i data-lucide="chevron-right" class="h-4 w-4"></i>
                                 </span>
-                                <span class="pl-3">QL Khuyến Mãi</span>
-                            </div>
+                            </a>
 
-                            <span
-                                class="transition-transform duration-300 arrow {{ $isCouponActive ? 'rotate-90' : '' }}">
-                                <i data-lucide="chevron-right" class="h-4 w-4"></i>
-                            </span>
-                        </a>
-
-                        <ul
-                            class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isCouponActive ? '' : 'hidden' }}">
-                            <li>
-                                <a href="{{ route('admin.counpon.create') }}"
-                                    class="block px-3 py-2 rounded-md
+                            <ul
+                                class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isCouponActive ? '' : 'hidden' }}">
+                                <li>
+                                    <a href="{{ route('admin.counpon.create') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.counpon.create') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Thêm mới
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.counpon.index') }}"
-                                    class="block px-3 py-2 rounded-md
+                                        Thêm mới
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.counpon.index') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.counpon.index') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Danh sách
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="relative group">
-                        @php
-                            $isProductActive = request()->routeIs('admin.order.*');
-                        @endphp
-                        <a href="#"
-                            class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
+                                        Danh sách
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endcan
+
+                    @can('manage_orders_ql')
+                        <li class="relative group">
+                            @php
+                                $isProductActive = request()->routeIs('admin.order.*');
+                            @endphp
+                            <a href="#"
+                                class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
                             {{ $isProductActive ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                             hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover"
-                            onclick="toggleSubmenu(event)">
+                                onclick="toggleSubmenu(event)">
 
-                            <div class="flex items-center">
-                                <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
-                                    <i data-lucide="shopping-cart" class="h-4"></i>
+                                <div class="flex items-center">
+                                    <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
+                                        <i data-lucide="shopping-cart" class="h-4"></i>
+                                    </span>
+                                    <span class="pl-3">QL Dơn Hàng</span>
+                                </div>
+
+                                <span
+                                    class="transition-transform duration-300 arrow {{ $isProductActive ? 'rotate-90' : '' }}">
+                                    <i data-lucide="chevron-right" class="h-4 w-4"></i>
                                 </span>
-                                <span class="pl-3">QL Dơn Hàng</span>
-                            </div>
+                            </a>
 
-                            <span
-                                class="transition-transform duration-300 arrow {{ $isProductActive ? 'rotate-90' : '' }}">
-                                <i data-lucide="chevron-right" class="h-4 w-4"></i>
-                            </span>
-                        </a>
-
-                        <ul
-                            class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isProductActive ? '' : 'hidden' }}">
-                            <li>
-                                <a href="{{ route('admin.order.index') }}"
-                                    class="block px-3 py-2 rounded-md
+                            <ul
+                                class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isProductActive ? '' : 'hidden' }}">
+                                <li>
+                                    <a href="{{ route('admin.order.index') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.order.index') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Danh sách
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="relative group">
-                        @php
-                            $isRolesActive = request()->routeIs('admin.roles.*');
-                        @endphp
-                        <a href="#"
-                            class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
+                                        Danh sách
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endcan
+
+                    @can('manage_roles_custom_ql')
+                        <li class="relative group">
+                            @php
+                                $isRolesActive = request()->routeIs('admin.roles.*');
+                            @endphp
+                            <a href="#"
+                                class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
                             {{ $isRolesActive ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                             hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover"
-                            onclick="toggleSubmenu(event)">
+                                onclick="toggleSubmenu(event)">
 
-                            <div class="flex items-center">
+                                <div class="flex items-center">
+                                    <span
+                                        class="min-w-[1.75rem] group-data-[sidebar-size=sm]:h-[1.75rem] inline-block text-start text-[16px] group-data-[sidebar-size=md]:block group-data-[sidebar-size=sm]:flex group-data-[sidebar-size=sm]:items-center"><i
+                                            data-lucide="user-2"
+                                            class="h-4 group-data-[sidebar-size=sm]:h-5 group-data-[sidebar-size=sm]:w-5 transition group-hover/menu-link:animate-icons fill-slate-100 group-hover/menu-link:fill-blue-200 group-data-[sidebar=dark]:fill-vertical-menu-item-bg-active-dark group-data-[sidebar=dark]:dark:fill-zink-600 group-data-[layout=horizontal]:dark:fill-zink-600 group-data-[sidebar=brand]:fill-vertical-menu-item-bg-active-brand group-data-[sidebar=modern]:fill-vertical-menu-item-bg-active-modern group-data-[sidebar=dark]:group-hover/menu-link:fill-vertical-menu-item-bg-active-dark group-data-[sidebar=dark]:group-hover/menu-link:dark:fill-custom-500/20 group-data-[layout=horizontal]:dark:group-hover/menu-link:fill-custom-500/20 group-data-[sidebar=brand]:group-hover/menu-link:fill-vertical-menu-item-bg-active-brand group-data-[sidebar=modern]:group-hover/menu-link:fill-vertical-menu-item-bg-active-modern group-data-[sidebar-size=md]:block group-data-[sidebar-size=md]:mx-auto group-data-[sidebar-size=md]:mb-2"></i></span>
+                                    <span class="pl-3">QL Vai Trò</span>
+                                </div>
+
                                 <span
-                                    class="min-w-[1.75rem] group-data-[sidebar-size=sm]:h-[1.75rem] inline-block text-start text-[16px] group-data-[sidebar-size=md]:block group-data-[sidebar-size=sm]:flex group-data-[sidebar-size=sm]:items-center"><i
-                                        data-lucide="user-2"
-                                        class="h-4 group-data-[sidebar-size=sm]:h-5 group-data-[sidebar-size=sm]:w-5 transition group-hover/menu-link:animate-icons fill-slate-100 group-hover/menu-link:fill-blue-200 group-data-[sidebar=dark]:fill-vertical-menu-item-bg-active-dark group-data-[sidebar=dark]:dark:fill-zink-600 group-data-[layout=horizontal]:dark:fill-zink-600 group-data-[sidebar=brand]:fill-vertical-menu-item-bg-active-brand group-data-[sidebar=modern]:fill-vertical-menu-item-bg-active-modern group-data-[sidebar=dark]:group-hover/menu-link:fill-vertical-menu-item-bg-active-dark group-data-[sidebar=dark]:group-hover/menu-link:dark:fill-custom-500/20 group-data-[layout=horizontal]:dark:group-hover/menu-link:fill-custom-500/20 group-data-[sidebar=brand]:group-hover/menu-link:fill-vertical-menu-item-bg-active-brand group-data-[sidebar=modern]:group-hover/menu-link:fill-vertical-menu-item-bg-active-modern group-data-[sidebar-size=md]:block group-data-[sidebar-size=md]:mx-auto group-data-[sidebar-size=md]:mb-2"></i></span>
-                                <span class="pl-3">QL Vai Trò</span>
-                            </div>
+                                    class="transition-transform duration-300 arrow {{ $isRolesActive ? 'rotate-90' : '' }}">
+                                    <i data-lucide="chevron-right" class="h-4 w-4"></i>
+                                </span>
+                            </a>
 
-                            <span
-                                class="transition-transform duration-300 arrow {{ $isRolesActive ? 'rotate-90' : '' }}">
-                                <i data-lucide="chevron-right" class="h-4 w-4"></i>
-                            </span>
-                        </a>
-
-                        <ul
-                            class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isRolesActive ? '' : 'hidden' }}">
-                            <li>
-                                <a href="{{ route('admin.roles.create') }}"
-                                    class="block px-3 py-2 rounded-md
+                            <ul
+                                class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isRolesActive ? '' : 'hidden' }}">
+                                <li>
+                                    <a href="{{ route('admin.roles.create') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.roles.create') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Thêm mới
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.roles.index') }}"
-                                    class="block px-3 py-2 rounded-md
+                                        Thêm mới
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('admin.roles.index') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.roles.index') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Danh sách
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="relative group">
-                        @php
-                            $isProductActive = request()->routeIs('admin.users.*');
-                        @endphp
-                        <a href="#"
-                            class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
+                                        Danh sách
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endcan
+
+                    @can('manage_users_client_ql')
+                        <li class="relative group">
+                            @php
+                                $isProductActive = request()->routeIs('admin.users.*');
+                            @endphp
+                            <a href="#"
+                                class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
                             {{ $isProductActive ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                             hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover"
-                            onclick="toggleSubmenu(event)">
+                                onclick="toggleSubmenu(event)">
 
-                            <div class="flex items-center">
+                                <div class="flex items-center">
+                                    <span
+                                        class="min-w-[1.75rem] group-data-[sidebar-size=sm]:h-[1.75rem] inline-block text-start text-[16px] group-data-[sidebar-size=md]:block group-data-[sidebar-size=sm]:flex group-data-[sidebar-size=sm]:items-center"><i
+                                            data-lucide="user-2"
+                                            class="h-4 group-data-[sidebar-size=sm]:h-5 group-data-[sidebar-size=sm]:w-5 transition group-hover/menu-link:animate-icons fill-slate-100 group-hover/menu-link:fill-blue-200 group-data-[sidebar=dark]:fill-vertical-menu-item-bg-active-dark group-data-[sidebar=dark]:dark:fill-zink-600 group-data-[layout=horizontal]:dark:fill-zink-600 group-data-[sidebar=brand]:fill-vertical-menu-item-bg-active-brand group-data-[sidebar=modern]:fill-vertical-menu-item-bg-active-modern group-data-[sidebar=dark]:group-hover/menu-link:fill-vertical-menu-item-bg-active-dark group-data-[sidebar=dark]:group-hover/menu-link:dark:fill-custom-500/20 group-data-[layout=horizontal]:dark:group-hover/menu-link:fill-custom-500/20 group-data-[sidebar=brand]:group-hover/menu-link:fill-vertical-menu-item-bg-active-brand group-data-[sidebar=modern]:group-hover/menu-link:fill-vertical-menu-item-bg-active-modern group-data-[sidebar-size=md]:block group-data-[sidebar-size=md]:mx-auto group-data-[sidebar-size=md]:mb-2"></i></span>
+                                    <span class="pl-3">QL Người Dùng</span>
+                                </div>
+
                                 <span
-                                    class="min-w-[1.75rem] group-data-[sidebar-size=sm]:h-[1.75rem] inline-block text-start text-[16px] group-data-[sidebar-size=md]:block group-data-[sidebar-size=sm]:flex group-data-[sidebar-size=sm]:items-center"><i
-                                        data-lucide="user-2"
-                                        class="h-4 group-data-[sidebar-size=sm]:h-5 group-data-[sidebar-size=sm]:w-5 transition group-hover/menu-link:animate-icons fill-slate-100 group-hover/menu-link:fill-blue-200 group-data-[sidebar=dark]:fill-vertical-menu-item-bg-active-dark group-data-[sidebar=dark]:dark:fill-zink-600 group-data-[layout=horizontal]:dark:fill-zink-600 group-data-[sidebar=brand]:fill-vertical-menu-item-bg-active-brand group-data-[sidebar=modern]:fill-vertical-menu-item-bg-active-modern group-data-[sidebar=dark]:group-hover/menu-link:fill-vertical-menu-item-bg-active-dark group-data-[sidebar=dark]:group-hover/menu-link:dark:fill-custom-500/20 group-data-[layout=horizontal]:dark:group-hover/menu-link:fill-custom-500/20 group-data-[sidebar=brand]:group-hover/menu-link:fill-vertical-menu-item-bg-active-brand group-data-[sidebar=modern]:group-hover/menu-link:fill-vertical-menu-item-bg-active-modern group-data-[sidebar-size=md]:block group-data-[sidebar-size=md]:mx-auto group-data-[sidebar-size=md]:mb-2"></i></span>
-                                <span class="pl-3">QL Người Dùng</span>
-                            </div>
+                                    class="transition-transform duration-300 arrow {{ $isProductActive ? 'rotate-90' : '' }}">
+                                    <i data-lucide="chevron-right" class="h-4 w-4"></i>
+                                </span>
+                            </a>
 
-                            <span
-                                class="transition-transform duration-300 arrow {{ $isProductActive ? 'rotate-90' : '' }}">
-                                <i data-lucide="chevron-right" class="h-4 w-4"></i>
-                            </span>
-                        </a>
-
-                        <ul
-                            class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isProductActive ? '' : 'hidden' }}">
-                            {{-- <li>
+                            <ul
+                                class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isProductActive ? '' : 'hidden' }}">
+                                {{-- <li>
                                 <a href="{{ route('admin.users.create') }}"
                                     class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.users.create') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
@@ -473,51 +507,108 @@
                                     Thêm mới
                                 </a>
                             </li> --}}
-                            <li>
-                                <a href="{{ route('admin.users.index') }}"
-                                    class="block px-3 py-2 rounded-md
+                                <li>
+                                    <a href="{{ route('admin.users.index') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.users.index') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Danh sách
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="relative group">
-                        @php
-                            $isProductActive = request()->routeIs('admin.review.*');
-                        @endphp
-                        <a href="#"
-                            class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
+                                        Danh sách
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endcan
+
+                    @can('manage_staff_ql')
+                        <li class="relative group">
+                            @php
+                                // Sửa ở đây: Kiểm tra active state cho các route của staff management
+                                $isStaffActive = request()->routeIs('admin.staff.*');
+                            @endphp
+                            <a href="#"
+                                class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
+           {{ $isStaffActive ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
+           hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover"
+                                onclick="toggleSubmenu(event)">
+
+                                <div class="flex items-center">
+                                    <span
+                                        class="min-w-[1.75rem] group-data-[sidebar-size=sm]:h-[1.75rem] inline-block text-start text-[16px] group-data-[sidebar-size=md]:block group-data-[sidebar-size=sm]:flex group-data-[sidebar-size=sm]:items-center">
+                                        {{-- Icon cho QL Nhân Viên, bạn có thể chọn icon khác nếu muốn --}}
+                                        <i data-lucide="user-cog-2"
+                                            class="h-4 group-data-[sidebar-size=sm]:h-5 group-data-[sidebar-size=sm]:w-5 ..."></i>
+                                    </span>
+                                    <span class="pl-3">QL Nhân Viên</span>
+                                </div>
+
+                                <span
+                                    class="transition-transform duration-300 arrow {{ $isStaffActive ? 'rotate-90' : '' }}">
+                                    <i data-lucide="chevron-right" class="h-4 w-4"></i>
+                                </span>
+                            </a>
+
+                            <ul
+                                class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isStaffActive ? '' : 'hidden' }}">
+                                <li>
+                                    {{-- Sửa ở đây: Route đến trang tạo nhân viên mới --}}
+                                    <a href="{{ route('admin.staff.create') }}"
+                                        class="block px-3 py-2 rounded-md
+                   {{ request()->routeIs('admin.staff.create') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
+                   hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
+                                        Thêm mới
+                                    </a>
+                                </li>
+                                <li>
+                                    {{-- Sửa ở đây: Route đến trang danh sách nhân viên --}}
+                                    <a href="{{ route('admin.staff.index') }}"
+                                        class="block px-3 py-2 rounded-md
+                   {{ request()->routeIs('admin.staff.index') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
+                   hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
+                                        Danh sách
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endcan
+
+                    @can('manage_reviews_ql')
+                        <li class="relative group">
+                            @php
+                                $isProductActive = request()->routeIs('admin.review.*');
+                            @endphp
+                            <a href="#"
+                                class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
                             {{ $isProductActive ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                             hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover"
-                            onclick="toggleSubmenu(event)">
+                                onclick="toggleSubmenu(event)">
 
-                            <div class="flex items-center">
-                                <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
-                                    <i data-lucide="star" class="h-4"></i>
+                                <div class="flex items-center">
+                                    <span class="min-w-[1.75rem] inline-block text-start text-[16px]">
+                                        <i data-lucide="star" class="h-4"></i>
+                                    </span>
+                                    <span class="pl-3">QL Đánh Giá</span>
+                                </div>
+
+                                <span
+                                    class="transition-transform duration-300 arrow {{ $isProductActive ? 'rotate-90' : '' }}">
+                                    <i data-lucide="chevron-right" class="h-4 w-4"></i>
                                 </span>
-                                <span class="pl-3">QL Đánh Giá</span>
-                            </div>
+                            </a>
 
-                            <span
-                                class="transition-transform duration-300 arrow {{ $isProductActive ? 'rotate-90' : '' }}">
-                                <i data-lucide="chevron-right" class="h-4 w-4"></i>
-                            </span>
-                        </a>
-
-                        <ul
-                            class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isProductActive ? '' : 'hidden' }}">
-                            <li>
-                                <a href="{{ route('admin.review.index') }}"
-                                    class="block px-3 py-2 rounded-md
+                            <ul
+                                class="pl-10 mt-1 space-y-1 transition-all duration-300 ease-in-out submenu {{ $isProductActive ? '' : 'hidden' }}">
+                                <li>
+                                    <a href="{{ route('admin.review.index') }}"
+                                        class="block px-3 py-2 rounded-md
                                     {{ request()->routeIs('admin.review.index') ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                                     hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover">
-                                    Danh sách
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                                        Danh sách
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endcan
+
                     {{-- <li class="relative group-data-[layout=horizontal]:shrink-0 group/sm">
                         <a class="relative dropdown-button flex items-center ltr:pl-3 rtl:pr-3 ltr:pr-5 rtl:pl-5 mx-3 my-1 group/menu-link text-vertical-menu-item-font-size font-normal transition-all duration-75 ease-linear rounded-md py-2.5 text-vertical-menu-item hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover [&.active]:text-vertical-menu-item-active [&.active]:bg-vertical-menu-item-bg-active group-data-[sidebar=dark]:text-vertical-menu-item-dark group-data-[sidebar=dark]:hover:text-vertical-menu-item-hover-dark group-data-[sidebar=dark]:dark:hover:text-custom-500 group-data-[layout=horizontal]:dark:hover:text-custom-500 group-data-[sidebar=dark]:hover:bg-vertical-menu-item-bg-hover-dark group-data-[sidebar=dark]:dark:hover:bg-zink-600 group-data-[sidebar=dark]:[&.active]:text-vertical-menu-item-active-dark group-data-[sidebar=dark]:[&.active]:bg-vertical-menu-item-bg-active-dark group-data-[sidebar=brand]:text-vertical-menu-item-brand group-data-[sidebar=brand]:hover:text-vertical-menu-item-hover-brand group-data-[sidebar=brand]:hover:bg-vertical-menu-item-bg-hover-brand group-data-[sidebar=brand]:[&.active]:bg-vertical-menu-item-bg-active-brand group-data-[sidebar=brand]:[&.active]:text-vertical-menu-item-active-brand group-data-[sidebar=modern]:text-vertical-menu-item-modern group-data-[sidebar=modern]:hover:bg-vertical-menu-item-bg-hover-modern group-data-[sidebar=modern]:hover:text-vertical-menu-item-hover-modern group-data-[sidebar=modern]:[&.active]:bg-vertical-menu-item-bg-active-modern group-data-[sidebar=modern]:[&.active]:text-vertical-menu-item-active-modern group-data-[sidebar-size=md]:block group-data-[sidebar-size=md]:text-center group-data-[sidebar-size=sm]:group-hover/sm:w-[calc(theme('spacing.vertical-menu-sm')_*_3.63)] group-data-[sidebar-size=sm]:group-hover/sm:bg-vertical-menu group-data-[sidebar-size=sm]:group-data-[sidebar=dark]:group-hover/sm:bg-vertical-menu-dark group-data-[sidebar-size=sm]:group-data-[sidebar=modern]:group-hover/sm:bg-vertical-menu-border-modern group-data-[sidebar-size=sm]:group-data-[sidebar=brand]:group-hover/sm:bg-vertical-menu-brand group-data-[sidebar-size=sm]:my-0 group-data-[sidebar-size=sm]:rounded-b-none group-data-[layout=horizontal]:m-0 group-data-[layout=horizontal]:ltr:pr-8 group-data-[layout=horizontal]:rtl:pl-8 group-data-[layout=horizontal]:hover:bg-transparent group-data-[layout=horizontal]:[&.active]:bg-transparent [&.dropdown-button]:before:absolute [&.dropdown-button]:[&.show]:before:content-['\ea4e'] [&.dropdown-button]:before:content-['\ea6e'] [&.dropdown-button]:before:font-remix ltr:[&.dropdown-button]:before:right-2 rtl:[&.dropdown-button]:before:left-2 [&.dropdown-button]:before:text-16 group-data-[sidebar-size=sm]:[&.dropdown-button]:before:hidden group-data-[sidebar-size=md]:[&.dropdown-button]:before:hidden group-data-[sidebar=dark]:dark:text-zink-200 group-data-[layout=horizontal]:dark:text-zink-200 group-data-[sidebar=dark]:[&.active]:dark:bg-zink-600 group-data-[layout=horizontal]:dark:[&.active]:text-custom-500 rtl:[&.dropdown-button]:before:rotate-180 group-data-[layout=horizontal]:[&.dropdown-button]:before:rotate-90 group-data-[layout=horizontal]:[&.dropdown-button]:[&.show]:before:rotate-0 rtl:[&.dropdown-button]:[&.show]:before:rotate-0"
                             href="{{ route('admin.review.index') }}">
@@ -531,6 +622,7 @@
                         </a>
                     </li> --}}
                 </ul>
+                {{-- End Sidebar --}}
             </div>
             <script>
                 function toggleSubmenu(event) {
@@ -781,1711 +873,4 @@
             </div>
         </div>
     </header>
-
-<<<<<<< HEAD
-    <div id="cartSidePenal" drawer-end=""
-        class="fixed inset-y-0 flex flex-col w-full transition-transform duration-300 ease-in-out transform bg-white shadow ltr:right-0 rtl:left-0 md:w-96 z-drawer show">
-        <div class="flex items-center justify-between p-4 border-b border-slate-200">
-            <div class="grow">
-                <h5 class="mb-0 text-16">
-                    Shopping Cart
-                    <span
-                        class="inline-flex items-center justify-center w-5 h-5 ml-1 text-[11px] font-medium border rounded-full text-white bg-custom-500 border-custom-500">3</span>
-                </h5>
-            </div>
-            <div class="shrink-0">
-                <button data-drawer-close="cartSidePenal"
-                    class="transition-all duration-150 ease-linear text-slate-500 hover:text-slate-800">
-                    <i data-lucide="x" class="size-4"></i>
-                </button>
-            </div>
-        </div>
-        <div class="px-4 py-3 text-sm text-green-500 border border-transparent bg-green-50">
-            <span class="font-bold underline">starcode50</span> Coupon code
-            applied successfully.
-        </div>
-        <div>
-            <div class="h-[calc(100vh_-_370px)] p-4 overflow-y-auto product-list">
-                <div class="flex flex-col gap-4">
-                    <div class="flex gap-2 product">
-                        <div
-                            class="flex items-center justify-center w-12 h-12 rounded-md bg-slate-100 shrink-0">
-                            <img src="../theme/admin/html/assets/images/img-012.png" alt="" class="h-8" />
-                        </div>
-                        <div class="overflow-hidden grow">
-                            <div class="ltr:float-right rtl:float-left">
-                                <button
-                                    class="transition-all duration-150 ease-linear text-slate-500 hover:text-red-500">
-                                    <i data-lucide="x" class="size-4"></i>
-                                </button>
-                            </div>
-                            <a href="#!" class="transition-all duration-200 ease-linear hover:text-custom-500">
-                                <h6 class="mb-1 text-15">Cotton collar t-shirts for men</h6>
-                            </a>
-                            <div class="flex items-center mb-3">
-                                <h5 class="text-base product-price">
-                                    $<span>155.32</span>
-                                </h5>
-                                <div class="font-normal rtl:mr-1 ltr:ml-1 text-slate-500">
-                                    (Fashion)
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between gap-3">
-                                <div class="inline-flex text-center input-step">
-                                    <button type="button"
-                                        class="border w-9 h-9 leading-[15px] minus bg-white ltr:rounded-l rtl:rounded-r transition-all duration-200 ease-linear border-slate-200 text-slate-500 hover:bg-custom-500 hover:text-custom-50 hover:border-custom-500 focus:bg-custom-500 focus:border-custom-500 focus:text-custom-50">
-                                        <i data-lucide="minus" class="inline-block size-4"></i>
-                                    </button>
-                                    <input type="number"
-                                        class="w-12 text-center h-9 border-y product-quantity focus:shadow-none"
-                                        value="2" min="0" max="100" readonly="" />
-                                    <button type="button"
-                                        class="transition-all duration-200 ease-linear bg-white border ltr:rounded-r rtl:rounded-l w-9 h-9 border-slate-200 plus text-slate-500 hover:bg-custom-500 hover:text-custom-50 hover:border-custom-500 focus:bg-custom-500 focus:border-custom-500 focus:text-custom-50">
-                                        <i data-lucide="plus" class="inline-block size-4"></i>
-                                    </button>
-                                </div>
-                                <h6 class="product-line-price">310.64</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex gap-2 product">
-                        <div
-                            class="flex items-center justify-center w-12 h-12 rounded-md bg-slate-100 shrink-0">
-                            <img src="../theme/admin/html/assets/images/img-03.png" alt="" class="h-8" />
-                        </div>
-                        <div class="overflow-hidden grow">
-                            <div class="ltr:float-right rtl:float-left">
-                                <button
-                                    class="transition-all duration-150 ease-linear text-slate-500 hover:text-red-500">
-                                    <i data-lucide="x" class="size-4"></i>
-                                </button>
-                            </div>
-                            <a href="#!" class="transition-all duration-200 ease-linear hover:text-custom-500">
-                                <h6 class="mb-1 text-15">
-                                    Like style travel black handbag
-                                </h6>
-                            </a>
-                            <div class="flex items-center mb-3">
-                                <h5 class="text-base product-price">
-                                    $<span>349.95</span>
-                                </h5>
-                                <div class="font-normal rtl:mr-1 ltr:ml-1 text-slate-400">
-                                    (Luggage)
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between gap-3">
-                                <div class="inline-flex text-center input-step">
-                                    <button type="button"
-                                        class="border w-9 h-9 leading-[15px] minus bg-white ltr:rounded-l rtl:rounded-r transition-all duration-200 ease-linear border-slate-200 text-slate-500 hover:bg-custom-500 hover:text-custom-50 hover:border-custom-500 focus:bg-custom-500 focus:border-custom-500 focus:text-custom-50">
-                                        <i data-lucide="minus" class="inline-block size-4"></i>
-                                    </button>
-                                    <input type="number"
-                                        class="w-12 text-center h-9 border-y product-quantity focus:shadow-none"
-                                        value="1" min="0" max="100" readonly="" />
-                                    <button type="button"
-                                        class="transition-all duration-200 ease-linear bg-white border ltr:rounded-r rtl:rounded-l w-9 h-9 border-slate-200 plus text-slate-500 hover:bg-custom-500 hover:text-custom-50 hover:border-custom-500 focus:bg-custom-500 focus:border-custom-500 focus:text-custom-50">
-                                        <i data-lucide="plus" class="inline-block size-4"></i>
-                                    </button>
-                                </div>
-                                <h6 class="product-line-price">349.95</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex gap-2 product">
-                        <div
-                            class="flex items-center justify-center w-12 h-12 rounded-md bg-slate-100 shrink-0">
-                            <img src="../theme/admin/html/assets/images/img-09.png" alt="" class="h-8" />
-                        </div>
-                        <div class="overflow-hidden grow">
-                            <div class="ltr:float-right rtl:float-left">
-                                <button
-                                    class="transition-all duration-150 ease-linear text-slate-500 hover:text-red-500">
-                                    <i data-lucide="x" class="size-4"></i>
-                                </button>
-                            </div>
-                            <a href="#!" class="transition-all duration-200 ease-linear hover:text-custom-500">
-                                <h6 class="mb-1 text-15">Blive Printed Men Round Neck</h6>
-                            </a>
-                            <div class="flex items-center mb-3">
-                                <h5 class="text-base product-price">
-                                    $<span>546.74</span>
-                                </h5>
-                                <div class="font-normal rtl:mr-1 ltr:ml-1 text-slate-400">
-                                    (Fashion)
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between gap-3">
-                                <div class="inline-flex text-center input-step">
-                                    <button type="button"
-                                        class="border w-9 h-9 leading-[15px] minus bg-white ltr:rounded-l rtl:rounded-r transition-all duration-200 ease-linear border-slate-200 text-slate-500 hover:bg-custom-500 hover:text-custom-50 hover:border-custom-500 focus:bg-custom-500 focus:border-custom-500 focus:text-custom-50">
-                                        <i data-lucide="minus" class="inline-block size-4"></i>
-                                    </button>
-                                    <input type="number"
-                                        class="w-12 text-center h-9 border-y product-quantity focus:shadow-none"
-                                        value="4" min="0" max="100" readonly="" />
-                                    <button type="button"
-                                        class="transition-all duration-200 ease-linear bg-white border ltr:rounded-r rtl:rounded-l w-9 h-9 border-slate-200 plus text-slate-500 hover:bg-custom-500 hover:text-custom-50 hover:border-custom-500 focus:bg-custom-500 focus:border-custom-500 focus:text-custom-50">
-                                        <i data-lucide="plus" class="inline-block size-4"></i>
-                                    </button>
-                                </div>
-                                <h6 class="product-line-price end">2,186.96</h6>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="p-4 border-t border-slate-200">
-                <table class="w-full mb-3">
-                    <tbody class="table-total">
-                        <tr>
-                            <td class="py-2">Sub Total :</td>
-                            <td class="text-right cart-subtotal">$2,847.55</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2">
-                                Discount <span class="text-muted">(starcode50)</span>:
-                            </td>
-                            <td class="text-right cart-discount">-$476.00</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2">Shipping Charge :</td>
-                            <td class="text-right cart-shipping">$89.00</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2">Estimated Tax (12.5%) :</td>
-                            <td class="text-right cart-tax">$70.62</td>
-                        </tr>
-                        <tr class="font-semibold">
-                            <td class="py-2">Total :</td>
-                            <td class="text-right cart-total">$2,531.17</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="flex items-center justify-between gap-3">
-                    <a href="apps-ecommerce-product-grid.html"
-                        class="w-full text-white btn bg-slate-500 border-slate-500 hover:text-white hover:bg-slate-600 hover:border-slate-600 focus:text-white focus:bg-slate-600 focus:border-slate-600 focus:ring focus:ring-slate-100 active:text-white active:bg-slate-600 active:border-slate-600 active:ring active:ring-slate-100">Continue
-                        Shopping</a>
-                    <a href="apps-ecommerce-checkout.html"
-                        class="w-full text-white bg-red-500 border-red-500 btn hover:text-white hover:bg-red-600 hover:border-red-600 focus:text-white focus:bg-red-600 focus:border-red-600 focus:ring focus:ring-red-100 active:text-white active:bg-red-600 active:border-red-600 active:ring active:ring-red-100">Checkout</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="relative min-h-screen group-data-[sidebar-size=sm]:min-h-sm">
-        <div
-            class="group-data-[sidebar-size=lg]:ltr:md:ml-vertical-menu group-data-[sidebar-size=lg]:rtl:md:mr-vertical-menu group-data-[sidebar-size=md]:ltr:ml-vertical-menu-md group-data-[sidebar-size=md]:rtl:mr-vertical-menu-md group-data-[sidebar-size=sm]:ltr:ml-vertical-menu-sm group-data-[sidebar-size=sm]:rtl:mr-vertical-menu-sm pt-[calc(theme('spacing.header')_*_1)] pb-[calc(theme('spacing.header')_*_0.8)] px-4 group-data-[navbar=bordered]:pt-[calc(theme('spacing.header')_*_1.3)] group-data-[navbar=hidden]:pt-0 group-data-[layout=horizontal]:mx-auto group-data-[layout=horizontal]:max-w-screen-2xl group-data-[layout=horizontal]:px-0 group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:ltr:md:ml-auto group-data-[layout=horizontal]:group-data-[sidebar-size=lg]:rtl:md:mr-auto group-data-[layout=horizontal]:md:pt-[calc(theme('spacing.header')_*_1.6)] group-data-[layout=horizontal]:px-3 group-data-[layout=horizontal]:group-data-[navbar=hidden]:pt-[calc(theme('spacing.header')_*_0.9)]">
-            <div class="container-fluid group-data-[content=boxed]:max-w-boxed mx-auto">
-                <div class="flex flex-col gap-2 py-4 md:flex-row md:items-center print:hidden">
-                    <div class="grow">
-                        <h5 class="text-16">Ecommerce</h5>
-                    </div>
-                    <ul class="flex items-center gap-2 text-sm font-normal shrink-0">
-                        <li
-                            class="relative before:content-['\ea54'] before:font-remix ltr:before:-right-1 rtl:before:-left-1 before:absolute before:text-[18px] before:-top-[3px] ltr:pr-4 rtl:pl-4 before:text-slate-400">
-                            <a href="#!" class="text-slate-400">Dashboards</a>
-                        </li>
-                        <li class="text-slate-700">Ecommerce</li>
-                    </ul>
-                </div>
-                <div class="grid grid-cols-12 2xl:grid-cols-12 gap-x-5">
-                    <div class="relative col-span-12 overflow-hidden card 2xl:col-span-8 bg-slate-900">
-                        <div class="absolute inset-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-100" version="1.1"
-                                xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs"
-                                width="1440" height="560" preserveaspectratio="none" viewbox="0 0 1440 560">
-                                <g mask='url("#SvgjsMask1000")' fill="none">
-                                    <use xlink:href="#SvgjsSymbol1007" x="0" y="0"></use>
-                                    <use xlink:href="#SvgjsSymbol1007" x="720" y="0"></use>
-                                </g>
-                                <defs>
-                                    <mask id="SvgjsMask1000">
-                                        <rect width="1440" height="560" fill="#ffffff"></rect>
-                                    </mask>
-                                    <path d="M-1 0 a1 1 0 1 0 2 0 a1 1 0 1 0 -2 0z" id="SvgjsPath1003"></path>
-                                    <path d="M-3 0 a3 3 0 1 0 6 0 a3 3 0 1 0 -6 0z" id="SvgjsPath1004"></path>
-                                    <path d="M-5 0 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0z" id="SvgjsPath1001"></path>
-                                    <path d="M2 -2 L-2 2z" id="SvgjsPath1005"></path>
-                                    <path d="M6 -6 L-6 6z" id="SvgjsPath1002"></path>
-                                    <path d="M30 -30 L-30 30z" id="SvgjsPath1006"></path>
-                                </defs>
-                                <symbol id="SvgjsSymbol1007">
-                                    <use xlink:href="#SvgjsPath1001" x="30" y="30" stroke="rgba(32, 43, 61, 1)"></use>
-                                    <use xlink:href="#SvgjsPath1002" x="30" y="90" stroke="rgba(32, 43, 61, 1)"></use>
-                                    <use xlink:href="#SvgjsPath1001" x="30" y="150" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1003" x="30" y="210" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="30" y="270" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="30" y="330" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="30" y="390" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1003" x="30" y="450" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="30" y="510" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="30" y="570" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="90" y="30" stroke="rgba(32, 43, 61, 1)"></use>
-                                    <use xlink:href="#SvgjsPath1003" x="90" y="90" stroke="rgba(32, 43, 61, 1)"></use>
-                                    <use xlink:href="#SvgjsPath1001" x="90" y="150" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="90" y="210" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1004" x="90" y="270" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1003" x="90" y="330" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="90" y="390" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="90" y="450" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="90" y="510" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="90" y="570" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="150" y="30" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="150" y="90" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="150" y="150" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="150" y="210" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="150" y="270" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1006" x="150" y="330" stroke="rgba(32, 43, 61, 1)"
-                                        stroke-width="3">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1004" x="150" y="390" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="150" y="450" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="150" y="510" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="150" y="570" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="210" y="30" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="210" y="90" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1006" x="210" y="150" stroke="rgba(32, 43, 61, 1)"
-                                        stroke-width="3">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="210" y="210" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="210" y="270" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="210" y="330" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="210" y="390" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="210" y="450" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1006" x="210" y="510" stroke="rgba(32, 43, 61, 1)"
-                                        stroke-width="3">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1003" x="210" y="570" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="270" y="30" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="270" y="90" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="270" y="150" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="270" y="210" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="270" y="270" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="270" y="330" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1006" x="270" y="390" stroke="rgba(32, 43, 61, 1)"
-                                        stroke-width="3">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="270" y="450" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="270" y="510" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="270" y="570" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="330" y="30" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1006" x="330" y="90" stroke="rgba(32, 43, 61, 1)"
-                                        stroke-width="3"></use>
-                                    <use xlink:href="#SvgjsPath1002" x="330" y="150" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="330" y="210" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1006" x="330" y="270" stroke="rgba(32, 43, 61, 1)"
-                                        stroke-width="3">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="330" y="330" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="330" y="390" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="330" y="450" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1003" x="330" y="510" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="330" y="570" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1004" x="390" y="30" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="390" y="90" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="390" y="150" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="390" y="210" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="390" y="270" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="390" y="330" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="390" y="390" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1003" x="390" y="450" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="390" y="510" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="390" y="570" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="450" y="30" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1004" x="450" y="90" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="450" y="150" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="450" y="210" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="450" y="270" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="450" y="330" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="450" y="390" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="450" y="450" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="450" y="510" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="450" y="570" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="510" y="30" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1003" x="510" y="90" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="510" y="150" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="510" y="210" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="510" y="270" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1004" x="510" y="330" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1006" x="510" y="390" stroke="rgba(32, 43, 61, 1)"
-                                        stroke-width="3">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="510" y="450" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="510" y="510" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="510" y="570" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="570" y="30" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="570" y="90" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="570" y="150" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="570" y="210" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="570" y="270" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="570" y="330" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1006" x="570" y="390" stroke="rgba(32, 43, 61, 1)"
-                                        stroke-width="3">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="570" y="450" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="570" y="510" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="570" y="570" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="630" y="30" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="630" y="90" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="630" y="150" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="630" y="210" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="630" y="270" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1006" x="630" y="330" stroke="rgba(32, 43, 61, 1)"
-                                        stroke-width="3">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="630" y="390" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1006" x="630" y="450" stroke="rgba(32, 43, 61, 1)"
-                                        stroke-width="3">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="630" y="510" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="630" y="570" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="690" y="30" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="690" y="90" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="690" y="150" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1002" x="690" y="210" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1005" x="690" y="270" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1001" x="690" y="330" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1003" x="690" y="390" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1003" x="690" y="450" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1006" x="690" y="510" stroke="rgba(32, 43, 61, 1)"
-                                        stroke-width="3">
-                                    </use>
-                                    <use xlink:href="#SvgjsPath1003" x="690" y="570" stroke="rgba(32, 43, 61, 1)">
-                                    </use>
-                                </symbol>
-                            </svg>
-                        </div>
-                        <div class="relative card-body">
-                            <div class="grid items-center grid-cols-12">
-                                <div class="col-span-12 lg:col-span-8 2xl:col-span-7">
-                                    <h5 class="mb-3 font-normal tracking-wide text-slate-200">
-                                        Welcome StarCode Kh 🎉
-                                    </h5>
-                                    <p class="mb-5 text-slate-400">
-                                        An e-commerce dashboard has just that purpose. It
-                                        provides your e-commerce team with a clear overview of
-                                        key financial and website KPIs at any time.
-                                    </p>
-                                    <button type="button"
-                                        class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-500/20 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-500/20">
-                                        Take a Product
-                                    </button>
-                                </div>
-                                <div
-                                    class="hidden col-span-12 2xl:col-span-3 lg:col-span-2 lg:col-start-11 2xl:col-start-10 lg:block">
-                                    <img src="../theme/admin/html/assets/images/dashboard.png" alt=""
-                                        class="h-40 ltr:2xl:ml-auto rtl:2xl:mr-auto" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--end col-->
-                    <div class="col-span-12 card 2xl:col-span-4 2xl:row-span-2">
-                        <div class="card-body">
-                            <div class="flex items-center mb-3">
-                                <h6 class="grow text-15">Order Statistics</h6>
-                                <div class="relative">
-                                    <a href="#!"
-                                        class="underline transition-all duration-200 ease-linear text-custom-500 hover:text-custom-600">View
-                                        All
-                                        <i data-lucide="move-right"
-                                            class="inline-block align-middle size-4 ltr:ml-1 rtl:mr-1"></i></a>
-                                </div>
-                            </div>
-                            <div id="orderStatisticsChart" class="apex-charts"
-                                data-chart-colors='["bg-purple-500", "bg-sky-500"]' dir="ltr"></div>
-                        </div>
-                    </div>
-                    <!--end col-->
-                    <div class="col-span-12 card md:col-span-6 lg:col-span-3 2xl:col-span-2">
-                        <div class="text-center card-body">
-                            <div
-                                class="flex items-center justify-center mx-auto rounded-full size-14 bg-custom-100 text-custom-500">
-                                <i data-lucide="wallet-2"></i>
-                            </div>
-                            <h5 class="mt-4 mb-2">
-                                $<span class="counter-value" data-target="236.18">0</span>k
-                            </h5>
-                            <p class="text-slate-500">Total Revenue</p>
-                        </div>
-                    </div>
-                    <!--end col-->
-                    <div class="col-span-12 card md:col-span-6 lg:col-span-3 2xl:col-span-2">
-                        <div class="text-center card-body">
-                            <div
-                                class="flex items-center justify-center mx-auto text-purple-500 bg-purple-100 rounded-full size-14">
-                                <i data-lucide="package"></i>
-                            </div>
-                            <h5 class="mt-4 mb-2">
-                                <span class="counter-value" data-target="13461">0</span>
-                            </h5>
-                            <p class="text-slate-500">Total Orders</p>
-                        </div>
-                    </div>
-                    <!--end col-->
-                    <div class="col-span-12 card md:col-span-6 lg:col-span-3 2xl:col-span-2">
-                        <div class="text-center card-body">
-                            <div
-                                class="flex items-center justify-center mx-auto text-green-500 bg-green-100 rounded-full size-14">
-                                <i data-lucide="truck"></i>
-                            </div>
-                            <h5 class="mt-4 mb-2">
-                                <span class="counter-value" data-target="17150">0</span>
-                            </h5>
-                            <p class="text-slate-500">Delivered</p>
-                        </div>
-                    </div>
-                    <!--end col-->
-                    <div class="col-span-12 card md:col-span-6 lg:col-span-3 2xl:col-span-2">
-                        <div class="text-center card-body">
-                            <div
-                                class="flex items-center justify-center mx-auto text-red-500 bg-red-100 rounded-full size-14">
-                                <i data-lucide="package-x"></i>
-                            </div>
-                            <h5 class="mt-4 mb-2">
-                                <span class="counter-value" data-target="3519">0</span>
-                            </h5>
-                            <p class="text-slate-500">Cancelled</p>
-                        </div>
-                    </div>
-                    <!--end col-->
-                    <div class="col-span-12 card 2xl:col-span-8">
-                        <div class="card-body">
-                            <div class="flex flex-col gap-4 mb-4 md:mb-3 md:items-center md:flex-row">
-                                <h6 class="grow text-15">Sales Revenue Overview</h6>
-                                <div class="relative">
-                                    <i data-lucide="calendar-range"
-                                        class="absolute size-4 ltr:left-3 rtl:right-3 top-3 text-slate-500"></i>
-                                    <input type="text"
-                                        class="ltr:pl-10 rtl:pr-10 form-input border-slate-200 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-500 placeholder:text-slate-400"
-                                        data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true"
-                                        readonly="readonly" placeholder="Select Date" />
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-12 gap-4 mb-3">
-                                <div class="col-span-12 md:col-span-6 lg:col-span-3">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="flex items-center justify-center rounded-md size-12 text-sky-500 bg-sky-50 shrink-0">
-                                            <i data-lucide="bar-chart"></i>
-                                        </div>
-                                        <div class="grow">
-                                            <p class="mb-1 text-slate-500">
-                                                Total Sales
-                                            </p>
-                                            <h5 class="text-15">
-                                                $<span class="counter-value" data-target="1517.36">0</span>k
-                                            </h5>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-span-12 md:col-span-6 lg:col-span-3">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="flex items-center justify-center text-green-500 rounded-md size-12 bg-green-50 shrink-0">
-                                            <i data-lucide="trending-up"></i>
-                                        </div>
-                                        <div class="grow">
-                                            <p class="mb-1 text-slate-500">
-                                                Total Profit
-                                            </p>
-                                            <h5 class="text-15">
-                                                $<span class="counter-value" data-target="746.84">0</span>k
-                                            </h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="salesRevenueOverview" class="apex-charts"
-                                data-chart-colors='["bg-custom-500", "bg-custom-400", "bg-custom-300"]'
-                                dir="ltr"></div>
-                        </div>
-                    </div>
-                    <!--end col-->
-                    <div class="col-span-12 2xl:col-span-4">
-                        <div class="grid grid-cols-12 gap-x-5">
-                            <div class="col-span-12 card lg:col-span-6 2xl:col-span-12">
-                                <div class="card-body">
-                                    <div class="flex items-center mb-3">
-                                        <h6 class="grow text-15">Traffic Resources</h6>
-                                        <div class="relative">
-                                            <a href="#!"
-                                                class="transition-all duration-300 ease-linear text-custom-500 hover:text-custom-700">View
-                                                Status
-                                                <i data-lucide="move-right"
-                                                    class="inline-block align-middle size-4 ltr:ml-1 rtl:mr-1"></i></a>
-                                        </div>
-                                    </div>
-                                    <div class="grid grid-cols-12">
-                                        <div class="col-span-12 md:col-span-6 2xl:col-span-7">
-                                            <div id="trafficResourcesChart" class="apex-charts"
-                                                data-chart-colors='["bg-sky-500", "bg-purple-500", "bg-green-500", "bg-yellow-500"]'
-                                                dir="ltr"></div>
-                                        </div>
-                                        <div class="col-span-12 md:col-span-6 2xl:col-span-5">
-                                            <ul class="flex flex-col gap-3">
-                                                <li class="flex items-center gap-2">
-                                                    <div class="bg-green-500 size-3 shrink-0 clip-triangle"></div>
-                                                    <p class="text-green-500">Search Engine (22%)</p>
-                                                </li>
-                                                <li class="flex items-center gap-2">
-                                                    <div class="bg-purple-500 size-3 shrink-0 clip-triangle"></div>
-                                                    <p class="text-purple-500">Referral (34%)</p>
-                                                </li>
-                                                <li class="flex items-center gap-2">
-                                                    <div class="size-3 bg-sky-500 shrink-0 clip-triangle"></div>
-                                                    <p class="text-sky-500">Direct (44%)</p>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--end col-->
-                            <div class="col-span-12 card lg:col-span-6 2xl:col-span-12">
-                                <div class="card-body">
-                                    <div class="flex items-center mb-2">
-                                        <h5 class="grow">
-                                            <span class="counter-value" data-target="1596">0</span>
-                                        </h5>
-                                        <span
-                                            class="px-2.5 py-0.5 text-xs inline-block font-medium rounded border bg-white border-red-100 text-red-500"><i
-                                                data-lucide="trending-down"
-                                                class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                            6.8%</span>
-                                    </div>
-                                    <h6 class="mb-0">Monthly Orders Goal (20000+)</h6>
-                                    <div>
-                                        <div class="flex items-center justify-between mt-5 mb-2">
-                                            <p class="text-slate-500">
-                                                Total Orders
-                                            </p>
-                                            <h6 class="mb-0 text-custom-500">85%</h6>
-                                        </div>
-                                        <div class="w-full bg-slate-200 rounded-full h-2.54">
-                                            <div class="bg-custom-500 h-2.5 rounded-full" style="width: 85%"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--end col-->
-                        </div>
-                        <!--end grid-->
-                    </div>
-                    <!--end col-->
-                    <div class="col-span-12 card 2xl:col-span-12">
-                        <div class="card-body">
-                            <div class="grid items-center grid-cols-1 gap-3 mb-5 2xl:grid-cols-12">
-                                <div class="2xl:col-span-3">
-                                    <h6 class="text-15">Product Orders</h6>
-                                </div>
-                                <!--end col-->
-                                <div class="2xl:col-span-3 2xl:col-start-10">
-                                    <div class="flex gap-3">
-                                        <div class="relative grow">
-                                            <input type="text"
-                                                class="ltr:pl-8 rtl:pr-8 search form-input border-slate-200 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-500 placeholder:text-slate-400"
-                                                placeholder="Search for ..." autocomplete="off" />
-                                            <i data-lucide="search"
-                                                class="inline-block size-4 absolute ltr:left-2.5 rtl:right-2.5 top-2.5 text-slate-500 fill-slate-100"></i>
-                                        </div>
-                                        <button type="button"
-                                            class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100">
-                                            <i class="align-baseline ltr:pr-1 rtl:pl-1 ri-download-2-line"></i>
-                                            Export
-                                        </button>
-                                    </div>
-                                </div>
-                                <!--end col-->
-                            </div>
-                            <!--end grid-->
-                            <div class="overflow-x-auto">
-                                <table class="w-full whitespace-nowrap">
-                                    <thead
-                                        class="ltr:text-left rtl:text-right bg-slate-100 text-slate-500">
-                                        <tr>
-                                            <th
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-y border-slate-200">
-                                                #
-                                            </th>
-                                            <th
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-y border-slate-200">
-                                                Order ID
-                                            </th>
-                                            <th
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-y border-slate-200">
-                                                Customer Name
-                                            </th>
-                                            <th
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-y border-slate-200">
-                                                Location
-                                            </th>
-                                            <th
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-y border-slate-200">
-                                                Order Date
-                                            </th>
-                                            <th
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-y border-slate-200">
-                                                Payments
-                                            </th>
-                                            <th
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-y border-slate-200">
-                                                Quantity
-                                            </th>
-                                            <th
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-y border-slate-200">
-                                                Price
-                                            </th>
-                                            <th
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-y border-slate-200">
-                                                Total Amount
-                                            </th>
-                                            <th
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-y border-slate-200">
-                                                Status
-                                            </th>
-                                            <th
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-y border-slate-200">
-                                                Action
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                01
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <a href="apps-ecommerce-order-overview.html">#TWT5015100365</a>
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                Marie Prohaska
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                Germany
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                08 Jun, 2023
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                Credit Card
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                05
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                $146.99
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                $749.95
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <span
-                                                    class="delivery_status px-2.5 py-0.5 text-xs inline-block font-medium rounded border bg-green-100 border-green-200 text-green-500">Delivered</span>
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <div class="relative dropdown">
-                                                    <button id="orderAction1" data-bs-toggle="dropdown"
-                                                        class="flex items-center justify-center size-[30px] dropdown-toggle p-0 text-slate-500 btn bg-slate-100 hover:text-white hover:bg-slate-600 focus:text-white focus:bg-slate-600 focus:ring focus:ring-slate-100 active:text-white active:bg-slate-600 active:ring active:ring-slate-100">
-                                                        <i data-lucide="more-horizontal" class="size-3"></i>
-                                                    </button>
-                                                    <ul class="absolute z-50 hidden py-2 mt-1 ltr:text-left rtl:text-right list-none bg-white rounded-md shadow-md dropdown-menu min-w-[10rem]"
-                                                        aria-labelledby="orderAction1">
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="apps-ecommerce-order-overview.html"><i
-                                                                    data-lucide="eye"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Overview</span></a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="#!"><i data-lucide="file-edit"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Edit</span></a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="#!"><i data-lucide="trash-2"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Delete</span></a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                02
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <a href="apps-ecommerce-order-overview.html">#TWT5015100366</a>
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                Jaqueline Hammes
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                France
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                11 July, 2023
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                Paypal
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                02
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                $450.00
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                $900.00
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <span
-                                                    class="delivery_status px-2.5 py-0.5 text-xs inline-block font-medium rounded border bg-purple-100 border-purple-200 text-purple-500">Shipping</span>
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <div class="relative dropdown">
-                                                    <button id="orderAction2" data-bs-toggle="dropdown"
-                                                        class="flex items-center justify-center size-[30px] dropdown-toggle p-0 text-slate-500 btn bg-slate-100 hover:text-white hover:bg-slate-600 focus:text-white focus:bg-slate-600 focus:ring focus:ring-slate-100 active:text-white active:bg-slate-600 active:ring active:ring-slate-100">
-                                                        <i data-lucide="more-horizontal" class="size-3"></i>
-                                                    </button>
-                                                    <ul class="absolute z-50 hidden py-2 mt-1 ltr:text-left rtl:text-right list-none bg-white rounded-md shadow-md dropdown-menu min-w-[10rem]"
-                                                        aria-labelledby="orderAction2">
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="apps-ecommerce-order-overview.html"><i
-                                                                    data-lucide="eye"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Overview</span></a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="#!"><i data-lucide="file-edit"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Edit</span></a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="#!"><i data-lucide="trash-2"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Delete</span></a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                03
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <a href="apps-ecommerce-order-overview.html">#TWT5015100367</a>
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                Marlene Hirthe
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                Argentina
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                21 Aug, 2023
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                Visa Card
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                03
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                $147.23
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                $294.46
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <span
-                                                    class="delivery_status px-2.5 py-0.5 text-xs inline-block font-medium rounded border bg-sky-100 border-sky-200 text-sky-500">New</span>
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <div class="relative dropdown">
-                                                    <button id="orderAction3" data-bs-toggle="dropdown"
-                                                        class="flex items-center justify-center size-[30px] dropdown-toggle p-0 text-slate-500 btn bg-slate-100 hover:text-white hover:bg-slate-600 focus:text-white focus:bg-slate-600 focus:ring focus:ring-slate-100 active:text-white active:bg-slate-600 active:ring active:ring-slate-100">
-                                                        <i data-lucide="more-horizontal" class="size-3"></i>
-                                                    </button>
-                                                    <ul class="absolute z-50 hidden py-2 mt-1 ltr:text-left rtl:text-right list-none bg-white rounded-md shadow-md dropdown-menu min-w-[10rem]"
-                                                        aria-labelledby="orderAction3">
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="apps-ecommerce-order-overview.html"><i
-                                                                    data-lucide="eye"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Overview</span></a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="#!"><i data-lucide="file-edit"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Edit</span></a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="#!"><i data-lucide="trash-2"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Delete</span></a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                04
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <a href="apps-ecommerce-order-overview.html">#TWT5015100368</a>
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                Reagan Larson
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                Belgium
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                28 Nov, 2023
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                American Express
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                01
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                $579.12
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                $579.12
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <span
-                                                    class="delivery_status px-2.5 py-0.5 text-xs inline-block font-medium rounded border bg-green-100 border-green-200 text-green-500">Delivered</span>
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <div class="relative dropdown">
-                                                    <button id="orderAction4" data-bs-toggle="dropdown"
-                                                        class="flex items-center justify-center size-[30px] dropdown-toggle p-0 text-slate-500 btn bg-slate-100 hover:text-white hover:bg-slate-600 focus:text-white focus:bg-slate-600 focus:ring focus:ring-slate-100 active:text-white active:bg-slate-600 active:ring active:ring-slate-100">
-                                                        <i data-lucide="more-horizontal" class="size-3"></i>
-                                                    </button>
-                                                    <ul class="absolute z-50 hidden py-2 mt-1 ltr:text-left rtl:text-right list-none bg-white rounded-md shadow-md dropdown-menu min-w-[10rem]"
-                                                        aria-labelledby="orderAction4">
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="apps-ecommerce-order-overview.html"><i
-                                                                    data-lucide="eye"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Overview</span></a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="#!"><i data-lucide="file-edit"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Edit</span></a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="#!"><i data-lucide="trash-2"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Delete</span></a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                05
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <a href="apps-ecommerce-order-overview.html">#TWT5015100369</a>
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                Glennie Langosh
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                Australia
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                11 Oct, 2023
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                American Express
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                01
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                $349.00
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                $349.00
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <span
-                                                    class="delivery_status px-2.5 py-0.5 text-xs inline-block font-medium rounded border bg-yellow-100 border-yellow-200 text-yellow-500">Pending</span>
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <div class="relative dropdown">
-                                                    <button id="orderAction5" data-bs-toggle="dropdown"
-                                                        class="flex items-center justify-center size-[30px] dropdown-toggle p-0 text-slate-500 btn bg-slate-100 hover:text-white hover:bg-slate-600 focus:text-white focus:bg-slate-600 focus:ring focus:ring-slate-100 active:text-white active:bg-slate-600 active:ring active:ring-slate-100">
-                                                        <i data-lucide="more-horizontal" class="size-3"></i>
-                                                    </button>
-                                                    <ul class="absolute z-50 hidden py-2 mt-1 ltr:text-left rtl:text-right list-none bg-white rounded-md shadow-md dropdown-menu min-w-[10rem]"
-                                                        aria-labelledby="orderAction5">
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="apps-ecommerce-order-overview.html"><i
-                                                                    data-lucide="eye"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Overview</span></a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="#!"><i data-lucide="file-edit"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Edit</span></a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="#!"><i data-lucide="trash-2"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Delete</span></a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                06
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <a href="apps-ecommerce-order-overview.html">#TWT5015100370</a>
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                Rickie Cremin
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                United States
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                16 Feb, 2023
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                COD
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                03
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                $89.49
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                $268.47
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <span
-                                                    class="delivery_status px-2.5 py-0.5 text-xs inline-block font-medium rounded border bg-green-100 border-green-200 text-green-500">Delivered</span>
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <div class="relative dropdown">
-                                                    <button id="orderAction6" data-bs-toggle="dropdown"
-                                                        class="flex items-center justify-center size-[30px] dropdown-toggle p-0 text-slate-500 btn bg-slate-100 hover:text-white hover:bg-slate-600 focus:text-white focus:bg-slate-600 focus:ring focus:ring-slate-100 active:text-white active:bg-slate-600 active:ring active:ring-slate-100">
-                                                        <i data-lucide="more-horizontal" class="size-3"></i>
-                                                    </button>
-                                                    <ul class="absolute z-50 hidden py-2 mt-1 ltr:text-left rtl:text-right list-none bg-white rounded-md shadow-md dropdown-menu min-w-[10rem]"
-                                                        aria-labelledby="orderAction6">
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="apps-ecommerce-order-overview.html"><i
-                                                                    data-lucide="eye"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Overview</span></a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="#!"><i data-lucide="file-edit"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Edit</span></a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="#!"><i data-lucide="trash-2"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Delete</span></a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                07
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <a href="apps-ecommerce-order-overview.html">#TWT5015100371</a>
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                Domenic Tromp
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                Afghanistan
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                21 Jan, 2024
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                PayPal
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                02
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                $739.79
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                $1,479.58
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <span
-                                                    class="delivery_status px-2.5 py-0.5 text-xs inline-block font-medium rounded border bg-sky-100 border-sky-200 text-sky-500">New</span>
-                                            </td>
-                                            <td
-                                                class="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200">
-                                                <div class="relative dropdown">
-                                                    <button id="orderAction6" data-bs-toggle="dropdown"
-                                                        class="flex items-center justify-center size-[30px] dropdown-toggle p-0 text-slate-500 btn bg-slate-100 hover:text-white hover:bg-slate-600 focus:text-white focus:bg-slate-600 focus:ring focus:ring-slate-100 active:text-white active:bg-slate-600 active:ring active:ring-slate-100">
-                                                        <i data-lucide="more-horizontal" class="size-3"></i>
-                                                    </button>
-                                                    <ul class="absolute z-50 hidden py-2 mt-1 ltr:text-left rtl:text-right list-none bg-white rounded-md shadow-md dropdown-menu min-w-[10rem]"
-                                                        aria-labelledby="orderAction6">
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="apps-ecommerce-order-overview.html"><i
-                                                                    data-lucide="eye"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Overview</span></a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="#!"><i data-lucide="file-edit"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Edit</span></a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                                href="#!"><i data-lucide="trash-2"
-                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Delete</span></a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="flex flex-col items-center mt-5 md:flex-row">
-                                <div class="mb-4 grow md:mb-0">
-                                    <p class="text-slate-500">
-                                        Showing <b>07</b> of <b>19</b> Results
-                                    </p>
-                                </div>
-                                <ul class="flex flex-wrap items-center gap-2 shrink-0">
-                                    <li>
-                                        <a href="#!"
-                                            class="inline-flex items-center justify-center bg-white h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 text-slate-500 hover:text-custom-500 hover:bg-custom-50 focus:bg-custom-50 focus:text-custom-500 [&.active]:text-custom-500 [&.active]:bg-custom-50 [&.active]:border-custom-50 [&.active]:hover:text-custom-700 [&.disabled]:text-slate-400 [&.disabled]:cursor-auto"><i
-                                                class="mr-1 size-4 rtl:rotate-180" data-lucide="chevron-left"></i>
-                                            Prev</a>
-                                    </li>
-                                    <li>
-                                        <a href="#!"
-                                            class="inline-flex items-center justify-center bg-white w-8 h-8 transition-all duration-150 ease-linear border rounded border-slate-200 text-slate-500 hover:text-custom-500 hover:bg-custom-50 focus:bg-custom-50 focus:text-custom-500 [&.active]:text-custom-500 [&.active]:bg-custom-50 [&.active]:border-custom-50 [&.active]:hover:text-custom-700 [&.disabled]:text-slate-400 [&.disabled]:cursor-auto">1</a>
-                                    </li>
-                                    <li>
-                                        <a href="#!"
-                                            class="inline-flex items-center justify-center bg-white w-8 h-8 transition-all duration-150 ease-linear border rounded border-slate-200 text-slate-500 hover:text-custom-500 hover:bg-custom-50 focus:bg-custom-50 focus:text-custom-500 [&.active]:text-custom-500 [&.active]:bg-custom-50 [&.active]:border-custom-50 [&.active]:hover:text-custom-700 [&.disabled]:text-slate-400 [&.disabled]:cursor-auto active">2</a>
-                                    </li>
-                                    <li>
-                                        <a href="#!"
-                                            class="inline-flex items-center justify-center bg-white w-8 h-8 transition-all duration-150 ease-linear border rounded border-slate-200 text-slate-500 hover:text-custom-500 hover:bg-custom-50 focus:bg-custom-50 focus:text-custom-500 [&.active]:text-custom-500 [&.active]:bg-custom-50 [&.active]:border-custom-50 [&.active]:hover:text-custom-700 [&.disabled]:text-slate-400 [&.disabled]:cursor-auto">3</a>
-                                    </li>
-                                    <li>
-                                        <a href="#!"
-                                            class="inline-flex items-center justify-center bg-white h-8 px-3 transition-all duration-150 ease-linear border rounded border-slate-200 text-slate-500 hover:text-custom-500 hover:bg-custom-50 focus:bg-custom-50 focus:text-custom-500 [&.active]:text-custom-500 [&.active]:bg-custom-50 [&.active]:border-custom-50 [&.active]:hover:text-custom-700 [&.disabled]:text-slate-400 [&.disabled]:cursor-auto">Next
-                                            <i class="ml-1 size-4 rtl:rotate-180"
-                                                data-lucide="chevron-right"></i></a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <!--end col-->
-                    <div class="col-span-12 card lg:col-span-6 2xl:col-span-3">
-                        <div class="card-body">
-                            <div class="flex items-center mb-3">
-                                <h6 class="grow text-15">Customer Service</h6>
-                                <div class="relative dropdown shrink-0">
-                                    <button type="button"
-                                        class="flex items-center justify-center size-[30px] p-0 bg-white text-slate-500 btn hover:text-slate-500 hover:bg-slate-100 focus:text-slate-500 focus:bg-slate-100 active:text-slate-500 active:bg-slate-100 dropdown-toggle"
-                                        id="customServiceDropdown" data-bs-toggle="dropdown">
-                                        <i data-lucide="more-vertical" class="inline-block size-4"></i>
-                                    </button>
-
-                                    <ul class="absolute z-50 hidden py-2 mt-1 ltr:text-left rtl:text-right list-none bg-white rounded-md shadow-md dropdown-menu min-w-[10rem]"
-                                        aria-labelledby="customServiceDropdown">
-                                        <li>
-                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                href="#!">1 Weekly</a>
-                                        </li>
-                                        <li>
-                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                href="#!">1 Monthly</a>
-                                        </li>
-                                        <li>
-                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                href="#!">3 Monthly</a>
-                                        </li>
-                                        <li>
-                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                href="#!">6 Monthly</a>
-                                        </li>
-                                        <li>
-                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                href="#!">This Yearly</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div>
-                                <div class="flex items-center justify-between mt-5 mb-2">
-                                    <p class="text-slate-500">
-                                        28% of the Goal Reached ($25k)
-                                    </p>
-                                </div>
-                                <div class="w-full h-2 rounded-full bg-slate-200">
-                                    <div class="h-2 bg-green-500 rounded-full" style="width: 28%"></div>
-                                </div>
-                                <div class="grid mt-3 xl:grid-cols-2">
-                                    <div class="flex items-center gap-2">
-                                        <div class="shrink-0">
-                                            <i data-lucide="calendar-days"
-                                                class="inline-block mb-1 align-middle size-4"></i>
-                                        </div>
-                                        <p class="mb-0 text-slate-500">
-                                            This Month:
-                                            <span class="font-medium text-slate-800">$13,741</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <h6 class="mt-4 mb-3">Top Customer</h6>
-                            <ul class="divide-y divide-slate-200">
-                                <li class="flex items-center gap-3 py-2 first:pt-0 last:pb-0">
-                                    <div class="w-8 h-8 rounded-full shrink-0 bg-slate-100">
-                                        <img src="../theme/admin/html/assets/images/avatar-2.png" alt=""
-                                            class="w-8 h-8 rounded-full" />
-                                    </div>
-                                    <div class="grow">
-                                        <h6 class="font-medium">Urrie Arthur</h6>
-                                        <p class="text-slate-500">
-                                            arthur@starcode.com
-                                        </p>
-                                    </div>
-                                    <div class="shrink-0">
-                                        <h6>$2,452</h6>
-                                    </div>
-                                </li>
-                                <li class="flex items-center gap-3 py-2 first:pt-0 last:pb-0">
-                                    <div class="w-8 h-8 rounded-full shrink-0 bg-slate-100">
-                                        <img src="../theme/admin/html/assets/images/avatar-3.png" alt=""
-                                            class="w-8 h-8 rounded-full" />
-                                    </div>
-                                    <div class="grow">
-                                        <h6 class="font-medium">Natalie Christy</h6>
-                                        <p class="text-slate-500">
-                                            natalie@starcode.com
-                                        </p>
-                                    </div>
-                                    <div class="shrink-0">
-                                        <h6>$1,893</h6>
-                                    </div>
-                                </li>
-                                <li class="flex items-center gap-3 py-2 first:pt-0 last:pb-0">
-                                    <div class="w-8 h-8 rounded-full shrink-0 bg-slate-100">
-                                        <img src="../theme/admin/html/assets/images/avatar-4.png" alt=""
-                                            class="w-8 h-8 rounded-full" />
-                                    </div>
-                                    <div class="grow">
-                                        <h6 class="font-medium">Laurie Jackson</h6>
-                                        <p class="text-slate-500">
-                                            jackson@starcode.com
-                                        </p>
-                                    </div>
-                                    <div class="shrink-0">
-                                        <h6>$1,196</h6>
-                                    </div>
-                                </li>
-                                <li class="flex items-center gap-3 py-2 first:pt-0 last:pb-0">
-                                    <div class="w-8 h-8 rounded-full shrink-0 bg-slate-100">
-                                        <img src="../theme/admin/html/assets/images/avatar-5.png" alt=""
-                                            class="w-8 h-8 rounded-full" />
-                                    </div>
-                                    <div class="grow">
-                                        <h6 class="font-medium">Michael Torres</h6>
-                                        <p class="text-slate-500">
-                                            torres@starcode.com
-                                        </p>
-                                    </div>
-                                    <div class="shrink-0">
-                                        <h6>$976</h6>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!--end col-->
-                    <div class="col-span-12 card lg:col-span-6 2xl:col-span-3">
-                        <div class="card-body">
-                            <div class="flex items-center mb-3">
-                                <h6 class="grow text-15">Sales This Month</h6>
-                                <div class="relative dropdown shrink-0">
-                                    <button type="button"
-                                        class="flex items-center justify-center size-[30px] p-0 bg-white text-slate-500 btn hover:text-slate-500 hover:bg-slate-100 focus:text-slate-500 focus:bg-slate-100 active:text-slate-500 active:bg-slate-100 dropdown-toggle"
-                                        id="sellingProductDropdown" data-bs-toggle="dropdown">
-                                        <i data-lucide="more-vertical" class="inline-block size-4"></i>
-                                    </button>
-
-                                    <ul class="absolute z-50 hidden py-2 mt-1 ltr:text-left rtl:text-right list-none bg-white rounded-md shadow-md dropdown-menu min-w-[10rem]"
-                                        aria-labelledby="sellingProductDropdown">
-                                        <li>
-                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                href="#!">1 Weekly</a>
-                                        </li>
-                                        <li>
-                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                href="#!">1 Monthly</a>
-                                        </li>
-                                        <li>
-                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                href="#!">3 Monthly</a>
-                                        </li>
-                                        <li>
-                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                href="#!">6 Monthly</a>
-                                        </li>
-                                        <li>
-                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                href="#!">This Yearly</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3 my-3">
-                                <div
-                                    class="flex items-center justify-center text-green-500 rounded-md size-12 bg-green-50 shrink-0">
-                                    <i data-lucide="trending-up"></i>
-                                </div>
-                                <div class="grow">
-                                    <p class="mb-1 text-slate-500">
-                                        Total Profit
-                                    </p>
-                                    <h5 class="text-15">
-                                        $<span class="counter-value" data-target="746.84">0</span>k
-                                    </h5>
-                                </div>
-                            </div>
-                            <div id="salesThisMonthChart" class="apex-charts"
-                                data-chart-colors='["bg-sky-100", "bg-orange-100", "bg-sky-500", "bg-orange-500"]'
-                                dir="ltr"></div>
-                        </div>
-                    </div>
-                    <!--end col-->
-                    <div class="col-span-12 card lg:col-span-6 2xl:col-span-3">
-                        <div class="card-body">
-                            <div class="flex items-center mb-3">
-                                <h6 class="grow text-15">Top Selling Products</h6>
-                                <div class="relative dropdown shrink-0">
-                                    <button type="button"
-                                        class="flex items-center justify-center size-[30px] p-0 bg-white text-slate-500 btn hover:text-slate-500 hover:bg-slate-100 focus:text-slate-500 focus:bg-slate-100 active:text-slate-500 active:bg-slate-100 dropdown-toggle"
-                                        id="sellingProductDropdown" data-bs-toggle="dropdown">
-                                        <i data-lucide="more-vertical" class="inline-block size-4"></i>
-                                    </button>
-
-                                    <ul class="absolute z-50 hidden py-2 mt-1 ltr:text-left rtl:text-right list-none bg-white rounded-md shadow-md dropdown-menu min-w-[10rem]"
-                                        aria-labelledby="sellingProductDropdown">
-                                        <li>
-                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                href="#!">1 Weekly</a>
-                                        </li>
-                                        <li>
-                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                href="#!">1 Monthly</a>
-                                        </li>
-                                        <li>
-                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                href="#!">3 Monthly</a>
-                                        </li>
-                                        <li>
-                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                href="#!">6 Monthly</a>
-                                        </li>
-                                        <li>
-                                            <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500"
-                                                href="#!">This Yearly</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <ul class="flex flex-col gap-5">
-                                <li class="flex items-center gap-3">
-                                    <div
-                                        class="flex items-center justify-center w-10 h-10 rounded-md bg-slate-100">
-                                        <img src="../theme/admin/html/assets/images/img-02.png" alt=""
-                                            class="h-6" />
-                                    </div>
-                                    <div class="overflow-hidden grow">
-                                        <h6 class="truncate">Mesh Ergonomic Black Chair</h6>
-                                        <div class="text-yellow-500">
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-half-fill"></i>
-                                        </div>
-                                    </div>
-                                    <h6 class="shrink-0">
-                                        <i data-lucide="shopping-cart"
-                                            class="inline-block align-middle size-4 text-slate-500 ltr:mr-1 rtl:ml-1"></i>
-                                        798
-                                    </h6>
-                                </li>
-                                <li class="flex items-center gap-3">
-                                    <div
-                                        class="flex items-center justify-center w-10 h-10 rounded-md bg-slate-100">
-                                        <img src="../theme/admin/html/assets/images/img-03.png" alt=""
-                                            class="h-6" />
-                                    </div>
-                                    <div class="overflow-hidden grow">
-                                        <h6 class="truncate">Fastcolors Typography Men</h6>
-                                        <div class="text-yellow-500">
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-half-fill"></i>
-                                        </div>
-                                    </div>
-                                    <h6 class="shrink-0">
-                                        <i data-lucide="shopping-cart"
-                                            class="inline-block align-middle size-4 text-slate-500 ltr:mr-1 rtl:ml-1"></i>
-                                        695
-                                    </h6>
-                                </li>
-                                <li class="flex items-center gap-3">
-                                    <div
-                                        class="flex items-center justify-center w-10 h-10 rounded-md bg-slate-100">
-                                        <img src="../theme/admin/html/assets/images/img-04.png" alt=""
-                                            class="h-6" />
-                                    </div>
-                                    <div class="overflow-hidden grow">
-                                        <h6 class="truncate">Mesh Ergonomic Green Chair</h6>
-                                        <div class="text-yellow-500">
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-half-fill"></i>
-                                        </div>
-                                    </div>
-                                    <h6 class="shrink-0">
-                                        <i data-lucide="shopping-cart"
-                                            class="inline-block align-middle size-4 text-slate-500 ltr:mr-1 rtl:ml-1"></i>
-                                        985
-                                    </h6>
-                                </li>
-                                <li class="flex items-center gap-3">
-                                    <div
-                                        class="flex items-center justify-center w-10 h-10 rounded-md bg-slate-100">
-                                        <img src="../theme/admin/html/assets/images/img-05.png" alt=""
-                                            class="h-6" />
-                                    </div>
-                                    <div class="overflow-hidden grow">
-                                        <h6 class="truncate">
-                                            Techel Black Bluetooth Soundbar
-                                        </h6>
-                                        <div class="text-yellow-500">
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-half-fill"></i>
-                                        </div>
-                                    </div>
-                                    <h6 class="shrink-0">
-                                        <i data-lucide="shopping-cart"
-                                            class="inline-block align-middle size-4 text-slate-500 ltr:mr-1 rtl:ml-1"></i>
-                                        813
-                                    </h6>
-                                </li>
-                                <li class="flex items-center gap-3">
-                                    <div
-                                        class="flex items-center justify-center w-10 h-10 rounded-md bg-slate-100">
-                                        <img src="../theme/admin/html/assets/images/img-06.png" alt=""
-                                            class="h-6" />
-                                    </div>
-                                    <div class="overflow-hidden grow">
-                                        <h6 class="truncate">Bovet Fleurier AIFSQ029</h6>
-                                        <div class="text-yellow-500">
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-half-fill"></i>
-                                        </div>
-                                    </div>
-                                    <h6 class="shrink-0">
-                                        <i data-lucide="shopping-cart"
-                                            class="inline-block align-middle size-4 text-slate-500 ltr:mr-1 rtl:ml-1"></i>
-                                        915
-                                    </h6>
-                                </li>
-                                <li class="flex items-center gap-3">
-                                    <div
-                                        class="flex items-center justify-center w-10 h-10 rounded-md bg-slate-100">
-                                        <img src="../theme/admin/html/assets/images/img-03.png" alt=""
-                                            class="h-6" />
-                                    </div>
-                                    <div class="overflow-hidden grow">
-                                        <h6 class="truncate">Fastcolors Typography Men</h6>
-                                        <div class="text-yellow-500">
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-half-fill"></i>
-                                        </div>
-                                    </div>
-                                    <h6 class="shrink-0">
-                                        <i data-lucide="shopping-cart"
-                                            class="inline-block align-middle size-4 text-slate-500 ltr:mr-1 rtl:ml-1"></i>
-                                        785
-                                    </h6>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!--end col-->
-                    <div class="col-span-12 card lg:col-span-6 2xl:col-span-3">
-                        <div class="card-body">
-                            <h6 class="relative mb-3 grow text-15">Audience</h6>
-                            <div id="audienceChart" class="-mt-9 apex-charts"
-                                data-chart-colors='["bg-sky-500", "bg-orange-400", "bg-green-500", "bg-yellow-500"]'
-                                dir="ltr"></div>
-                        </div>
-                    </div>
-                    <!--end col-->
-                </div>
-                <!--end grid-->
-            </div>
-            <!-- container-fluid -->
-        </div>
-        <!-- End Page-content -->
-
-        @include('admin.dashboard.components.footer')
-    </div>
-=======
-
->>>>>>> 4d156438597fe5af523c243e2e62379e34407e50
 </div>

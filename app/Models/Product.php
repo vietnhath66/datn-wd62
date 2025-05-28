@@ -25,6 +25,7 @@ class Product extends Model
         'publish',
         'is_sale',
         'is_new',
+        'deleted_at',
         'is_trending',
         'is_show_home',
         'attributeCatalogue',
@@ -32,6 +33,8 @@ class Product extends Model
         'variant',
         'view',
     ];
+
+    protected $dates = ['deleted_at'];
 
     protected $table = 'products';
 

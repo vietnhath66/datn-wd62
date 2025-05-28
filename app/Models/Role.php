@@ -14,8 +14,15 @@ class Role extends Model
     ];
 
     protected $table = 'roles';
+    protected $primaryKey = 'id';
+    public function permissions()
+    {
+        return $this->belongsToMany(CustomPermission::class, 'custom_role_has_permissions', 'role_id', 'permission_id');
+    }
 
-    public function users(){    
+    public function users()
+    {
+        // Một vai trò có nhiều người dùng (qua cột role_id trong bảng users)
         return $this->hasMany(User::class, 'role_id', 'id');
     }
 }

@@ -92,6 +92,9 @@
                                                     {{-- @elseif($order->payment_status == 2)
                                                     <span
                                                         class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Đã hoàn lại</span> --}}
+                                                @elseif($order->payment_method == '')
+                                                    <span
+                                                        class="status px-2.5 py-0.5 inline-block text-xs font-medium rounded border bg-orange-100 border-transparent text-orange-500 dark:bg-orange-500/20 dark:border-transparent">Chưa chọn</span>
                                                 @endif
                                             </td>
                                             <td
@@ -180,7 +183,7 @@
                                                                 href="{{ route('admin.order.edit', $order->id) }}"><i
                                                                     data-lucide="file-edit"
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Edit</span></a>
+                                                                <span class="align-middle">Sửa</span></a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -204,7 +207,7 @@
                         <p class="text-slate-500">
                             Hiển thị <b>{{ $orders->count() }}</b> / <b>{{ $orders->total() }}</b> Đơn hàng
                         </p>
-                    
+
                         <div class="pagination-buttons">
                             {{ $orders->links() }}
                         </div>

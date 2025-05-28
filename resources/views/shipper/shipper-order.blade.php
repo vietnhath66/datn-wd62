@@ -11,267 +11,360 @@
                         <i class="fas fa-clipboard-list mr-2"></i> Các Đơn Hàng Cần Giao
                     </div>
                     <div class="card-body order-list-container">
-    @foreach ($orders as $order)
-        @php
-            $orderCode = $order->barcode ?? 'DH' . sprintf('%03d', $order->id);
-            $recipientName = $order->user->name ?? 'N/A';
-            $recipientPhone = $order->phone ?? 'N/A';
-            $fullAddress = implode(', ', array_filter([
-                $order->address,
-                optional($order->ward)->full_name,
-                optional($order->district)->full_name,
-                optional($order->province)->full_name,
-            ])) ?: 'Chưa có địa chỉ';
+                        @foreach ($orders as $order)
+                            @php
+                                $orderCode = $order->barcode ?? 'DH' . sprintf('%03d', $order->id);
+                                $recipientName = $order->user->name ?? 'N/A';
+                                $recipientPhone = $order->phone ?? 'N/A';
+                                $fullAddress =
+                                    implode(
+                                        ', ',
+                                        array_filter([
+                                            $order->address,
+                                            optional($order->ward)->full_name,
+                                            optional($order->district)->full_name,
+                                            optional($order->province)->full_name,
+                                        ]),
+                                    ) ?:
+                                    'Chưa có địa chỉ';
 
-            // Custom status badge
-            $statusBadgeClass = '';
-            $statusText = '';
-            switch (strtolower($order->status ?? '')) {
-                case 'pending':
-                    $statusBadgeClass = 'status-badge-pending';
-                    $statusText = 'Chờ Xử Lý';
-                    break;
-                case 'processing':
-                    $statusBadgeClass = 'status-badge-processing';
-                    $statusText = 'Đang Xử Lý';
-                    break;
-                case 'shipping':
-                    $statusBadgeClass = 'status-badge-shipping';
-                    $statusText = 'Đang Giao';
-                    break;
-                case 'completed':
-                    $statusBadgeClass = 'status-badge-completed';
-                    $statusText = 'Đã Hoàn Thành';
-                    break;
-                case 'cancelled':
-                    $statusBadgeClass = 'status-badge-cancelled';
-                    $statusText = 'Đã Hủy';
-                    break;
-                default:
-                    $statusBadgeClass = 'status-badge-default';
-                    $statusText = 'N/A';
-                    break;
-            }
+                                // Custom status badge
+                                $statusBadgeClass = '';
+                                $statusText = '';
+                                switch (strtolower($order->status ?? '')) {
+                                    case 'pending':
+                                        $statusBadgeClass = 'status-badge-pending';
+                                        $statusText = 'Chờ Xử Lý';
+                                        break;
+                                    case 'processing':
+                                        $statusBadgeClass = 'status-badge-processing';
+                                        $statusText = 'Đang Xử Lý';
+                                        break;
+                                    case 'shipping':
+                                        $statusBadgeClass = 'status-badge-shipping';
+                                        $statusText = 'Đang Giao';
+                                        break;
+                                    case 'completed':
+                                        $statusBadgeClass = 'status-badge-completed';
+                                        $statusText = 'Đã Hoàn Thành';
+                                        break;
+                                    case 'cancelled':
+                                        $statusBadgeClass = 'status-badge-cancelled';
+                                        $statusText = 'Đã Hủy';
+                                        break;
+                                    default:
+                                        $statusBadgeClass = 'status-badge-default';
+                                        $statusText = 'N/A';
+                                        break;
+                                }
 
-            $detailUrl = '#';
-            try {
-                $detailUrl = route('shipper.orderDetailShipper', $order->id);
-            } catch (\Exception $e) {
-                // Log the error but don't stop execution
-                // \Illuminate\Support\Facades\Log::error("Route 'shipper.orderDetailShipper' not defined for order ID: " . $order->id);
-            }
-        @endphp
+                                $detailUrl = '#';
+                                try {
+                                    $detailUrl = route('shipper.orderDetailShipper', $order->id);
+                                } catch (\Exception $e) {
+                                    // Log the error but don't stop execution
+    // \Illuminate\Support\Facades\Log::error("Route 'shipper.orderDetailShipper' not defined for order ID: " . $order->id);
+                                }
+                            @endphp
 
-        <div class="order-card" data-order-item-id="{{ $order->id }}">
-            <div class="order-header">
-                <h5 class="order-title">
-                    Đơn Hàng #<span class="order-id">{{ $orderCode }}</span>
-                </h5>
-                <span class="status-badge {{ $statusBadgeClass }}">{{ $statusText }}</span>
-            </div>
 
-            <div class="order-body">
-                <p class="order-info-item">
-                    <i class="fas fa-user icon"></i>
-                    <span class="label">Người Nhận:</span>
-                    <span class="value">{{ $recipientName }}</span>
-                </p>
-                <p class="order-info-item">
-                    <i class="fas fa-map-marker-alt icon"></i>
-                    <span class="label">Địa Chỉ:</span>
-                    <span class="value">{{ $fullAddress }}</span>
-                </p>
-                <p class="order-info-item">
-                    <i class="fas fa-phone icon"></i>
-                    <span class="label">Điện Thoại:</span>
-                    <span class="value">{{ $recipientPhone }}</span>
-                </p>
-                <p class="order-info-item total-amount">
-                    <i class="fas fa-money-bill-wave icon"></i>
-                    <span class="label">Tổng tiền:</span>
-                    <span class="value">{{ number_format($order->total) }} VNĐ</span>
-                </p>
-            </div>
 
-            <div class="order-footer">
-                <button class="btn-action primary" data-toggle="modal" data-target="#orderActionModal"
-                    data-order-id="{{ $order->id }}" data-order-code="{{ $orderCode }}">
-                    <i class="fas fa-tasks icon"></i> Thao tác
-                </button>
-                <a href="{{ $detailUrl }}" class="btn-action info">
-                    <i class="fas fa-info-circle icon"></i> Chi Tiết
-                </a>
-            </div>
-        </div>
-    @endforeach
-</div>
+                            {{-- <div class="card-body">
+                        @foreach ($orders as $order)
+                            @php
+                                $orderCode = $order->barcode ?? 'DH' . sprintf('%03d', $order->id);
+                                $recipientName = $order->user->name ?? 'N/A';
+                                $recipientPhone = $order->phone ?? 'N/A';
+                                $fullAddress =
+                                    implode(
+                                        ', ',
+                                        array_filter([
+                                            $order->address,
+                                            optional($order->ward)->full_name,
+                                            optional($order->district)->full_name,
+                                            optional($order->province)->full_name,
+                                        ]),
+                                    ) ?:
+                                    'Chưa có địa chỉ';
 
-<style>
-    /* Font Import (if you don't have it globally) */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+                                // Custom status badge
+                                $statusBadgeClass = '';
+                                $statusText = '';
+                                switch (strtolower($order->status ?? '')) {
+                                    case 'pending':
+                                        $statusBadgeClass = 'status-badge-pending';
+                                        $statusText = 'Chờ Xử Lý';
+                                        break;
+                                    case 'processing':
+                                        $statusBadgeClass = 'status-badge-processing';
+                                        $statusText = 'Đang Xử Lý';
+                                        break;
+                                    case 'shipping':
+                                        $statusBadgeClass = 'status-badge-shipping';
+                                        $statusText = 'Đang Giao';
+                                        break;
+                                    case 'completed':
+                                        $statusBadgeClass = 'status-badge-completed';
+                                        $statusText = 'Đã Hoàn Thành';
+                                        break;
+                                    case 'cancelled':
+                                        $statusBadgeClass = 'status-badge-cancelled';
+                                        $statusText = 'Đã Hủy';
+                                        break;
+                                    default:
+                                        $statusBadgeClass = 'status-badge-default';
+                                        $statusText = 'N/A';
+                                        break;
+                                }
 
-    .order-list-container {
-        padding: 20px;
-        background-color: #f8f8f8; /* Light background for the list area */
-        font-family: 'Inter', sans-serif;
-    }
+                                $detailUrl = '#';
+                                try {
+                                    $detailUrl = route('shipper.orderDetailShipper', $order->id);
+                                } catch (\Exception $e) {
+                                    // Log the error but don't stop execution
+    // \Illuminate\Support\Facades\Log::error("Route 'shipper.orderDetailShipper' not defined for order ID: " . $order->id);
+                                }
+                            @endphp --}}
 
-    .order-card {
-        background-color: #ffffff;
-        border-radius: 12px; /* Nicer rounded corners */
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Softer, more modern shadow */
-        margin-bottom: 25px;
-        padding: 25px;
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    }
 
-    .order-card:hover {
-        transform: translateY(-5px); /* Subtle lift effect on hover */
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12); /* Slightly stronger shadow on hover */
-    }
+                            <div class="order-card" data-order-item-id="{{ $order->id }}">
+                                <div class="order-header">
+                                    <h5 class="order-title">
+                                        Đơn Hàng #<span class="order-id">{{ $orderCode }}</span>
+                                    </h5>
+                                    <span class="status-badge {{ $statusBadgeClass }}">{{ $statusText }}</span>
+                                </div>
 
-    .order-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #eee; /* Subtle separator */
-    }
+                                <div class="order-body">
+                                    <p class="order-info-item">
+                                        <i class="fas fa-user icon"></i>
+                                        <span class="label">Người Nhận:</span>
+                                        <span class="value">{{ $recipientName }}</span>
+                                    </p>
+                                    <p class="order-info-item">
+                                        <i class="fas fa-map-marker-alt icon"></i>
+                                        <span class="label">Địa Chỉ:</span>
+                                        <span class="value">{{ $fullAddress }}</span>
+                                    </p>
+                                    <p class="order-info-item">
+                                        <i class="fas fa-phone icon"></i>
+                                        <span class="label">Điện Thoại:</span>
+                                        <span class="value">{{ $recipientPhone }}</span>
+                                    </p>
+                                    <p class="order-info-item total-amount">
+                                        <i class="fas fa-money-bill-wave icon"></i>
+                                        <span class="label">Tổng tiền:</span>
+                                        <span class="value">{{ number_format($order->total) }} VNĐ</span>
+                                    </p>
+                                </div>
 
-    .order-title {
-        font-size: 1.35rem; /* Larger title */
-        font-weight: 700; /* Bold */
-        color: #333;
-        margin: 0;
-    }
+                                <div class="order-footer">
+                                    <button class="btn-action primary" data-toggle="modal" data-target="#orderActionModal"
+                                        data-order-id="{{ $order->id }}" data-order-code="{{ $orderCode }}">
+                                        <i class="fas fa-tasks icon"></i> Thao tác
+                                    </button>
+                                    <a href="{{ $detailUrl }}" class="btn-action info">
+                                        <i class="fas fa-info-circle icon"></i> Chi Tiết
+                                    </a>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
 
-    .order-id {
-        color: #e53935; /* Your brand red for order ID */
-    }
+                    <style>
+                        /* Font Import (if you don't have it globally) */
+                        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    /* Status Badges */
-    .status-badge {
-        font-size: 0.85rem;
-        font-weight: 600;
-        padding: 6px 12px;
-        border-radius: 20px; /* Pill shape */
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        white-space: nowrap; /* Prevent wrapping */
-    }
+                        .order-list-container {
+                            padding: 20px;
+                            background-color: #f8f8f8;
+                            /* Light background for the list area */
+                            font-family: 'Inter', sans-serif;
+                        }
 
-    .status-badge-pending {
-        background-color: #ffeb3b; /* Yellow */
-        color: #a1887f;
-    }
+                        .order-card {
+                            background-color: #ffffff;
+                            border-radius: 12px;
+                            /* Nicer rounded corners */
+                            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                            /* Softer, more modern shadow */
+                            margin-bottom: 25px;
+                            padding: 25px;
+                            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+                        }
 
-    .status-badge-processing {
-        background-color: #bbdefb; /* Light Blue */
-        color: #2196f3;
-    }
+                        .order-card:hover {
+                            transform: translateY(-5px);
+                            /* Subtle lift effect on hover */
+                            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+                            /* Slightly stronger shadow on hover */
+                        }
 
-    .status-badge-shipping {
-        background-color: #81c784; /* Light Green */
-        color: #2e7d32;
-    }
+                        .order-header {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-bottom: 15px;
+                            padding-bottom: 10px;
+                            border-bottom: 1px solid #eee;
+                            /* Subtle separator */
+                        }
 
-    .status-badge-completed {
-        background-color: #a5d6a7; /* Deeper Green */
-        color: #1b5e20;
-    }
+                        .order-title {
+                            font-size: 1.35rem;
+                            /* Larger title */
+                            font-weight: 700;
+                            /* Bold */
+                            color: #333;
+                            margin: 0;
+                        }
 
-    .status-badge-cancelled {
-        background-color: #ffcdd2; /* Light Red */
-        color: #c62828;
-    }
+                        .order-id {
+                            color: #e53935;
+                            /* Your brand red for order ID */
+                        }
 
-    .status-badge-default {
-        background-color: #e0e0e0;
-        color: #757575;
-    }
+                        /* Status Badges */
+                        .status-badge {
+                            font-size: 0.85rem;
+                            font-weight: 600;
+                            padding: 6px 12px;
+                            border-radius: 20px;
+                            /* Pill shape */
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                            white-space: nowrap;
+                            /* Prevent wrapping */
+                        }
 
-    .order-body {
-        margin-bottom: 20px;
-    }
+                        .status-badge-pending {
+                            background-color: #ffeb3b;
+                            /* Yellow */
+                            color: #a1887f;
+                        }
 
-    .order-info-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-        font-size: 1rem;
-        color: #555;
-    }
+                        .status-badge-processing {
+                            background-color: #bbdefb;
+                            /* Light Blue */
+                            color: #2196f3;
+                        }
 
-    .order-info-item .icon {
-        color: #999; /* Softer icon color */
-        margin-right: 12px;
-        width: 20px; /* Fixed width for icons */
-        text-align: center;
-    }
+                        .status-badge-shipping {
+                            background-color: #81c784;
+                            /* Light Green */
+                            color: #2e7d32;
+                        }
 
-    .order-info-item .label {
-        font-weight: 500;
-        margin-right: 8px;
-        color: #444;
-    }
+                        .status-badge-completed {
+                            background-color: #a5d6a7;
+                            /* Deeper Green */
+                            color: #1b5e20;
+                        }
 
-    .order-info-item .value {
-        font-weight: 400;
-        color: #333;
-        flex-grow: 1; /* Allow value to take up remaining space */
-    }
+                        .status-badge-cancelled {
+                            background-color: #ffcdd2;
+                            /* Light Red */
+                            color: #c62828;
+                        }
 
-    .order-info-item.total-amount .value {
-        font-weight: 700; /* Bold for total amount */
-        color: #e53935; /* Your brand red for total */
-        font-size: 1.1rem;
-    }
+                        .status-badge-default {
+                            background-color: #e0e0e0;
+                            color: #757575;
+                        }
 
-    .order-footer {
-        display: flex;
-        justify-content: flex-end; /* Align buttons to the right */
-        gap: 10px; /* Space between buttons */
-        padding-top: 15px;
-        border-top: 1px solid #eee; /* Subtle separator */
-    }
+                        .order-body {
+                            margin-bottom: 20px;
+                        }
 
-    .btn-action {
-        display: inline-flex;
-        align-items: center;
-        padding: 10px 20px;
-        border-radius: 8px; /* Slightly rounded buttons */
-        font-size: 0.95rem;
-        font-weight: 600;
-        text-decoration: none;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        border: none; /* Remove default button border */
-        color: #fff;
-    }
+                        .order-info-item {
+                            display: flex;
+                            align-items: center;
+                            margin-bottom: 10px;
+                            font-size: 1rem;
+                            color: #555;
+                        }
 
-    .btn-action .icon {
-        margin-right: 8px;
-    }
+                        .order-info-item .icon {
+                            color: #999;
+                            /* Softer icon color */
+                            margin-right: 12px;
+                            width: 20px;
+                            /* Fixed width for icons */
+                            text-align: center;
+                        }
 
-    .btn-action.primary {
-        background-color: #007bff; /* Primary blue for action */
-    }
+                        .order-info-item .label {
+                            font-weight: 500;
+                            margin-right: 8px;
+                            color: #444;
+                        }
 
-    .btn-action.primary:hover {
-        background-color: #0056b3;
-        transform: translateY(-2px);
-    }
+                        .order-info-item .value {
+                            font-weight: 400;
+                            color: #333;
+                            flex-grow: 1;
+                            /* Allow value to take up remaining space */
+                        }
 
-    .btn-action.info {
-        background-color: #6c757d; /* Grey for info/details */
-    }
+                        .order-info-item.total-amount .value {
+                            font-weight: 700;
+                            /* Bold for total amount */
+                            color: #e53935;
+                            /* Your brand red for total */
+                            font-size: 1.1rem;
+                        }
 
-    .btn-action.info:hover {
-        background-color: #5a6268;
-        transform: translateY(-2px);
-    }
-</style>
+                        .order-footer {
+                            display: flex;
+                            justify-content: flex-end;
+                            /* Align buttons to the right */
+                            gap: 10px;
+                            /* Space between buttons */
+                            padding-top: 15px;
+                            border-top: 1px solid #eee;
+                            /* Subtle separator */
+                        }
+
+                        .btn-action {
+                            display: inline-flex;
+                            align-items: center;
+                            padding: 10px 20px;
+                            border-radius: 8px;
+                            /* Slightly rounded buttons */
+                            font-size: 0.95rem;
+                            font-weight: 600;
+                            text-decoration: none;
+                            cursor: pointer;
+                            transition: background-color 0.3s ease, transform 0.2s ease;
+                            border: none;
+                            /* Remove default button border */
+                            color: #fff;
+                        }
+
+                        .btn-action .icon {
+                            margin-right: 8px;
+                        }
+
+                        .btn-action.primary {
+                            background-color: #007bff;
+                            /* Primary blue for action */
+                        }
+
+                        .btn-action.primary:hover {
+                            background-color: #0056b3;
+                            transform: translateY(-2px);
+                        }
+
+                        .btn-action.info {
+                            background-color: #6c757d;
+                            /* Grey for info/details */
+                        }
+
+                        .btn-action.info:hover {
+                            background-color: #5a6268;
+                            transform: translateY(-2px);
+                        }
+                    </style>
                 </div>
             </div>
 
@@ -334,8 +427,7 @@
                         </div>
                         <div class="form-group">
                             <label for="noteInput">Ghi chú:</label>
-                            <textarea placeholder="Lý do hủy/trả hàng, ..." class="form-control" id="noteInput" name="note"
-                                rows="3"></textarea>
+                            <textarea placeholder="Lý do hủy/trả hàng, ..." class="form-control" id="noteInput" name="note" rows="3"></textarea>
                             <div class="invalid-feedback" id="noteInputError"></div>
                         </div>
 
@@ -343,11 +435,13 @@
                         <div class="form-group mt-3">
                             <label>Ảnh xác nhận giao hàng:</label>
                             <div>
-                                <video id="video" width="320" height="240" autoplay style="border:1px solid #ccc;"></video>
+                                <video id="video" width="320" height="240" autoplay
+                                    style="border:1px solid #ccc;"></video>
                                 <canvas id="canvas" width="320" height="240"
                                     style="display:none; border:1px solid #ccc;"></canvas>
                             </div>
-                            <button type="button" class="btn btn-sm btn-secondary mt-2" id="startCamera">Bật Camera</button>
+                            <button type="button" class="btn btn-sm btn-secondary mt-2" id="startCamera">Bật
+                                Camera</button>
                             <button type="button" class="btn btn-sm btn-success mt-2" id="takePhoto" disabled>Chụp
                                 Ảnh</button>
                             <button type="button" class="btn btn-sm btn-warning mt-2" id="retakePhoto"
@@ -377,16 +471,18 @@
 
 @push('script')
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $.ajaxSetup({
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
             });
 
             var currentOrderId = null;
             var stream;
 
             // Mở modal thao tác
-            $('#orderActionModal').on('show.bs.modal', function (event) {
+            $('#orderActionModal').on('show.bs.modal', function(event) {
                 var button = $(event.relatedTarget);
                 currentOrderId = button.data('order-id');
                 var orderCode = button.data('order-code');
@@ -414,21 +510,24 @@
             });
 
             // Bật camera
-            $('#startCamera').on('click', function () {
-                navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-                    .then(function (mediaStream) {
+            $('#startCamera').on('click', function() {
+                navigator.mediaDevices.getUserMedia({
+                        video: true,
+                        audio: false
+                    })
+                    .then(function(mediaStream) {
                         stream = mediaStream;
                         $('#video')[0].srcObject = stream;
                         $('#video')[0].play();
                         $('#startCamera').prop('disabled', true);
                         $('#takePhoto').prop('disabled', false);
-                    }).catch(function (err) {
+                    }).catch(function(err) {
                         alert('Không thể mở camera: ' + err.message);
                     });
             });
 
             // Chụp ảnh
-            $('#takePhoto').on('click', function () {
+            $('#takePhoto').on('click', function() {
                 let video = $('#video')[0];
                 let canvas = $('#canvas')[0];
                 let context = canvas.getContext('2d');
@@ -452,7 +551,7 @@
             });
 
             // Chụp lại
-            $('#retakePhoto').on('click', function () {
+            $('#retakePhoto').on('click', function() {
                 $('#photoInput').val('');
                 $('#canvas').hide();
                 $('#video').show();
@@ -463,7 +562,7 @@
             });
 
             // Lưu trạng thái và ảnh
-            $('#saveAction').on('click', function () {
+            $('#saveAction').on('click', function() {
                 var saveButton = $(this);
                 var form = $('#actionForm');
                 var modal = $('#orderActionModal');
@@ -477,7 +576,15 @@
                     return;
                 }
 
+
+                if (!photoData) {
+    alert('Bạn phải chụp ảnh xác nhận giao hàng trước khi lưu!');
+    return;
+}
+
+
                 saveButton.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Đang lưu...');
+                (validate form shipper)
                 form.find('.is-invalid').removeClass('is-invalid');
                 form.find('.invalid-feedback').text('');
 
@@ -494,22 +601,28 @@
                         _method: 'PUT'
                     },
                     dataType: 'json',
-                    success: function (response) {
+                    success: function(response) {
                         if (response.success) {
                             modal.modal('hide');
                             alert(response.message || 'Cập nhật trạng thái thành công!');
 
                             // Cập nhật giao diện đơn hàng
-                            var orderItemDiv = $('.order-item[data-order-item-id="' + orderId + '"]');
+                            var orderItemDiv = $('.order-item[data-order-item-id="' + orderId +
+                                '"]');
                             if (orderItemDiv.length) {
                                 if (response.newStatusBadge) {
-                                    orderItemDiv.find('.status-badge-container').html(response.newStatusBadge);
+                                    orderItemDiv.find('.status-badge-container').html(response
+                                        .newStatusBadge);
                                 }
                                 if (newStatus !== 'shipping') {
                                     orderItemDiv.find('.btn-action').hide();
                                 }
-                                if (['completed', 'cancelled', 'returned', 'delivered', 'confirm', 'refunded'].includes(newStatus)) {
-                                    orderItemDiv.fadeOut(500, function () { $(this).remove(); });
+                                if (['completed', 'cancelled', 'returned', 'delivered',
+                                        'confirm', 'refunded'
+                                    ].includes(newStatus)) {
+                                    orderItemDiv.fadeOut(500, function() {
+                                        $(this).remove();
+                                    });
                                 }
                             } else {
                                 location.reload();
@@ -519,12 +632,13 @@
                             saveButton.prop('disabled', false).html('Lưu thay đổi');
                         }
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         saveButton.prop('disabled', false).html('Lưu thay đổi');
                         if (xhr.status === 422) {
                             let errors = xhr.responseJSON.errors;
-                            $.each(errors, function (key, val) {
-                                let inputId = '#' + key.charAt(0).toLowerCase() + key.slice(1) + (key === 'status' ? 'Select' : 'Input');
+                            $.each(errors, function(key, val) {
+                                let inputId = '#' + key.charAt(0).toLowerCase() + key
+                                    .slice(1) + (key === 'status' ? 'Select' : 'Input');
                                 let errorId = inputId + 'Error';
                                 $(inputId).addClass('is-invalid');
                                 $(errorId).text(val[0]);
@@ -538,7 +652,7 @@
             });
 
             // Khi modal đóng thì dừng camera nếu đang bật
-            $('#orderActionModal').on('hidden.bs.modal', function () {
+            $('#orderActionModal').on('hidden.bs.modal', function() {
                 if (stream) {
                     stream.getTracks().forEach(track => track.stop());
                 }

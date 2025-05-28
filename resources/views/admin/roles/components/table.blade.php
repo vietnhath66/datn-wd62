@@ -59,7 +59,7 @@
                 <div class="card-body">
                     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-12">
                         @include('admin.roles.components.filter')
-                        
+
                         <div class="lg:col-span-2 ltr:lg:text-right rtl:lg:text-left xl:col-span-2 xl:col-start-11">
                             <a href="{{ route('admin.roles.create') }}" type="button"
                                 class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20"><i
@@ -113,21 +113,24 @@
                                                             data-lucide="more-horizontal" class="size-3"></i></button>
                                                     <ul class="absolute z-50 hidden py-2 mt-1 ltr:text-left rtl:text-right list-none bg-white rounded-md shadow-md dropdown-menu min-w-[10rem] dark:bg-zink-600"
                                                         aria-labelledby="productAction1">
-                                                        
+
                                                         <li>
                                                             <a class="block px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200"
                                                                 href="{{ route('admin.roles.edit', $item->id) }}"><i
                                                                     data-lucide="file-edit"
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Edit</span></a>
+                                                                <span class="align-middle">Sửa</span></a>
                                                         </li>
-                                                        <form action="{{ route('admin.roles.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
+                                                        <form action="{{ route('admin.roles.destroy', $item->id) }}"
+                                                            method="POST"
+                                                            onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit"
                                                                 class="block w-full text-left px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200">
-                                                                <i data-lucide="trash-2" class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Delete</span>
+                                                                <i data-lucide="trash-2"
+                                                                    class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
+                                                                <span class="align-middle">Xoá</span>
                                                             </button>
                                                         </form>
                                                     </ul>
@@ -152,7 +155,7 @@
                         <p class="text-slate-500">
                             Hiển thị <b>{{ $roles->count() }}</b> / <b>{{ $roles->total() }}</b> Vai trò
                         </p>
-                    
+
                         <div class="pagination-buttons">
                             {{ $roles->links() }}
                         </div>

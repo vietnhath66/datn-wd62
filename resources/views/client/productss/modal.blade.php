@@ -161,7 +161,7 @@ $admin = \App\Models\User::whereHas('roles', function($query) {
     $query->where('id', 1); // 1 là role Admin
 })->first();
 @endphp
-@if(auth()->check() && auth()->user()->hasRole([4, 5]) )
+@if(auth()->check() && auth()->user()->hasRoles([4, 5]) )
 {{-- Cộng tác viên (4) hoặc Khách hàng (5) --}}
 <a href="{{ url('chatify/' . $admin->id) }}" target="_blank" class="floating-button">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="color: #fff" fill="currentColor"
@@ -173,7 +173,7 @@ $admin = \App\Models\User::whereHas('roles', function($query) {
         </svg>
     </a>
 @elseif(auth()->check() &&
-        auth()->user()->hasRole([1, 2, 3]))
+        auth()->user()->hasRoles([1, 2, 3]))
     {{-- Admin (1), Nhân viên bán hàng (2), Super Admin (3) --}}
     <a href="{{ url('chatify') }}" target="_blank" class="floating-button">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="color: #fff"

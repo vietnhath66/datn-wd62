@@ -13,6 +13,7 @@
             <div class="stat-item">
                 <i class="fas fa-check-circle"></i> Đơn hàng thành công: {{ $successfulOrdersCount ?? 0 }}
             </div>
+
             <div class="stat-item">
                 <i class="fas fa-times-circle"></i> Đơn hàng đã hủy: {{ $cancelledOrdersCount ?? 0 }}
             </div>
@@ -27,6 +28,3 @@
     <a href="#" data-page="addresses">Địa chỉ</a>
     <a href="#" data-page="coupons">Phiếu giảm giá</a>
 </div>
-
-
-
