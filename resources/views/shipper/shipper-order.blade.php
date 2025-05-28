@@ -576,15 +576,13 @@
                     return;
                 }
 
-
                 if (!photoData) {
-    alert('Bạn phải chụp ảnh xác nhận giao hàng trước khi lưu!');
-    return;
-}
+                    alert('Bạn phải chụp ảnh xác nhận giao hàng trước khi lưu!');
+                    return;
+                }
 
-
-                saveButton.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Đang lưu...');
-                (validate form shipper)
+                saveButton.prop('disabled', true).html(
+                    '<span class="spinner-border spinner-border-sm"></span> Đang lưu...');
                 form.find('.is-invalid').removeClass('is-invalid');
                 form.find('.invalid-feedback').text('');
 
