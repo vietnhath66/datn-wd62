@@ -154,7 +154,7 @@
                                                                 href="{{ route('admin.users.edit', ['user' => $item->id]) }}"><i
                                                                     data-lucide="file-edit"
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Edit</span></a>
+                                                                <span class="align-middle">Sửa</span></a>
                                                         </li>
                                                         {{-- <form action="{{ route('admin.users.destroy', ['user' => $item->id]) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
                                                             @csrf

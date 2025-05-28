@@ -180,7 +180,7 @@
                                                                 href="{{ route('admin.order.edit', $order->id) }}"><i
                                                                     data-lucide="file-edit"
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Edit</span></a>
+                                                                <span class="align-middle">Sửa</span></a>
                                                         </li>
                                                     </ul>
                                                 </div>

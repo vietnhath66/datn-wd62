@@ -73,7 +73,7 @@
                                                                 href="{{ route('admin.product_catalogue.edit', $productCatalogue->id) }}"><i
                                                                     data-lucide="file-edit"
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Edit</span></a>
+                                                                <span class="align-middle">Sửa</span></a>
                                                         </li>
                                                         <li>
                                                             <a data-modal-target="deleteModal"
@@ -81,7 +81,7 @@
                                                                 href="{{ route('admin.product_catalogue.delete', $productCatalogue->id) }}"><i
                                                                     data-lucide="trash-2"
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Delete</span></a>
+                                                                <span class="align-middle">Xoá</span></a>
                                                         </li>
                                                     </ul>
                                                 </div>

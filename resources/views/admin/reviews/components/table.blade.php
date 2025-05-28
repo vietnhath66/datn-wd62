@@ -161,7 +161,7 @@
                                                                     href="{{ route('admin.review.reply', $item->id) }}"><i
                                                                         data-lucide="file-edit"
                                                                         class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                    <span class="align-middle">Reply</span></a>
+                                                                    <span class="align-middle">Trả lời</span></a>
                                                             </li>
                                                             <li>
                                                                 <form
@@ -174,7 +174,7 @@
                                                                         class="block w-full text-left px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200">
                                                                         <i data-lucide="trash-2"
                                                                             class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                        <span class="align-middle">Delete</span>
+                                                                        <span class="align-middle">Xoá</span>
                                                                     </button>
                                                                 </form>
                                                             </li>

@@ -61,7 +61,10 @@
                         @include('admin.roles.components.filter')
 
                         <div class="lg:col-span-2 ltr:lg:text-right rtl:lg:text-left xl:col-span-2 xl:col-start-11">
-                            <a href="" class="btn btn-danger">Thêm mới</a>
+                            <a href="{{ route('admin.roles.create') }}" type="button"
+                                class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20"><i
+                                    data-lucide="plus" class="inline-block size-4"></i> <span class="align-middle">Thêm
+                                    mới</span></a>
                         </div>
                     </div><!--end grid-->
                 </div>
@@ -116,7 +119,7 @@
                                                                 href="{{ route('admin.roles.edit', $item->id) }}"><i
                                                                     data-lucide="file-edit"
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Edit</span></a>
+                                                                <span class="align-middle">Sửa</span></a>
                                                         </li>
                                                         <form action="{{ route('admin.roles.destroy', $item->id) }}"
                                                             method="POST"
@@ -127,7 +130,7 @@
                                                                 class="block w-full text-left px-4 py-1.5 text-base transition-all duration-200 ease-linear text-slate-600 dropdown-item hover:bg-slate-100 hover:text-slate-500 focus:bg-slate-100 focus:text-slate-500 dark:text-zink-100 dark:hover:bg-zink-500 dark:hover:text-zink-200 dark:focus:bg-zink-500 dark:focus:text-zink-200">
                                                                 <i data-lucide="trash-2"
                                                                     class="inline-block size-3 ltr:mr-1 rtl:ml-1"></i>
-                                                                <span class="align-middle">Delete</span>
+                                                                <span class="align-middle">Xoá</span>
                                                             </button>
                                                         </form>
                                                     </ul>
