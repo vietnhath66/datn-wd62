@@ -80,6 +80,10 @@ class User extends Authenticatable implements MustVerifyEmail
         }
         return $currentRole->name === $rolesInput; // So sánh theo tên vai trò
     }
+    public function hasRoles($roles)
+    {
+        return in_array($this->role_id, (array) $roles);
+    }
 
     public function shipperProfile(): HasOne
     {

@@ -1,7 +1,7 @@
 @include('Chatify::layouts.headLinks')
 <div class="messenger">
     {{-- ----------------------Users/Groups lists side---------------------- --}}
-    @if(auth()->user()->hasRole([1, 2, 3]))
+    @if(auth()->user()->hasRoles([1, 2, 3]))
     <div class="messenger-listView {{ !!$id ? 'conversation-active' : '' }}">
         {{-- Header and search bar --}}
         <div class="m-header">
@@ -48,7 +48,7 @@
              </div>
         </div>
     </div>
-    @elseif(auth()->user()->hasRole([4, 5]))
+    @elseif(auth()->user()->hasRoles([4, 5]))
     <div class="messenger-favorites app-scroll-hidden" style="width:0px; padding: 0px;"></div>
     @endif
 
