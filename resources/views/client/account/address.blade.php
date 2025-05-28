@@ -297,6 +297,147 @@
         color: #999;
         cursor: not-allowed;
     }
+    /* Form Section */
+.address-section {
+  background: #fefefe;
+  border: 1px solid #ddd;
+  padding: 24px;
+  border-radius: 12px;
+  max-width: 700px;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.section-desc {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.form-group select:disabled {
+  background-color: #f9f9f9;
+}
+
+.form-actions {
+  margin-top: 20px;
+  text-align: right;
+}
+
+.save-btn {
+  background-color: #3490dc;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.save-btn:hover {
+  background-color: #2779bd;
+}
+
+/* Address Table Display */
+#addressDetailContainer h3,
+#addressSummaryContainer h3 {
+  font-size: 18px;
+  margin-top: 30px;
+  margin-bottom: 12px;
+  color: #2c3e50;
+}
+
+#addressDetailContainer table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+#addressDetailContainer th,
+#addressDetailContainer td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  font-size: 14px;
+}
+
+#addressDetailContainer tr:last-child td {
+  border-bottom: none;
+}
+
+#addressDetailContainer button {
+  margin-right: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#editBtn {
+  background-color: #ffc107;
+  color: #fff;
+}
+
+#deleteBtn {
+  background-color: #e3342f;
+  color: #fff;
+}
+
+#editBtn:hover {
+  background-color: #e0a800;
+}
+
+#deleteBtn:hover {
+  background-color: #cc1f1a;
+}
+
+/* Address Summary List */
+#addressList {
+  list-style: none;
+  padding-left: 0;
+}
+
+#addressList li {
+  background-color: #f1f5f9;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
 </style>
 
 <div id="snackbar" class="snackbar"></div>
@@ -345,6 +486,96 @@
         </div>
     </form>
 </div>
+<div id="addressDetailContainer" style="margin-top: 20px;"></div>
+
+<div id="addressSummaryContainer" style="margin-top: 20px;">
+  <h3>Danh sách địa chỉ cụ thể</h3>
+  <ul id="addressList"></ul>
+</div>
+
+<script>
+  const form = document.getElementById('addressForm');
+  const detailContainer = document.getElementById('addressDetailContainer');
+  const summaryList = document.getElementById('addressList');
+
+  let currentAddress = null; // lưu địa chỉ đang hiển thị sửa/xoá
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Lấy dữ liệu từ form
+    const address = form.address.value.trim();
+    const city = form.city.options[form.city.selectedIndex]?.text || '';
+    const district = form.district.options[form.district.selectedIndex]?.text || '';
+    const neighborhood = form.ward.options[form.ward.selectedIndex]?.text || '';
+
+    currentAddress = {address, city, district, neighborhood};
+
+    // Hiển thị chi tiết đầy đủ (bảng + nút Sửa/Xoá)
+    renderDetail(currentAddress);
+
+    // Cập nhật danh sách địa chỉ cụ thể chỉ hiển thị địa chỉ cụ thể
+    updateSummaryList([currentAddress]); // giả sử chỉ 1 địa chỉ, sau này bạn mở rộng mảng
+
+    form.reset();
+    form.district.disabled = true;
+    form.ward.disabled = true;
+  });
+
+  function renderDetail(addr) {
+    detailContainer.innerHTML = `
+      <h3>Thông tin địa chỉ vừa nhập</h3>
+      <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; max-width: 600px; width: 100%;">
+        <tr><th style="text-align:left; width: 150px;">Địa chỉ cụ thể</th><td>${addr.address}</td></tr>
+        <tr><th style="text-align:left;">Tỉnh/Thành phố</th><td>${addr.city}</td></tr>
+        <tr><th style="text-align:left;">Quận/Huyện</th><td>${addr.district}</td></tr>
+        <tr><th style="text-align:left;">Phường/Xã</th><td>${addr.neighborhood}</td></tr>
+      </table>
+      <div style="margin-top: 10px;">
+        <button id="editBtn" type="button">Sửa</button>
+        <button id="deleteBtn" type="button">Xoá</button>
+      </div>
+    `;
+
+    document.getElementById('editBtn').addEventListener('click', () => {
+      form.address.value = addr.address;
+      selectOptionByText(form.city, addr.city);
+      selectOptionByText(form.district, addr.district);
+      selectOptionByText(form.ward, addr.neighborhood);
+      form.address.focus();
+    });
+
+    document.getElementById('deleteBtn').addEventListener('click', () => {
+      currentAddress = null;
+      detailContainer.innerHTML = '';
+      summaryList.innerHTML = '';
+      form.reset();
+      form.district.disabled = true;
+      form.ward.disabled = true;
+    });
+  }
+
+  // Cập nhật danh sách địa chỉ cụ thể (chỉ hiển thị địa chỉ)
+  function updateSummaryList(addresses) {
+    summaryList.innerHTML = '';
+    addresses.forEach(addr => {
+      const li = document.createElement('li');
+li.textContent = addr.address;
+      summaryList.appendChild(li);
+    });
+  }
+
+  function selectOptionByText(selectElement, text) {
+    for(let i=0; i < selectElement.options.length; i++) {
+      if(selectElement.options[i].text === text) {
+        selectElement.selectedIndex = i;
+        return;
+      }
+    }
+    selectElement.selectedIndex = 0;
+  }
+</script>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
