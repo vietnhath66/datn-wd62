@@ -9,6 +9,8 @@ class Counpon extends Model
 {
     use HasFactory;
 
+    protected $table = 'counpon_user';
+
     protected $fillable = [
         'name',
         'code',
@@ -20,9 +22,8 @@ class Counpon extends Model
         'end_date',
     ];
 
-    protected $table = 'coupons';
     public function users()
     {
-        return $this->belongsToMany(User::class, 'coupon_user', 'coupon_id', 'user_id');
+        return $this->belongsToMany(User::class, 'counpon_user', 'coupon_id', 'user_id');
     }
 }
