@@ -34,7 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'dark_mode',
         'messenger_color',
         'email_verified_at',
-        'status'
+        'is_locked'
     ];
 
     /**
@@ -55,6 +55,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_locked' => 'boolean',
     ];
 
     public function roles()
@@ -99,5 +100,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function wishlistedProducts()
     {
         return $this->belongsToMany(Product::class, 'wishlists', 'user_id', 'product_id')->withTimestamps();
+    }
+    public function counpons()
+    {
+        return $this->belongsToMany(Counpon::class, 'coupon_user', 'user_id', 'coupon_id');
     }
 }

@@ -33,6 +33,8 @@ class Product extends Model
         'view',
     ];
 
+    protected $dates = ['deleted_at'];
+
     protected $table = 'products';
 
     public function product_catalogues()
@@ -58,6 +60,7 @@ class Product extends Model
     {
         return $this->hasMany(ProductVariant::class, 'product_id');
     }
+
 
     // public function reviews() {
     //     return $this->morphMany(Review::class, 'reviewable');
@@ -90,3 +93,4 @@ class Product extends Model
         return $this->belongsToMany(User::class, 'wishlists', 'product_id', 'user_id')->withTimestamps();
     }
 }
+

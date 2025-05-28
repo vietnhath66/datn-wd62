@@ -55,8 +55,27 @@ class CounponRepository extends BaseRepository implements CounponRepositoryInter
         return $query->paginate($perPage)->withQueryString()->withPath(env('APP_URL').$extend['path']);
     }
 
-    public function getBrandById(int $id = 0){
-        return $this->model->find($id);
+    public function destroy($model)
+    {
+        if (!$model instanceof Model) {
+            $model = $this->model->find($model); // Nếu truyền ID, tìm Model
+        }
+    
+        if (!$model) {
+            return false; // Nếu không tìm thấy, trả về false
+        }
+    
+        return $model->delete();
+    }
+    public function getCounponById(int $id = 0)
+    {
+        $counpon = $this->model->find($id);
+    
+        if (!$counpon) {
+            throw new \Exception("Không tìm thấy khuyến mãi với ID: $id");
+        }
+    
+        return $this->model->with('users')->findOrFail($id);
     }
 
 }

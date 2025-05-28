@@ -35,23 +35,24 @@ class BaseRepository implements BaseRepositoryInterface
         array $rawQuery = [],
     ) {
         $query = $this->model->select($column);
-
-        // if(isset($condition['keyword'])) {
-        //     // dd($condition['keyword']);
-        //     $query->where('products.name','LIKE', $condition['keyword']);
-        // }
-        return $query
-            // ->keyword($condition['keyword'] ?? null)
-
+    
+        // Apply joins, filters...
+        $query = $query
             ->publish($condition['publish'] ?? null)
             ->relationCount($relations ?? null)
             ->CustomWhere($condition['where'] ?? null)
             ->customWhereRaw($rawQuery['whereRaw'] ?? null)
             ->customJoin($join ?? null)
-            ->customGroupBy($extend['groupBy'] ?? null)
-            ->customOrderBy($orderBy ?? null)
-            ->paginate($perPage)
-            ->withQueryString()->withPath(env('APP_URL') . $extend['path']);
+            ->customGroupBy($extend['groupBy'] ?? null);
+    
+        // Sắp xếp
+        if (!empty($orderBy)) {
+            $query->orderBy($orderBy[0], $orderBy[1]);
+        }
+    
+        return $query->paginate($perPage)
+            ->withQueryString()
+            ->withPath(env('APP_URL') . $extend['path']);
     }
 
     public function create($data)

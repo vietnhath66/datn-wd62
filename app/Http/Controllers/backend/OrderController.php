@@ -91,8 +91,8 @@ class OrderController extends Controller
             })
             ->groupBy('orders.id')
             ->orderBy('orders.id', 'DESC')
-            ->paginate(1000); // Giới hạn kết quả trả về (10 đơn hàng mỗi trang)
-
+            ->paginate(10); // Giới hạn kết quả trả về (10 đơn hàng mỗi trang)
+            // dd($orders);
         // Tải quan hệ sau khi lấy dữ liệu (Order Items, Products và Product Variants)
         $orders->load(['orderItems.products.product_variants']);
 
@@ -188,13 +188,12 @@ class OrderController extends Controller
         // Xác thực dữ liệu
         $request->validate([
             'status' => 'required|string|in:pending,processing,shipping,confirm,completed,cancelled,refunded,failed',
-            'payment_status' => 'required|string|in:pending,paid,failed,refunded',
+            // 'payment_status' => 'required|string|in:pending,paid,failed,refunded',
         ]);
         // Kiểm tra và áp dụng điều kiện chuyển đổi trạng thái
         if ($order->status == 'pending' && !in_array($request->status, ['processing', 'confirm', 'cancelled', 'pending'])) {
             return back()->with('error', 'Không thể chuyển trạng thái từ "Chờ xử lý" sang trạng thái này.');
         }
-
 
         if ($order->status == 'processing' && !in_array($request->status, ['shipping', 'confirm', 'cancelled', 'processing'])) {
             return back()->with('error', 'Không thể chuyển trạng thái từ "Đang xử lý" sang trạng thái này.');

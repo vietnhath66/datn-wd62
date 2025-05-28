@@ -51,7 +51,8 @@
                                                         <i class="fs-16 zmdi zmdi-minus"></i>
                                                     </button>
                                                     <input class="quantity-input kanit-thin" type="number"
-                                                        name="quantity" value="{{ $item->quantity }}" min="1">
+                                                        name="quantity" value="{{ $item->quantity }}" min="1"
+                                                        readonly>
                                                     <button type="button" class="quantity-btn btn-num-product-up">
                                                         <i class="fs-16 zmdi zmdi-plus"></i>
                                                     </button>

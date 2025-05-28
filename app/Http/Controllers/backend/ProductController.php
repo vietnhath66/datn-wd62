@@ -140,9 +140,15 @@ class ProductController extends Controller
             $path = $request->file('image')->store('products', 'public');
             $request->merge(['image' => $path]);
         }
-        if (count($request->attributeCatalogue) == 1) {
+
+        if (isset($request->attributeCatalogue)) {
+            if (count($request->attributeCatalogue) == 1) {
+                return redirect()->back()->with('error', 'Biến thể sản phẩm phải có đủ cả kích thước và màu sắc!');
+            }
+        } else {
             return redirect()->back()->with('error', 'Biến thể sản phẩm phải có đủ cả kích thước và màu sắc!');
         }
+
         foreach ($request->variant['quantity'] as $key) {
             if ($key == null) {
                 return redirect()->back()->with('error', 'Vui lòng nhập hết số lượng biến thể!');
@@ -196,9 +202,14 @@ class ProductController extends Controller
     public function update($id, UpdateProductRequest $request)
     {
 
-        if (count($request->attributeCatalogue) == 1) {
+        if (isset($request->attributeCatalogue)) {
+            if (count($request->attributeCatalogue) == 1) {
+                return redirect()->back()->with('error', 'Biến thể sản phẩm phải có đủ cả kích thước và màu sắc!');
+            }
+        } else {
             return redirect()->back()->with('error', 'Biến thể sản phẩm phải có đủ cả kích thước và màu sắc!');
         }
+
 
         foreach ($request->variant['quantity'] as $key) {
             if ($key == null) {

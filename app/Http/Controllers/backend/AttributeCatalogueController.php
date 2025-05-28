@@ -112,10 +112,24 @@ class AttributeCatalogueController extends Controller
         // $this->authorize('modules', 'admin.attribute_catalogue.update');
         $attributeCatalogue = $this->attributeCatalogueReponsitory->getAttributeCatalogueById($id);
         $config = $this->configData();
-        $config['seo'] = __('messages.attributeCatalogue');
+        $config['seo'] =  [
+            'index' => [
+                'title' => 'Quản lý loại thuộc tính',
+                'table' => 'Danh sách loại thuộc tính'
+            ],
+            'create' => [
+                'title' => 'Thêm mới loại thuộc tính'
+            ],
+            'edit' => [
+                'title' => 'Cập nhật loại thuộc tính'
+            ],
+            'delete' => [
+                'title' => 'Xóa loại thuộc tính'
+            ],
+        ];
         $config['method'] = 'edit';
         $dropdown  = $this->nestedset->Dropdown();
-        $template = 'admin.attribute.catalogue.store';
+        $template = 'admin.attributes.catalogue.store';
         return view('admin.dashboard.layout', compact(
             'template',
             'config',
@@ -125,10 +139,10 @@ class AttributeCatalogueController extends Controller
     }
 
     public function update($id, UpdateAttributeCatalogueRequest $request){
-        if($this->attributeCatalogueService->update($id, $request, $this->language)){
-            return redirect()->route('admin.attribute.catalogue.index')->with('success','Cập nhật bản ghi thành công');
+        if($this->attributeCatalogueService->update($id, $request)){
+            return redirect()->route('admin.attribute_catalogue.index')->with('success','Cập nhật bản ghi thành công');
         }
-        return redirect()->route('admin.attribute.catalogue.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('admin.attribute_catalogue.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
     public function delete($id){

@@ -138,37 +138,24 @@ class ProductsController extends Controller
             });
         }
 
-        $selectedBrands = $request->query('brands', []); // Lấy mảng brands[] từ URL
+        $selectedBrands = $request->query('brands', []); 
         if (!empty($selectedBrands) && is_array($selectedBrands)) {
-            // Lọc các brand ID hợp lệ
             $validBrandIds = array_filter($selectedBrands, 'is_numeric');
             if (!empty($validBrandIds)) {
                 $productsQuery->whereIn('brand_id', $validBrandIds);
             }
         }
 
-        $selectedRatings = $request->query('ratings', []); // Lấy mảng ratings[] từ URL
+        $selectedRatings = $request->query('ratings', []); 
         if (!empty($selectedRatings) && is_array($selectedRatings)) {
             $validRatings = array_map('intval', array_filter($selectedRatings, 'is_numeric'));
-            $validRatings = array_filter($validRatings, fn($r) => $r >= 1 && $r <= 5); // Chỉ lấy rating 1-5
+            $validRatings = array_filter($validRatings, fn($r) => $r >= 1 && $r <= 5); 
 
             if (!empty($validRatings)) {
-                // --- Cách 1: Lọc sản phẩm có ÍT NHẤT MỘT đánh giá nằm trong các mức đã chọn ---
                 $productsQuery->whereHas('reviews', function (Builder $query) use ($validRatings) {
                     $query->whereIn('rating', $validRatings);
                 });
 
-                // --- Cách 2: Lọc sản phẩm có ĐIỂM TRUNG BÌNH nằm trong khoảng đã chọn ---
-                // (Yêu cầu bạn phải có cột average_rating trong bảng products và được cập nhật thường xuyên)
-                // $productsQuery->where(function (Builder $query) use ($validRatings) {
-                //     foreach ($validRatings as $rating) {
-                //         if ($rating == 5) {
-                //             $query->orWhere('average_rating', '>=', 5);
-                //         } else {
-                //             $query->orWhereBetween('average_rating', [$rating, $rating + 0.99]); // Ví dụ: 4 sao là từ 4.0 đến 4.99
-                //         }
-                //     }
-                // });
             }
         }
 
@@ -183,7 +170,7 @@ class ProductsController extends Controller
         $colors = Attribute::where('attribute_catalogue_id', 11)->get();
         $sizes = Attribute::where('attribute_catalogue_id', 10)->get();
 
-        $wishlistedProductIds = []; // Lấy wishlist IDs (như đã làm)
+        $wishlistedProductIds = []; 
         if (Auth::check()) {
             $wishlistedProductIds = Auth::user()->wishlistedProducts()->pluck('products.id')->toArray();
         }
@@ -196,7 +183,7 @@ class ProductsController extends Controller
             'selectedCategoryId',
             'colors',
             'sizes',
-            'request', // Giữ lại request để đọc param trong view nếu cần
+            'request', 
             'brands',
             'wishlistedProductIds'
         ));
@@ -237,22 +224,18 @@ class ProductsController extends Controller
 
         $colors = $variants->pluck('name_variant_color')->unique();
 
-        // === BẮT ĐẦU KIỂM TRA QUYỀN ĐÁNH GIÁ ===
-        $canReview = false; // Mặc định là không thể đánh giá
-        if (Auth::check()) { // Kiểm tra nếu người dùng đã đăng nhập
+        $canReview = false; 
+        if (Auth::check()) { 
             $userId = Auth::id();
             $productId = $product->id;
 
-            // Kiểm tra xem user này có đơn hàng nào đã hoàn thành ('completed', 'delivered')
-            // và chứa sản phẩm này không
             $canReview = Order::where('user_id', $userId)
-                ->whereIn('status', ['completed', 'delivered']) // <<<--- Sử dụng đúng status hoàn thành của bạn
+                ->whereIn('status', ['completed', 'delivered']) 
                 ->whereHas('items', function ($query) use ($productId) {
                     $query->where('product_id', $productId);
                 })
-                ->exists(); // Chỉ cần tồn tại ít nhất 1 đơn hàng thỏa mãn
+                ->exists(); 
         }
-        // === KẾT THÚC KIỂM TRA QUYỀN ĐÁNH GIÁ ===
 
         return view('client.productss.detailProducts', compact('product', 'variants', 'colors', 'relatedProducts', 'canReview'));
 
@@ -300,29 +283,23 @@ class ProductsController extends Controller
                 ->with('error_scroll', '#reviews');
         }
 
-        // ===>>> BẮT ĐẦU KIỂM TRA QUYỀN <<<===
-        $userId = Auth::id(); // Đảm bảo người dùng đã đăng nhập (có thể thêm check Auth::check() nếu cần)
+        $userId = Auth::id(); 
         $productId = $product->id;
 
-        // Kiểm tra xem user này có đơn hàng nào đã hoàn thành ('completed', 'delivered')
-        // và chứa sản phẩm này không
         $hasPurchased = Order::where('user_id', $userId)
-            ->whereIn('status', ['completed', 'delivered']) // <<<--- Sử dụng đúng status hoàn thành của bạn
+            ->whereIn('status', ['completed', 'delivered']) 
             ->whereHas('items', function ($query) use ($productId) {
                 $query->where('product_id', $productId);
             })
             ->exists();
 
         if (!$hasPurchased) {
-            // Ghi log nếu cần theo dõi
             Log::warning("Review attempt blocked: User {$userId} tried to review Product {$productId} without purchase.");
-            // Trả về lỗi
             return redirect()->back()
                 ->with('error', 'Bạn cần mua sản phẩm này để có thể gửi đánh giá.')
-                ->withInput() // Giữ lại dữ liệu đã nhập (rating, comment)
-                ->with('error_scroll', '#reviews'); // Cuộn lại phần reviews
+                ->withInput() 
+                ->with('error_scroll', '#reviews'); 
         }
-        // ===>>> KẾT THÚC KIỂM TRA QUYỀN <<<===
 
         try {
             Review::create([

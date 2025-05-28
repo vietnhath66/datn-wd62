@@ -4,11 +4,23 @@
         <div class="row">
             <!-- Phần thông tin vận chuyển (bên trái) -->
             <div class="col-md-7">
-                <div class="title">
+                <div class="title d-flex justify-content-between align-items-center">
 
-                    <a href="{{ route('client.cart.viewCart') }}" class="text-primary mb-3">Quay Lại Giỏ Hàng</a>
-                    <h4>Thông Tin Vận Chuyển</h4>
+                    <div class="text-primary mb-3">
+                        <a href="{{ route('client.cart.viewCart') }}">← Quay Lại Giỏ Hàng</a>
+                        <h4>Thông Tin Vận Chuyển</h4>
+                    </div>
+
+                    @if (isset($userAddresses) && $userAddresses->isNotEmpty())
+                        <button type="button" id="change-address-btn" class="btn btn-outline-primary btn-sm">
+                            <i class="fa fa-map-marker me-1"></i> Đổi địa chỉ
+                        </button>
+                    @endif
                 </div>
+
+
+
+
                 <div class="shipping-info">
                     @if ($user)
                         <div class="mb-3">
@@ -100,8 +112,17 @@
                                     class="me-3" />
                                 <div class="flex-grow-1">
                                     <p class="mb-0">
-                                        {{ $item->product->name }} <span
-                                            class="text-muted">x{{ $item->quantity }}</span>
+                                        <a
+                                            href="{{ Route('client.product.show', $item->product->id) }}">{{ $item->product->name }}</a>
+                                    </p>
+                                    <p class="mb-0 text-muted">
+                                        SL: <span>{{ $item->quantity }}</span>
+                                    </p>
+                                    <p class="mb-0 text-muted">
+                                        Màu: <span>{{ $item->productVariant->name_variant_color }}</span>
+                                    </p>
+                                    <p class="mb-0 text-muted">
+                                        Size: <span>{{ $item->productVariant->name_variant_size }}</span>
                                     </p>
                                 </div>
                                 <p style="margin-left: auto"> {{ number_format($item->quantity * $item->price) }} VND
@@ -142,20 +163,31 @@
                         {{-- (Tùy chọn) Hiển thị thông tin coupon đã áp dụng --}}
                         <div id="applied-coupon-div" class="text-success p-t-10"
                             style="display: none; font-size: 0.9em;">
-                            Đã áp dụng mã: <strong id="applied-coupon-code"></strong>
+                            Đã áp dụng mã: <strong id="applied-coupon-code"></strong> (<strong
+                                id="applied-coupon-discount_value"></strong>%)
                             {{-- <span id="discount-amount-display" class="text-danger"></span> --}} {{-- Không có số tiền giảm cụ thể nếu không lưu --}}
                         </div>
                     </div>
+
                     <!-- Phương thức thanh toán -->
+                    <hr>
                     <div class="mt-4">
-                        <h6 class="mb-3">Chọn Phương Thức Thanh Toán</h6>
-                        <div class="payment-method d-flex">
+                        <h6 class="form-label" class="mb-3">Chọn Phương Thức Thanh Toán</h6>
+
+                        <div class="payment-method">
                             <input type="radio" id="cod" value="cod" name="payment_method" checked />
-                            <label for="cod">Thanh Toán Khi Nhận Hàng</label>
+                            <label for="cod">
+                                <i class="fa-solid fa-box"></i>
+                                Thanh Toán Khi Nhận Hàng
+                            </label>
                         </div>
-                        <div class="payment-method d-flex">
+
+                        <div class="payment-method">
                             <input type="radio" id="wallet" value="wallet" name="payment_method" />
-                            <label for="wallet">Ví Điện Tử Momo</label>
+                            <label for="wallet">
+                                <i class="fa-solid fa-wallet"></i>
+                                Ví Điện Tử Momo
+                            </label>
                         </div>
                     </div>
                     <!-- Nút xác nhận -->
@@ -165,3 +197,17 @@
         </div>
     </div>
 </form>
+
+<div id="addressModal" class="address-modal">
+    <div class="address-modal-content">
+        <span class="address-modal-close" id="closeAddressModal">&times;</span>
+        <h5 class="address-modal-title">Chọn địa chỉ giao hàng</h5>
+        <div id="modal-address-list">
+            @if (isset($userAddresses) && $userAddresses->isNotEmpty())
+            @else
+                <p>Không có địa chỉ nào được lưu.</p>
+            @endif
+        </div>
+
+    </div>
+</div>

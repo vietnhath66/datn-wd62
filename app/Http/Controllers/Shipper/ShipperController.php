@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Shipper;
 
-use App\Http\Controllers\Controller;
-use App\Models\Order;
-use App\Models\ShipperProfile;
+use DB;
+use Log;
 use Auth;
 use Carbon\Carbon;
-use DB;
+use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Models\ShipperProfile;
 use Illuminate\Validation\Rule;
-use Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+
 
 class ShipperController extends Controller
 {
@@ -135,111 +137,151 @@ class ShipperController extends Controller
     }
 
 
-    public function updateOrderStatus(Order $order, Request $request)
-    {
-        $shipperId = Auth::id();
+public function updateOrderStatus(Order $order, Request $request)
+{
+    $shipperId = Auth::id();
 
-        // 1. Kiểm tra quyền: Shipper có được gán cho đơn này không?
-        if ($order->shipper_id !== $shipperId) {
-            return response()->json(['success' => false, 'message' => 'Bạn không được phép cập nhật đơn hàng này.'], 403);
+    // 1. Kiểm tra quyền
+    if ($order->shipper_id !== $shipperId) {
+        return response()->json(['success' => false, 'message' => 'Bạn không được phép cập nhật đơn hàng này.'], 403);
+    }
+
+    // 2. Validate
+    $allowedStatuses = ['completed', 'cancelled', 'refunded', 'failed', 'delivered', 'confirm'];
+
+    $validatedData = $request->validate([
+        'status' => ['required', Rule::in($allowedStatuses)],
+        'note' => 'nullable|string|max:1000',
+        // Không validate shipper_photo vì sẽ xử lý riêng bên dưới (base64 hoặc file)
+    ], [
+        'status.required' => 'Vui lòng chọn trạng thái mới.',
+        'status.in' => 'Trạng thái cập nhật không hợp lệ.',
+        'note.string' => 'Ghi chú phải là dạng văn bản.',
+        'note.max' => 'Ghi chú không quá 1000 ký tự.',
+    ]);
+
+    $newStatus = $validatedData['status'];
+    $oldStatus = $order->status;
+
+    // 3. Không cho cập nhật nếu đã kết thúc
+    if (in_array($oldStatus, ['completed', 'delivered', 'confirm', 'cancelled', 'returned', 'failed']) && $newStatus !== $oldStatus) {
+        return response()->json(['success' => false, 'message' => 'Không thể thay đổi trạng thái của đơn hàng đã kết thúc hoặc đã hủy.'], 400);
+    }
+
+    DB::beginTransaction();
+    try {
+        // 4. Cập nhật trạng thái và ghi chú
+        $order->status = $newStatus;
+        $order->note = $validatedData['note'] ?? null;
+
+       // 5. Xử lý ảnh: upload file hoặc base64
+if ($request->hasFile('shipper_photo')) {
+    $photo = $request->file('shipper_photo');
+    $filename = 'shipper_photo_' . $order->id . '_' . time() . '.' . $photo->getClientOriginalExtension();
+
+    // Lưu vào storage/app/public/shipper_photos
+    $photo->storeAs('public/shipper_photos', $filename);
+
+    // Lưu đường dẫn public (truy cập được từ trình duyệt)
+    $order->shipper_photo = 'shipper_photos/' . $filename;
+
+} elseif ($request->filled('photo')) {
+    $photoData = $request->input('photo');
+
+    if (preg_match('/^data:image\/(\w+);base64,/', $photoData, $matches)) {
+        $extension = strtolower($matches[1]);
+        $allowedExt = ['jpeg', 'jpg', 'png'];
+
+        if (!in_array($extension, $allowedExt)) {
+            return response()->json(['success' => false, 'message' => 'Định dạng ảnh không hợp lệ.'], 422);
         }
 
-        // 2. Validate dữ liệu gửi lên từ Modal
-        // Xác định các trạng thái shipper được phép cập nhật thành
-        $allowedStatuses = ['completed', 'cancelled', 'refunded', 'failed', 'delivered', 'confirm']; // Thêm/bớt tùy quy trình
-        $validatedData = $request->validate([
-            'status' => ['required', Rule::in($allowedStatuses)],
-            'note' => 'nullable|string|max:1000', // Ghi chú có thể dài hơn
-        ], [
-            'status.required' => 'Vui lòng chọn trạng thái mới.',
-            'status.in' => 'Trạng thái cập nhật không hợp lệ.',
-            'note.string' => 'Ghi chú phải là dạng văn bản.',
-            'note.max' => 'Ghi chú không quá 1000 ký tự.',
-        ]);
+        $base64Str = base64_decode(substr($photoData, strpos($photoData, ',') + 1));
 
-        $newStatus = $validatedData['status'];
-        $oldStatus = $order->status; // Lưu trạng thái cũ để kiểm tra
-
-        // 3. Kiểm tra logic chuyển trạng thái (ví dụ: không thể hủy đơn đã hoàn thành)
-        if ($oldStatus === 'completed' || $oldStatus === 'delivered' || $oldStatus === 'confirm' || $oldStatus === 'cancelled' || $oldStatus === 'returned' || $oldStatus === 'failed') {
-            if ($newStatus !== $oldStatus) { // Không cho đổi status khi đã ở trạng thái cuối
-                return response()->json(['success' => false, 'message' => 'Không thể thay đổi trạng thái của đơn hàng đã kết thúc hoặc đã hủy.'], 400);
-            }
+        if ($base64Str === false) {
+            return response()->json(['success' => false, 'message' => 'Dữ liệu ảnh không hợp lệ.'], 422);
         }
-        // Thêm các quy tắc khác nếu cần
 
-        DB::beginTransaction();
-        try {
-            // 4. Cập nhật trạng thái và ghi chú
-            $order->status = $newStatus;
-            $order->note = $request->input('note'); // Lưu ghi chú
+        $filename = 'shipper_photo_' . $order->id . '_' . time() . '.' . $extension;
 
-            // Cập nhật các timestamp tương ứng
-            switch ($newStatus) {
-                case 'completed':
-                    $order->delivered_at = now(); // Thời gian giao thành công
-                    // Cập nhật trạng thái thanh toán nếu là COD
-                    if (strtolower($order->payment_status) === 'cod' || strtolower($order->payment_status) === 'pending') {
-                        $order->payment_status = 'paid';
-                    }
-                    break;
-                case 'cancelled':
-                    $order->cancelled_at = now();
-                    break;
-                case 'refunded':
-                    $order->refunded_at = now();
-                    break;
-                case 'failed':
-                    $order->failed_at = now();
-                    break;
-            }
+        // Lưu vào storage/app/public/shipper_photos
+        Storage::disk('public')->put("shipper_photos/$filename", $base64Str);
 
-            $order->save();
-            Log::info("Shipper {$shipperId} updated Order {$order->id} status from '{$oldStatus}' to '{$newStatus}'. Note: " . $request->input('note'));
+        // Lưu đường dẫn public
+        $order->shipper_photo = 'shipper_photos/' . $filename;
+
+    } else {
+        return response()->json(['success' => false, 'message' => 'Dữ liệu ảnh không hợp lệ.'], 422);
+    }
+}
 
 
-            if (in_array($newStatus, ['cancelled', 'returned'])) {
-                $order->load('items.productVariant');
-                foreach ($order->items as $item) {
-                    if ($item->productVariant) {
-                        $variantToRestore = $item->productVariant;
-                        $variantToRestore->quantity += $item->quantity;
-                        $variantToRestore->save();
-                        Log::info("Stock restored for Variant ID {$variantToRestore->id} by {$item->quantity} due to order cancellation/return.");
-                    } else {
-                        Log::warning("Cannot restore stock for non-existing variant ID {$item->product_variant_id} on OrderDetail ID {$item->id}");
-                    }
+        // 6. Cập nhật timestamp nếu cần
+        switch ($newStatus) {
+            case 'completed':
+                $order->delivered_at = now();
+                if (strtolower($order->payment_status) === 'cod' || strtolower($order->payment_status) === 'pending') {
+                    $order->payment_status = 'paid';
+                }
+                break;
+            case 'cancelled':
+                $order->cancelled_at = now();
+                break;
+            case 'refunded':
+                $order->refunded_at = now();
+                break;
+            case 'failed':
+                $order->failed_at = now();
+                break;
+        }
+
+        $order->save();
+
+        Log::info("Shipper {$shipperId} cập nhật đơn hàng {$order->id} từ '{$oldStatus}' sang '{$newStatus}'. Ghi chú: " . ($validatedData['note'] ?? ''));
+
+        // 7. Phục hồi tồn kho nếu đơn bị huỷ hoặc hoàn
+        if (in_array($newStatus, ['cancelled', 'returned'])) {
+            $order->load('items.productVariant');
+            foreach ($order->items as $item) {
+                if ($item->productVariant) {
+                    $item->productVariant->increment('quantity', $item->quantity);
+                    Log::info("Khôi phục tồn kho cho biến thể {$item->product_variant_id}: +{$item->quantity}");
+                } else {
+                    Log::warning("Không tìm thấy biến thể {$item->product_variant_id} để khôi phục tồn kho.");
                 }
             }
-
-            DB::commit();
-
-            $newStatusBadge = match (strtolower($order->status ?? '')) {
-                'pending' => '<span class="badge bg-warning text-dark">Chưa hoàn tất</span>',
-                'processing' => '<span class="badge bg-info text-dark">Đang xử lý</span>',
-                'confirm' => '<span class="badge bg-success">Đã xác nhận</span>',
-                'shipping' => '<span class="badge bg-primary">Đang vận chuyển</span>',
-                'completed' => '<span class="badge bg-success">Đã hoàn thành</span>',
-                'cancelled' => '<span class="badge bg-danger">Đã hủy</span>',
-                'refunded' => '<span class="badge bg-danger">Đã hoàn lại</span>',
-                'failed' => '<span class="badge bg-danger">Giao thất bại</span>',
-                default => '<span class="badge bg-light text-dark">' . ucfirst($order->status ?? 'Không rõ') . '</span>',
-            };
-
-            // Trả về JSON thành công
-            return response()->json([
-                'success' => true,
-                'message' => 'Cập nhật trạng thái đơn hàng thành công!',
-                'newStatus' => $newStatus,
-                'newStatusBadge' => $newStatusBadge
-            ]);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error("Lỗi updateOrderStatus cho Order {$order->id}: " . $e->getMessage() . " at " . $e->getFile() . ":" . $e->getLine());
-            return response()->json(['success' => false, 'message' => 'Lỗi hệ thống khi cập nhật trạng thái.'], 500);
         }
+
+        DB::commit();
+
+        // 8. Badge trạng thái mới
+        $newStatusBadge = match (strtolower($order->status ?? '')) {
+            'pending' => '<span class="badge bg-warning text-dark">Chưa hoàn tất</span>',
+            'processing' => '<span class="badge bg-info text-dark">Đang xử lý</span>',
+            'confirm' => '<span class="badge bg-success">Đã xác nhận</span>',
+            'shipping' => '<span class="badge bg-primary">Đang vận chuyển</span>',
+            'completed' => '<span class="badge bg-success">Đã hoàn thành</span>',
+            'cancelled' => '<span class="badge bg-danger">Đã hủy</span>',
+            'refunded' => '<span class="badge bg-danger">Đã hoàn lại</span>',
+            'failed' => '<span class="badge bg-danger">Giao thất bại</span>',
+            default => '<span class="badge bg-light text-dark">' . ucfirst($order->status ?? 'Không rõ') . '</span>',
+        };
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cập nhật trạng thái đơn hàng thành công!',
+            'newStatus' => $newStatus,
+            'newStatusBadge' => $newStatusBadge,
+            'shipperPhoto' => $order->shipper_photo ?? null,
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error("Lỗi khi cập nhật trạng thái đơn hàng {$order->id}: " . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Lỗi hệ thống khi cập nhật trạng thái.'], 500);
     }
+}
+
 
 
     public function orderDetailShipper(Order $order)

@@ -73,7 +73,7 @@
                                             Code will be generated automatically
                                         </p>
                                     </div>
-                                    <div class="lg:col-span-2 xl:col-span-12">
+                                    {{-- <div class="lg:col-span-2 xl:col-span-12">
                                         <label for="genderSelect" class="inline-block mb-2 text-base font-medium">Ảnh
                                             thương hiệu</label>
                                         <div
@@ -97,7 +97,7 @@
                                             <img src="{{ \Storage::url($productCatalogue->image) }}" alt=""
                                                 width="50">
                                         @endif
-                                        {{-- <ul class="flex flex-wrap mb-0 gap-x-5" id="dropzone-preview2">
+                                        <ul class="flex flex-wrap mb-0 gap-x-5" id="dropzone-preview2">
                                             <li class="mt-5" id="dropzone-preview-list2">
                                                 <!-- This is used as the file preview template -->
                                                 <div class="border rounded border-slate-200 dark:border-zink-500">
@@ -129,7 +129,7 @@
                                                     </div>
                                                 </div>
                                             </li>
-                                        </ul> --}}
+                                        </ul>
                                     </div>
                                     <div class="lg:col-span-2 xl:col-span-12">
                                         <div>
@@ -147,7 +147,7 @@
                                                 name="content" id="productDescription" placeholder="Enter Description" rows="5">{{ old('name', $productCatalogue->content ?? '') }}</textarea>
                                         </div>
 
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <!--end grid-->
                                 <div class="flex justify-end gap-2 mt-4">
