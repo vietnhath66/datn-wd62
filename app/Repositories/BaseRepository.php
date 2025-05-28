@@ -110,7 +110,6 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function destroy($model)
     {
-        
         return $model->delete();
     }
 

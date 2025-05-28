@@ -255,6 +255,7 @@
                             @endphp
                             <a href="#"
                                 class="relative dropdown-button flex items-center justify-between mx-3 my-1 py-2.5 rounded-md transition-all
+
                             {{ $isAttributeActive ? 'text-vertical-menu-item-hover bg-vertical-menu-item-bg-hover' : 'text-vertical-menu-item' }}
                             hover:text-vertical-menu-item-hover hover:bg-vertical-menu-item-bg-hover"
                                 onclick="toggleSubmenu(event)">

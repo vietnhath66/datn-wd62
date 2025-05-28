@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Http\Controllers\Backend\ProductController;
 use App\Models\Language;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductGallery;
 use App\Models\ProductVariant;
@@ -145,7 +147,6 @@ class ProductService extends BaseService implements ProductServiceInterface
 
                     $this->createVariant($product, $request);
                 }
-
             }
             DB::commit();
             return true;
@@ -168,12 +169,16 @@ class ProductService extends BaseService implements ProductServiceInterface
             $galleries = ProductGallery::where('product_id', $id)->get();
             if (isset($variants)) {
                 foreach ($variants as $key) {
-                    $variant = ProductVariant::destroy($key->id);
+                    $variant = ProductVariant::where('id',$key->id)->first();
+                    $variant->delete();
                 }
             }
             if (isset($galleries)) {
                 foreach ($galleries as $key) {
-                    $gallery = ProductGallery::destroy($key->id);
+                    // $gallery = ProductGallery::delete($key->id);
+                    $gallery = ProductVariant::where('id',$key->id)->first();
+                    $gallery->delete();
+
                 }
             }
             if ($product->image && file_exists(public_path('storage/' . $product->image))) {
@@ -204,7 +209,6 @@ class ProductService extends BaseService implements ProductServiceInterface
             $payload['image'] = 'products/' . $imageName;
         }
 
-
         $payload['price'] = (float) $payload['price'];
         $payload['attributeCatalogue'] = $this->formatJson($request, 'attributeCatalogue');
         $payload['attribute'] = $request->input('attribute');
@@ -224,7 +228,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         if (isset($payload['is_show_home'])) {
             $payload['is_show_home'] == "on" ? $payload['is_show_home'] = 1 : $payload['is_show_home'] = 0;
         }
-
 
         $product = $this->productReponsitory->create($payload);
 
@@ -256,7 +259,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function uploadProduct($id, $request)
     {
         $payload = $request->only($this->payload());
-
+       
         $product = $this->productReponsitory->findById($id);
 
 

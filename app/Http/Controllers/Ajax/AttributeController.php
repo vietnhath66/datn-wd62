@@ -23,9 +23,9 @@ class AttributeController extends Controller
     public function getAttribute(Request $request)
     {
         $payload = $request->input();
+        // dd($payload);
 
         $attributes = $this->attributeRepository->searchAttributes($payload['search'], $payload['option']);
-
         $attributeMapped = $attributes->map(function ($attribute) {
             return [
                 'id' => $attribute->id,
@@ -37,7 +37,6 @@ class AttributeController extends Controller
 
     public function loadAttribute(Request $request)
     {
-        // dd($request);
         $payload['attribute'] = json_decode(base64_decode($request->input('attribute')), TRUE);
         // dd($payload);
         $payload['attributeCatalogueId'] = $request->input('attributeCatalogueId');

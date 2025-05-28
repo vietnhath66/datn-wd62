@@ -33,6 +33,8 @@ class Product extends Model
         'view',
     ];
 
+    protected $dates = ['deleted_at'];
+
     protected $table = 'products';
 
     public function product_catalogues()
