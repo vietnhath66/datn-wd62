@@ -183,7 +183,7 @@ if ($request->hasFile('shipper_photo')) {
     $photo->storeAs('public/shipper_photos', $filename);
 
     // Lưu đường dẫn public (truy cập được từ trình duyệt)
-    $order->shipper_photo = 'shipper_photos/' . $filename; 
+    $order->shipper_photo = 'shipper_photos/' . $filename;
 
 } elseif ($request->filled('photo')) {
     $photoData = $request->input('photo');
