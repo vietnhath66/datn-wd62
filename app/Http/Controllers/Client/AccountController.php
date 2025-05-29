@@ -59,7 +59,23 @@ class AccountController extends Controller
         $userId = Auth::id();
 
         $orders = Order::where('user_id', $userId)
-            ->with(['items', 'items.product'])
+            ->with([
+                'items' => function ($query) {
+                    $query->with([
+                        'product' => function ($subQuery) { // Mối quan hệ product() trong OrderItem
+                            $subQuery->withTrashed();
+                        },
+                        'productVariant' => function ($subQuery) { // Mối quan hệ productVariant() trong OrderItem
+                            $subQuery->withTrashed()
+                                ->with([
+                                    'product' => function ($prodQuery) { // Mối quan hệ product() trong ProductVariant
+                                $prodQuery->withTrashed();
+                            }
+                                ]);
+                        }
+                    ]);
+                }
+            ])
             ->orderBy('created_at', 'desc')
             ->paginate(50);
 
@@ -76,18 +92,29 @@ class AccountController extends Controller
         }
 
         $order->load([
-            'items',
-            'ward',
-            'district',
-            'province',
-            'items.product:id,name,image',
-            'items.productVariant' => function ($query) {
-                $query->select(['id', 'product_id',])
-                    ->with('products:id,image');
+            'items' => function ($query) {
+                $query->with([
+                    'product' => function ($subQuery) { // Mối quan hệ product() trong OrderItem
+                        $subQuery->withTrashed()->select(['id', 'name', 'image']); // Chọn cột cần thiết
+                    },
+                    'productVariant' => function ($subQuery) { // Mối quan hệ productVariant() trong OrderItem
+                        $subQuery->withTrashed()
+                            ->select(['id', 'product_id', 'name' /* các cột khác của variant nếu cần */])
+                            ->with([
+                                'product' => function ($prodQuery) { // Mối quan hệ product() trong ProductVariant
+                            $prodQuery->withTrashed()->select(['id', 'image', 'name']); // Lấy ảnh và tên từ product cha của variant
+                        }
+                            ]);
+                    }
+                ]);
             },
+            'ward:code,full_name', // Chọn cột để tối ưu
+            'district:code,full_name',
+            'province:code,full_name',
             'confirmer:id,name',
             'shipper:id,name'
         ]);
+
         return view('client.account.order-detail')->with([
             'order' => $order
         ]);

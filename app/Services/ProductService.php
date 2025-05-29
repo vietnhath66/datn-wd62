@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Log;
 use Ramsey\Uuid\Uuid;
 
 
@@ -159,35 +160,105 @@ class ProductService extends BaseService implements ProductServiceInterface
         }
     }
 
-    public function destroy($id)
+    public function destroy($id) // Nhận $id thay vì Product $product
     {
+        // $this->authorize('delete_products_ql'); // Ví dụ kiểm tra quyền bằng Gate
+
+        DB::beginTransaction(); // Sử dụng transaction để đảm bảo tính toàn vẹn
+        try {
+            $product = Product::findOrFail($id); // Tìm sản phẩm bằng ID
+
+            // Logic soft delete các thành phần liên quan (NẾU CẦN và NẾU chúng dùng SoftDeletes)
+            // Ví dụ: Nếu bạn muốn soft delete cả variants và gallery khi product bị soft delete
+            // Lưu ý: Nếu các bảng product_variants, product_gallery có khóa ngoại với ON DELETE CASCADE
+            // và model Product dùng SoftDeletes, thì việc $product->delete() sẽ KHÔNG tự động
+            // soft delete các bảng con. Bạn phải tự làm hoặc dùng package hỗ trợ cascading soft deletes.
+
+            // Ví dụ: Soft delete variants (nếu ProductVariant model có dùng SoftDeletes trait)
+            // foreach ($product->variants as $variant) {
+            //     $variant->delete();
+            // }
+
+            // Ví dụ: Soft delete gallery (nếu ProductGallery model có dùng SoftDeletes trait)
+            // foreach ($product->gallery as $galleryItem) {
+            //     $galleryItem->delete();
+            // }
+
+            // Thực hiện soft delete cho sản phẩm chính
+            // Phương thức delete() sẽ tự động cập nhật deleted_at nếu model Product dùng trait SoftDeletes
+            $product->delete();
+
+            DB::commit();
+            return redirect()->route('admin.product.index')->with('success', 'Sản phẩm đã được đưa vào thùng rác.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("Lỗi khi đưa sản phẩm ID {$id} vào thùng rác: " . $e->getMessage());
+            return redirect()->route('admin.product.index')->with('error', 'Lỗi khi xóa sản phẩm.');
+        }
+    }
+
+    /**
+     * Xóa vĩnh viễn sản phẩm và các file ảnh liên quan.
+     * Phương thức này nên được gọi từ một route/action riêng biệt (ví dụ: từ trang thùng rác).
+     */
+    public function forceDestroy($id) // Nhận $id
+    {
+        // $this->authorize('force_delete_products_ql'); // Ví dụ kiểm tra quyền cao hơn
 
         DB::beginTransaction();
         try {
-            $product = $this->productReponsitory->findById($id);
-            $variants = ProductVariant::where('product_id', $id)->get();
-            $galleries = ProductGallery::where('product_id', $id)->get();
-            if (isset($variants)) {
-                foreach ($variants as $key) {
-                    $variant = ProductVariant::destroy($key->id);
+            // Khi force delete, bạn cần lấy cả những bản ghi đã soft delete (nếu có)
+            $product = Product::withTrashed()->findOrFail($id);
+
+            // 1. Xóa file ảnh chính (CHỈ KHI FORCE DELETE)
+            // Logic xóa file này nên được đặt trong Eloquent Event 'deleting' hoặc 'deleted' của model Product
+            // và kiểm tra if ($product->isForceDeleting()) như đã hướng dẫn trước để code controller gọn hơn.
+            // Tuy nhiên, nếu bạn muốn làm trực tiếp ở đây:
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
+                Log::info("Đã xóa file ảnh chính: {$product->image} cho sản phẩm ID: {$product->id} khi force delete.");
+            }
+
+            // 2. Xóa các ảnh gallery liên quan (CHỈ KHI FORCE DELETE)
+            // Tương tự, logic này cũng nên nằm trong event của Product hoặc ProductGallery model
+            $galleries = ProductGallery::where('product_id', $product->id)->get(); // Lấy cả trashed nếu ProductGallery cũng soft delete
+            if ($galleries->count() > 0) {
+                foreach ($galleries as $gallery) {
+                    if ($gallery->image_path && Storage::disk('public')->exists($gallery->image_path)) { // Giả sử cột lưu đường dẫn là image_path
+                        Storage::disk('public')->delete($gallery->image_path);
+                        Log::info("Đã xóa file ảnh gallery: {$gallery->image_path} cho sản phẩm ID: {$product->id} khi force delete.");
+                    }
+                    $gallery->forceDelete(); // Xóa vĩnh viễn bản ghi gallery khỏi DB
                 }
             }
-            if (isset($galleries)) {
-                foreach ($galleries as $key) {
-                    $gallery = ProductGallery::destroy($key->id);
-                }
-            }
-            if ($product->image && file_exists(public_path('storage/' . $product->image))) {
-                unlink(public_path('storage/' . $product->image));
-            }
-            $deleteProduct = $this->productReponsitory->destroy($product);
+
+            // 3. Xóa các biến thể liên quan (CHỈ KHI FORCE DELETE)
+            // Nếu bảng product_variants có khóa ngoại với ON DELETE CASCADE đến products,
+            // thì khi product bị forceDelete(), các variant sẽ tự động bị xóa khỏi DB.
+            // Nếu không có ON DELETE CASCADE, hoặc bạn muốn trigger event của variant (ví dụ để xóa ảnh của variant):
+            // $product->variants()->withTrashed()->get()->each(function ($variant) {
+            //     // Xóa ảnh của variant nếu có
+            //     if ($variant->image_variant_path && Storage::disk('public')->exists($variant->image_variant_path)) {
+            //         Storage::disk('public')->delete($variant->image_variant_path);
+            //     }
+            //     $variant->forceDelete();
+            // });
+            // Hoặc đơn giản hơn nếu không cần trigger event của variant và đã có ON DELETE CASCADE:
+            // ProductVariant::where('product_id', $product->id)->withTrashed()->forceDelete(); // Nếu không có cascade
+
+            // 4. Thực hiện force delete cho sản phẩm chính
+            // Event 'deleted' với isForceDeleting() là true sẽ được trigger trong model Product nếu bạn đã định nghĩa.
+            $product->forceDelete();
+
             DB::commit();
-            return true;
+            return redirect()->route('admin.product.index') // Hoặc route về trang thùng rác
+                ->with('success', 'Sản phẩm đã được xóa vĩnh viễn.');
+
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            // echo $e->getMessage();die();
-            return false;
+            Log::error("Lỗi khi xóa vĩnh viễn sản phẩm ID {$id}: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Lỗi khi xóa vĩnh viễn sản phẩm.');
         }
     }
 

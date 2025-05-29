@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -93,6 +95,39 @@ class Product extends Model
     public function wishingUsers()
     {
         return $this->belongsToMany(User::class, 'wishlists', 'product_id', 'user_id')->withTimestamps();
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Sự kiện này được gọi SAU KHI một model đã bị xóa (cả soft delete và force delete)
+        static::deleted(function ($product) {
+            // Chỉ xóa file vật lý nếu đây là FORCE DELETE
+            if ($product->isForceDeleting()) {
+                Log::info("Force deleting product ID: {$product->id}. Attempting to delete image: {$product->image}");
+                if ($product->image && Storage::disk('public')->exists($product->image)) {
+                    Storage::disk('public')->delete($product->image);
+                    Log::info("Successfully deleted image: {$product->image} for product ID: {$product->id}");
+                }
+
+                // Nếu bạn có gallery ảnh và muốn xóa file khi force delete product
+                // $product->gallery()->withTrashed()->get()->each(function ($galleryImage) {
+                //     if ($galleryImage->image_path && Storage::disk('public')->exists($galleryImage->image_path)) {
+                //         Storage::disk('public')->delete($galleryImage->image_path);
+                //     }
+                //     $galleryImage->forceDelete(); // Xóa bản ghi gallery
+                // });
+
+                // Nếu product_variants có ảnh riêng và cần xóa file khi product cha bị force delete
+                // $product->variants()->withTrashed()->get()->each(function ($variant) {
+                //      if ($variant->image_variant_path && Storage::disk('public')->exists($variant->image_variant_path)) {
+                //          Storage::disk('public')->delete($variant->image_variant_path);
+                //      }
+                //      // $variant->forceDelete(); // Dòng này có thể không cần nếu có ON DELETE CASCADE
+                // });
+            }
+        });
     }
 
 }
